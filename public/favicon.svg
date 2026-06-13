@@ -1,4 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-  <rect width="64" height="64" rx="14" fill="#0b0f1a"/>
-  <text x="50%" y="53%" font-family="system-ui, sans-serif" font-size="26" font-weight="700" fill="#7c3aed" text-anchor="middle" dominant-baseline="middle" letter-spacing="-1">TW</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#7c3aed"/>
+  <!-- T -->
+  <rect x="7" y="13" width="20" height="6" fill="white" rx="1"/>
+  <rect x="13" y="13" width="8" height="26" fill="white" rx="1"/>
+  <!-- W -->
+  <polygon points="35,13 38,39 44,25 50,39 53,13 58,13 52,43 44,25 36,43 30,13" fill="white"/>
 </svg>

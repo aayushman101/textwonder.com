@@ -1,0 +1,91 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <div class="flex items-center gap-3">
+        <span id="rtc-word-count" class="text-xs text-slate-500">0 words</span>
+        <button id="rtc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+      </div>
+    </div>
+    <textarea
+      id="rtc-input"
+      rows="8"
+      placeholder="Paste your article, blog post, or any text to estimate reading time..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Slow Reader</div>
+      <div class="text-xs text-slate-600 mb-2">150 WPM</div>
+      <div id="rtc-slow" class="text-xl font-bold text-slate-300" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 rounded-xl p-4 text-center ring-1 ring-violet-600/30">
+      <div class="text-xs text-violet-400 mb-1 font-medium">Average Reader</div>
+      <div class="text-xs text-slate-600 mb-2">238 WPM</div>
+      <div id="rtc-avg" class="text-xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Fast Reader</div>
+      <div class="text-xs text-slate-600 mb-2">350 WPM</div>
+      <div id="rtc-fast" class="text-xl font-bold text-slate-300" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed">
+      Based on research-backed average adult silent reading speed of 238 WPM (Brysbaert, 2019).
+      Actual time varies with text complexity, reader familiarity, and content type.
+    </p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('rtc-input') as HTMLTextAreaElement;
+  const elWordCount = document.getElementById('rtc-word-count')!;
+  const elSlow = document.getElementById('rtc-slow')!;
+  const elAvg = document.getElementById('rtc-avg')!;
+  const elFast = document.getElementById('rtc-fast')!;
+  const STORAGE_KEY = 'tw-reading-time-calculator';
+
+  function formatTime(seconds: number): string {
+    if (seconds < 60) return `${Math.ceil(seconds)}s`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    if (secs === 0) return `${mins} min`;
+    return `${mins}m ${secs}s`;
+  }
+
+  function update() {
+    const text = input.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    elWordCount.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
+
+    if (words === 0) {
+      elSlow.textContent = '—';
+      elAvg.textContent = '—';
+      elFast.textContent = '—';
+      return;
+    }
+
+    elSlow.textContent = formatTime(words / 150 * 60);
+    elAvg.textContent = formatTime(words / 238 * 60);
+    elFast.textContent = formatTime(words / 350 * 60);
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('rtc-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

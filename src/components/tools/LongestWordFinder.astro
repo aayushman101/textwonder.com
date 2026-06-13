@@ -1,0 +1,98 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="lwf-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="lwf-input"
+      rows="8"
+      placeholder="Paste your text here to find the longest words..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lwf-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lwf-longest-len" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Longest (chars)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lwf-avg-len" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Word Length</div>
+    </div>
+  </div>
+
+  <div id="lwf-results-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Longest words (unique, sorted by length):</p>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:2rem 1fr auto">
+        <span>#</span><span>Word</span><span class="text-right">Letters</span>
+      </div>
+      <div id="lwf-list" class="max-h-72 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="lwf-empty" class="text-center py-6 text-slate-500 text-sm hidden">Type or paste text above to find the longest words.</div>
+</div>
+
+<script>
+  const input = document.getElementById('lwf-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('lwf-total')!;
+  const elLongestLen = document.getElementById('lwf-longest-len')!;
+  const elAvgLen = document.getElementById('lwf-avg-len')!;
+  const elResultsWrap = document.getElementById('lwf-results-wrap')!;
+  const elList = document.getElementById('lwf-list')!;
+  const elEmpty = document.getElementById('lwf-empty')!;
+  const STORAGE_KEY = 'tw-longest-word-finder';
+
+  function update() {
+    const rawWords = (input.value.match(/[a-zA-Z']+/g) || []).map(w => w.replace(/^'+|'+$/g, '').toLowerCase()).filter(w => w.length > 0);
+    const total = rawWords.length;
+    elTotal.textContent = total.toString();
+
+    if (total === 0) {
+      elLongestLen.textContent = '0';
+      elAvgLen.textContent = '0';
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.remove('hidden');
+      return;
+    }
+
+    const uniqueWords = [...new Set(rawWords)];
+    const sorted = uniqueWords.sort((a, b) => b.length - a.length);
+    const avgLen = (rawWords.reduce((s, w) => s + w.length, 0) / total).toFixed(1);
+
+    elLongestLen.textContent = sorted[0].length.toString();
+    elAvgLen.textContent = avgLen.toString();
+
+    elList.innerHTML = sorted.slice(0, 50).map((word, i) =>
+      `<div class="grid items-center px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] text-sm" style="grid-template-columns:2rem 1fr auto">
+        <span class="text-slate-600 text-xs">${i + 1}</span>
+        <span class="text-slate-200 font-medium break-all">${word.replace(/</g,'&lt;')}</span>
+        <span class="text-violet-400 font-bold text-right" style="font-family:'Space Grotesk',sans-serif;">${word.length}</span>
+      </div>`
+    ).join('');
+
+    elResultsWrap.classList.remove('hidden');
+    elEmpty.classList.add('hidden');
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('lwf-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

@@ -1,0 +1,131 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="awl-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="awl-input"
+      rows="8"
+      placeholder="Paste or type your text here..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="awl-avg" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Word Length</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="awl-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="awl-longest-len" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Longest Word (chars)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="awl-shortest-len" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Shortest Word (chars)</div>
+    </div>
+  </div>
+
+  <div id="awl-details-wrap" class="hidden space-y-2">
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+        <div class="text-slate-400 text-xs mb-1">Longest word</div>
+        <div id="awl-longest-word" class="text-violet-300 font-semibold text-sm break-all"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+        <div class="text-slate-400 text-xs mb-1">Shortest word</div>
+        <div id="awl-shortest-word" class="text-violet-300 font-semibold text-sm"></div>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">Word length distribution:</p>
+      <div id="awl-dist" class="space-y-1"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('awl-input') as HTMLTextAreaElement;
+  const elAvg = document.getElementById('awl-avg')!;
+  const elWords = document.getElementById('awl-words')!;
+  const elLongestLen = document.getElementById('awl-longest-len')!;
+  const elShortestLen = document.getElementById('awl-shortest-len')!;
+  const elDetailsWrap = document.getElementById('awl-details-wrap')!;
+  const elLongestWord = document.getElementById('awl-longest-word')!;
+  const elShortestWord = document.getElementById('awl-shortest-word')!;
+  const elDist = document.getElementById('awl-dist')!;
+  const STORAGE_KEY = 'tw-average-word-length';
+
+  function update() {
+    const rawWords = (input.value.match(/[a-zA-Z']+/g) || []);
+    const words = rawWords.map(w => w.replace(/^'+|'+$/g, ''));
+    const count = words.length;
+
+    if (count === 0) {
+      elAvg.textContent = '0';
+      elWords.textContent = '0';
+      elLongestLen.textContent = '0';
+      elShortestLen.textContent = '0';
+      elDetailsWrap.classList.add('hidden');
+      return;
+    }
+
+    const total = words.reduce((s, w) => s + w.length, 0);
+    const avg = (total / count).toFixed(1);
+
+    const sorted = [...words].sort((a, b) => b.length - a.length);
+    const longest = sorted[0];
+    const shortest = sorted[sorted.length - 1];
+
+    const dist: Record<number, number> = {};
+    for (const w of words) {
+      const l = w.length;
+      dist[l] = (dist[l] || 0) + 1;
+    }
+    const maxLen = Math.max(...Object.keys(dist).map(Number));
+    const maxCount = Math.max(...Object.values(dist));
+
+    elAvg.textContent = avg.toString();
+    elWords.textContent = count.toString();
+    elLongestLen.textContent = longest.length.toString();
+    elShortestLen.textContent = shortest.length.toString();
+    elLongestWord.textContent = longest;
+    elShortestWord.textContent = shortest;
+
+    elDist.innerHTML = Object.entries(dist)
+      .sort(([a],[b]) => Number(a) - Number(b))
+      .map(([len, cnt]) => {
+        const pct = Math.round(cnt / count * 100);
+        const barW = Math.round(cnt / maxCount * 100);
+        return `<div class="flex items-center gap-2 text-xs">
+          <span class="text-slate-400 w-16 shrink-0">${len} char${Number(len) !== 1 ? 's' : ''}</span>
+          <div class="flex-1 bg-[var(--bg-surface)] rounded-full h-2 overflow-hidden">
+            <div class="h-2 bg-violet-600 rounded-full" style="width:${barW}%"></div>
+          </div>
+          <span class="text-slate-500 w-12 text-right">${cnt} (${pct}%)</span>
+        </div>`;
+      }).join('');
+
+    elDetailsWrap.classList.remove('hidden');
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('awl-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

@@ -1,0 +1,132 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="sym-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="sym-input"
+      rows="8"
+      placeholder="Paste your text here to count punctuation and symbols..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="sym-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Symbols</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sym-unique" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique Symbols</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sym-punct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Punctuation</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sym-pct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">% of Total Chars</div>
+    </div>
+  </div>
+
+  <div id="sym-breakdown-wrap" class="hidden space-y-3">
+    <div id="sym-groups"></div>
+
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">All symbols found (sorted by frequency):</p>
+      <div class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto" id="sym-list"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('sym-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('sym-total')!;
+  const elUnique = document.getElementById('sym-unique')!;
+  const elPunct = document.getElementById('sym-punct')!;
+  const elPct = document.getElementById('sym-pct')!;
+  const elBreakdownWrap = document.getElementById('sym-breakdown-wrap')!;
+  const elGroups = document.getElementById('sym-groups')!;
+  const elList = document.getElementById('sym-list')!;
+  const STORAGE_KEY = 'tw-symbol-counter';
+
+  const PUNCTUATION = '.,:;!?\'"-()[]{}…/\\@#&*+=%^~`|<>';
+
+  const SYMBOL_GROUPS = [
+    { name: 'Sentence endings', chars: '.!?' },
+    { name: 'Commas & colons', chars: ',:;' },
+    { name: 'Brackets', chars: '()[]{}' },
+    { name: 'Quotes', chars: '\'\"\'\'""«»' },
+    { name: 'Math & currency', chars: '+−×÷=%$€£¥₹' },
+    { name: 'Dashes & slashes', chars: '-–—/\\' },
+    { name: 'Other', chars: '@#&*^~`|<>…' },
+  ];
+
+  function isSymbol(c: string): boolean {
+    return /[^\w\s]/.test(c) && !/[\u{1F000}-\u{1FFFF}]/u.test(c);
+  }
+
+  function update() {
+    const text = input.value;
+    const chars = text.split('');
+    const symbols = chars.filter(isSymbol);
+    const total = symbols.length;
+    const pct = chars.length > 0 ? (total / chars.length * 100).toFixed(1) : '0';
+    const punct = symbols.filter(c => PUNCTUATION.includes(c)).length;
+
+    elTotal.textContent = total.toString();
+    elPunct.textContent = punct.toString();
+    elPct.textContent = pct + '%';
+
+    if (total === 0) {
+      elUnique.textContent = '0';
+      elBreakdownWrap.classList.add('hidden');
+      return;
+    }
+
+    const freq: Record<string,number> = {};
+    for (const s of symbols) freq[s] = (freq[s] || 0) + 1;
+    const uniqueCount = Object.keys(freq).length;
+    elUnique.textContent = uniqueCount.toString();
+
+    elGroups.innerHTML = SYMBOL_GROUPS.map(group => {
+      const chars2 = group.chars.split('');
+      const groupSyms = chars2.filter(c => freq[c]);
+      if (groupSyms.length === 0) return '';
+      const groupTotal = groupSyms.reduce((s, c) => s + (freq[c] || 0), 0);
+      return `<div class="flex items-center justify-between py-1 border-b border-slate-800/50 text-sm">
+        <span class="text-slate-400 text-xs">${group.name}</span>
+        <div class="flex gap-2 items-center">
+          <span class="text-slate-500 text-xs">${groupSyms.map(c => `${c.replace(/</g,'&lt;')}(${freq[c]})`).join(' ')}</span>
+          <span class="text-violet-400 font-bold text-xs" style="font-family:'Space Grotesk',sans-serif;">${groupTotal}</span>
+        </div>
+      </div>`;
+    }).filter(Boolean).join('');
+
+    elList.innerHTML = Object.entries(freq)
+      .sort((a,b) => b[1] - a[1])
+      .map(([sym, count]) =>
+        `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2.5 py-1 text-slate-300 text-xs font-mono">
+          ${sym.replace(/</g,'&lt;')} <span class="text-violet-400 font-bold">${count}</span>
+        </span>`
+      ).join('');
+
+    elBreakdownWrap.classList.remove('hidden');
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('sym-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

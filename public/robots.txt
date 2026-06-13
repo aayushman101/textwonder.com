@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block build artifacts and private paths
+Disallow: /_astro/
+Disallow: /api/
+
+# Sitemap
+Sitemap: https://textwonder.com/sitemap-index.xml

@@ -1,0 +1,100 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="sec-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="sec-input"
+      rows="9"
+      placeholder="Paste or type your text here. Sentences are detected by . ! and ? punctuation..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sec-sentences" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Sentences</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sec-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sec-avg" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Words/Sentence</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="sec-longest-len" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Longest Sentence (words)</div>
+    </div>
+  </div>
+
+  <div id="sec-longest-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-1">Longest sentence:</p>
+    <p id="sec-longest-text" class="text-slate-300 text-sm bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3 leading-relaxed"></p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('sec-input') as HTMLTextAreaElement;
+  const elSentences = document.getElementById('sec-sentences')!;
+  const elWords = document.getElementById('sec-words')!;
+  const elAvg = document.getElementById('sec-avg')!;
+  const elLongestLen = document.getElementById('sec-longest-len')!;
+  const elLongestWrap = document.getElementById('sec-longest-wrap')!;
+  const elLongestText = document.getElementById('sec-longest-text')!;
+  const STORAGE_KEY = 'tw-sentence-counter';
+
+  function getSentences(text: string): string[] {
+    return text.split(/(?<=[.!?])\s+/).map(s => s.trim()).filter(s => s.length > 0);
+  }
+
+  function getWords(text: string): string[] {
+    return text.trim() ? text.trim().split(/\s+/) : [];
+  }
+
+  function update() {
+    const text = input.value;
+    const sentences = getSentences(text);
+    const words = getWords(text);
+    const count = sentences.length;
+    const wordCount = words.length;
+    const avg = count > 0 ? Math.round(wordCount / count) : 0;
+
+    let longestLen = 0;
+    let longestText = '';
+    for (const s of sentences) {
+      const w = s.trim().split(/\s+/).length;
+      if (w > longestLen) { longestLen = w; longestText = s.trim(); }
+    }
+
+    elSentences.textContent = count.toString();
+    elWords.textContent = wordCount.toString();
+    elAvg.textContent = avg.toString();
+    elLongestLen.textContent = longestLen.toString();
+
+    if (longestText) {
+      elLongestText.textContent = longestText;
+      elLongestWrap.classList.remove('hidden');
+    } else {
+      elLongestWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('sec-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

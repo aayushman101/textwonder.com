@@ -1,0 +1,121 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="swp-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="swp-input"
+      rows="8"
+      placeholder="Paste your text here to analyse stop word percentage..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="swp-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="swp-stop-count" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Stop Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="swp-stop-pct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">Stop Word %</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="swp-content-count" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Content Words</div>
+    </div>
+  </div>
+
+  <div id="swp-vis-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <div class="flex gap-2 mb-2">
+      <div class="flex-1 bg-[var(--bg-surface)] rounded-full h-3 overflow-hidden flex">
+        <div id="swp-bar-stop" class="h-3 bg-violet-600/60 transition-all" style="width:0%"></div>
+        <div id="swp-bar-content" class="h-3 bg-violet-600 transition-all" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="flex gap-4 text-xs text-slate-500">
+      <span><span class="inline-block w-2 h-2 rounded-sm bg-violet-600/60 mr-1"></span>Stop words</span>
+      <span><span class="inline-block w-2 h-2 rounded-sm bg-violet-600 mr-1"></span>Content words</span>
+    </div>
+  </div>
+
+  <div id="swp-found-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Stop words found:</p>
+    <div id="swp-found" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+  const STOP_WORDS = new Set('a about above after again against ago ahead all almost along already also although always am among an and another any anybody anyone anything anywhere apparently are around as at back be been before being below beside besides between beyond both but by can cannot certain clearly could definitely different difficult doing done down each either else enough even ever every everyone everything everywhere except fairly few find first for from further get give given giving got had hard have having he her here herself him himself his how however i if in into is it its itself just keep known large last least less like little low make many may me might more most much must my myself near need next no nor not nothing now of off often on once only onto or other our out outside over own past per perhaps please probably put quite rather really right same say see seem shall she should since size small so some soon still stop such take than that the their them then there therefore these they this those though through to too top towards try twice two under until up upon us use used usually very was we were what when where whether which while who whose why will with within without would yet you your'.split(' '));
+
+  const input = document.getElementById('swp-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('swp-total')!;
+  const elStopCount = document.getElementById('swp-stop-count')!;
+  const elStopPct = document.getElementById('swp-stop-pct')!;
+  const elContentCount = document.getElementById('swp-content-count')!;
+  const elVisWrap = document.getElementById('swp-vis-wrap')!;
+  const elBarStop = document.getElementById('swp-bar-stop')!;
+  const elBarContent = document.getElementById('swp-bar-content')!;
+  const elFoundWrap = document.getElementById('swp-found-wrap')!;
+  const elFound = document.getElementById('swp-found')!;
+  const STORAGE_KEY = 'tw-stop-word-percentage';
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g,'')).filter(w => w.length > 0);
+    const total = words.length;
+    elTotal.textContent = total.toString();
+
+    if (total === 0) {
+      elStopCount.textContent = '0';
+      elStopPct.textContent = '0%';
+      elContentCount.textContent = '0';
+      elVisWrap.classList.add('hidden');
+      elFoundWrap.classList.add('hidden');
+      return;
+    }
+
+    const stopWords = words.filter(w => STOP_WORDS.has(w));
+    const stopCount = stopWords.length;
+    const contentCount = total - stopCount;
+    const stopPct = Math.round(stopCount / total * 100);
+
+    elStopCount.textContent = stopCount.toString();
+    elStopPct.textContent = stopPct + '%';
+    elContentCount.textContent = contentCount.toString();
+    elBarStop.style.width = stopPct + '%';
+    elBarContent.style.width = (100 - stopPct) + '%';
+    elVisWrap.classList.remove('hidden');
+
+    const uniqueStop = [...new Set(stopWords)].sort();
+    if (uniqueStop.length > 0) {
+      const freq: Record<string,number> = {};
+      for (const w of stopWords) freq[w] = (freq[w] || 0) + 1;
+      elFound.innerHTML = uniqueStop.slice(0, 60).map(w =>
+        `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-0.5 text-slate-400 text-xs">${w}×${freq[w]}</span>`
+      ).join('');
+      elFoundWrap.classList.remove('hidden');
+    } else {
+      elFoundWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('swp-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

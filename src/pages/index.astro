@@ -1,0 +1,365 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { TOOLS, CATEGORIES } from '../data/tools.js';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'TextWonder',
+  url: 'https://textwonder.com',
+  description: 'Free online text utility tools — browser-based, private, no signup.',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://textwonder.com/tools?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'TextWonder',
+  url: 'https://textwonder.com',
+  logo: 'https://textwonder.com/favicon.svg',
+};
+
+const homepageFaqs = [
+  { q: 'Are all the tools on TextWonder free?', a: 'Yes. Every tool on TextWonder is completely free to use with no hidden charges, premium tiers, or subscription required — ever.' },
+  { q: 'Is my text stored or sent to a server?', a: 'Never. All tools process text entirely in your browser using JavaScript. Your text never leaves your device. We have no servers that receive or store your input.' },
+  { q: 'What text tools are available?', a: 'TextWonder currently offers 41 tools across four categories: Text Cleaning, Text Conversion, Text Analysis (including readability scores, word frequency, n-gram analysis, entropy, and more), and Text Formatting.' },
+  { q: 'Does TextWonder work on mobile devices?', a: 'Yes. All tools are fully responsive and work on smartphones and tablets. The interface adapts to smaller screens without losing any functionality.' },
+  { q: 'Does it support languages other than English?', a: 'Yes. The tools work with Unicode text, supporting Hindi, Arabic, Chinese, Spanish, French, and most other languages.' },
+];
+
+type ToolVisual = { bg: string; iconHtml: string };
+
+const toolIcons: Record<string, ToolVisual> = {
+  'remove-emojis': {
+    bg: '#7c3aed',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M4.93 4.93l14.14 14.14"/></svg>`,
+  },
+  'remove-duplicate-lines': {
+    bg: '#3b82f6',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 10h11M4 14h8"/><path d="M17 17l2 2 4-4"/></svg>`,
+  },
+  'remove-extra-spaces': {
+    bg: '#0d9488',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 10h12M4 14h8M9 18l3-3 3 3"/></svg>`,
+  },
+  'title-case-converter': {
+    bg: '#f97316',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:19px;color:white;letter-spacing:-1px;line-height:1">Tt</span>`,
+  },
+  'uppercase-converter': {
+    bg: '#ef4444',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:2px;line-height:1">AA</span>`,
+  },
+  'lowercase-converter': {
+    bg: '#22c55e',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:2px;line-height:1">aa</span>`,
+  },
+  'word-counter': {
+    bg: '#6366f1',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>`,
+  },
+  'character-counter': {
+    bg: '#ec4899',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:white;letter-spacing:-1px;line-height:1">Aa</span>`,
+  },
+  'sort-lines': {
+    bg: '#0ea5e9',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/></svg>`,
+  },
+  'reverse-text': {
+    bg: '#f59e0b',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>`,
+  },
+  'sentence-counter': {
+    bg: '#8b5cf6',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10"/><circle cx="19" cy="14" r="2"/></svg>`,
+  },
+  'paragraph-counter': {
+    bg: '#7c3aed',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 9h16M4 14h16M4 17h16"/><path d="M2 11h20"/></svg>`,
+  },
+  'line-counter': {
+    bg: '#2563eb',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 6h13M8 10h13M8 14h13M8 18h13"/><path d="M3 6h.01M3 10h.01M3 14h.01M3 18h.01"/></svg>`,
+  },
+  'unique-word-counter': {
+    bg: '#0891b2',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/><path d="M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12"/></svg>`,
+  },
+  'duplicate-word-counter': {
+    bg: '#dc2626',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V4h12"/></svg>`,
+  },
+  'average-word-length': {
+    bg: '#059669',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>`,
+  },
+  'reading-time-calculator': {
+    bg: '#d97706',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>`,
+  },
+  'speaking-time-calculator': {
+    bg: '#7c3aed',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/></svg>`,
+  },
+  'presentation-time-estimator': {
+    bg: '#0284c7',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>`,
+  },
+  'audiobook-duration-estimator': {
+    bg: '#0f766e',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  },
+  'most-frequent-words': {
+    bg: '#4f46e5',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 20V10M12 20V4M6 20v-6"/><path d="M2 20h20"/></svg>`,
+  },
+  'least-frequent-words': {
+    bg: '#be185d',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M18 20v-4M12 20V4M6 20v-2"/><path d="M2 20h20"/></svg>`,
+  },
+  'longest-word-finder': {
+    bg: '#0369a1',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 12h16M4 6l6 6-6 6M20 6l-6 6 6 6"/></svg>`,
+  },
+  'shortest-word-finder': {
+    bg: '#15803d',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 8v8M8 12l4-4 4 4M8 12l4 4 4-4" stroke-width="0"/><path d="M12 4v16M9 7l3-3 3 3M9 17l3 3 3-3"/></svg>`,
+  },
+  'vocabulary-richness': {
+    bg: '#6d28d9',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+  },
+  'text-density': {
+    bg: '#b45309',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/></svg>`,
+  },
+  'keyword-density-checker': {
+    bg: '#1d4ed8',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>`,
+  },
+  'stop-word-percentage': {
+    bg: '#0891b2',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M8 12h8M12 8l-4 4 4 4"/></svg>`,
+  },
+  'repeated-phrase-detector': {
+    bg: '#7c3aed',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M1 4v6h6"/><path d="M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/></svg>`,
+  },
+  'n-gram-analyzer': {
+    bg: '#0f766e',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:white;letter-spacing:-0.5px;line-height:1">N-g</span>`,
+  },
+  'lexical-diversity': {
+    bg: '#4338ca',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 12a4 4 0 018 0"/><path d="M9 9l1.5 1.5"/><path d="M15 9l-1.5 1.5"/></svg>`,
+  },
+  'readability-score': {
+    bg: '#7c3aed',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>`,
+  },
+  'grade-level-checker': {
+    bg: '#b45309',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+  },
+  'palindrome-checker': {
+    bg: '#0284c7',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 12h14M5 12l4-4M5 12l4 4M19 12l-4-4M19 12l-4 4"/></svg>`,
+  },
+  'pangram-checker': {
+    bg: '#059669',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-0.5px;line-height:1">A–Z</span>`,
+  },
+  'text-entropy': {
+    bg: '#6d28d9',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M2 2l20 20"/><path d="M8.46 8.46A4.95 4.95 0 007 12c0 2.76 2.24 5 5 5 1.28 0 2.44-.49 3.32-1.29"/><path d="M12 7c2.76 0 5 2.24 5 5 0 .47-.06.92-.18 1.35"/></svg>`,
+  },
+  'character-frequency': {
+    bg: '#0f766e',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M21 21H3M21 21V7l-4-4H7L3 7v14"/><path d="M9 21v-9h6v9"/></svg>`,
+  },
+  'vowel-counter': {
+    bg: '#1d4ed8',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:white;letter-spacing:-1px;line-height:1">aeiou</span>`,
+  },
+  'number-counter': {
+    bg: '#7c3aed',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:-1px;line-height:1">123</span>`,
+  },
+  'emoji-counter': {
+    bg: '#d97706',
+    iconHtml: `<span style="font-size:22px;line-height:1">😊</span>`,
+  },
+  'symbol-counter': {
+    bg: '#be185d',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:white;letter-spacing:-1px;line-height:1">!@#</span>`,
+  },
+};
+---
+
+<BaseLayout
+  title="Free Online Text Tools — Word Counter, Case Converter & More | TextWonder"
+  description="TextWonder offers 10+ free browser-based text tools. Remove emojis, count words, convert case, sort lines and more. No signup, no ads, 100% private."
+  canonical="/"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main>
+    <!-- Hero -->
+    <section class="max-w-4xl mx-auto px-4 pt-12 pb-8 text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight mb-3" style="font-family: 'Space Grotesk', sans-serif;">
+        Every text tool you need,<br class="hidden sm:block" /> in one place
+      </h1>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto mb-5">
+        Free, browser-based text utilities. No signup, no ads, no data sent anywhere.
+      </p>
+      <div class="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500">
+        <span><strong class="text-violet-400 font-semibold">41</strong> tools</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong class="text-violet-400 font-semibold">100%</strong> browser-based</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong class="text-violet-400 font-semibold">0</strong> signups required</span>
+      </div>
+    </section>
+
+    <!-- Category filters + Tools grid -->
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <!-- Filter pills -->
+      <div class="flex flex-wrap gap-2 mb-7 justify-center" id="filter-tabs">
+        <button
+          class="filter-pill px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-violet-600 text-white"
+          data-filter="all"
+        >
+          All
+        </button>
+        {CATEGORIES.map(cat => (
+          <button
+            class="filter-pill px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white"
+            data-filter={cat.slug}
+          >
+            {cat.icon} {cat.name}
+          </button>
+        ))}
+      </div>
+
+      <!-- Tools grid -->
+      <div id="tools-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        {TOOLS.map(tool => {
+          const visual = toolIcons[tool.slug];
+          return (
+            <a
+              href={`/tools/${tool.slug}`}
+              class="tool-card group bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-4 hover:border-violet-500/50 hover:shadow-xl hover:shadow-violet-900/10 transition-all"
+              data-category={tool.category}
+            >
+              <div
+                class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 shrink-0"
+                style={`background-color: ${visual.bg}`}
+              >
+                <Fragment set:html={visual.iconHtml} />
+              </div>
+              <h3 class="text-white font-semibold text-sm mb-1 group-hover:text-violet-300 transition-colors leading-snug">{tool.name}</h3>
+              <p class="text-slate-500 text-xs leading-relaxed line-clamp-2">{tool.tagline}</p>
+            </a>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- Trust section -->
+    <section class="bg-[var(--bg-surface)] border-y border-slate-800 py-10">
+      <div class="max-w-4xl mx-auto px-4 text-center">
+        <div class="text-3xl mb-3">&#x1F512;</div>
+        <h2 class="text-xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Privacy by Design</h2>
+        <p class="text-slate-400 text-sm max-w-xl mx-auto mb-6 leading-relaxed">
+          TextWonder has no servers that receive your text. Every tool runs as JavaScript in your browser. When you close the tab, your text is gone.
+        </p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-xl mx-auto">
+          <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-800">
+            <div class="text-emerald-400 font-semibold text-sm mb-0.5">No Servers</div>
+            <div class="text-slate-500 text-xs">Processing stays on your device</div>
+          </div>
+          <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-800">
+            <div class="text-emerald-400 font-semibold text-sm mb-0.5">No Accounts</div>
+            <div class="text-slate-500 text-xs">No signup, no email, no passwords</div>
+          </div>
+          <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-800">
+            <div class="text-emerald-400 font-semibold text-sm mb-0.5">No Tracking</div>
+            <div class="text-slate-500 text-xs">No ad pixels or behaviour tracking</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEO content -->
+    <section class="max-w-4xl mx-auto px-4 py-12">
+      <h2 class="text-2xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">Free Online Text Tools for Everyone</h2>
+      <div class="text-slate-400 space-y-4 leading-relaxed text-sm">
+        <p>
+          TextWonder is a free collection of browser-based text utility tools designed for writers, developers, SEO professionals, data analysts, and anyone who works with text regularly. Every tool runs entirely in your browser — no server-side processing, no data uploads, no account required.
+        </p>
+        <p>
+          Whether you need to <a href="/tools/remove-emojis" class="text-violet-400 hover:underline">remove emojis from text</a>, <a href="/tools/word-counter" class="text-violet-400 hover:underline">count words and characters</a>, <a href="/tools/title-case-converter" class="text-violet-400 hover:underline">convert text to title case</a>, or <a href="/tools/sort-lines" class="text-violet-400 hover:underline">sort lines alphabetically</a>, TextWonder has a dedicated, fast tool purpose-built for that task.
+        </p>
+        <p>
+          TextWonder currently offers 41 free tools across four categories — Text Cleaning, Text Conversion, Text Analysis, and Text Formatting — with many more planned. All tools are free with no premium tier and no ads.
+        </p>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="max-w-4xl mx-auto px-4 pb-14">
+      <h2 class="text-2xl font-bold text-white mb-6" style="font-family: 'Space Grotesk', sans-serif;">Frequently Asked Questions</h2>
+      <div class="space-y-2">
+        {homepageFaqs.map(faq => (
+          <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+              <span class="text-white font-medium text-sm">{faq.q}</span>
+              <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </summary>
+            <div class="px-5 pb-4">
+              <p class="text-slate-400 text-sm leading-relaxed">{faq.a}</p>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const pills = document.querySelectorAll<HTMLElement>('.filter-pill');
+  const cards = document.querySelectorAll<HTMLElement>('.tool-card');
+
+  const ACTIVE = 'filter-pill px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-violet-600 text-white';
+  const INACTIVE = 'filter-pill px-4 py-1.5 rounded-full text-sm font-medium transition-colors bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:border-slate-500 hover:text-white';
+
+  pills.forEach(pill => {
+    pill.addEventListener('click', () => {
+      const filter = pill.dataset.filter;
+
+      pills.forEach(p => { p.className = INACTIVE; });
+      pill.className = ACTIVE;
+
+      cards.forEach(card => {
+        const show = filter === 'all' || card.dataset.category === filter;
+        card.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>

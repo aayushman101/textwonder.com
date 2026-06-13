@@ -1,0 +1,88 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="lic-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="lic-input"
+      rows="9"
+      placeholder="Paste your text or list here..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lic-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Lines</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lic-nonempty" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Non-blank Lines</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lic-blank" class="text-2xl font-bold text-slate-500" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Blank Lines</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lic-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lic-chars" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Characters</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('lic-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('lic-total')!;
+  const elNonEmpty = document.getElementById('lic-nonempty')!;
+  const elBlank = document.getElementById('lic-blank')!;
+  const elWords = document.getElementById('lic-words')!;
+  const elChars = document.getElementById('lic-chars')!;
+  const STORAGE_KEY = 'tw-line-counter';
+
+  function update() {
+    const text = input.value;
+    if (!text) {
+      elTotal.textContent = '0';
+      elNonEmpty.textContent = '0';
+      elBlank.textContent = '0';
+      elWords.textContent = '0';
+      elChars.textContent = '0';
+      return;
+    }
+    const lines = text.split('\n');
+    const total = lines.length;
+    const blank = lines.filter(l => l.trim() === '').length;
+    const nonEmpty = total - blank;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+    elTotal.textContent = total.toString();
+    elNonEmpty.textContent = nonEmpty.toString();
+    elBlank.textContent = blank.toString();
+    elWords.textContent = words.toString();
+    elChars.textContent = text.length.toString();
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('lic-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

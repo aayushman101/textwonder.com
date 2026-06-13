@@ -1,0 +1,104 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium block mb-1.5">Word or phrase to check</label>
+    <input
+      id="pal-input"
+      type="text"
+      placeholder="e.g. A man a plan a canal Panama"
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    />
+  </div>
+
+  <div id="pal-result-wrap" class="hidden">
+    <div id="pal-result-box" class="rounded-xl px-5 py-4 text-center">
+      <div id="pal-icon" class="text-3xl mb-2"></div>
+      <div id="pal-verdict" class="text-lg font-bold mb-1" style="font-family:'Space Grotesk',sans-serif;"></div>
+      <div id="pal-cleaned" class="text-slate-400 text-sm font-mono"></div>
+    </div>
+  </div>
+
+  <div id="pal-forward-wrap" class="hidden space-y-2">
+    <div class="grid grid-cols-2 gap-3">
+      <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+        <div class="text-xs text-slate-500 mb-1">Forward</div>
+        <div id="pal-forward" class="text-violet-300 font-mono text-sm break-all"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+        <div class="text-xs text-slate-500 mb-1">Reversed</div>
+        <div id="pal-backward" class="text-violet-300 font-mono text-sm break-all"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed mb-2 font-medium">Classic palindromes to try:</p>
+    <div class="flex flex-wrap gap-2">
+      {['racecar', 'level', 'madam', 'A man a plan a canal Panama', 'Was it a car or a cat I saw', 'Never odd or even'].map(p => (
+        <button class="pal-example text-xs bg-[var(--bg-surface)] border border-slate-700 hover:border-violet-500 text-slate-400 hover:text-violet-400 px-2.5 py-1 rounded-lg transition-colors" data-val={p}>{p}</button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('pal-input') as HTMLInputElement;
+  const elResultWrap = document.getElementById('pal-result-wrap')!;
+  const elResultBox = document.getElementById('pal-result-box')!;
+  const elIcon = document.getElementById('pal-icon')!;
+  const elVerdict = document.getElementById('pal-verdict')!;
+  const elCleaned = document.getElementById('pal-cleaned')!;
+  const elForwardWrap = document.getElementById('pal-forward-wrap')!;
+  const elForward = document.getElementById('pal-forward')!;
+  const elBackward = document.getElementById('pal-backward')!;
+  const STORAGE_KEY = 'tw-palindrome-checker';
+
+  function clean(s: string): string {
+    return s.toLowerCase().replace(/[^a-z0-9]/g, '');
+  }
+
+  function update() {
+    const text = input.value;
+    if (!text.trim()) {
+      elResultWrap.classList.add('hidden');
+      elForwardWrap.classList.add('hidden');
+      return;
+    }
+
+    const cleaned = clean(text);
+    const reversed = cleaned.split('').reverse().join('');
+    const isPalin = cleaned.length > 0 && cleaned === reversed;
+
+    elIcon.textContent = isPalin ? '✅' : '❌';
+    elVerdict.textContent = isPalin ? 'Yes, it\'s a palindrome!' : 'Not a palindrome';
+    elVerdict.style.color = isPalin ? '#10b981' : '#f87171';
+    elCleaned.textContent = `Cleaned: "${cleaned}"`;
+    elResultBox.style.background = isPalin ? 'rgba(16,185,129,0.08)' : 'rgba(248,113,113,0.08)';
+    elResultBox.style.border = isPalin ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(248,113,113,0.3)';
+    elResultWrap.classList.remove('hidden');
+
+    if (!isPalin && cleaned.length > 0) {
+      elForward.textContent = cleaned;
+      elBackward.textContent = reversed;
+      elForwardWrap.classList.remove('hidden');
+    } else {
+      elForwardWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+
+  document.querySelectorAll<HTMLElement>('.pal-example').forEach(btn => {
+    btn.addEventListener('click', () => {
+      input.value = btn.dataset.val!;
+      update();
+    });
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

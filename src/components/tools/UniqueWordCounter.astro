@@ -1,0 +1,97 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="uwc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="uwc-input"
+      rows="8"
+      placeholder="Paste your text here to count unique words..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="uwc-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="uwc-unique" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="uwc-pct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">% Unique</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="uwc-repeated" class="text-2xl font-bold text-slate-500" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Repeated Words</div>
+    </div>
+  </div>
+
+  <div id="uwc-list-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Unique words (alphabetical):</p>
+    <div id="uwc-list" class="flex flex-wrap gap-1.5 max-h-48 overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('uwc-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('uwc-total')!;
+  const elUnique = document.getElementById('uwc-unique')!;
+  const elPct = document.getElementById('uwc-pct')!;
+  const elRepeated = document.getElementById('uwc-repeated')!;
+  const elListWrap = document.getElementById('uwc-list-wrap')!;
+  const elList = document.getElementById('uwc-list')!;
+  const STORAGE_KEY = 'tw-unique-word-counter';
+
+  function getWords(text: string): string[] {
+    return text.toLowerCase().match(/[a-z']+/g) || [];
+  }
+
+  function update() {
+    const words = getWords(input.value);
+    const total = words.length;
+    const freq: Record<string,number> = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+    const unique = Object.keys(freq);
+    const uniqueCount = unique.length;
+    const repeated = unique.filter(w => freq[w] > 1).length;
+    const pct = total > 0 ? Math.round(uniqueCount / total * 100) : 0;
+
+    elTotal.textContent = total.toString();
+    elUnique.textContent = uniqueCount.toString();
+    elPct.textContent = pct + '%';
+    elRepeated.textContent = repeated.toString();
+
+    if (uniqueCount > 0) {
+      const sorted = unique.sort();
+      elList.innerHTML = sorted.slice(0, 200).map(w =>
+        `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-0.5 text-slate-300 text-xs">${w.replace(/</g,'&lt;')}</span>`
+      ).join('');
+      if (sorted.length > 200) {
+        elList.innerHTML += `<span class="text-slate-500 text-xs">…and ${sorted.length - 200} more</span>`;
+      }
+      elListWrap.classList.remove('hidden');
+    } else {
+      elListWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('uwc-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

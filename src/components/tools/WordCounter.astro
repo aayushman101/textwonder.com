@@ -1,0 +1,79 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Your Text</label>
+      <button id="wc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="wc-input"
+      rows="10"
+      placeholder="Start typing or paste your text here..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <!-- Stats grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-words" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-chars" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Characters</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-chars-no-spaces" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Chars (no spaces)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-sentences" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Sentences</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-paragraphs" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Paragraphs</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="wc-reading-time" class="text-2xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0 min</div>
+      <div class="text-slate-400 text-xs mt-1">Reading Time</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('wc-input') as HTMLTextAreaElement;
+  const STORAGE_KEY = 'tw-word-counter';
+
+  function analyze(text: string) {
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const chars = text.length;
+    const charsNoSpaces = text.replace(/\s/g, '').length;
+    const sentences = text.trim() ? (text.match(/[.!?]+/g) || []).length : 0;
+    const paragraphs = text.trim() ? text.split(/\n\s*\n/).filter(p => p.trim()).length : 0;
+    const readingTime = Math.ceil(words / 200);
+    return { words, chars, charsNoSpaces, sentences, paragraphs, readingTime };
+  }
+
+  function update() {
+    const stats = analyze(input.value);
+    document.getElementById('wc-words')!.textContent = stats.words.toLocaleString();
+    document.getElementById('wc-chars')!.textContent = stats.chars.toLocaleString();
+    document.getElementById('wc-chars-no-spaces')!.textContent = stats.charsNoSpaces.toLocaleString();
+    document.getElementById('wc-sentences')!.textContent = stats.sentences.toLocaleString();
+    document.getElementById('wc-paragraphs')!.textContent = stats.paragraphs.toLocaleString();
+    document.getElementById('wc-reading-time')!.textContent = stats.readingTime < 1 ? '< 1 min' : `${stats.readingTime} min`;
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('wc-clear')!.addEventListener('click', () => {
+    input.value = ''; update(); localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

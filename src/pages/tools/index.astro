@@ -1,0 +1,96 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ToolCard from '../../components/ToolCard.astro';
+import { TOOLS, CATEGORIES, getToolsByCategory } from '../../data/tools.js';
+---
+
+<BaseLayout
+  title="All Free Text Tools — TextWonder"
+  description="Browse all 10 free online text tools on TextWonder. Remove emojis, count words, convert case, sort lines and more. No signup required."
+  canonical="/tools"
+>
+  <Header />
+
+  <main class="max-w-6xl mx-auto px-4 py-10">
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">
+        All Text Tools
+      </h1>
+      <p class="text-slate-400 text-lg">
+        {TOOLS.length} free, browser-based tools. No signup. Results in seconds.
+      </p>
+    </div>
+
+    <!-- Search bar -->
+    <div class="relative mb-8">
+      <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      <input
+        id="tool-search"
+        type="text"
+        placeholder="Search tools..."
+        class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl pl-10 pr-4 py-3 text-slate-100 placeholder-slate-500 outline-none focus:ring-2 focus:ring-violet-600"
+      />
+    </div>
+
+    <!-- Category sections -->
+    <div id="tools-container">
+      {CATEGORIES.map(cat => {
+        const catTools = getToolsByCategory(cat.slug);
+        return (
+          <div class="mb-10 category-section" data-category={cat.slug}>
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-2xl">{cat.icon}</span>
+              <div>
+                <h2 class="text-lg font-semibold text-white">{cat.name}</h2>
+                <p class="text-slate-400 text-sm">{cat.description}</p>
+              </div>
+              <a href={`/categories/${cat.slug}`} class="ml-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
+                View category &rarr;
+              </a>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {catTools.map(tool => <ToolCard tool={tool} />)}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <div id="no-results" class="hidden text-center py-16 text-slate-500">
+      No tools found. Try a different search term.
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  const searchInput = document.getElementById('tool-search') as HTMLInputElement;
+  const categorySections = document.querySelectorAll('.category-section');
+  const noResults = document.getElementById('no-results');
+  const toolCards = document.querySelectorAll('.category-section a[href^="/tools/"]');
+
+  searchInput?.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase().trim();
+    let anyVisible = false;
+
+    categorySections.forEach(section => {
+      const cards = section.querySelectorAll('a[href^="/tools/"]');
+      let sectionVisible = false;
+      cards.forEach(card => {
+        const text = card.textContent?.toLowerCase() || '';
+        const visible = !q || text.includes(q);
+        (card as HTMLElement).style.display = visible ? '' : 'none';
+        if (visible) sectionVisible = true;
+      });
+      (section as HTMLElement).style.display = sectionVisible ? '' : 'none';
+      if (sectionVisible) anyVisible = true;
+    });
+
+    noResults?.classList.toggle('hidden', anyVisible);
+  });
+</script>

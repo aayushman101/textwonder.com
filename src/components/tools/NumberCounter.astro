@@ -1,0 +1,117 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="num-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="num-input"
+      rows="8"
+      placeholder="Paste text containing numbers to find and count them..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="num-numbers" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Numbers Found</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="num-digits" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Digits</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="num-unique" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique Numbers</div>
+    </div>
+  </div>
+
+  <div id="num-list-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Numbers found (sorted by first appearance):</p>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:1fr auto">
+        <span>Number</span><span class="text-right">Times found</span>
+      </div>
+      <div id="num-list" class="max-h-56 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="num-digit-freq-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Digit frequency (0–9):</p>
+    <div id="num-digit-freq" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5"></div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('num-input') as HTMLTextAreaElement;
+  const elNumbers = document.getElementById('num-numbers')!;
+  const elDigits = document.getElementById('num-digits')!;
+  const elUnique = document.getElementById('num-unique')!;
+  const elListWrap = document.getElementById('num-list-wrap')!;
+  const elList = document.getElementById('num-list')!;
+  const elDigitFreqWrap = document.getElementById('num-digit-freq-wrap')!;
+  const elDigitFreq = document.getElementById('num-digit-freq')!;
+  const STORAGE_KEY = 'tw-number-counter';
+
+  function update() {
+    const text = input.value;
+    const allDigits = (text.match(/\d/g) || []);
+    const numbers = (text.match(/-?\d+(\.\d+)?/g) || []);
+
+    const totalDigits = allDigits.length;
+    const numbersFound = numbers.length;
+
+    const freq: Record<string,number> = {};
+    for (const n of numbers) freq[n] = (freq[n] || 0) + 1;
+    const uniqueCount = Object.keys(freq).length;
+
+    elNumbers.textContent = numbersFound.toString();
+    elDigits.textContent = totalDigits.toString();
+    elUnique.textContent = uniqueCount.toString();
+
+    if (numbersFound > 0) {
+      elList.innerHTML = Object.entries(freq).slice(0, 50).map(([num, count]) =>
+        `<div class="flex items-center justify-between px-4 py-2 hover:bg-[var(--bg-surface-hover)] text-sm">
+          <span class="text-slate-200 font-mono">${num.replace(/</g,'&lt;')}</span>
+          <span class="text-violet-400 font-bold" style="font-family:'Space Grotesk',sans-serif;">${count}×</span>
+        </div>`
+      ).join('');
+      elListWrap.classList.remove('hidden');
+
+      const digitFreq: Record<string,number> = {};
+      for (const d of allDigits) digitFreq[d] = (digitFreq[d] || 0) + 1;
+      const maxD = Math.max(...Object.values(digitFreq), 1);
+      elDigitFreq.innerHTML = '0123456789'.split('').map(d => {
+        const c = digitFreq[d] || 0;
+        const barH = Math.round(c / maxD * 32);
+        return `<div class="flex flex-col items-center gap-1">
+          <span class="text-violet-400 text-xs font-bold" style="font-family:'Space Grotesk',sans-serif;">${c}</span>
+          <div class="w-full bg-[var(--bg-surface)] rounded-sm overflow-hidden" style="height:32px">
+            <div class="bg-violet-600 rounded-sm w-full" style="height:${barH}px;margin-top:${32-barH}px"></div>
+          </div>
+          <span class="text-slate-500 text-xs">${d}</span>
+        </div>`;
+      }).join('');
+      elDigitFreqWrap.classList.remove('hidden');
+    } else {
+      elListWrap.classList.add('hidden');
+      elDigitFreqWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('num-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

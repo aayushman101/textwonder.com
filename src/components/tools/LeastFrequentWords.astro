@@ -1,0 +1,117 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="lfw-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="lfw-input"
+      rows="8"
+      placeholder="Paste your text here to find rare and unique words..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lfw-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lfw-hapax" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Hapax Legomena</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="lfw-hapax-pct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">% Unique Words</div>
+    </div>
+  </div>
+
+  <div id="lfw-results-wrap" class="hidden space-y-3">
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">Hapax legomena — words used exactly once:</p>
+      <div id="lfw-hapax-list" class="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto"></div>
+    </div>
+
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">Rarest words (bottom 20 by frequency):</p>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+        <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:1fr auto">
+          <span>Word</span><span class="text-right">Count</span>
+        </div>
+        <div id="lfw-rare-list" class="max-h-48 overflow-y-auto divide-y divide-slate-800/50"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="lfw-empty" class="text-center py-6 text-slate-500 text-sm hidden">Type or paste text above to find rare words.</div>
+</div>
+
+<script>
+  const input = document.getElementById('lfw-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('lfw-total')!;
+  const elHapax = document.getElementById('lfw-hapax')!;
+  const elHapaxPct = document.getElementById('lfw-hapax-pct')!;
+  const elResultsWrap = document.getElementById('lfw-results-wrap')!;
+  const elHapaxList = document.getElementById('lfw-hapax-list')!;
+  const elRareList = document.getElementById('lfw-rare-list')!;
+  const elEmpty = document.getElementById('lfw-empty')!;
+  const STORAGE_KEY = 'tw-least-frequent-words';
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g, '')).filter(w => w.length > 1);
+    const total = words.length;
+
+    elTotal.textContent = total.toString();
+
+    if (total === 0) {
+      elHapax.textContent = '0';
+      elHapaxPct.textContent = '0%';
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.remove('hidden');
+      return;
+    }
+
+    const freq: Record<string,number> = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+    const entries = Object.entries(freq).sort((a,b) => a[1] - b[1]);
+    const hapaxWords = entries.filter(([,c]) => c === 1);
+    const hapaxCount = hapaxWords.length;
+    const hapaxPct = Math.round(hapaxCount / Object.keys(freq).length * 100);
+
+    elHapax.textContent = hapaxCount.toString();
+    elHapaxPct.textContent = hapaxPct + '%';
+
+    elHapaxList.innerHTML = hapaxWords.slice(0, 100).map(([w]) =>
+      `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-0.5 text-slate-300 text-xs">${w.replace(/</g,'&lt;')}</span>`
+    ).join('');
+    if (hapaxWords.length > 100) {
+      elHapaxList.innerHTML += `<span class="text-slate-500 text-xs">…and ${hapaxWords.length - 100} more</span>`;
+    }
+
+    const rare20 = entries.filter(([,c]) => c > 1).slice(0, 20);
+    elRareList.innerHTML = rare20.map(([word, count]) =>
+      `<div class="flex items-center justify-between px-4 py-2 hover:bg-[var(--bg-surface-hover)] text-sm">
+        <span class="text-slate-200">${word.replace(/</g,'&lt;')}</span>
+        <span class="text-slate-400 font-bold" style="font-family:'Space Grotesk',sans-serif;">${count}</span>
+      </div>`
+    ).join('');
+
+    elResultsWrap.classList.remove('hidden');
+    elEmpty.classList.add('hidden');
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('lfw-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

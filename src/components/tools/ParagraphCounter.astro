@@ -1,0 +1,108 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="pgc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="pgc-input"
+      rows="9"
+      placeholder="Paste your text here. Paragraphs are separated by blank lines..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="pgc-paragraphs" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Paragraphs</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="pgc-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="pgc-avg-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Words/Para</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="pgc-avg-sents" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Sentences/Para</div>
+    </div>
+  </div>
+
+  <div id="pgc-breakdown-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Paragraph breakdown:</p>
+    <div id="pgc-breakdown" class="space-y-2 max-h-56 overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('pgc-input') as HTMLTextAreaElement;
+  const elParagraphs = document.getElementById('pgc-paragraphs')!;
+  const elWords = document.getElementById('pgc-words')!;
+  const elAvgWords = document.getElementById('pgc-avg-words')!;
+  const elAvgSents = document.getElementById('pgc-avg-sents')!;
+  const elBreakdownWrap = document.getElementById('pgc-breakdown-wrap')!;
+  const elBreakdown = document.getElementById('pgc-breakdown')!;
+  const STORAGE_KEY = 'tw-paragraph-counter';
+
+  function getParagraphs(text: string): string[] {
+    return text.split(/\n\s*\n/).map(p => p.trim()).filter(p => p.length > 0);
+  }
+
+  function countWords(text: string): number {
+    return text.trim() ? text.trim().split(/\s+/).length : 0;
+  }
+
+  function countSentences(text: string): number {
+    return text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0).length;
+  }
+
+  function update() {
+    const text = input.value;
+    const paras = getParagraphs(text);
+    const paraCount = paras.length;
+    const totalWords = countWords(text);
+    const avgWords = paraCount > 0 ? Math.round(totalWords / paraCount) : 0;
+    const totalSents = paras.reduce((sum, p) => sum + countSentences(p), 0);
+    const avgSents = paraCount > 0 ? (totalSents / paraCount).toFixed(1) : '0';
+
+    elParagraphs.textContent = paraCount.toString();
+    elWords.textContent = totalWords.toString();
+    elAvgWords.textContent = avgWords.toString();
+    elAvgSents.textContent = avgSents.toString();
+
+    if (paraCount > 0) {
+      elBreakdown.innerHTML = paras.map((p, i) => {
+        const wc = countWords(p);
+        const short = p.length > 80 ? p.slice(0, 80) + '…' : p;
+        return `<div class="flex items-start gap-3 bg-[var(--bg-base)] border border-slate-800 rounded-xl px-3 py-2">
+          <span class="text-violet-400 font-bold text-sm shrink-0" style="font-family:'Space Grotesk',sans-serif;">${i + 1}</span>
+          <div class="min-w-0">
+            <p class="text-slate-300 text-xs leading-relaxed truncate">${short.replace(/</g,'&lt;')}</p>
+            <p class="text-slate-500 text-xs mt-0.5">${wc} words</p>
+          </div>
+        </div>`;
+      }).join('');
+      elBreakdownWrap.classList.remove('hidden');
+    } else {
+      elBreakdownWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('pgc-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

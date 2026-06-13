@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Blog — Text Tips, Writing Guides & Tool Updates | TextWonder"
+  description="Tips for working with text, writing guides, and updates from TextWonder. Free tools for everyone who writes."
+  canonical="/blog"
+>
+  <Header />
+
+  <main class="max-w-4xl mx-auto px-4 py-16 text-center">
+    <div class="text-5xl mb-6">📝</div>
+    <h1 class="text-3xl md:text-4xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">
+      The TextWonder Blog
+    </h1>
+    <p class="text-slate-400 text-lg max-w-xl mx-auto mb-8">
+      Tips for working with text, writing guides, and productivity articles. Coming soon.
+    </p>
+    <a href="/tools" class="inline-flex items-center gap-2 bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors">
+      Browse our tools instead
+    </a>
+  </main>
+
+  <Footer />
+</BaseLayout>

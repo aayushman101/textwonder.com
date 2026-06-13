@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+
+const { title, description, canonical, ogImage } = Astro.props;
+const siteUrl = 'https://textwonder.com';
+const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script is:inline>
+    (function(){var t=localStorage.getItem('tw-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title}</title>
+  <meta name="description" content={description} />
+  <link rel="canonical" href={fullCanonical} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={fullCanonical} />
+  <meta property="og:site_name" content="TextWonder" />
+  <meta property="og:type" content="website" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@textwonder" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C7Q4Q1J205" is:inline></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C7Q4Q1J205');
+  </script>
+
+  <slot name="head" />
+</head>
+<body class="bg-[var(--bg-base)] text-slate-100 antialiased" style="font-family: 'Inter', system-ui, sans-serif;">
+  <slot />
+</body>
+</html>

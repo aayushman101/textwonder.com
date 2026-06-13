@@ -1,0 +1,149 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="glc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="glc-input"
+      rows="8"
+      placeholder="Paste your text here to check reading grade level (works best with 100+ words)..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="glc-fk" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Flesch-Kincaid</div>
+      <div class="text-slate-600 text-xs mt-0.5">Grade Level</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="glc-fog" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Gunning Fog</div>
+      <div class="text-slate-600 text-xs mt-0.5">Index</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="glc-cli" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Coleman-Liau</div>
+      <div class="text-slate-600 text-xs mt-0.5">Index</div>
+    </div>
+  </div>
+
+  <div id="glc-summary-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3 space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-slate-400 text-xs">Average grade level</span>
+      <span id="glc-avg" class="text-violet-400 font-bold text-lg" style="font-family:'Space Grotesk',sans-serif;"></span>
+    </div>
+    <p id="glc-interp" class="text-slate-400 text-xs leading-relaxed"></p>
+    <div class="grid grid-cols-3 gap-2 pt-1">
+      <div class="text-center">
+        <div class="text-xs text-slate-500">Complex words</div>
+        <div id="glc-complex" class="text-violet-400 font-semibold text-sm" style="font-family:'Space Grotesk',sans-serif;"></div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs text-slate-500">Avg sentence</div>
+        <div id="glc-asl" class="text-violet-400 font-semibold text-sm" style="font-family:'Space Grotesk',sans-serif;"></div>
+      </div>
+      <div class="text-center">
+        <div class="text-xs text-slate-500">Avg letters/word</div>
+        <div id="glc-alw" class="text-violet-400 font-semibold text-sm" style="font-family:'Space Grotesk',sans-serif;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('glc-input') as HTMLTextAreaElement;
+  const elFK = document.getElementById('glc-fk')!;
+  const elFog = document.getElementById('glc-fog')!;
+  const elCLI = document.getElementById('glc-cli')!;
+  const elSummaryWrap = document.getElementById('glc-summary-wrap')!;
+  const elAvg = document.getElementById('glc-avg')!;
+  const elInterp = document.getElementById('glc-interp')!;
+  const elComplex = document.getElementById('glc-complex')!;
+  const elASL = document.getElementById('glc-asl')!;
+  const elALW = document.getElementById('glc-alw')!;
+  const STORAGE_KEY = 'tw-grade-level-checker';
+
+  function countSyllables(word: string): number {
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (!word) return 0;
+    if (word.length <= 3) return 1;
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    word = word.replace(/^y/, '');
+    const m = word.match(/[aeiouy]{1,2}/g);
+    return Math.max(1, m ? m.length : 0);
+  }
+
+  function gradeToText(g: number): string {
+    if (g <= 6) return 'Elementary school level — suitable for children and very accessible content.';
+    if (g <= 8) return 'Middle school level — accessible to most general audiences. Good target for web content.';
+    if (g <= 10) return 'High school level — suitable for educated general audiences and standard journalism.';
+    if (g <= 12) return 'High school senior / Pre-college level — appropriate for serious readers.';
+    if (g <= 14) return 'Undergraduate level — typical of academic essays and professional reports.';
+    if (g <= 16) return 'Graduate level — typical of research papers and advanced technical content.';
+    return 'Post-graduate / Professional level — highly complex text for specialists.';
+  }
+
+  function update() {
+    const text = input.value.trim();
+    if (!text) {
+      [elFK, elFog, elCLI].forEach(el => el.textContent = '—');
+      elSummaryWrap.classList.add('hidden');
+      return;
+    }
+
+    const words = (text.match(/[a-zA-Z']+/g) || []).filter(w => w.length > 0);
+    if (words.length < 10) {
+      [elFK, elFog, elCLI].forEach(el => el.textContent = '—');
+      elSummaryWrap.classList.add('hidden');
+      return;
+    }
+
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentCount = Math.max(1, sentences.length);
+    const wordCount = words.length;
+
+    const syllables = words.map(w => countSyllables(w));
+    const totalSyllables = syllables.reduce((a,b) => a+b, 0);
+    const complexWords = words.filter((w, i) => syllables[i] >= 3).length;
+
+    const asl = wordCount / sentCount;
+    const asw = totalSyllables / wordCount;
+
+    const fk = Math.max(0, (0.39 * asl) + (11.8 * asw) - 15.59);
+    const fog = 0.4 * (asl + (complexWords / wordCount * 100));
+    const totalLetters = words.reduce((s, w) => s + w.replace(/[^a-zA-Z]/g,'').length, 0);
+    const L = totalLetters / wordCount * 100;
+    const S = sentCount / wordCount * 100;
+    const cli = Math.max(0, (0.0588 * L) - (0.296 * S) - 15.8);
+    const avg = (fk + fog + cli) / 3;
+    const alw = (totalLetters / wordCount).toFixed(1);
+
+    elFK.textContent = fk.toFixed(1);
+    elFog.textContent = fog.toFixed(1);
+    elCLI.textContent = cli.toFixed(1);
+    elAvg.textContent = 'Grade ' + avg.toFixed(1);
+    elInterp.textContent = gradeToText(avg);
+    elComplex.textContent = complexWords + ' (' + Math.round(complexWords/wordCount*100) + '%)';
+    elASL.textContent = asl.toFixed(1) + ' words';
+    elALW.textContent = alw;
+    elSummaryWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('glc-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

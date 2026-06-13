@@ -1,0 +1,128 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div>
+      <label class="text-slate-300 text-sm font-medium block mb-1.5">Number of slides</label>
+      <input
+        id="pte-slides"
+        type="number"
+        min="0"
+        max="500"
+        value="10"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+      />
+    </div>
+    <div>
+      <label class="text-slate-300 text-sm font-medium block mb-1.5">Seconds per slide transition</label>
+      <input
+        id="pte-trans"
+        type="number"
+        min="0"
+        max="120"
+        value="30"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+      />
+    </div>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Presentation Script</label>
+      <div class="flex items-center gap-3">
+        <span id="pte-word-count" class="text-xs text-slate-500">0 words</span>
+        <button id="pte-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+      </div>
+    </div>
+    <textarea
+      id="pte-input"
+      rows="7"
+      placeholder="Paste your presentation script or speaker notes here..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Speaking time</div>
+      <div id="pte-speak" class="text-xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-xs text-slate-600 mt-1">@ 130 WPM</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Slide time</div>
+      <div id="pte-slide-time" class="text-xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div id="pte-slide-note" class="text-xs text-slate-600 mt-1"></div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div class="text-xs text-violet-400 mb-1 font-medium">Total duration</div>
+      <div id="pte-total" class="text-xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed">
+      Tip: This estimate uses 130 WPM speaking pace. Always rehearse with a timer — actual delivery time varies with pauses, emphasis, and Q&amp;A.
+    </p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('pte-input') as HTMLTextAreaElement;
+  const elSlides = document.getElementById('pte-slides') as HTMLInputElement;
+  const elTrans = document.getElementById('pte-trans') as HTMLInputElement;
+  const elWordCount = document.getElementById('pte-word-count')!;
+  const elSpeak = document.getElementById('pte-speak')!;
+  const elSlideTime = document.getElementById('pte-slide-time')!;
+  const elSlideNote = document.getElementById('pte-slide-note')!;
+  const elTotal = document.getElementById('pte-total')!;
+  const STORAGE_KEY = 'tw-presentation-time-estimator';
+
+  function formatTime(seconds: number): string {
+    if (seconds < 60) return `${Math.ceil(seconds)}s`;
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.round(seconds % 60);
+    if (secs === 0) return `${mins} min`;
+    return `${mins}m ${secs}s`;
+  }
+
+  function update() {
+    const text = input.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    const slides = Math.max(0, parseInt(elSlides.value) || 0);
+    const trans = Math.max(0, parseInt(elTrans.value) || 0);
+
+    elWordCount.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
+
+    const speakSecs = words / 130 * 60;
+    const slideSecs = slides * trans;
+    const totalSecs = speakSecs + slideSecs;
+
+    elSpeak.textContent = words > 0 ? formatTime(speakSecs) : '—';
+    elSlideTime.textContent = slides > 0 ? formatTime(slideSecs) : '—';
+    elSlideNote.textContent = slides > 0 ? `${slides} slides × ${trans}s` : '';
+    elTotal.textContent = (words > 0 || slides > 0) ? formatTime(totalSecs) : '—';
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ text: input.value, slides, trans }));
+  }
+
+  input.addEventListener('input', update);
+  elSlides.addEventListener('input', update);
+  elTrans.addEventListener('input', update);
+  document.getElementById('pte-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const { text, slides, trans } = JSON.parse(saved);
+      if (text) input.value = text;
+      if (slides !== undefined) elSlides.value = slides;
+      if (trans !== undefined) elTrans.value = trans;
+      update();
+    }
+  } catch {}
+</script>

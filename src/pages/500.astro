@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Server Error — TextWonder"
+  description="Something went wrong on our end. All TextWonder tools run in your browser, so no data was lost."
+  canonical="/500"
+>
+  <Header />
+
+  <main class="min-h-[70vh] flex flex-col items-center justify-center px-4 py-20 text-center">
+    <!-- Error code -->
+    <p class="text-8xl font-bold text-violet-500 mb-2" style="font-family: 'Space Grotesk', sans-serif;">500</p>
+    <h1 class="text-3xl font-bold text-white mb-3" style="font-family: 'Space Grotesk', sans-serif;">Something went wrong</h1>
+    <p class="text-slate-400 max-w-md mb-4">
+      We hit an unexpected error. Since all TextWonder tools run entirely in your browser, no data was lost or sent anywhere.
+    </p>
+    <p class="text-slate-500 text-sm mb-10">Try refreshing the page — that usually fixes it.</p>
+
+    <!-- Actions -->
+    <div class="flex flex-wrap gap-3 justify-center mb-16">
+      <button
+        onclick="window.location.reload()"
+        class="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium transition-colors text-sm cursor-pointer"
+      >
+        Refresh Page
+      </button>
+      <a href="/" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-sm border border-slate-700">
+        Go to Homepage
+      </a>
+      <a href="/tools" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-sm border border-slate-700">
+        Browse Tools
+      </a>
+    </div>
+
+    <!-- Trust note -->
+    <div class="bg-[var(--bg-surface)]/80 border border-slate-700/50 rounded-2xl px-6 py-5 max-w-sm">
+      <p class="text-slate-400 text-sm leading-relaxed">
+        <span class="text-violet-400 font-medium">Your text is safe.</span>
+        TextWonder never sends your data to a server — all processing happens locally in your browser.
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

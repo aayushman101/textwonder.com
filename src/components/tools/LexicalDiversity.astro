@@ -1,0 +1,132 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="ld-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="ld-input"
+      rows="8"
+      placeholder="Paste your text here. Works best with 50+ words for accurate MATTR scoring..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ld-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ld-ttr" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Simple TTR</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="ld-mattr" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">MATTR Score</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ld-level" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Diversity Level</div>
+    </div>
+  </div>
+
+  <div id="ld-interp-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3 space-y-2">
+    <div>
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span>Low diversity</span>
+        <span>High diversity</span>
+      </div>
+      <div class="bg-[var(--bg-surface)] rounded-full h-2">
+        <div id="ld-bar" class="h-2 bg-violet-600 rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+    <p id="ld-interp" class="text-slate-400 text-xs leading-relaxed"></p>
+    <p class="text-slate-600 text-xs">MATTR uses a 50-word sliding window — more reliable than TTR across different text lengths.</p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('ld-input') as HTMLTextAreaElement;
+  const elWords = document.getElementById('ld-words')!;
+  const elTTR = document.getElementById('ld-ttr')!;
+  const elMATTR = document.getElementById('ld-mattr')!;
+  const elLevel = document.getElementById('ld-level')!;
+  const elInterpWrap = document.getElementById('ld-interp-wrap')!;
+  const elBar = document.getElementById('ld-bar')!;
+  const elInterp = document.getElementById('ld-interp')!;
+  const STORAGE_KEY = 'tw-lexical-diversity';
+  const WINDOW = 50;
+
+  function calcMATTR(words: string[]): number {
+    if (words.length < WINDOW) {
+      const unique = new Set(words);
+      return unique.size / words.length;
+    }
+    let sum = 0;
+    const steps = words.length - WINDOW + 1;
+    for (let i = 0; i < steps; i++) {
+      const window = words.slice(i, i + WINDOW);
+      const unique = new Set(window);
+      sum += unique.size / WINDOW;
+    }
+    return sum / steps;
+  }
+
+  function interpret(mattr: number): string {
+    if (mattr >= 0.85) return 'Exceptional lexical diversity — almost every word in a given window is unique. Typical of poetry or highly varied prose.';
+    if (mattr >= 0.70) return 'High diversity — strong vocabulary variety. Suggests a wide, varied vocabulary being put to use.';
+    if (mattr >= 0.55) return 'Good diversity — typical of quality non-fiction, academic writing, or well-crafted essays.';
+    if (mattr >= 0.40) return 'Moderate diversity — common in casual writing, conversation transcripts, or repetition-heavy content.';
+    return 'Low diversity — words are heavily repeated. This may indicate a very narrow topic focus or repetitive writing style.';
+  }
+
+  function diversityLevel(mattr: number): string {
+    if (mattr >= 0.85) return 'Excellent';
+    if (mattr >= 0.70) return 'High';
+    if (mattr >= 0.55) return 'Good';
+    if (mattr >= 0.40) return 'Moderate';
+    return 'Low';
+  }
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g,'')).filter(w => w.length > 0);
+    const total = words.length;
+    elWords.textContent = total.toString();
+
+    if (total === 0) {
+      elTTR.textContent = '—';
+      elMATTR.textContent = '—';
+      elLevel.textContent = '—';
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const unique = new Set(words);
+    const ttr = (unique.size / total * 100).toFixed(1) + '%';
+    const mattrVal = calcMATTR(words);
+    const mattrStr = (mattrVal * 100).toFixed(1) + '%';
+
+    elTTR.textContent = ttr;
+    elMATTR.textContent = mattrStr;
+    elLevel.textContent = diversityLevel(mattrVal);
+    elBar.style.width = Math.round(mattrVal * 100) + '%';
+    elInterp.textContent = interpret(mattrVal);
+    elInterpWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('ld-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

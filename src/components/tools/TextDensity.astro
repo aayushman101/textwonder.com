@@ -1,0 +1,109 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="td-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="td-input"
+      rows="8"
+      placeholder="Paste your text here to measure information density..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="td-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="td-content-pct" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">Content Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="td-function-pct" class="text-2xl font-bold text-slate-500" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">Function Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="td-density" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Density Score</div>
+    </div>
+  </div>
+
+  <div id="td-interp-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <div class="mb-2">
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span>Function-heavy (conversational)</span>
+        <span>Content-heavy (dense)</span>
+      </div>
+      <div class="bg-[var(--bg-surface)] rounded-full h-2">
+        <div id="td-bar" class="h-2 bg-violet-600 rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+    <p id="td-interp" class="text-slate-400 text-xs leading-relaxed"></p>
+  </div>
+</div>
+
+<script>
+  const FUNCTION_WORDS = new Set('a an the and or but in on at to for of with by from is are was were be been being have has had do does did will would could should may might shall can not no nor so yet both either neither just very also even though although as if when where while after before until since then than this that these those i me my we our you your he she it his her its they them their what which who whom how all each every more most some such s t about above across after again against ago ahead almost along already also although always among another any anybody anyone anything anywhere apparently are around back been before being below beside besides between beyond both but by cannot certain clearly could definitely different difficult doing done down each either else enough even ever every everything everyone except fairly few find first for from further get give given giving got had hard having here himself however i if into itself just keep known large last least less like little low make many might more most much myself near need next not nothing now object of old once only onto out outside over own past per perhaps please probably put quite rather really right same say see seem should since size small some soon still stop such take than that their them then there therefore through to too top towards try twice two under until up upon us use used usually very was where who whose why will within without would yet you your'.split(' '));
+
+  const input = document.getElementById('td-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('td-total')!;
+  const elContentPct = document.getElementById('td-content-pct')!;
+  const elFunctionPct = document.getElementById('td-function-pct')!;
+  const elDensity = document.getElementById('td-density')!;
+  const elInterpWrap = document.getElementById('td-interp-wrap')!;
+  const elBar = document.getElementById('td-bar')!;
+  const elInterp = document.getElementById('td-interp')!;
+  const STORAGE_KEY = 'tw-text-density';
+
+  function interpret(pct: number): string {
+    if (pct >= 70) return 'Very high density — academic or technical writing. Information-packed with few filler words.';
+    if (pct >= 60) return 'High density — typical of quality editorial writing, reports, or well-crafted essays.';
+    if (pct >= 50) return 'Moderate density — balanced between content and structural words. Suitable for most audiences.';
+    if (pct >= 40) return 'Lower density — more conversational. Common in dialogue, casual blog posts, or spoken transcripts.';
+    return 'Low density — function words dominate. Typical of very casual conversation or simple instructional text.';
+  }
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g,'')).filter(w => w.length > 0);
+    const total = words.length;
+    elTotal.textContent = total.toString();
+
+    if (total === 0) {
+      elContentPct.textContent = '0%';
+      elFunctionPct.textContent = '0%';
+      elDensity.textContent = '0';
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const functionCount = words.filter(w => FUNCTION_WORDS.has(w)).length;
+    const contentCount = total - functionCount;
+    const contentPct = Math.round(contentCount / total * 100);
+    const functionPct = 100 - contentPct;
+
+    elContentPct.textContent = contentPct + '%';
+    elFunctionPct.textContent = functionPct + '%';
+    elDensity.textContent = (contentCount / total).toFixed(2);
+    elBar.style.width = contentPct + '%';
+    elInterp.textContent = interpret(contentPct);
+    elInterpWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('td-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

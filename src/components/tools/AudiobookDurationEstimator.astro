@@ -1,0 +1,105 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Manuscript / Script Text</label>
+      <div class="flex items-center gap-3">
+        <span id="ade-word-count" class="text-xs text-slate-500">0 words</span>
+        <button id="ade-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+      </div>
+    </div>
+    <textarea
+      id="ade-input"
+      rows="8"
+      placeholder="Paste your book manuscript, chapter, or script here to estimate audiobook duration..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Slow Narrator</div>
+      <div class="text-xs text-slate-600 mb-2">120 WPM</div>
+      <div id="ade-slow" class="text-xl font-bold text-slate-300" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 rounded-xl p-4 text-center ring-1 ring-violet-600/30">
+      <div class="text-xs text-violet-400 mb-1 font-medium">Standard (ACX)</div>
+      <div class="text-xs text-slate-600 mb-2">150 WPM</div>
+      <div id="ade-avg" class="text-xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div class="text-xs text-slate-500 mb-1 font-medium">Fast Narrator</div>
+      <div class="text-xs text-slate-600 mb-2">180 WPM</div>
+      <div id="ade-fast" class="text-xl font-bold text-slate-300" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+  </div>
+
+  <div id="ade-acx-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <div class="flex items-center justify-between">
+      <span class="text-slate-400 text-xs">ACX finished audio estimate (@ 150 WPM)</span>
+      <span id="ade-acx" class="text-violet-400 font-semibold text-sm" style="font-family:'Space Grotesk',sans-serif;"></span>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed">
+      These estimates reflect narration time only. Add 2–3× narration time for studio recording, editing, and mastering.
+      ACX standard is ~9,300–10,000 finished words per hour of audio.
+    </p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('ade-input') as HTMLTextAreaElement;
+  const elWordCount = document.getElementById('ade-word-count')!;
+  const elSlow = document.getElementById('ade-slow')!;
+  const elAvg = document.getElementById('ade-avg')!;
+  const elFast = document.getElementById('ade-fast')!;
+  const elAcxWrap = document.getElementById('ade-acx-wrap')!;
+  const elAcx = document.getElementById('ade-acx')!;
+  const STORAGE_KEY = 'tw-audiobook-duration-estimator';
+
+  function formatTime(totalMins: number): string {
+    const h = Math.floor(totalMins / 60);
+    const m = Math.round(totalMins % 60);
+    if (h === 0) return `${m} min`;
+    if (m === 0) return `${h}h`;
+    return `${h}h ${m}m`;
+  }
+
+  function update() {
+    const text = input.value.trim();
+    const words = text ? text.split(/\s+/).length : 0;
+    elWordCount.textContent = `${words.toLocaleString()} word${words !== 1 ? 's' : ''}`;
+
+    if (words === 0) {
+      elSlow.textContent = '—';
+      elAvg.textContent = '—';
+      elFast.textContent = '—';
+      elAcxWrap.classList.add('hidden');
+      return;
+    }
+
+    elSlow.textContent = formatTime(words / 120);
+    elAvg.textContent = formatTime(words / 150);
+    elFast.textContent = formatTime(words / 180);
+
+    const acxHours = (words / 9650).toFixed(2);
+    elAcx.textContent = `~${acxHours}h finished audio`;
+    elAcxWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('ade-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

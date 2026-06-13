@@ -1,0 +1,101 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import RemoveEmojis from '../../components/tools/RemoveEmojis.astro';
+import RemoveDuplicateLines from '../../components/tools/RemoveDuplicateLines.astro';
+import RemoveExtraSpaces from '../../components/tools/RemoveExtraSpaces.astro';
+import TitleCaseConverter from '../../components/tools/TitleCaseConverter.astro';
+import UppercaseConverter from '../../components/tools/UppercaseConverter.astro';
+import LowercaseConverter from '../../components/tools/LowercaseConverter.astro';
+import WordCounter from '../../components/tools/WordCounter.astro';
+import CharacterCounter from '../../components/tools/CharacterCounter.astro';
+import SortLines from '../../components/tools/SortLines.astro';
+import ReverseText from '../../components/tools/ReverseText.astro';
+import SentenceCounter from '../../components/tools/SentenceCounter.astro';
+import ParagraphCounter from '../../components/tools/ParagraphCounter.astro';
+import LineCounter from '../../components/tools/LineCounter.astro';
+import UniqueWordCounter from '../../components/tools/UniqueWordCounter.astro';
+import DuplicateWordCounter from '../../components/tools/DuplicateWordCounter.astro';
+import AverageWordLength from '../../components/tools/AverageWordLength.astro';
+import ReadingTimeCalculator from '../../components/tools/ReadingTimeCalculator.astro';
+import SpeakingTimeCalculator from '../../components/tools/SpeakingTimeCalculator.astro';
+import PresentationTimeEstimator from '../../components/tools/PresentationTimeEstimator.astro';
+import AudiobookDurationEstimator from '../../components/tools/AudiobookDurationEstimator.astro';
+import MostFrequentWords from '../../components/tools/MostFrequentWords.astro';
+import LeastFrequentWords from '../../components/tools/LeastFrequentWords.astro';
+import LongestWordFinder from '../../components/tools/LongestWordFinder.astro';
+import ShortestWordFinder from '../../components/tools/ShortestWordFinder.astro';
+import VocabularyRichness from '../../components/tools/VocabularyRichness.astro';
+import TextDensity from '../../components/tools/TextDensity.astro';
+import KeywordDensityChecker from '../../components/tools/KeywordDensityChecker.astro';
+import StopWordPercentage from '../../components/tools/StopWordPercentage.astro';
+import RepeatedPhraseDetector from '../../components/tools/RepeatedPhraseDetector.astro';
+import NGramAnalyzer from '../../components/tools/NGramAnalyzer.astro';
+import LexicalDiversity from '../../components/tools/LexicalDiversity.astro';
+import ReadabilityScore from '../../components/tools/ReadabilityScore.astro';
+import GradeLevelChecker from '../../components/tools/GradeLevelChecker.astro';
+import PalindromeChecker from '../../components/tools/PalindromeChecker.astro';
+import PangramChecker from '../../components/tools/PangramChecker.astro';
+import TextEntropy from '../../components/tools/TextEntropy.astro';
+import CharacterFrequency from '../../components/tools/CharacterFrequency.astro';
+import VowelCounter from '../../components/tools/VowelCounter.astro';
+import NumberCounter from '../../components/tools/NumberCounter.astro';
+import EmojiCounter from '../../components/tools/EmojiCounter.astro';
+import SymbolCounter from '../../components/tools/SymbolCounter.astro';
+import { TOOLS } from '../../data/tools.js';
+
+export function getStaticPaths() {
+  return TOOLS.map((tool) => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const componentMap: Record<string, any> = {
+  'remove-emojis': RemoveEmojis,
+  'remove-duplicate-lines': RemoveDuplicateLines,
+  'remove-extra-spaces': RemoveExtraSpaces,
+  'title-case-converter': TitleCaseConverter,
+  'uppercase-converter': UppercaseConverter,
+  'lowercase-converter': LowercaseConverter,
+  'word-counter': WordCounter,
+  'character-counter': CharacterCounter,
+  'sort-lines': SortLines,
+  'reverse-text': ReverseText,
+  'sentence-counter': SentenceCounter,
+  'paragraph-counter': ParagraphCounter,
+  'line-counter': LineCounter,
+  'unique-word-counter': UniqueWordCounter,
+  'duplicate-word-counter': DuplicateWordCounter,
+  'average-word-length': AverageWordLength,
+  'reading-time-calculator': ReadingTimeCalculator,
+  'speaking-time-calculator': SpeakingTimeCalculator,
+  'presentation-time-estimator': PresentationTimeEstimator,
+  'audiobook-duration-estimator': AudiobookDurationEstimator,
+  'most-frequent-words': MostFrequentWords,
+  'least-frequent-words': LeastFrequentWords,
+  'longest-word-finder': LongestWordFinder,
+  'shortest-word-finder': ShortestWordFinder,
+  'vocabulary-richness': VocabularyRichness,
+  'text-density': TextDensity,
+  'keyword-density-checker': KeywordDensityChecker,
+  'stop-word-percentage': StopWordPercentage,
+  'repeated-phrase-detector': RepeatedPhraseDetector,
+  'n-gram-analyzer': NGramAnalyzer,
+  'lexical-diversity': LexicalDiversity,
+  'readability-score': ReadabilityScore,
+  'grade-level-checker': GradeLevelChecker,
+  'palindrome-checker': PalindromeChecker,
+  'pangram-checker': PangramChecker,
+  'text-entropy': TextEntropy,
+  'character-frequency': CharacterFrequency,
+  'vowel-counter': VowelCounter,
+  'number-counter': NumberCounter,
+  'emoji-counter': EmojiCounter,
+  'symbol-counter': SymbolCounter,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<ToolLayout tool={tool}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool UI coming soon.</p>}
+</ToolLayout>

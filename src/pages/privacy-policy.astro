@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="Privacy Policy — TextWonder"
+  description="TextWonder's privacy policy. All tools run in your browser. We do not store, collect, or transmit your text."
+  canonical="/privacy-policy"
+>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Privacy Policy</h1>
+    <p class="text-slate-500 text-sm mb-8">Last updated: June 2025</p>
+
+    <div class="space-y-8 text-slate-400 leading-relaxed">
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">The Short Version</h2>
+        <p>TextWonder does not collect, store, or transmit your text. Ever. All processing happens locally in your browser using JavaScript. When you close the tab, your data is gone.</p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">No Server Processing</h2>
+        <p>TextWonder is a static website. The tools on this site are JavaScript functions that run inside your web browser. Your text is never uploaded to any server or third-party service. We have no infrastructure capable of receiving your text.</p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">Local Storage</h2>
+        <p>Some tools save your last input in your browser's <code class="text-violet-400">localStorage</code> so you don't lose your work if you navigate away. This data stays on your device and is never transmitted. You can clear it using your browser's developer tools or by using the "Clear" button in each tool.</p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">Cookies and Analytics</h2>
+        <p>We do not use advertising cookies or behavioral tracking. We may use a privacy-respecting analytics tool (such as Plausible Analytics) to count page visits. This collects only aggregate data (page views, country-level location, browser type) — never individual user data or text content.</p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">Third-Party Services</h2>
+        <p>We use Google Fonts to load typefaces. This causes your browser to make a request to Google's servers, which may log your IP address per Google's privacy policy. No text content is ever sent to Google.</p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-lg mb-2">Contact</h2>
+        <p>If you have questions about this privacy policy, you can reach us at <span class="text-violet-400">hello@textwonder.com</span>.</p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

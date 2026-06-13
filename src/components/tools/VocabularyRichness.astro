@@ -1,0 +1,111 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="vr-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="vr-input"
+      rows="8"
+      placeholder="Paste your text here to measure vocabulary richness (Type-Token Ratio)..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="vr-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="vr-unique" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="vr-ttr" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0%</div>
+      <div class="text-slate-400 text-xs mt-1">TTR Score</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="vr-hapax" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Hapax Legomena</div>
+    </div>
+  </div>
+
+  <div id="vr-interp-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <div class="flex items-center gap-3">
+      <div id="vr-score-bar-wrap" class="flex-1">
+        <div class="flex justify-between text-xs text-slate-500 mb-1">
+          <span>Low diversity</span>
+          <span>High diversity</span>
+        </div>
+        <div class="bg-[var(--bg-surface)] rounded-full h-2">
+          <div id="vr-score-bar" class="h-2 bg-violet-600 rounded-full transition-all" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+    <p id="vr-interp" class="text-slate-400 text-xs mt-2 leading-relaxed"></p>
+    <p class="text-slate-600 text-xs mt-1">Note: TTR is length-dependent. Compare only texts of similar length.</p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('vr-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('vr-total')!;
+  const elUnique = document.getElementById('vr-unique')!;
+  const elTTR = document.getElementById('vr-ttr')!;
+  const elHapax = document.getElementById('vr-hapax')!;
+  const elInterpWrap = document.getElementById('vr-interp-wrap')!;
+  const elScoreBar = document.getElementById('vr-score-bar')!;
+  const elInterp = document.getElementById('vr-interp')!;
+  const STORAGE_KEY = 'tw-vocabulary-richness';
+
+  function interpret(ttr: number): string {
+    if (ttr >= 80) return 'Exceptionally rich vocabulary — each word is almost entirely unique. Typical of poetry or short technical passages.';
+    if (ttr >= 60) return 'Rich vocabulary with strong diversity. Common in quality academic writing and well-crafted essays.';
+    if (ttr >= 40) return 'Moderate vocabulary diversity. Typical for conversational or journalistic writing.';
+    if (ttr >= 20) return 'Lower diversity — many words are repeated. May indicate repetitive writing style or a long document.';
+    return 'Low vocabulary diversity — the same words appear frequently. Normal for very long texts or highly technical content.';
+  }
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g,'')).filter(w => w.length > 0);
+    const total = words.length;
+    elTotal.textContent = total.toString();
+
+    if (total === 0) {
+      elUnique.textContent = '0';
+      elTTR.textContent = '0%';
+      elHapax.textContent = '0';
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const freq: Record<string,number> = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+    const uniqueCount = Object.keys(freq).length;
+    const hapaxCount = Object.values(freq).filter(c => c === 1).length;
+    const ttr = Math.round(uniqueCount / total * 100);
+
+    elUnique.textContent = uniqueCount.toString();
+    elTTR.textContent = ttr + '%';
+    elHapax.textContent = hapaxCount.toString();
+    elScoreBar.style.width = ttr + '%';
+    elInterp.textContent = interpret(ttr);
+    elInterpWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('vr-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

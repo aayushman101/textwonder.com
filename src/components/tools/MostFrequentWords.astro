@@ -1,0 +1,113 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-3 flex-wrap">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input id="mfw-stop" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      <span class="text-slate-300 text-sm">Exclude stop words</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <span class="text-slate-400 text-sm">Show top</span>
+      <select id="mfw-limit" class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-sm outline-none focus:ring-1 focus:ring-violet-600">
+        <option value="25">25</option>
+        <option value="50" selected>50</option>
+        <option value="100">100</option>
+      </select>
+      <span class="text-slate-400 text-sm">words</span>
+    </label>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="mfw-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="mfw-input"
+      rows="7"
+      placeholder="Paste your text here to find the most frequently used words..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div id="mfw-results-wrap" class="hidden">
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-slate-400 text-xs font-medium">Most frequent words</p>
+      <span id="mfw-total-info" class="text-xs text-slate-500"></span>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:2rem 1fr auto auto">
+        <span>#</span><span>Word</span><span class="text-right pr-4">Count</span><span class="text-right">%</span>
+      </div>
+      <div id="mfw-list" class="max-h-72 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="mfw-empty" class="text-center py-6 text-slate-500 text-sm hidden">Type or paste text above to see word frequency.</div>
+</div>
+
+<script>
+  const STOP_WORDS = new Set('a an the and or but in on at to for of with by from is are was were be been being have has had do does did will would could should may might shall can not no nor so yet both either neither just very also even though although as if when where while after before until since then than this that these those i me my we our you your he she it his her its they them their what which who whom how all each every more most some such no nor only own same too very few many much s t'.split(' '));
+
+  const input = document.getElementById('mfw-input') as HTMLTextAreaElement;
+  const elStop = document.getElementById('mfw-stop') as HTMLInputElement;
+  const elLimit = document.getElementById('mfw-limit') as HTMLSelectElement;
+  const elResultsWrap = document.getElementById('mfw-results-wrap')!;
+  const elList = document.getElementById('mfw-list')!;
+  const elTotalInfo = document.getElementById('mfw-total-info')!;
+  const elEmpty = document.getElementById('mfw-empty')!;
+  const STORAGE_KEY = 'tw-most-frequent-words';
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []).map(w => w.replace(/^'+|'+$/g, '')).filter(w => w.length > 0);
+    const excludeStop = elStop.checked;
+    const filtered = excludeStop ? words.filter(w => !STOP_WORDS.has(w)) : words;
+    const total = filtered.length;
+    const limit = parseInt(elLimit.value);
+
+    if (total === 0) {
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.remove('hidden');
+      return;
+    }
+
+    const freq: Record<string,number> = {};
+    for (const w of filtered) freq[w] = (freq[w] || 0) + 1;
+    const sorted = Object.entries(freq).sort((a,b) => b[1] - a[1]).slice(0, limit);
+
+    elTotalInfo.textContent = `${Object.keys(freq).length.toLocaleString()} unique words`;
+
+    elList.innerHTML = sorted.map(([word, count], i) => {
+      const pct = (count / total * 100).toFixed(1);
+      const barW = Math.round(count / sorted[0][1] * 100);
+      return `<div class="grid items-center px-4 py-2 hover:bg-[var(--bg-surface-hover)] text-sm" style="grid-template-columns:2rem 1fr auto auto">
+        <span class="text-slate-600 text-xs">${i + 1}</span>
+        <div>
+          <span class="text-slate-200">${word.replace(/</g,'&lt;')}</span>
+          <div class="w-full bg-[var(--bg-surface)] rounded-full h-1 mt-1 max-w-32">
+            <div class="h-1 bg-violet-600/60 rounded-full" style="width:${barW}%"></div>
+          </div>
+        </div>
+        <span class="text-violet-400 font-bold pr-4 text-right" style="font-family:'Space Grotesk',sans-serif;">${count}</span>
+        <span class="text-slate-500 text-right text-xs">${pct}%</span>
+      </div>`;
+    }).join('');
+
+    elResultsWrap.classList.remove('hidden');
+    elEmpty.classList.add('hidden');
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  elStop.addEventListener('change', update);
+  elLimit.addEventListener('change', update);
+  document.getElementById('mfw-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

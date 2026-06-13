@@ -1,0 +1,146 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="rds-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="rds-input"
+      rows="8"
+      placeholder="Paste your article, essay, or content here to analyse readability (works best with 100+ words)..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="rds-fre" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Reading Ease</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="rds-grade" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Grade Level</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="rds-asl" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Sentence Len</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="rds-asw" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Avg Syllables/Word</div>
+    </div>
+  </div>
+
+  <div id="rds-interp-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3 space-y-2">
+    <div>
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span>Very Difficult (0)</span>
+        <span>Very Easy (100)</span>
+      </div>
+      <div class="bg-[var(--bg-surface)] rounded-full h-3 relative">
+        <div id="rds-bar" class="h-3 rounded-full transition-all" style="width:0%;background:#7c3aed"></div>
+      </div>
+    </div>
+    <div class="flex items-center justify-between">
+      <span id="rds-label" class="text-sm font-semibold text-violet-300"></span>
+      <span id="rds-audience" class="text-slate-500 text-xs"></span>
+    </div>
+    <p id="rds-interp" class="text-slate-400 text-xs leading-relaxed"></p>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed">
+      <strong class="text-slate-400">Flesch Reading Ease</strong> formula: 206.835 − (1.015 × avg sentence length) − (84.6 × avg syllables/word).
+      Higher scores = easier to read. Score 60–70 is standard for general audiences.
+    </p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('rds-input') as HTMLTextAreaElement;
+  const elFRE = document.getElementById('rds-fre')!;
+  const elGrade = document.getElementById('rds-grade')!;
+  const elASL = document.getElementById('rds-asl')!;
+  const elASW = document.getElementById('rds-asw')!;
+  const elInterpWrap = document.getElementById('rds-interp-wrap')!;
+  const elBar = document.getElementById('rds-bar')!;
+  const elLabel = document.getElementById('rds-label')!;
+  const elAudience = document.getElementById('rds-audience')!;
+  const elInterp = document.getElementById('rds-interp')!;
+  const STORAGE_KEY = 'tw-readability-score';
+
+  function countSyllables(word: string): number {
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (!word) return 0;
+    if (word.length <= 3) return 1;
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    word = word.replace(/^y/, '');
+    const m = word.match(/[aeiouy]{1,2}/g);
+    return Math.max(1, m ? m.length : 0);
+  }
+
+  function getLabel(fre: number): { label: string; audience: string; color: string; interp: string } {
+    if (fre >= 90) return { label: 'Very Easy', audience: 'Grade 5 — 11 years old', color: '#10b981', interp: 'Very easy to read. Easily understood by an average 11-year-old student.' };
+    if (fre >= 80) return { label: 'Easy', audience: 'Grade 6 — 12 years old', color: '#22c55e', interp: 'Easy to read. Conversational English for consumers.' };
+    if (fre >= 70) return { label: 'Fairly Easy', audience: 'Grade 7 — 13 years old', color: '#84cc16', interp: 'Fairly easy to read. Best for general web content and blog posts.' };
+    if (fre >= 60) return { label: 'Standard', audience: 'Grade 8–9 — 13–15 years old', color: '#a3e635', interp: 'Plain English. Easily understood by 13–15 year olds. Ideal target for most content.' };
+    if (fre >= 50) return { label: 'Fairly Difficult', audience: 'Grade 10–12 — 15–18 years old', color: '#facc15', interp: 'Fairly difficult. Appropriate for high school level readers.' };
+    if (fre >= 30) return { label: 'Difficult', audience: 'College level', color: '#f97316', interp: 'Difficult to read. Best understood by university graduates.' };
+    return { label: 'Very Difficult', audience: 'Professional / Academic', color: '#ef4444', interp: 'Very difficult — best understood by professionals with advanced education.' };
+  }
+
+  function update() {
+    const text = input.value.trim();
+    if (!text) {
+      [elFRE, elGrade, elASL, elASW].forEach(el => el.textContent = '—');
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const words = (text.match(/[a-zA-Z']+/g) || []).filter(w => w.length > 0);
+    if (words.length < 10) {
+      [elFRE, elGrade, elASL, elASW].forEach(el => el.textContent = '—');
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const sentCount = sentences.length;
+    const wordCount = words.length;
+    const totalSyllables = words.reduce((s, w) => s + countSyllables(w), 0);
+
+    const asl = wordCount / sentCount;
+    const asw = totalSyllables / wordCount;
+    const fre = Math.max(0, Math.min(100, 206.835 - (1.015 * asl) - (84.6 * asw)));
+    const gradeLevel = Math.max(0, (0.39 * asl) + (11.8 * asw) - 15.59);
+
+    elFRE.textContent = fre.toFixed(1);
+    elGrade.textContent = gradeLevel.toFixed(1);
+    elASL.textContent = asl.toFixed(1);
+    elASW.textContent = asw.toFixed(2);
+
+    const info = getLabel(fre);
+    elBar.style.width = Math.round(fre) + '%';
+    (elBar as HTMLElement).style.background = info.color;
+    elLabel.textContent = info.label;
+    elLabel.style.color = info.color;
+    elAudience.textContent = info.audience;
+    elInterp.textContent = info.interp;
+    elInterpWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('rds-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

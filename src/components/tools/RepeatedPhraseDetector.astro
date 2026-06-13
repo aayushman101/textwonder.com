@@ -1,0 +1,135 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-3 flex-wrap">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-sm">Phrase length:</span>
+      <div class="flex gap-1">
+        {['2','3','4','5'].map(n => (
+          <button class="rpd-len px-2.5 py-1 rounded-lg text-sm font-medium transition-colors bg-[var(--bg-surface-hover)] text-slate-400 hover:text-slate-200" data-len={n}>{n} words</button>
+        ))}
+      </div>
+    </div>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <span class="text-slate-400 text-sm">Min repeats:</span>
+      <select id="rpd-min" class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-sm outline-none">
+        <option value="2" selected>2+</option>
+        <option value="3">3+</option>
+        <option value="5">5+</option>
+      </select>
+    </label>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="rpd-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="rpd-input"
+      rows="7"
+      placeholder="Paste your text here to detect repeated phrases..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div id="rpd-results-wrap" class="hidden">
+    <div class="flex items-center justify-between mb-2">
+      <p class="text-slate-400 text-xs font-medium">Repeated phrases</p>
+      <span id="rpd-count-info" class="text-xs text-slate-500"></span>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:1fr auto">
+        <span>Phrase</span><span class="text-right">Count</span>
+      </div>
+      <div id="rpd-list" class="max-h-64 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="rpd-empty" class="text-center py-6 text-slate-500 text-sm hidden">No repeated phrases found — great writing variety!</div>
+  <div id="rpd-hint" class="text-center py-6 text-slate-500 text-sm">Type or paste text above to detect repeated phrases.</div>
+</div>
+
+<script>
+  const input = document.getElementById('rpd-input') as HTMLTextAreaElement;
+  const elMin = document.getElementById('rpd-min') as HTMLSelectElement;
+  const elResultsWrap = document.getElementById('rpd-results-wrap')!;
+  const elList = document.getElementById('rpd-list')!;
+  const elCountInfo = document.getElementById('rpd-count-info')!;
+  const elEmpty = document.getElementById('rpd-empty')!;
+  const elHint = document.getElementById('rpd-hint')!;
+  const STORAGE_KEY = 'tw-repeated-phrase-detector';
+
+  let selectedLen = 2;
+
+  const lenBtns = document.querySelectorAll<HTMLElement>('.rpd-len');
+  const ACTIVE_LEN = 'rpd-len px-2.5 py-1 rounded-lg text-sm font-medium transition-colors bg-violet-700 text-white';
+  const INACTIVE_LEN = 'rpd-len px-2.5 py-1 rounded-lg text-sm font-medium transition-colors bg-[var(--bg-surface-hover)] text-slate-400 hover:text-slate-200';
+
+  lenBtns.forEach(btn => {
+    if (btn.dataset.len === '2') btn.className = ACTIVE_LEN;
+    btn.addEventListener('click', () => {
+      selectedLen = parseInt(btn.dataset.len!);
+      lenBtns.forEach(b => { b.className = b === btn ? ACTIVE_LEN : INACTIVE_LEN; });
+      update();
+    });
+  });
+
+  function getNgrams(words: string[], n: number): Record<string,number> {
+    const map: Record<string,number> = {};
+    for (let i = 0; i <= words.length - n; i++) {
+      const gram = words.slice(i, i + n).join(' ');
+      map[gram] = (map[gram] || 0) + 1;
+    }
+    return map;
+  }
+
+  function update() {
+    const text = input.value.trim();
+    const minCount = parseInt(elMin.value);
+    elHint.classList.add('hidden');
+
+    if (!text) {
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.add('hidden');
+      elHint.classList.remove('hidden');
+      return;
+    }
+
+    const words = text.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(w => w.length > 0);
+    const ngrams = getNgrams(words, selectedLen);
+    const repeated = Object.entries(ngrams)
+      .filter(([,c]) => c >= minCount)
+      .sort((a,b) => b[1] - a[1]);
+
+    elCountInfo.textContent = `${repeated.length} found`;
+
+    if (repeated.length === 0) {
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.remove('hidden');
+    } else {
+      elList.innerHTML = repeated.slice(0, 50).map(([phrase, count]) =>
+        `<div class="flex items-center justify-between px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] text-sm">
+          <span class="text-slate-200">"${phrase.replace(/</g,'&lt;')}"</span>
+          <span class="text-violet-400 font-bold shrink-0 ml-2" style="font-family:'Space Grotesk',sans-serif;">${count}×</span>
+        </div>`
+      ).join('');
+      elResultsWrap.classList.remove('hidden');
+      elEmpty.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  elMin.addEventListener('change', update);
+  document.getElementById('rpd-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

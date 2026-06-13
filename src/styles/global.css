@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50: #f5f3ff;
+  --color-brand-100: #ede9fe;
+  --color-brand-500: #8b5cf6;
+  --color-brand-600: #7c3aed;
+  --color-brand-700: #6d28d9;
+  --color-brand-900: #2e1065;
+  --color-surface-900: #0b0f1a;
+  --color-surface-800: #111827;
+  --color-surface-700: #1f2937;
+  --color-surface-600: #374151;
+
+  --font-family-inter: "Inter", system-ui, sans-serif;
+  --font-family-display: "Space Grotesk", Inter, sans-serif;
+}
+
+/* ========================================
+   Theme CSS custom properties
+   ======================================== */
+:root {
+  --bg-base: #0b0f1a;
+  --bg-surface: #111827;
+  --bg-surface-hover: #1f2937;
+  --bg-surface-alt: #374151;
+}
+
+[data-theme="light"] {
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-hover: #f1f5f9;
+  --bg-surface-alt: #e2e8f0;
+}
+
+/* ========================================
+   Light mode overrides for Tailwind classes
+   ======================================== */
+
+/* Body */
+[data-theme="light"] body {
+  color: #0f172a;
+}
+
+/* Text colors */
+[data-theme="light"] .text-white { color: #0f172a; }
+[data-theme="light"] .text-slate-100 { color: #1e293b; }
+[data-theme="light"] .text-slate-300 { color: #334155; }
+[data-theme="light"] .text-slate-400 { color: #475569; }
+[data-theme="light"] .text-slate-500 { color: #64748b; }
+[data-theme="light"] .text-violet-300 { color: #6d28d9; }
+[data-theme="light"] .text-violet-400 { color: #6d28d9; }
+
+/* Hover text */
+[data-theme="light"] .hover\:text-white:hover { color: #0f172a; }
+[data-theme="light"] .group:hover .group-hover\:text-violet-300 { color: #7c3aed; }
+[data-theme="light"] .group:hover .group-hover\:text-violet-400 { color: #7c3aed; }
+
+/* Border colors */
+[data-theme="light"] .border-slate-800 { border-color: #e2e8f0; }
+[data-theme="light"] .border-slate-700 { border-color: #cbd5e1; }
+[data-theme="light"] .border-b { border-bottom-color: #e2e8f0; }
+
+/* Background colors (named Tailwind classes) */
+[data-theme="light"] .bg-slate-800 { background-color: #e2e8f0; }
+
+/* Dividers */
+[data-theme="light"] .divide-slate-800 > * + * { border-color: #e2e8f0; }
+
+/* Placeholder */
+[data-theme="light"] .placeholder-slate-600::placeholder { color: #94a3b8; }
+[data-theme="light"] .placeholder-slate-500::placeholder { color: #94a3b8; }
+
+/* Keep white text on colored action buttons (violet, emerald) */
+[data-theme="light"] .bg-violet-700 { color: #ffffff; }
+[data-theme="light"] .bg-violet-600 { color: #ffffff; }
+[data-theme="light"] .bg-violet-500 { color: #ffffff; }
+[data-theme="light"] .bg-emerald-600 { color: #ffffff; }

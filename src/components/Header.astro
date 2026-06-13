@@ -1,0 +1,150 @@
+---
+import { TOOLS } from '../data/tools.js';
+
+const toolsForSearch = TOOLS.map(t => ({ slug: t.slug, name: t.name, category: t.category }));
+---
+
+<header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
+  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2 group">
+      <span class="text-2xl font-bold text-white group-hover:text-violet-400 transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+        Text<span class="text-violet-500">Wonder</span>
+      </span>
+    </a>
+
+    <!-- Nav -->
+    <nav class="hidden md:flex items-center gap-6">
+      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
+      <a href="/tools" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Tools</a>
+      <a href="/tools#categories" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Categories</a>
+      <a href="/blog" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Blog</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <!-- Theme toggle -->
+      <button
+        id="theme-toggle"
+        class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors"
+        aria-label="Toggle light/dark mode"
+      >
+        <!-- Sun: shown in dark mode -->
+        <svg id="theme-icon-sun" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <!-- Moon: shown in light mode -->
+        <svg id="theme-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+
+      <!-- Search button -->
+      <button
+        id="search-open"
+        class="flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-400 hover:text-white px-3 py-2 rounded-lg transition-colors text-sm"
+        aria-label="Search tools"
+      >
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <span class="hidden sm:inline">Search tools…</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Search Modal -->
+<div id="search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-label="Search tools">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="search-backdrop"></div>
+  <div class="relative max-w-lg mx-auto mt-20 mx-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-700">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        <input
+          id="search-input"
+          type="text"
+          placeholder="Search tools…"
+          class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base"
+          autocomplete="off"
+        />
+        <button id="search-close" class="text-slate-400 hover:text-white transition-colors text-sm">ESC</button>
+      </div>
+      <ul id="search-results" class="max-h-72 overflow-y-auto py-2">
+        <!-- populated by JS -->
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ toolsForSearch }}>
+  const modal = document.getElementById('search-modal');
+  const input = document.getElementById('search-input');
+  const results = document.getElementById('search-results');
+  const openBtn = document.getElementById('search-open');
+  const closeBtn = document.getElementById('search-close');
+  const backdrop = document.getElementById('search-backdrop');
+
+  function openModal() {
+    modal.classList.remove('hidden');
+    setTimeout(() => input.focus(), 50);
+    renderResults('');
+  }
+  function closeModal() {
+    modal.classList.add('hidden');
+    input.value = '';
+  }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+  });
+
+  function renderResults(query) {
+    const q = query.toLowerCase().trim();
+    const filtered = q
+      ? toolsForSearch.filter(t => t.name.toLowerCase().includes(q) || t.category.includes(q))
+      : toolsForSearch.slice(0, 8);
+    results.innerHTML = filtered.length
+      ? filtered.map(t => `
+          <li>
+            <a href="/tools/${t.slug}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors">
+              <span class="text-white text-sm font-medium">${t.name}</span>
+              <span class="text-xs text-slate-500 ml-auto capitalize">${t.category.replace(/-/g, ' ')}</span>
+            </a>
+          </li>`).join('')
+      : '<li class="px-4 py-4 text-slate-500 text-sm text-center">No tools found</li>';
+  }
+
+  input.addEventListener('input', (e) => renderResults(e.target.value));
+
+  // Theme toggle
+  const themeToggle = document.getElementById('theme-toggle');
+  const iconSun = document.getElementById('theme-icon-sun');
+  const iconMoon = document.getElementById('theme-icon-moon');
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('tw-theme', theme);
+    if (theme === 'dark') {
+      iconSun.classList.remove('hidden');
+      iconMoon.classList.add('hidden');
+    } else {
+      iconSun.classList.add('hidden');
+      iconMoon.classList.remove('hidden');
+    }
+  }
+
+  // Sync icon with current theme on load
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+  applyTheme(currentTheme);
+
+  themeToggle.addEventListener('click', () => {
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    applyTheme(theme === 'dark' ? 'light' : 'dark');
+  });
+</script>

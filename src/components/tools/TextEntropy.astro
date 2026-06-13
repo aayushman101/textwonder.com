@@ -1,0 +1,132 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="ten-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="ten-input"
+      rows="8"
+      placeholder="Paste your text here to calculate Shannon entropy..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="ten-char-entropy" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Char Entropy (bits)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ten-word-entropy" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">—</div>
+      <div class="text-slate-400 text-xs mt-1">Word Entropy (bits)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ten-chars" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Characters</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="ten-unique-chars" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique Chars</div>
+    </div>
+  </div>
+
+  <div id="ten-interp-wrap" class="hidden bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3 space-y-2">
+    <div>
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span>Repetitive (0 bits)</span>
+        <span>Random / Max (~6.57 bits)</span>
+      </div>
+      <div class="bg-[var(--bg-surface)] rounded-full h-2">
+        <div id="ten-bar" class="h-2 bg-violet-600 rounded-full transition-all" style="width:0%"></div>
+      </div>
+    </div>
+    <p id="ten-interp" class="text-slate-400 text-xs leading-relaxed"></p>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed">
+      <strong class="text-slate-400">Shannon entropy</strong> H = −Σ p(x) log₂ p(x) bits per character.
+      Max entropy for standard text is ~6.57 bits. Repetitive text (like "aaaaaa") has entropy near 0.
+    </p>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('ten-input') as HTMLTextAreaElement;
+  const elCharEntropy = document.getElementById('ten-char-entropy')!;
+  const elWordEntropy = document.getElementById('ten-word-entropy')!;
+  const elChars = document.getElementById('ten-chars')!;
+  const elUniqueChars = document.getElementById('ten-unique-chars')!;
+  const elInterpWrap = document.getElementById('ten-interp-wrap')!;
+  const elBar = document.getElementById('ten-bar')!;
+  const elInterp = document.getElementById('ten-interp')!;
+  const STORAGE_KEY = 'tw-text-entropy';
+  const MAX_ENTROPY = 6.57;
+
+  function shannonEntropy(tokens: string[]): number {
+    const n = tokens.length;
+    if (n === 0) return 0;
+    const freq: Record<string,number> = {};
+    for (const t of tokens) freq[t] = (freq[t] || 0) + 1;
+    let h = 0;
+    for (const k of Object.keys(freq)) {
+      const p = freq[k] / n;
+      h -= p * Math.log2(p);
+    }
+    return h;
+  }
+
+  function interpret(h: number): string {
+    if (h >= 5.5) return 'Very high entropy — text is highly diverse and unpredictable at the character level. Typical of compressed data or random text.';
+    if (h >= 4.5) return 'High entropy — rich variety of characters. Common in multilingual text or technical content with many symbols.';
+    if (h >= 3.5) return 'Moderate entropy — normal range for standard English prose and web content.';
+    if (h >= 2.0) return 'Lower entropy — text is somewhat repetitive or uses a limited character set.';
+    return 'Very low entropy — highly repetitive text with very few distinct characters.';
+  }
+
+  function update() {
+    const text = input.value;
+    const chars = text.length;
+    elChars.textContent = chars.toString();
+
+    if (chars === 0) {
+      elCharEntropy.textContent = '—';
+      elWordEntropy.textContent = '—';
+      elUniqueChars.textContent = '0';
+      elInterpWrap.classList.add('hidden');
+      return;
+    }
+
+    const charTokens = text.split('');
+    const wordTokens = text.toLowerCase().replace(/[^a-z\s]/g,' ').split(/\s+/).filter(w => w.length > 0);
+    const uniqueChars = new Set(charTokens).size;
+
+    const charH = shannonEntropy(charTokens);
+    const wordH = wordTokens.length > 1 ? shannonEntropy(wordTokens) : 0;
+
+    elCharEntropy.textContent = charH.toFixed(3);
+    elWordEntropy.textContent = wordH.toFixed(3);
+    elUniqueChars.textContent = uniqueChars.toString();
+
+    const barW = Math.min(100, Math.round(charH / MAX_ENTROPY * 100));
+    elBar.style.width = barW + '%';
+    elInterp.textContent = interpret(charH);
+    elInterpWrap.classList.remove('hidden');
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('ten-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

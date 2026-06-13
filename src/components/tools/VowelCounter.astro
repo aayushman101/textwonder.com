@@ -1,0 +1,133 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-3">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input id="vow-y" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      <span class="text-slate-300 text-sm">Include Y as vowel</span>
+    </label>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="vow-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="vow-input"
+      rows="8"
+      placeholder="Paste your text here to count vowels and consonants..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-violet-600/40 ring-1 ring-violet-600/30 rounded-xl p-4 text-center">
+      <div id="vow-vowels" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Vowels</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="vow-consonants" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Consonants</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="vow-letters" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Letters</div>
+    </div>
+  </div>
+
+  <div id="vow-breakdown-wrap" class="hidden space-y-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+      <div class="flex justify-between text-xs text-slate-500 mb-1">
+        <span id="vow-pct-v">Vowels: 0%</span>
+        <span id="vow-pct-c">Consonants: 0%</span>
+      </div>
+      <div class="bg-[var(--bg-surface)] rounded-full h-2 flex overflow-hidden">
+        <div id="vow-bar-v" class="h-2 bg-violet-600 transition-all" style="width:0%"></div>
+        <div id="vow-bar-c" class="h-2 bg-violet-400/50 transition-all" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">Individual vowel counts:</p>
+      <div id="vow-each" class="grid grid-cols-3 sm:grid-cols-6 gap-2"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('vow-input') as HTMLTextAreaElement;
+  const elYCheck = document.getElementById('vow-y') as HTMLInputElement;
+  const elVowels = document.getElementById('vow-vowels')!;
+  const elConsonants = document.getElementById('vow-consonants')!;
+  const elLetters = document.getElementById('vow-letters')!;
+  const elBreakdownWrap = document.getElementById('vow-breakdown-wrap')!;
+  const elPctV = document.getElementById('vow-pct-v')!;
+  const elPctC = document.getElementById('vow-pct-c')!;
+  const elBarV = document.getElementById('vow-bar-v')!;
+  const elBarC = document.getElementById('vow-bar-c')!;
+  const elEach = document.getElementById('vow-each')!;
+  const STORAGE_KEY = 'tw-vowel-counter';
+
+  function update() {
+    const text = input.value.toLowerCase();
+    const includeY = elYCheck.checked;
+    const BASE_VOWELS = 'aeiou';
+    const vowelSet = includeY ? BASE_VOWELS + 'y' : BASE_VOWELS;
+
+    const letters = text.replace(/[^a-z]/g, '');
+    const totalLetters = letters.length;
+
+    const vowelFreq: Record<string,number> = {};
+    for (const v of vowelSet) vowelFreq[v] = 0;
+    let vowelCount = 0;
+    let consonantCount = 0;
+
+    for (const c of letters) {
+      if (vowelSet.includes(c)) {
+        vowelFreq[c] = (vowelFreq[c] || 0) + 1;
+        vowelCount++;
+      } else {
+        consonantCount++;
+      }
+    }
+
+    elVowels.textContent = vowelCount.toString();
+    elConsonants.textContent = consonantCount.toString();
+    elLetters.textContent = totalLetters.toString();
+
+    if (totalLetters > 0) {
+      const vPct = Math.round(vowelCount / totalLetters * 100);
+      const cPct = 100 - vPct;
+      elPctV.textContent = `Vowels: ${vPct}%`;
+      elPctC.textContent = `Consonants: ${cPct}%`;
+      elBarV.style.width = vPct + '%';
+      elBarC.style.width = cPct + '%';
+
+      elEach.innerHTML = Object.entries(vowelFreq).map(([v, count]) =>
+        `<div class="bg-[var(--bg-surface)] border border-slate-700 rounded-xl p-3 text-center">
+          <div class="text-lg font-bold text-violet-400 uppercase" style="font-family:'Space Grotesk',sans-serif;">${v}</div>
+          <div class="text-slate-300 font-bold text-sm">${count}</div>
+          <div class="text-slate-500 text-xs">${totalLetters > 0 ? (count/totalLetters*100).toFixed(1) : 0}%</div>
+        </div>`
+      ).join('');
+      elBreakdownWrap.classList.remove('hidden');
+    } else {
+      elBreakdownWrap.classList.add('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  elYCheck.addEventListener('change', update);
+  document.getElementById('vow-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

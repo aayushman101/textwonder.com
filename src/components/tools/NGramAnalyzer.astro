@@ -1,0 +1,157 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-4 flex-wrap">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-sm">N-gram size:</span>
+      <div class="flex gap-1">
+        {[{n:'1',label:'Unigram'},{n:'2',label:'Bigram'},{n:'3',label:'Trigram'},{n:'4',label:'4-gram'}].map(({n,label}) => (
+          <button class="nga-btn px-3 py-1 rounded-lg text-sm font-medium transition-colors bg-[var(--bg-surface-hover)] text-slate-400" data-n={n}>{label}</button>
+        ))}
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-sm">Show:</span>
+      <select id="nga-limit" class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1 text-slate-300 text-sm outline-none">
+        <option value="25">Top 25</option>
+        <option value="50" selected>Top 50</option>
+        <option value="100">Top 100</option>
+      </select>
+    </div>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="nga-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="nga-input"
+      rows="7"
+      placeholder="Paste your text here to extract n-grams..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div id="nga-stats" class="hidden grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="nga-total-words" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="nga-total-grams" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total N-grams</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="nga-unique-grams" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Unique N-grams</div>
+    </div>
+  </div>
+
+  <div id="nga-results-wrap" class="hidden">
+    <div class="flex items-center justify-between mb-2">
+      <p id="nga-label" class="text-slate-400 text-xs font-medium">Most frequent bigrams</p>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:2rem 1fr auto auto">
+        <span>#</span><span>N-gram</span><span class="text-right pr-4">Count</span><span class="text-right">%</span>
+      </div>
+      <div id="nga-list" class="max-h-72 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="nga-hint" class="text-center py-6 text-slate-500 text-sm">Type or paste text above to extract n-grams.</div>
+</div>
+
+<script>
+  const input = document.getElementById('nga-input') as HTMLTextAreaElement;
+  const elLimit = document.getElementById('nga-limit') as HTMLSelectElement;
+  const elStats = document.getElementById('nga-stats')!;
+  const elResultsWrap = document.getElementById('nga-results-wrap')!;
+  const elList = document.getElementById('nga-list')!;
+  const elTotalWords = document.getElementById('nga-total-words')!;
+  const elTotalGrams = document.getElementById('nga-total-grams')!;
+  const elUniqueGrams = document.getElementById('nga-unique-grams')!;
+  const elLabel = document.getElementById('nga-label')!;
+  const elHint = document.getElementById('nga-hint')!;
+  const STORAGE_KEY = 'tw-n-gram-analyzer';
+
+  let selectedN = 2;
+  const labels: Record<number,string> = {1:'Unigrams', 2:'Bigrams', 3:'Trigrams', 4:'4-grams'};
+
+  const ngaBtns = document.querySelectorAll<HTMLElement>('.nga-btn');
+  const ACTIVE = 'nga-btn px-3 py-1 rounded-lg text-sm font-medium transition-colors bg-violet-700 text-white';
+  const INACTIVE = 'nga-btn px-3 py-1 rounded-lg text-sm font-medium transition-colors bg-[var(--bg-surface-hover)] text-slate-400';
+
+  ngaBtns.forEach(btn => {
+    if (btn.dataset.n === '2') btn.className = ACTIVE;
+    btn.addEventListener('click', () => {
+      selectedN = parseInt(btn.dataset.n!);
+      ngaBtns.forEach(b => { b.className = b === btn ? ACTIVE : INACTIVE; });
+      update();
+    });
+  });
+
+  function update() {
+    const text = input.value.trim();
+    elHint.classList.add('hidden');
+
+    if (!text) {
+      elStats.classList.add('hidden');
+      elResultsWrap.classList.add('hidden');
+      elHint.classList.remove('hidden');
+      return;
+    }
+
+    const words = text.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(w => w.length > 0);
+    const n = selectedN;
+    const limit = parseInt(elLimit.value);
+
+    const map: Record<string,number> = {};
+    for (let i = 0; i <= words.length - n; i++) {
+      const gram = words.slice(i, i + n).join(' ');
+      map[gram] = (map[gram] || 0) + 1;
+    }
+
+    const entries = Object.entries(map).sort((a,b) => b[1] - a[1]);
+    const totalGrams = entries.reduce((s,[,c]) => s + c, 0);
+    const uniqueGrams = entries.length;
+
+    elTotalWords.textContent = words.length.toString();
+    elTotalGrams.textContent = totalGrams.toString();
+    elUniqueGrams.textContent = uniqueGrams.toString();
+    elStats.classList.remove('hidden');
+
+    elLabel.textContent = `Most frequent ${labels[n].toLowerCase()}`;
+    elList.innerHTML = entries.slice(0, limit).map(([gram, count], i) => {
+      const pct = (count / totalGrams * 100).toFixed(2);
+      const barW = Math.round(count / entries[0][1] * 100);
+      return `<div class="grid items-center px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] text-sm" style="grid-template-columns:2rem 1fr auto auto">
+        <span class="text-slate-600 text-xs">${i+1}</span>
+        <div>
+          <span class="text-slate-200">${gram.replace(/</g,'&lt;')}</span>
+          <div class="w-full bg-[var(--bg-surface)] rounded-full h-1 mt-1 max-w-32">
+            <div class="h-1 bg-violet-600/60 rounded-full" style="width:${barW}%"></div>
+          </div>
+        </div>
+        <span class="text-violet-400 font-bold pr-4 text-right" style="font-family:'Space Grotesk',sans-serif;">${count}</span>
+        <span class="text-slate-500 text-xs text-right">${pct}%</span>
+      </div>`;
+    }).join('');
+
+    elResultsWrap.classList.remove('hidden');
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  elLimit.addEventListener('change', update);
+  document.getElementById('nga-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

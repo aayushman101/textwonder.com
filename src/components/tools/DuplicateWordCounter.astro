@@ -1,0 +1,105 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="dwc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="dwc-input"
+      rows="8"
+      placeholder="Paste your text here to find repeated words..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="dwc-total" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Total Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="dwc-dupes" class="text-2xl font-bold text-violet-400" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Duplicate Words</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="dwc-hapax" class="text-2xl font-bold text-slate-500" style="font-family:'Space Grotesk',sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Used Only Once</div>
+    </div>
+  </div>
+
+  <div id="dwc-results-wrap" class="hidden">
+    <p class="text-slate-400 text-xs font-medium mb-2">Repeated words (sorted by frequency):</p>
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="grid text-xs font-medium text-slate-400 border-b border-slate-800 px-4 py-2" style="grid-template-columns:1fr auto auto">
+        <span>Word</span><span class="text-right pr-4">Count</span><span class="text-right">% of total</span>
+      </div>
+      <div id="dwc-list" class="max-h-64 overflow-y-auto divide-y divide-slate-800/50"></div>
+    </div>
+  </div>
+
+  <div id="dwc-empty" class="text-center py-6 text-slate-500 text-sm hidden">
+    No repeated words found — great writing variety!
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('dwc-input') as HTMLTextAreaElement;
+  const elTotal = document.getElementById('dwc-total')!;
+  const elDupes = document.getElementById('dwc-dupes')!;
+  const elHapax = document.getElementById('dwc-hapax')!;
+  const elResultsWrap = document.getElementById('dwc-results-wrap')!;
+  const elList = document.getElementById('dwc-list')!;
+  const elEmpty = document.getElementById('dwc-empty')!;
+  const STORAGE_KEY = 'tw-duplicate-word-counter';
+
+  function update() {
+    const words = (input.value.toLowerCase().match(/[a-z']+/g) || []);
+    const total = words.length;
+    const freq: Record<string,number> = {};
+    for (const w of words) freq[w] = (freq[w] || 0) + 1;
+
+    const dupes = Object.entries(freq).filter(([,c]) => c > 1).sort((a,b) => b[1] - a[1]);
+    const hapax = Object.values(freq).filter(c => c === 1).length;
+
+    elTotal.textContent = total.toString();
+    elDupes.textContent = dupes.length.toString();
+    elHapax.textContent = hapax.toString();
+
+    if (total === 0) {
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.add('hidden');
+      return;
+    }
+
+    if (dupes.length > 0) {
+      elList.innerHTML = dupes.slice(0, 100).map(([word, count]) => {
+        const pct = (count / total * 100).toFixed(1);
+        return `<div class="grid items-center px-4 py-2 hover:bg-[var(--bg-surface-hover)] text-sm" style="grid-template-columns:1fr auto auto">
+          <span class="text-slate-200">${word.replace(/</g,'&lt;')}</span>
+          <span class="text-violet-400 font-bold pr-4 text-right" style="font-family:'Space Grotesk',sans-serif;">${count}</span>
+          <span class="text-slate-500 text-right">${pct}%</span>
+        </div>`;
+      }).join('');
+      elResultsWrap.classList.remove('hidden');
+      elEmpty.classList.add('hidden');
+    } else {
+      elResultsWrap.classList.add('hidden');
+      elEmpty.classList.remove('hidden');
+    }
+
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('dwc-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

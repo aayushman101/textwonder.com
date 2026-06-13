@@ -1,0 +1,110 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <button id="pan-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="pan-input"
+      rows="5"
+      placeholder="Type or paste your text here to check if it's a pangram..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div id="pan-result-wrap" class="hidden">
+    <div id="pan-result-box" class="rounded-xl px-5 py-4 text-center mb-3">
+      <div id="pan-icon" class="text-3xl mb-2"></div>
+      <div id="pan-verdict" class="text-lg font-bold" style="font-family:'Space Grotesk',sans-serif;"></div>
+      <div id="pan-sub" class="text-slate-400 text-sm mt-1"></div>
+    </div>
+
+    <div>
+      <p class="text-slate-400 text-xs font-medium mb-2">Letter coverage (26 letters):</p>
+      <div id="pan-letters" class="flex flex-wrap gap-1.5"></div>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl px-4 py-3">
+    <p class="text-slate-500 text-xs leading-relaxed mb-2 font-medium">Classic pangrams to try:</p>
+    <div class="flex flex-col gap-1.5">
+      {[
+        'The quick brown fox jumps over the lazy dog',
+        'Pack my box with five dozen liquor jugs',
+        'How vexingly quick daft zebras jump',
+      ].map(p => (
+        <button class="pan-example text-xs bg-[var(--bg-surface)] border border-slate-700 hover:border-violet-500 text-slate-400 hover:text-violet-400 px-3 py-1.5 rounded-lg transition-colors text-left" data-val={p}>{p}</button>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('pan-input') as HTMLTextAreaElement;
+  const elResultWrap = document.getElementById('pan-result-wrap')!;
+  const elResultBox = document.getElementById('pan-result-box')!;
+  const elIcon = document.getElementById('pan-icon')!;
+  const elVerdict = document.getElementById('pan-verdict')!;
+  const elSub = document.getElementById('pan-sub')!;
+  const elLetters = document.getElementById('pan-letters')!;
+  const STORAGE_KEY = 'tw-pangram-checker';
+  const ALPHA = 'abcdefghijklmnopqrstuvwxyz'.split('');
+
+  function update() {
+    const text = input.value;
+    if (!text.trim()) {
+      elResultWrap.classList.add('hidden');
+      return;
+    }
+
+    const lower = text.toLowerCase();
+    const freq: Record<string,number> = {};
+    for (const c of lower) {
+      if (c >= 'a' && c <= 'z') freq[c] = (freq[c] || 0) + 1;
+    }
+
+    const present = ALPHA.filter(c => freq[c]);
+    const missing = ALPHA.filter(c => !freq[c]);
+    const isPangram = missing.length === 0;
+
+    elIcon.textContent = isPangram ? '✅' : '⚠️';
+    elVerdict.textContent = isPangram ? 'Pangram! All 26 letters present.' : `Missing ${missing.length} letter${missing.length !== 1 ? 's' : ''}`;
+    elVerdict.style.color = isPangram ? '#10b981' : '#f59e0b';
+    elSub.textContent = isPangram ? `Contains all ${present.length} letters of the alphabet.` : `Missing: ${missing.join(', ').toUpperCase()}`;
+    elResultBox.style.background = isPangram ? 'rgba(16,185,129,0.08)' : 'rgba(245,158,11,0.08)';
+    elResultBox.style.border = isPangram ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(245,158,11,0.3)';
+
+    elLetters.innerHTML = ALPHA.map(c => {
+      const count = freq[c] || 0;
+      const found = count > 0;
+      const bg = found ? 'bg-emerald-900/40 border-emerald-700/60 text-emerald-300' : 'bg-red-900/30 border-red-700/40 text-red-400';
+      return `<div class="flex flex-col items-center border rounded-lg w-8 h-10 justify-center ${bg}">
+        <span class="font-bold text-sm uppercase">${c}</span>
+        <span class="text-xs opacity-70">${count}</span>
+      </div>`;
+    }).join('');
+
+    elResultWrap.classList.remove('hidden');
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('pan-clear')!.addEventListener('click', () => {
+    input.value = '';
+    update();
+    localStorage.removeItem(STORAGE_KEY);
+  });
+
+  document.querySelectorAll<HTMLElement>('.pan-example').forEach(btn => {
+    btn.addEventListener('click', () => {
+      input.value = btn.dataset.val!;
+      update();
+    });
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

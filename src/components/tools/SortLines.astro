@@ -1,0 +1,130 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4 items-center">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-300 text-sm">Direction:</span>
+      <button id="sl-asc" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">A → Z</button>
+      <button id="sl-desc" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Z → A</button>
+    </div>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="sl-case" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Case-sensitive</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="sl-blanks" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Remove blank lines</span>
+    </label>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Lines</label>
+      <span id="sl-input-count" class="text-xs text-slate-500">0 lines</span>
+    </div>
+    <textarea
+      id="sl-input"
+      rows="8"
+      placeholder="Paste your list here, one item per line..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button id="sl-process" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">
+      Sort Lines
+    </button>
+    <button id="sl-clear" class="bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">
+      Clear
+    </button>
+  </div>
+
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Sorted Lines</label>
+      <div class="flex items-center gap-2">
+        <span id="sl-output-count" class="text-xs text-slate-500">0 lines</span>
+        <button id="sl-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea
+      id="sl-output"
+      rows="8"
+      readonly
+      placeholder="Sorted lines will appear here..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none text-sm"
+    ></textarea>
+  </div>
+</div>
+
+<div id="sl-toast" class="fixed bottom-6 right-6 bg-emerald-600 text-white px-4 py-2 rounded-xl text-sm font-medium opacity-0 pointer-events-none transition-opacity z-50">
+  Copied!
+</div>
+
+<script>
+  const input = document.getElementById('sl-input') as HTMLTextAreaElement;
+  const output = document.getElementById('sl-output') as HTMLTextAreaElement;
+  const inputCount = document.getElementById('sl-input-count')!;
+  const outputCount = document.getElementById('sl-output-count')!;
+  const caseCheck = document.getElementById('sl-case') as HTMLInputElement;
+  const blanksCheck = document.getElementById('sl-blanks') as HTMLInputElement;
+  const ascBtn = document.getElementById('sl-asc')!;
+  const descBtn = document.getElementById('sl-desc')!;
+  const processBtn = document.getElementById('sl-process')!;
+  const clearBtn = document.getElementById('sl-clear')!;
+  const copyBtn = document.getElementById('sl-copy')!;
+  const toast = document.getElementById('sl-toast')!;
+  const STORAGE_KEY = 'tw-sort-lines';
+
+  let direction = 'asc';
+
+  function setDirection(dir: string) {
+    direction = dir;
+    ascBtn.className = dir === 'asc'
+      ? 'px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors'
+      : 'px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors';
+    descBtn.className = dir === 'desc'
+      ? 'px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors'
+      : 'px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors';
+    process();
+  }
+
+  function process() {
+    let lines = input.value.split('\n');
+    if (blanksCheck.checked) lines = lines.filter(l => l.trim());
+    const caseSensitive = caseCheck.checked;
+    lines.sort((a, b) => {
+      const x = caseSensitive ? a : a.toLowerCase();
+      const y = caseSensitive ? b : b.toLowerCase();
+      return direction === 'asc' ? x.localeCompare(y) : y.localeCompare(x);
+    });
+    output.value = lines.join('\n');
+    const count = lines.filter(l => l.trim()).length;
+    outputCount.textContent = `${count} line${count !== 1 ? 's' : ''}`;
+    localStorage.setItem(STORAGE_KEY, input.value);
+  }
+
+  function showToast() { toast.style.opacity = '1'; setTimeout(() => { toast.style.opacity = '0'; }, 2000); }
+
+  ascBtn.addEventListener('click', () => setDirection('asc'));
+  descBtn.addEventListener('click', () => setDirection('desc'));
+  input.addEventListener('input', () => {
+    const lines = input.value ? input.value.split('\n').length : 0;
+    inputCount.textContent = `${lines} line${lines !== 1 ? 's' : ''}`;
+    process();
+  });
+  [caseCheck, blanksCheck].forEach(el => el.addEventListener('change', process));
+  processBtn.addEventListener('click', process);
+  clearBtn.addEventListener('click', () => {
+    input.value = ''; output.value = '';
+    inputCount.textContent = '0 lines'; outputCount.textContent = '0 lines';
+    localStorage.removeItem(STORAGE_KEY);
+  });
+  copyBtn.addEventListener('click', () => {
+    if (!output.value) return; navigator.clipboard.writeText(output.value).then(showToast);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; const l = saved.split('\n').length; inputCount.textContent = `${l} lines`; process(); }
+</script>

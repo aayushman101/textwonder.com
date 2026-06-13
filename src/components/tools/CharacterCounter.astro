@@ -1,0 +1,100 @@
+---
+const platforms = [
+  { name: 'Twitter / X', limit: 280 },
+  { name: 'SMS (1 message)', limit: 160 },
+  { name: 'Meta Description', limit: 160 },
+  { name: 'Meta Title', limit: 60 },
+  { name: 'LinkedIn Post', limit: 700 },
+  { name: 'Instagram Caption', limit: 2200 },
+];
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Your Text</label>
+      <button id="cc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+    <textarea
+      id="cc-input"
+      rows="6"
+      placeholder="Type or paste your text here to count characters..."
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"
+    ></textarea>
+  </div>
+
+  <!-- Main counts -->
+  <div class="grid grid-cols-2 gap-3">
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="cc-chars" class="text-3xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Characters (with spaces)</div>
+    </div>
+    <div class="bg-[var(--bg-base)] border border-slate-800 rounded-xl p-4 text-center">
+      <div id="cc-chars-no-spaces" class="text-3xl font-bold text-violet-400" style="font-family: 'Space Grotesk', sans-serif;">0</div>
+      <div class="text-slate-400 text-xs mt-1">Characters (no spaces)</div>
+    </div>
+  </div>
+
+  <!-- Platform limits -->
+  <div>
+    <h3 class="text-slate-300 text-sm font-medium mb-3">Platform Limits</h3>
+    <div class="space-y-3">
+      {platforms.map(p => (
+        <div class="platform-limit" data-limit={p.limit}>
+          <div class="flex items-center justify-between mb-1">
+            <span class="text-slate-300 text-sm">{p.name}</span>
+            <span class="platform-count text-xs font-mono">
+              <span class="platform-used">0</span> / {p.limit}
+            </span>
+          </div>
+          <div class="h-2 bg-[var(--bg-surface-hover)] rounded-full overflow-hidden">
+            <div class="platform-bar h-full rounded-full transition-all duration-200 bg-emerald-500" style="width: 0%"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('cc-input') as HTMLTextAreaElement;
+  const STORAGE_KEY = 'tw-character-counter';
+
+  function update() {
+    const text = input.value;
+    const chars = text.length;
+    const charsNoSpaces = text.replace(/\s/g, '').length;
+
+    document.getElementById('cc-chars')!.textContent = chars.toLocaleString();
+    document.getElementById('cc-chars-no-spaces')!.textContent = charsNoSpaces.toLocaleString();
+
+    document.querySelectorAll('.platform-limit').forEach(el => {
+      const limit = parseInt((el as HTMLElement).dataset.limit || '0');
+      const pct = Math.min((chars / limit) * 100, 100);
+      const bar = el.querySelector('.platform-bar') as HTMLElement;
+      const used = el.querySelector('.platform-used') as HTMLElement;
+      used.textContent = chars.toLocaleString();
+      bar.style.width = `${pct}%`;
+      if (chars > limit) {
+        bar.className = 'platform-bar h-full rounded-full transition-all duration-200 bg-red-500';
+        (el.querySelector('.platform-count') as HTMLElement).style.color = '#ef4444';
+      } else if (chars > limit * 0.8) {
+        bar.className = 'platform-bar h-full rounded-full transition-all duration-200 bg-amber-500';
+        (el.querySelector('.platform-count') as HTMLElement).style.color = '#f59e0b';
+      } else {
+        bar.className = 'platform-bar h-full rounded-full transition-all duration-200 bg-emerald-500';
+        (el.querySelector('.platform-count') as HTMLElement).style.color = '';
+      }
+    });
+
+    localStorage.setItem(STORAGE_KEY, text);
+  }
+
+  input.addEventListener('input', update);
+  document.getElementById('cc-clear')!.addEventListener('click', () => {
+    input.value = ''; update(); localStorage.removeItem(STORAGE_KEY);
+  });
+
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) { input.value = saved; update(); }
+</script>

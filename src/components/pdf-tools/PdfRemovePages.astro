@@ -1,0 +1,132 @@
+---
+---
+<div class="space-y-5">
+  <div id="rrp-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="rrp-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">🗑️</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Remove specific pages from your PDF</p>
+  </div>
+
+  <div id="rrp-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="rrp-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="rrp-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="text-xs text-slate-400">Pages to remove (e.g. 1, 3, 5-8)</label>
+      <input id="rrp-pages" type="text" placeholder="1, 3, 5-8" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      <p class="text-xs text-slate-600">The remaining pages will be downloaded as a new PDF.</p>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="rrp-remove" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Remove & Download</button>
+      <button id="rrp-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    </div>
+  </div>
+
+  <div id="rrp-status" class="hidden text-sm py-2"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('rrp-drop');
+  const fileInput = document.getElementById('rrp-file');
+  const panel = document.getElementById('rrp-panel');
+  const status = document.getElementById('rrp-status');
+  let currentFile = null, pageCount = 0;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pageCount = pdf.getPageCount();
+      currentFile = file;
+      document.getElementById('rrp-name').textContent = file.name;
+      document.getElementById('rrp-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      status.classList.add('hidden');
+    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('rrp-remove').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const pagesStr = document.getElementById('rrp-pages').value.trim();
+    if (!pagesStr) { showStatus('Enter page numbers to remove.', 'error'); return; }
+    const toRemove = new Set(parseRange(pagesStr, pageCount));
+    if (!toRemove.size) { showStatus('No valid page numbers entered.', 'error'); return; }
+    const toKeep = [];
+    for (let i = 1; i <= pageCount; i++) if (!toRemove.has(i)) toKeep.push(i - 1);
+    if (!toKeep.length) { showStatus('Cannot remove all pages.', 'error'); return; }
+    showStatus('Processing…', 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      const out = await PDFDocument.create();
+      const copied = await out.copyPages(src, toKeep);
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
+      downloadBytes(bytes, 'removed-pages.pdf');
+      showStatus(`✅ Removed ${toRemove.size} page(s), kept ${toKeep.length}`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('rrp-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+  });
+
+  function parseRange(str, max) {
+    const nums = new Set();
+    str.split(',').forEach(part => {
+      part = part.trim();
+      if (/^\d+$/.test(part)) { const n = parseInt(part); if (n >= 1 && n <= max) nums.add(n); }
+      else if (/^\d+-\d+$/.test(part)) {
+        const [a, b] = part.split('-').map(Number);
+        for (let i = Math.min(a,b); i <= Math.min(Math.max(a,b), max); i++) nums.add(i);
+      }
+    });
+    return [...nums];
+  }
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

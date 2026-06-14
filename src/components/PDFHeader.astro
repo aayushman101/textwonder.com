@@ -1,0 +1,62 @@
+---
+import { PDF_TOOLS } from '../data/pdftools.js';
+const toolsForSearch = PDF_TOOLS.map(t => ({ slug: t.slug, name: t.name }));
+---
+
+<header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
+  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href="/pdfwonder" class="flex items-center gap-2 group">
+      <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 17h8v1H8v-1zm0-3h8v1H8v-1zm0-3h5v1H8v-1z"/>
+        </svg>
+      </div>
+      <span class="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+        PDF<span class="text-orange-500">Wonder</span>
+      </span>
+    </a>
+
+    <!-- Nav -->
+    <nav class="hidden md:flex items-center gap-6">
+      <a href="/pdfwonder" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">PDF Tools</a>
+      <a href="/" class="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+        TextWonder
+      </a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <!-- Theme toggle (reused) -->
+      <button id="pdf-theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors" aria-label="Toggle theme">
+        <svg id="pdf-icon-sun" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <svg id="pdf-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+
+      <!-- Mobile menu link to TextWonder -->
+      <a href="/" class="md:hidden text-xs text-slate-400 hover:text-white px-2 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 transition-colors">← Text</a>
+    </div>
+  </div>
+</header>
+
+<script is:inline>
+  (function() {
+    const toggle = document.getElementById('pdf-theme-toggle');
+    const sun = document.getElementById('pdf-icon-sun');
+    const moon = document.getElementById('pdf-icon-moon');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('tw-theme', t);
+      if (t === 'dark') { sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+      else { sun.classList.add('hidden'); moon.classList.remove('hidden'); }
+    }
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    toggle.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>

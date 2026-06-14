@@ -1,0 +1,127 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="ttp-input" rows="10" placeholder="Type or paste your text here. Each paragraph will be laid out automatically across pages…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-orange-500 text-sm leading-relaxed"></textarea>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Page size</label>
+      <select id="ttp-size" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="A4">A4</option>
+        <option value="Letter">US Letter</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Font size</label>
+      <input id="ttp-fontsize" type="number" value="12" min="8" max="24" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Line spacing</label>
+      <select id="ttp-leading" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="1.2">Single</option>
+        <option value="1.5" selected>1.5×</option>
+        <option value="2">Double</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Margins (pt)</label>
+      <input id="ttp-margin" type="number" value="50" min="20" max="100" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <button id="ttp-create" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Create PDF</button>
+    <button id="ttp-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+
+  <div id="ttp-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('ttp-input');
+  const statusEl = document.getElementById('ttp-status');
+
+  document.getElementById('ttp-create').addEventListener('click', async () => {
+    const text = input.value.trim();
+    if (!text) { showStatus('Enter some text first.', true); return; }
+    showStatus('Loading pdf-lib…', false);
+    await loadPdfLib();
+    showStatus('Creating PDF…', false);
+    try {
+      const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+      const sizeEl = document.getElementById('ttp-size').value;
+      const fontSize = parseInt(document.getElementById('ttp-fontsize').value) || 12;
+      const leading = parseFloat(document.getElementById('ttp-leading').value) || 1.5;
+      const margin = parseInt(document.getElementById('ttp-margin').value) || 50;
+      const lineHeight = fontSize * leading;
+      const pageSize = sizeEl === 'A4' ? [595.28, 841.89] : [612, 792];
+      const [pageW, pageH] = pageSize;
+      const usableW = pageW - margin * 2;
+      const maxY = pageH - margin;
+
+      const doc = await PDFDocument.create();
+      const font = await doc.embedFont(StandardFonts.Helvetica);
+
+      function wrapLine(line, maxWidth) {
+        if (!line.trim()) return [''];
+        const words = line.split(' ');
+        const lines = [];
+        let current = '';
+        for (const w of words) {
+          const test = current ? current + ' ' + w : w;
+          if (font.widthOfTextAtSize(test, fontSize) <= maxWidth) { current = test; }
+          else { if (current) lines.push(current); current = w; }
+        }
+        if (current) lines.push(current);
+        return lines.length ? lines : [''];
+      }
+
+      const paragraphs = text.split('\n');
+      const allLines = [];
+      paragraphs.forEach(para => {
+        const wrapped = wrapLine(para, usableW);
+        wrapped.forEach(l => allLines.push(l));
+        allLines.push(''); // blank line between paragraphs
+      });
+
+      let page = doc.addPage(pageSize);
+      let y = maxY - fontSize;
+      for (const line of allLines) {
+        if (y < margin) { page = doc.addPage(pageSize); y = maxY - fontSize; }
+        if (line) page.drawText(line, { x: margin, y, size: fontSize, font, color: rgb(0,0,0) });
+        y -= lineHeight;
+      }
+
+      const bytes = await doc.save();
+      downloadBytes(bytes, 'document.pdf');
+      showStatus(`✅ PDF created (${doc.getPageCount()} page${doc.getPageCount()!==1?'s':''})`, false);
+    } catch(e) { showStatus('Error: ' + e.message, true); }
+  });
+
+  document.getElementById('ttp-clear').addEventListener('click', () => { input.value = ''; statusEl.classList.add('hidden'); });
+
+  function showStatus(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-green-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

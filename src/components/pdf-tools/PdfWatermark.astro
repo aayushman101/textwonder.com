@@ -1,0 +1,147 @@
+---
+---
+<div class="space-y-5">
+  <div id="pwm-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="pwm-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">💧</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Add a text watermark to all pages</p>
+  </div>
+
+  <div id="pwm-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="pwm-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="pwm-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Watermark text</label>
+        <input id="pwm-text" type="text" value="CONFIDENTIAL" placeholder="Your watermark text" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Font size</label>
+        <input id="pwm-size" type="number" value="48" min="12" max="120" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Opacity (0–100%)</label>
+        <input id="pwm-opacity" type="number" value="30" min="5" max="100" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Color</label>
+        <select id="pwm-color" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="red">Red</option>
+          <option value="gray" selected>Gray</option>
+          <option value="blue">Blue</option>
+          <option value="black">Black</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="pwm-apply" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Apply Watermark</button>
+      <button id="pwm-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    </div>
+  </div>
+
+  <div id="pwm-status" class="hidden text-sm py-2"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('pwm-drop');
+  const fileInput = document.getElementById('pwm-file');
+  const panel = document.getElementById('pwm-panel');
+  const status = document.getElementById('pwm-status');
+  let currentFile = null;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      currentFile = file;
+      document.getElementById('pwm-name').textContent = file.name;
+      document.getElementById('pwm-info').textContent = `${pdf.getPageCount()} pages · ${(file.size/1024).toFixed(0)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      status.classList.add('hidden');
+    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('pwm-apply').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const text = document.getElementById('pwm-text').value.trim();
+    if (!text) { showStatus('Enter watermark text.', 'error'); return; }
+    const fontSize = parseInt(document.getElementById('pwm-size').value) || 48;
+    const opacity = Math.min(1, Math.max(0, parseInt(document.getElementById('pwm-opacity').value) / 100));
+    const colorKey = document.getElementById('pwm-color').value;
+    const colorMap = { red: [1,0,0], gray: [0.5,0.5,0.5], blue: [0,0,0.8], black: [0,0,0] };
+    const [r, g, b] = colorMap[colorKey] || [0.5,0.5,0.5];
+    showStatus('Applying watermark…', 'info');
+    try {
+      const { PDFDocument, StandardFonts, rgb, degrees } = window.PDFLib;
+      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      const font = await src.embedFont(StandardFonts.HelveticaBold);
+      for (let i = 0; i < src.getPageCount(); i++) {
+        const page = src.getPage(i);
+        const { width, height } = page.getSize();
+        const textWidth = font.widthOfTextAtSize(text, fontSize);
+        page.drawText(text, {
+          x: (width - textWidth) / 2,
+          y: (height - fontSize) / 2,
+          size: fontSize,
+          font,
+          color: rgb(r, g, b),
+          opacity,
+          rotate: degrees(45),
+        });
+      }
+      const out = await src.save();
+      downloadBytes(out, 'watermarked.pdf');
+      showStatus(`✅ Watermark applied to ${src.getPageCount()} page(s)`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('pwm-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+  });
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

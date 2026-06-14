@@ -1,0 +1,101 @@
+---
+---
+<div class="space-y-5">
+  <div id="pm-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="pm-file" accept=".pdf" multiple class="hidden" />
+    <div class="text-4xl mb-2">📎</div>
+    <p class="text-slate-300 font-medium mb-1">Drop PDF files here or click to select</p>
+    <p class="text-slate-500 text-sm">Select 2 or more PDF files to merge</p>
+  </div>
+
+  <div id="pm-list" class="hidden space-y-2"></div>
+
+  <div class="flex gap-2">
+    <button id="pm-merge" class="hidden px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Merge PDFs</button>
+    <button id="pm-clear" class="hidden px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear all</button>
+  </div>
+
+  <div id="pm-status" class="hidden text-sm text-slate-400 py-2"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('pm-drop');
+  const fileInput = document.getElementById('pm-file');
+  const listEl = document.getElementById('pm-list');
+  const mergeBtn = document.getElementById('pm-merge');
+  const clearBtn = document.getElementById('pm-clear');
+  const status = document.getElementById('pm-status');
+  let files = [];
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); addFiles([...e.dataTransfer.files]); });
+  fileInput.addEventListener('change', () => addFiles([...fileInput.files]));
+
+  function addFiles(newFiles) {
+    newFiles.filter(f => f.type === 'application/pdf').forEach(f => files.push(f));
+    renderList();
+  }
+
+  function renderList() {
+    if (!files.length) { listEl.classList.add('hidden'); mergeBtn.classList.add('hidden'); clearBtn.classList.add('hidden'); return; }
+    listEl.classList.remove('hidden'); mergeBtn.classList.remove('hidden'); clearBtn.classList.remove('hidden');
+    listEl.innerHTML = files.map((f, i) => `
+      <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-lg px-4 py-2.5">
+        <span class="text-orange-400 text-lg">📄</span>
+        <span class="text-slate-300 text-sm flex-1 truncate">${f.name}</span>
+        <span class="text-slate-500 text-xs">${(f.size/1024).toFixed(0)} KB</span>
+        <button onclick="removeFile(${i})" class="text-slate-600 hover:text-red-400 transition-colors text-xs ml-1">✕</button>
+      </div>`).join('');
+  }
+
+  window.removeFile = (i) => { files.splice(i, 1); renderList(); };
+
+  mergeBtn.addEventListener('click', async () => {
+    if (files.length < 2) { showStatus('Please select at least 2 PDF files.', 'error'); return; }
+    showStatus('Loading pdf-lib…', 'info');
+    await loadPdfLib();
+    showStatus('Merging PDFs…', 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const merged = await PDFDocument.create();
+      for (const file of files) {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+        const pages = await merged.copyPages(pdf, pdf.getPageIndices());
+        pages.forEach(p => merged.addPage(p));
+      }
+      const out = await merged.save();
+      downloadBytes(out, 'merged.pdf');
+      showStatus(`✅ Merged ${files.length} PDFs successfully (${(out.length/1024).toFixed(0)} KB)`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  clearBtn.addEventListener('click', () => { files = []; renderList(); status.classList.add('hidden'); });
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

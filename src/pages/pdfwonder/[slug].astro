@@ -1,0 +1,39 @@
+---
+import PDFToolLayout from '../../layouts/PDFToolLayout.astro';
+import PdfMerger from '../../components/pdf-tools/PdfMerger.astro';
+import PdfSplitter from '../../components/pdf-tools/PdfSplitter.astro';
+import PdfToText from '../../components/pdf-tools/PdfToText.astro';
+import TextToPdf from '../../components/pdf-tools/TextToPdf.astro';
+import PdfRotatePages from '../../components/pdf-tools/PdfRotatePages.astro';
+import PdfRemovePages from '../../components/pdf-tools/PdfRemovePages.astro';
+import PdfWatermark from '../../components/pdf-tools/PdfWatermark.astro';
+import PdfMetadataViewer from '../../components/pdf-tools/PdfMetadataViewer.astro';
+import PdfReorderPages from '../../components/pdf-tools/PdfReorderPages.astro';
+import PdfCompress from '../../components/pdf-tools/PdfCompress.astro';
+import { PDF_TOOLS } from '../../data/pdftools.js';
+
+export function getStaticPaths() {
+  return PDF_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const componentMap: Record<string, any> = {
+  'pdf-merger': PdfMerger,
+  'pdf-splitter': PdfSplitter,
+  'pdf-to-text': PdfToText,
+  'text-to-pdf': TextToPdf,
+  'pdf-rotate-pages': PdfRotatePages,
+  'pdf-remove-pages': PdfRemovePages,
+  'pdf-watermark': PdfWatermark,
+  'pdf-metadata-viewer': PdfMetadataViewer,
+  'pdf-reorder-pages': PdfReorderPages,
+  'pdf-compress': PdfCompress,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<PDFToolLayout tool={tool}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</PDFToolLayout>

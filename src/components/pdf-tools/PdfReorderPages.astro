@@ -1,0 +1,127 @@
+---
+---
+<div class="space-y-5">
+  <div id="pop-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="pop-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">↕️</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Reorder pages by specifying new order</p>
+  </div>
+
+  <div id="pop-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="pop-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="pop-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <label class="text-xs text-slate-400">New page order (comma-separated page numbers)</label>
+      <input id="pop-order" type="text" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      <p class="text-xs text-slate-600" id="pop-hint"></p>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="pop-apply" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Reorder & Download</button>
+      <button id="pop-reverse" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Reverse order</button>
+      <button id="pop-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    </div>
+  </div>
+
+  <div id="pop-status" class="hidden text-sm py-2"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('pop-drop');
+  const fileInput = document.getElementById('pop-file');
+  const panel = document.getElementById('pop-panel');
+  const status = document.getElementById('pop-status');
+  let currentFile = null, pageCount = 0;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pageCount = pdf.getPageCount();
+      currentFile = file;
+      document.getElementById('pop-name').textContent = file.name;
+      document.getElementById('pop-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      const defaultOrder = Array.from({length: pageCount}, (_, i) => i + 1).join(', ');
+      document.getElementById('pop-order').value = defaultOrder;
+      document.getElementById('pop-hint').textContent = `Enter ${pageCount} numbers (e.g. "${defaultOrder}" = keep original). Pages can repeat.`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      status.classList.add('hidden');
+    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('pop-reverse').addEventListener('click', () => {
+    if (!pageCount) return;
+    document.getElementById('pop-order').value = Array.from({length: pageCount}, (_, i) => pageCount - i).join(', ');
+  });
+
+  document.getElementById('pop-apply').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const orderStr = document.getElementById('pop-order').value.trim();
+    const newOrder = orderStr.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+    if (!newOrder.length) { showStatus('Enter the new page order.', 'error'); return; }
+    const invalid = newOrder.filter(n => n < 1 || n > pageCount);
+    if (invalid.length) { showStatus(`Page numbers must be between 1 and ${pageCount}.`, 'error'); return; }
+    showStatus('Reordering pages…', 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      const out = await PDFDocument.create();
+      const indices = newOrder.map(n => n - 1);
+      const copied = await out.copyPages(src, indices);
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
+      downloadBytes(bytes, 'reordered.pdf');
+      showStatus(`✅ Reordered to ${newOrder.length} pages`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('pop-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+  });
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

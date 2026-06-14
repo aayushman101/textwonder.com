@@ -1,0 +1,144 @@
+---
+---
+<div class="space-y-5">
+  <div id="prp-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="prp-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">🔄</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Rotate all pages or specific pages</p>
+  </div>
+
+  <div id="prp-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="prp-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="prp-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Pages to rotate</label>
+        <input id="prp-pages" type="text" placeholder="Leave blank for all pages, or e.g. 1,3,5-8" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Rotation angle</label>
+        <select id="prp-angle" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="90">90° clockwise</option>
+          <option value="180">180°</option>
+          <option value="270">270° clockwise (90° CCW)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="prp-rotate" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Rotate & Download</button>
+      <button id="prp-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    </div>
+  </div>
+
+  <div id="prp-status" class="hidden text-sm py-2"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('prp-drop');
+  const fileInput = document.getElementById('prp-file');
+  const panel = document.getElementById('prp-panel');
+  const status = document.getElementById('prp-status');
+  let currentFile = null, pageCount = 0;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pageCount = pdf.getPageCount();
+      currentFile = file;
+      document.getElementById('prp-name').textContent = file.name;
+      document.getElementById('prp-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      status.classList.add('hidden');
+    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('prp-rotate').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const angle = parseInt(document.getElementById('prp-angle').value);
+    const pagesStr = document.getElementById('prp-pages').value.trim();
+    const targetPages = pagesStr ? parseRange(pagesStr, pageCount) : Array.from({length: pageCount}, (_, i) => i + 1);
+    if (!targetPages.length) { showStatus('Invalid page range.', 'error'); return; }
+    showStatus('Rotating pages…', 'info');
+    try {
+      const { PDFDocument, degrees } = window.PDFLib;
+      const bytes = await currentFile.arrayBuffer();
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const pageSet = new Set(targetPages);
+      for (let i = 1; i <= doc.getPageCount(); i++) {
+        if (pageSet.has(i)) {
+          const page = doc.getPage(i - 1);
+          const current = page.getRotation().angle;
+          page.setRotation(degrees((current + angle) % 360));
+        }
+      }
+      const out = await doc.save();
+      downloadBytes(out, 'rotated.pdf');
+      showStatus(`✅ Rotated ${targetPages.length} page(s) by ${angle}°`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('prp-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+  });
+
+  function parseRange(str, max) {
+    const nums = new Set();
+    str.split(',').forEach(part => {
+      part = part.trim();
+      if (/^\d+$/.test(part)) { const n = parseInt(part); if (n >= 1 && n <= max) nums.add(n); }
+      else if (/^\d+-\d+$/.test(part)) {
+        const [a, b] = part.split('-').map(Number);
+        for (let i = Math.min(a,b); i <= Math.min(Math.max(a,b), max); i++) nums.add(i);
+      }
+    });
+    return [...nums].sort((a,b) => a-b);
+  }
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

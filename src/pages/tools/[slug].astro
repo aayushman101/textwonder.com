@@ -41,6 +41,26 @@ import VowelCounter from '../../components/tools/VowelCounter.astro';
 import NumberCounter from '../../components/tools/NumberCounter.astro';
 import EmojiCounter from '../../components/tools/EmojiCounter.astro';
 import SymbolCounter from '../../components/tools/SymbolCounter.astro';
+import SentenceCaseConverter from '../../components/tools/SentenceCaseConverter.astro';
+import CamelCaseConverter from '../../components/tools/CamelCaseConverter.astro';
+import SnakeCaseConverter from '../../components/tools/SnakeCaseConverter.astro';
+import KebabCaseConverter from '../../components/tools/KebabCaseConverter.astro';
+import UrlSlugGenerator from '../../components/tools/UrlSlugGenerator.astro';
+import Base64EncoderDecoder from '../../components/tools/Base64EncoderDecoder.astro';
+import UrlEncoderDecoder from '../../components/tools/UrlEncoderDecoder.astro';
+import HtmlEntityEncoder from '../../components/tools/HtmlEntityEncoder.astro';
+import MorseCodeConverter from '../../components/tools/MorseCodeConverter.astro';
+import Rot13Encoder from '../../components/tools/Rot13Encoder.astro';
+import BinaryTextConverter from '../../components/tools/BinaryTextConverter.astro';
+import RemoveHtmlTags from '../../components/tools/RemoveHtmlTags.astro';
+import FindAndReplace from '../../components/tools/FindAndReplace.astro';
+import TextRepeater from '../../components/tools/TextRepeater.astro';
+import AddLineNumbers from '../../components/tools/AddLineNumbers.astro';
+import LoremIpsumGenerator from '../../components/tools/LoremIpsumGenerator.astro';
+import TextWrapper from '../../components/tools/TextWrapper.astro';
+import TextDiffChecker from '../../components/tools/TextDiffChecker.astro';
+import ExtractEmails from '../../components/tools/ExtractEmails.astro';
+import ExtractUrls from '../../components/tools/ExtractUrls.astro';
 import { TOOLS } from '../../data/tools.js';
 
 export function getStaticPaths() {
@@ -91,6 +111,26 @@ const componentMap: Record<string, any> = {
   'number-counter': NumberCounter,
   'emoji-counter': EmojiCounter,
   'symbol-counter': SymbolCounter,
+  'sentence-case-converter': SentenceCaseConverter,
+  'camel-case-converter': CamelCaseConverter,
+  'snake-case-converter': SnakeCaseConverter,
+  'kebab-case-converter': KebabCaseConverter,
+  'url-slug-generator': UrlSlugGenerator,
+  'base64-encoder-decoder': Base64EncoderDecoder,
+  'url-encoder-decoder': UrlEncoderDecoder,
+  'html-entity-encoder': HtmlEntityEncoder,
+  'morse-code-converter': MorseCodeConverter,
+  'rot13-encoder': Rot13Encoder,
+  'binary-text-converter': BinaryTextConverter,
+  'remove-html-tags': RemoveHtmlTags,
+  'find-and-replace': FindAndReplace,
+  'text-repeater': TextRepeater,
+  'add-line-numbers': AddLineNumbers,
+  'lorem-ipsum-generator': LoremIpsumGenerator,
+  'text-wrapper': TextWrapper,
+  'text-diff-checker': TextDiffChecker,
+  'extract-emails': ExtractEmails,
+  'extract-urls': ExtractUrls,
 };
 
 const ToolComponent = componentMap[tool.slug];

@@ -1,0 +1,47 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="rht-input" rows="8" placeholder="Paste HTML here…&#10;&#10;&lt;p&gt;Hello &lt;strong&gt;World&lt;/strong&gt;! &lt;a href=&quot;#&quot;&gt;Click here&lt;/a&gt;&lt;/p&gt;" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-3 flex-wrap items-center">
+    <button id="rht-convert" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Strip HTML Tags</button>
+    <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+      <input type="checkbox" id="rht-entities" checked class="accent-violet-500"> Decode entities (&amp;amp; → &amp;)
+    </label>
+    <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+      <input type="checkbox" id="rht-collapse" checked class="accent-violet-500"> Collapse whitespace
+    </label>
+    <button id="rht-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="rht-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="rht-stats" class="text-xs text-slate-500">Plain text</span>
+      <button id="rht-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="rht-output" rows="8" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm select-all"></textarea>
+  </div>
+</div>
+<script>
+  function decodeEntities(s) {
+    const d = document.createElement('div'); d.innerHTML = s; return d.textContent;
+  }
+  const input = document.getElementById('rht-input');
+  const output = document.getElementById('rht-output');
+  const wrap = document.getElementById('rht-output-wrap');
+  const stats = document.getElementById('rht-stats');
+  const entityCb = document.getElementById('rht-entities');
+  const collapseCb = document.getElementById('rht-collapse');
+  const saved = localStorage.getItem('tw-remove-html-tags');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-remove-html-tags', input.value));
+  document.getElementById('rht-convert').addEventListener('click', () => {
+    let result = input.value.replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<[^>]+>/g, ' ');
+    if (entityCb.checked) result = decodeEntities(result);
+    if (collapseCb.checked) result = result.replace(/[ \t]+/g, ' ').replace(/\n{3,}/g, '\n\n').trim();
+    output.value = result;
+    const removed = input.value.length - result.length;
+    stats.textContent = `${result.length} chars remaining · ~${removed} chars removed`;
+    wrap.classList.remove('hidden');
+  });
+  document.getElementById('rht-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); localStorage.removeItem('tw-remove-html-tags'); });
+  document.getElementById('rht-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

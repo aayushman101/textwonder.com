@@ -28,7 +28,7 @@ const orgSchema = {
 const homepageFaqs = [
   { q: 'Are all the tools on TextWonder free?', a: 'Yes. Every tool on TextWonder is completely free to use with no hidden charges, premium tiers, or subscription required — ever.' },
   { q: 'Is my text stored or sent to a server?', a: 'Never. All tools process text entirely in your browser using JavaScript. Your text never leaves your device. We have no servers that receive or store your input.' },
-  { q: 'What text tools are available?', a: 'TextWonder currently offers 41 tools across four categories: Text Cleaning, Text Conversion, Text Analysis (including readability scores, word frequency, n-gram analysis, entropy, and more), and Text Formatting.' },
+  { q: 'What text tools are available?', a: 'TextWonder currently offers 61 tools across four categories: Text Cleaning, Text Conversion, Text Analysis (including readability scores, word frequency, n-gram analysis, entropy, and more), and Text Formatting.' },
   { q: 'Does TextWonder work on mobile devices?', a: 'Yes. All tools are fully responsive and work on smartphones and tablets. The interface adapts to smaller screens without losing any functionality.' },
   { q: 'Does it support languages other than English?', a: 'Yes. The tools work with Unicode text, supporting Hindi, Arabic, Chinese, Spanish, French, and most other languages.' },
 ];
@@ -200,12 +200,92 @@ const toolIcons: Record<string, ToolVisual> = {
     bg: '#be185d',
     iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:16px;color:white;letter-spacing:-1px;line-height:1">!@#</span>`,
   },
+  'sentence-case-converter': {
+    bg: '#0369a1',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:white;letter-spacing:-1px;line-height:1">Aa.</span>`,
+  },
+  'camel-case-converter': {
+    bg: '#b45309',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:14px;color:white;letter-spacing:-1px;line-height:1">cC</span>`,
+  },
+  'snake-case-converter': {
+    bg: '#15803d',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-1px;line-height:1">a_b</span>`,
+  },
+  'kebab-case-converter': {
+    bg: '#b91c1c',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-1px;line-height:1">a-b</span>`,
+  },
+  'url-slug-generator': {
+    bg: '#6d28d9',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-1px;line-height:1">/slug</span>`,
+  },
+  'base64-encoder-decoder': {
+    bg: '#0e7490',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:white;letter-spacing:-1px;line-height:1">b64</span>`,
+  },
+  'url-encoder-decoder': {
+    bg: '#0284c7',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:white;letter-spacing:-1px;line-height:1">%20</span>`,
+  },
+  'html-entity-encoder': {
+    bg: '#c2410c',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:12px;color:white;letter-spacing:-1px;line-height:1">&lt;&gt;</span>`,
+  },
+  'morse-code-converter': {
+    bg: '#374151',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;color:white;letter-spacing:2px;line-height:1">·−</span>`,
+  },
+  'rot13-encoder': {
+    bg: '#7e22ce',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-1px;line-height:1">R13</span>`,
+  },
+  'binary-text-converter': {
+    bg: '#1e3a5f',
+    iconHtml: `<span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;color:white;letter-spacing:-1px;line-height:1">01</span>`,
+  },
+  'remove-html-tags': {
+    bg: '#9a3412',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 7l-10 10M7 7l10 10"/><path d="M4 6h16" opacity=".4"/></svg>`,
+  },
+  'find-and-replace': {
+    bg: '#065f46',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.35-4.35M11 8v6M8 11h6"/></svg>`,
+  },
+  'text-repeater': {
+    bg: '#1d4ed8',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>`,
+  },
+  'add-line-numbers': {
+    bg: '#4338ca',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 6h9M11 12h9M11 18h9M4 6h1v4M4 10h2M4 14v-1a1 1 0 011-1 1 1 0 011 1v.5a1 1 0 01-1 1H4l2 2"/></svg>`,
+  },
+  'lorem-ipsum-generator': {
+    bg: '#92400e',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 10h12M4 14h14M4 18h10"/></svg>`,
+  },
+  'text-wrapper': {
+    bg: '#115e59',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h10a2 2 0 010 4H4M14 16l2 2-2 2"/></svg>`,
+  },
+  'text-diff-checker': {
+    bg: '#1e4976',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`,
+  },
+  'extract-emails': {
+    bg: '#166534',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>`,
+  },
+  'extract-urls': {
+    bg: '#1e3a5f',
+    iconHtml: `<svg class="w-6 h-6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>`,
+  },
 };
 ---
 
 <BaseLayout
   title="Free Online Text Tools — Word Counter, Case Converter & More | TextWonder"
-  description="TextWonder offers 41+ free browser-based text tools. Remove emojis, count words, convert case, sort lines and more. No signup, no ads, 100% private."
+  description="TextWonder offers 61+ free browser-based text tools. Remove emojis, count words, convert case, sort lines and more. No signup, no ads, 100% private."
   canonical="/"
 >
   <Fragment slot="head">
@@ -225,7 +305,7 @@ const toolIcons: Record<string, ToolVisual> = {
         Free, browser-based text utilities. No signup, no ads, no data sent anywhere.
       </p>
       <div class="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500">
-        <span><strong class="text-violet-400 font-semibold">41</strong> tools</span>
+        <span><strong class="text-violet-400 font-semibold">61</strong> tools</span>
         <span class="hidden sm:inline text-slate-700">·</span>
         <span><strong class="text-violet-400 font-semibold">100%</strong> browser-based</span>
         <span class="hidden sm:inline text-slate-700">·</span>
@@ -313,7 +393,7 @@ const toolIcons: Record<string, ToolVisual> = {
           Whether you need to <a href="/tools/remove-emojis" class="text-violet-400 hover:underline">remove emojis from text</a>, <a href="/tools/word-counter" class="text-violet-400 hover:underline">count words and characters</a>, <a href="/tools/title-case-converter" class="text-violet-400 hover:underline">convert text to title case</a>, or <a href="/tools/sort-lines" class="text-violet-400 hover:underline">sort lines alphabetically</a>, TextWonder has a dedicated, fast tool purpose-built for that task.
         </p>
         <p>
-          TextWonder currently offers 41 free tools across four categories — Text Cleaning, Text Conversion, Text Analysis, and Text Formatting — with many more planned. All tools are free with no premium tier and no ads.
+          TextWonder currently offers 61 free tools across four categories — Text Cleaning, Text Conversion, Text Analysis, and Text Formatting — with many more planned. All tools are free with no premium tier and no ads.
         </p>
       </div>
     </section>

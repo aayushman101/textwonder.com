@@ -1,0 +1,43 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="ccc-input" rows="7" placeholder="hello world example&#10;my-variable-name&#10;some_function_name" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2 flex-wrap">
+    <button id="ccc-camel" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">camelCase</button>
+    <button id="ccc-pascal" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-300 rounded-lg text-sm transition-colors border border-slate-700">PascalCase</button>
+    <button id="ccc-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="ccc-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="ccc-label" class="text-xs text-slate-500">camelCase result</span>
+      <button id="ccc-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="ccc-output" rows="7" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all"></textarea>
+  </div>
+</div>
+<script>
+  function splitWords(str) {
+    return str
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/([A-Z]+)([A-Z][a-z])/g, '$1 $2')
+      .split(/[\s\-_]+/)
+      .filter(Boolean)
+      .map(w => w.toLowerCase());
+  }
+  function toCamel(str) { const w = splitWords(str); return w[0] + w.slice(1).map(x => x[0].toUpperCase() + x.slice(1)).join(''); }
+  function toPascal(str) { return splitWords(str).map(x => x[0].toUpperCase() + x.slice(1)).join(''); }
+  function processLines(fn) {
+    return input.value.split('\n').map(line => line.trim() ? fn(line) : '').join('\n');
+  }
+  const input = document.getElementById('ccc-input');
+  const output = document.getElementById('ccc-output');
+  const wrap = document.getElementById('ccc-output-wrap');
+  const label = document.getElementById('ccc-label');
+  const saved = localStorage.getItem('tw-camel-case-converter');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-camel-case-converter', input.value));
+  document.getElementById('ccc-camel').addEventListener('click', () => { output.value = processLines(toCamel); label.textContent = 'camelCase result'; wrap.classList.remove('hidden'); });
+  document.getElementById('ccc-pascal').addEventListener('click', () => { output.value = processLines(toPascal); label.textContent = 'PascalCase result'; wrap.classList.remove('hidden'); });
+  document.getElementById('ccc-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); localStorage.removeItem('tw-camel-case-converter'); });
+  document.getElementById('ccc-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

@@ -1,0 +1,65 @@
+---
+---
+<div class="space-y-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Find</label>
+      <input id="far-find" type="text" placeholder="Text to find…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Replace with</label>
+      <input id="far-replace" type="text" placeholder="Replacement text (leave blank to delete)…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+  </div>
+  <div class="flex gap-4 flex-wrap text-sm text-slate-400">
+    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="far-case" class="accent-violet-500"> Case sensitive</label>
+    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="far-regex" class="accent-violet-500"> Regex</label>
+    <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="far-whole" class="accent-violet-500"> Whole word</label>
+  </div>
+  <textarea id="far-input" rows="8" placeholder="Paste your text here…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2">
+    <button id="far-do" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Replace All</button>
+    <button id="far-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="far-error" class="hidden text-red-400 text-sm px-1"></div>
+  <div id="far-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="far-stats" class="text-xs text-slate-500">Result</span>
+      <button id="far-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="far-output" rows="8" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all"></textarea>
+  </div>
+</div>
+<script>
+  const input = document.getElementById('far-input');
+  const output = document.getElementById('far-output');
+  const wrap = document.getElementById('far-output-wrap');
+  const err = document.getElementById('far-error');
+  const stats = document.getElementById('far-stats');
+  const findEl = document.getElementById('far-find');
+  const replaceEl = document.getElementById('far-replace');
+  const caseCb = document.getElementById('far-case');
+  const regexCb = document.getElementById('far-regex');
+  const wholeCb = document.getElementById('far-whole');
+  const saved = localStorage.getItem('tw-find-and-replace');
+  if (saved) { try { const p = JSON.parse(saved); input.value = p.text||''; findEl.value = p.find||''; replaceEl.value = p.replace||''; } catch{} }
+  function persist() { localStorage.setItem('tw-find-and-replace', JSON.stringify({text: input.value, find: findEl.value, replace: replaceEl.value})); }
+  [input, findEl, replaceEl].forEach(el => el.addEventListener('input', persist));
+  document.getElementById('far-do').addEventListener('click', () => {
+    const f = findEl.value;
+    if (!f) { err.textContent = 'Enter something to find.'; err.classList.remove('hidden'); return; }
+    try {
+      let pattern = regexCb.checked ? f : f.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      if (wholeCb.checked && !regexCb.checked) pattern = `\\b${pattern}\\b`;
+      const flags = 'g' + (caseCb.checked ? '' : 'i');
+      const rx = new RegExp(pattern, flags);
+      let count = 0;
+      const result = input.value.replace(rx, (m) => { count++; return replaceEl.value; });
+      output.value = result;
+      stats.textContent = `${count} replacement${count !== 1 ? 's' : ''} made`;
+      wrap.classList.remove('hidden'); err.classList.add('hidden');
+    } catch(e) { err.textContent = 'Regex error: ' + e.message; err.classList.remove('hidden'); }
+  });
+  document.getElementById('far-clear').addEventListener('click', () => { input.value = ''; findEl.value = ''; replaceEl.value = ''; output.value = ''; wrap.classList.add('hidden'); err.classList.add('hidden'); localStorage.removeItem('tw-find-and-replace'); });
+  document.getElementById('far-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

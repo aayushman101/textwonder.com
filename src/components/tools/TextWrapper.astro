@@ -1,0 +1,64 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="twp-input" rows="7" placeholder="Paste long lines of text to wrap, or wrapped text to unwrap…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-3 flex-wrap items-end">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Column width</label>
+      <input id="twp-width" type="number" value="80" min="20" max="500" class="w-24 bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="flex gap-2">
+      <button id="twp-wrap" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Wrap</button>
+      <button id="twp-unwrap" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors">Unwrap</button>
+      <button id="twp-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    </div>
+  </div>
+  <div id="twp-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="twp-stats" class="text-xs text-slate-500">Result</span>
+      <button id="twp-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="twp-output" rows="7" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all"></textarea>
+  </div>
+</div>
+<script>
+  function wrapLine(line, width) {
+    if (line.length <= width) return line;
+    const words = line.split(' ');
+    const lines = [];
+    let cur = '';
+    for (const w of words) {
+      if (!cur) { cur = w; continue; }
+      if ((cur + ' ' + w).length <= width) { cur += ' ' + w; }
+      else { lines.push(cur); cur = w; }
+    }
+    if (cur) lines.push(cur);
+    return lines.join('\n');
+  }
+  function unwrap(text) {
+    return text.replace(/([^\n])\n(?!\n)/g, '$1 ').replace(/\n{2,}/g, '\n\n');
+  }
+  const input = document.getElementById('twp-input');
+  const output = document.getElementById('twp-output');
+  const wrap = document.getElementById('twp-output-wrap');
+  const stats = document.getElementById('twp-stats');
+  const widthEl = document.getElementById('twp-width');
+  const saved = localStorage.getItem('tw-text-wrapper');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-text-wrapper', input.value));
+  document.getElementById('twp-wrap').addEventListener('click', () => {
+    const width = parseInt(widthEl.value) || 80;
+    const result = input.value.split('\n').map(l => wrapLine(l, width)).join('\n');
+    output.value = result;
+    stats.textContent = `Wrapped at ${width} chars · ${result.split('\n').length} lines`;
+    wrap.classList.remove('hidden');
+  });
+  document.getElementById('twp-unwrap').addEventListener('click', () => {
+    const result = unwrap(input.value);
+    output.value = result;
+    stats.textContent = `Unwrapped · ${result.split('\n\n').length} paragraphs`;
+    wrap.classList.remove('hidden');
+  });
+  document.getElementById('twp-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); localStorage.removeItem('tw-text-wrapper'); });
+  document.getElementById('twp-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

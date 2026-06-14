@@ -1,0 +1,35 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="r13-input" rows="7" placeholder="Type or paste text — click Apply ROT13 to encode or decode…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2">
+    <button id="r13-convert" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Apply ROT13</button>
+    <button id="r13-swap" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-300 rounded-lg text-sm transition-colors border border-slate-700">Use output as input</button>
+    <button id="r13-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="r13-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-slate-500">ROT13 result (apply again to decode)</span>
+      <button id="r13-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="r13-output" rows="7" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all"></textarea>
+  </div>
+</div>
+<script>
+  function rot13(s) {
+    return s.replace(/[a-zA-Z]/g, c => {
+      const base = c <= 'Z' ? 65 : 97;
+      return String.fromCharCode(((c.charCodeAt(0) - base + 13) % 26) + base);
+    });
+  }
+  const input = document.getElementById('r13-input');
+  const output = document.getElementById('r13-output');
+  const wrap = document.getElementById('r13-output-wrap');
+  const saved = localStorage.getItem('tw-rot13-encoder');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-rot13-encoder', input.value));
+  document.getElementById('r13-convert').addEventListener('click', () => { output.value = rot13(input.value); wrap.classList.remove('hidden'); });
+  document.getElementById('r13-swap').addEventListener('click', () => { input.value = output.value; output.value = rot13(input.value); });
+  document.getElementById('r13-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); localStorage.removeItem('tw-rot13-encoder'); });
+  document.getElementById('r13-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

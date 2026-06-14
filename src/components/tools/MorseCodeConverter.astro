@@ -1,0 +1,41 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="mcc-input" rows="5" placeholder="Type text to encode to Morse, or paste Morse (dots/dashes) to decode…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2 flex-wrap">
+    <button id="mcc-encode" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Text → Morse</button>
+    <button id="mcc-decode" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors">Morse → Text</button>
+    <button id="mcc-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="mcc-error" class="hidden text-red-400 text-sm px-1"></div>
+  <div id="mcc-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="mcc-label" class="text-xs text-slate-500">Result</span>
+      <button id="mcc-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="mcc-output" rows="5" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all leading-relaxed"></textarea>
+  </div>
+  <p class="text-xs text-slate-600">Morse uses dots (.) and dashes (−). Words separated by " / ".</p>
+</div>
+<script>
+  const MORSE = {A:'.-',B:'-...',C:'-.-.',D:'-..',E:'.',F:'..-.',G:'--.',H:'....',I:'..',J:'.---',K:'-.-',L:'.-..',M:'--',N:'-.',O:'---',P:'.--.',Q:'--.-',R:'.-.',S:'...',T:'-',U:'..-',V:'...-',W:'.--',X:'-..-',Y:'-.--',Z:'--..',0:'-----',1:'.----',2:'..---',3:'...--',4:'....-',5:'.....',6:'-....',7:'--...',8:'---..',9:'----.','.':'.-.-.-',',':'--..--','?':'..--..','!':'-.-.--','/':'-..-.','-':'-....-','(':'-.--.',')':'-.--.-'};
+  const RMORSE = Object.fromEntries(Object.entries(MORSE).map(([k,v])=>[v,k]));
+  function textToMorse(s) {
+    return s.toUpperCase().split('').map(c => c === ' ' ? '/' : (MORSE[c] || '?')).join(' ');
+  }
+  function morseToText(s) {
+    return s.trim().split(' / ').map(word => word.trim().split(' ').map(code => RMORSE[code] || '?').join('')).join(' ');
+  }
+  const input = document.getElementById('mcc-input');
+  const output = document.getElementById('mcc-output');
+  const wrap = document.getElementById('mcc-output-wrap');
+  const err = document.getElementById('mcc-error');
+  const label = document.getElementById('mcc-label');
+  const saved = localStorage.getItem('tw-morse-code-converter');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-morse-code-converter', input.value));
+  document.getElementById('mcc-encode').addEventListener('click', () => { output.value = textToMorse(input.value); label.textContent = 'Morse code'; wrap.classList.remove('hidden'); err.classList.add('hidden'); });
+  document.getElementById('mcc-decode').addEventListener('click', () => { output.value = morseToText(input.value); label.textContent = 'Decoded text'; wrap.classList.remove('hidden'); err.classList.add('hidden'); });
+  document.getElementById('mcc-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); err.classList.add('hidden'); localStorage.removeItem('tw-morse-code-converter'); });
+  document.getElementById('mcc-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

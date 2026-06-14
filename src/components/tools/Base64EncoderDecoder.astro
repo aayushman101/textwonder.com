@@ -1,0 +1,48 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="b64-input" rows="6" placeholder="Enter text to encode, or Base64 to decode…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2 flex-wrap">
+    <button id="b64-encode" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Encode → Base64</button>
+    <button id="b64-decode" class="px-5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors">Decode ← Base64</button>
+    <button id="b64-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="b64-error" class="hidden text-red-400 text-sm px-1"></div>
+  <div id="b64-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span id="b64-label" class="text-xs text-slate-500">Result</span>
+      <button id="b64-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy</button>
+    </div>
+    <textarea id="b64-output" rows="6" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all break-all"></textarea>
+  </div>
+</div>
+<script>
+  const input = document.getElementById('b64-input');
+  const output = document.getElementById('b64-output');
+  const wrap = document.getElementById('b64-output-wrap');
+  const err = document.getElementById('b64-error');
+  const label = document.getElementById('b64-label');
+  const saved = localStorage.getItem('tw-base64-encoder-decoder');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-base64-encoder-decoder', input.value));
+  function encode() {
+    try {
+      const bytes = new TextEncoder().encode(input.value);
+      const bin = Array.from(bytes, b => String.fromCodePoint(b)).join('');
+      output.value = btoa(bin);
+      label.textContent = 'Base64 encoded'; wrap.classList.remove('hidden'); err.classList.add('hidden');
+    } catch(e) { err.textContent = 'Encoding error: ' + e.message; err.classList.remove('hidden'); }
+  }
+  function decode() {
+    try {
+      const bin = atob(input.value.trim());
+      const bytes = Uint8Array.from(bin, c => c.codePointAt(0));
+      output.value = new TextDecoder().decode(bytes);
+      label.textContent = 'Decoded text'; wrap.classList.remove('hidden'); err.classList.add('hidden');
+    } catch(e) { err.textContent = 'Invalid Base64 input.'; err.classList.remove('hidden'); wrap.classList.add('hidden'); }
+  }
+  document.getElementById('b64-encode').addEventListener('click', encode);
+  document.getElementById('b64-decode').addEventListener('click', decode);
+  document.getElementById('b64-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); err.classList.add('hidden'); localStorage.removeItem('tw-base64-encoder-decoder'); });
+  document.getElementById('b64-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

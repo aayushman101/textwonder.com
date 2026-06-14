@@ -1,0 +1,41 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="usg-input" rows="5" placeholder="My Awesome Blog Post Title!&#10;Another Great Article: Part 2&#10;Héllo Wörld" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-violet-500 text-sm font-mono"></textarea>
+  <div class="flex gap-2 flex-wrap items-center">
+    <button id="usg-convert" class="px-5 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Generate Slug</button>
+    <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+      <input type="checkbox" id="usg-lower" checked class="accent-violet-500"> Lowercase
+    </label>
+    <button id="usg-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+  <div id="usg-output-wrap" class="hidden space-y-2">
+    <div class="flex items-center justify-between">
+      <span class="text-xs text-slate-500">Generated slugs</span>
+      <button id="usg-copy" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">Copy all</button>
+    </div>
+    <textarea id="usg-output" rows="5" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y text-sm font-mono select-all"></textarea>
+  </div>
+</div>
+<script>
+  const ACCENT_MAP = {'à':'a','á':'a','â':'a','ã':'a','ä':'a','å':'a','æ':'ae','ç':'c','è':'e','é':'e','ê':'e','ë':'e','ì':'i','í':'i','î':'i','ï':'i','ñ':'n','ò':'o','ó':'o','ô':'o','õ':'o','ö':'o','ø':'o','ù':'u','ú':'u','û':'u','ü':'u','ý':'y','ÿ':'y','ß':'ss'};
+  function toSlug(str, lower) {
+    let s = lower ? str.toLowerCase() : str;
+    s = s.replace(/[àáâãäåæçèéêëìíîïñòóôõöøùúûüýÿß]/g, c => ACCENT_MAP[c] || c);
+    s = s.replace(/[^a-zA-Z0-9\s\-]/g, '').replace(/[\s_]+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+    return s;
+  }
+  const input = document.getElementById('usg-input');
+  const output = document.getElementById('usg-output');
+  const wrap = document.getElementById('usg-output-wrap');
+  const lowerCb = document.getElementById('usg-lower');
+  const saved = localStorage.getItem('tw-url-slug-generator');
+  if (saved) input.value = saved;
+  input.addEventListener('input', () => localStorage.setItem('tw-url-slug-generator', input.value));
+  document.getElementById('usg-convert').addEventListener('click', () => {
+    output.value = input.value.split('\n').map(l => l.trim() ? toSlug(l, lowerCb.checked) : '').join('\n');
+    wrap.classList.remove('hidden');
+  });
+  document.getElementById('usg-clear').addEventListener('click', () => { input.value = ''; output.value = ''; wrap.classList.add('hidden'); localStorage.removeItem('tw-url-slug-generator'); });
+  document.getElementById('usg-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
+</script>

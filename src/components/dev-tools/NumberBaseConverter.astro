@@ -1,0 +1,73 @@
+---
+---
+<div class="space-y-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    {[
+      { id: 'nbc-dec', label: 'Decimal (Base 10)', prefix: '' },
+      { id: 'nbc-hex', label: 'Hexadecimal (Base 16)', prefix: '0x' },
+      { id: 'nbc-bin', label: 'Binary (Base 2)', prefix: '0b' },
+      { id: 'nbc-oct', label: 'Octal (Base 8)', prefix: '0o' },
+    ].map(f => (
+      <div class="space-y-1">
+        <div class="flex items-center justify-between">
+          <label class="text-xs text-slate-500">{f.label}</label>
+          <button class="nbc-copy text-xs text-cyan-400 hover:text-cyan-300 transition-colors" data-target={f.id}>Copy</button>
+        </div>
+        <div class="flex items-center bg-[var(--bg-base)] border border-slate-700 rounded-xl focus-within:border-cyan-500 overflow-hidden">
+          {f.prefix && <span class="pl-3 text-slate-600 font-mono text-sm select-none">{f.prefix}</span>}
+          <input id={f.id} type="text" placeholder="0" class="flex-1 px-3 py-3 bg-transparent text-slate-100 placeholder-slate-600 font-mono text-sm focus:outline-none" spellcheck="false" />
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <button id="nbc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear all</button>
+  <div id="nbc-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const dec = document.getElementById('nbc-dec');
+  const hex = document.getElementById('nbc-hex');
+  const bin = document.getElementById('nbc-bin');
+  const oct = document.getElementById('nbc-oct');
+  const status = document.getElementById('nbc-status');
+  let updating = false;
+
+  function fromInput(el, base) {
+    if (updating) return;
+    updating = true;
+    status.classList.add('hidden');
+    const raw = el.value.trim();
+    if (!raw) { [dec,hex,bin,oct].forEach(e => { if (e !== el) e.value = ''; }); updating = false; return; }
+    const n = parseInt(raw, base);
+    if (isNaN(n)) {
+      status.textContent = '❌ Invalid ' + (base===10?'decimal':base===16?'hex':base===2?'binary':'octal') + ' number.';
+      status.classList.remove('hidden');
+      updating = false; return;
+    }
+    if (el !== dec) dec.value = n.toString(10);
+    if (el !== hex) hex.value = n.toString(16).toUpperCase();
+    if (el !== bin) bin.value = n.toString(2);
+    if (el !== oct) oct.value = n.toString(8);
+    updating = false;
+  }
+
+  dec.addEventListener('input', () => fromInput(dec, 10));
+  hex.addEventListener('input', () => fromInput(hex, 16));
+  bin.addEventListener('input', () => fromInput(bin, 2));
+  oct.addEventListener('input', () => fromInput(oct, 8));
+
+  document.querySelectorAll('.nbc-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.target);
+      if (el && el.value) navigator.clipboard.writeText(el.value);
+    });
+  });
+
+  document.getElementById('nbc-clear').addEventListener('click', () => {
+    [dec,hex,bin,oct].forEach(e => e.value = '');
+    status.classList.add('hidden');
+  });
+})();
+</script>

@@ -1,0 +1,73 @@
+---
+---
+<div class="space-y-4">
+  <div class="space-y-1">
+    <label class="text-xs text-slate-500">Input text</label>
+    <textarea id="hg-input" rows="5" placeholder="Type or paste any text to hash…" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y text-sm focus:outline-none focus:border-cyan-500 font-mono leading-relaxed"></textarea>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    <select id="hg-encoding" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-200 text-sm focus:outline-none focus:border-cyan-500">
+      <option value="hex">Hex output</option>
+      <option value="base64">Base64 output</option>
+    </select>
+    <button id="hg-run" class="px-6 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors">Generate Hashes</button>
+    <button id="hg-clear" class="px-4 py-2 bg-[var(--bg-surface-hover)] border border-slate-700 text-slate-400 rounded-lg text-sm transition-colors">Clear</button>
+  </div>
+
+  <div id="hg-results" class="hidden space-y-2">
+    {['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512'].map(algo => (
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between px-4 py-2 border-b border-slate-800 bg-[var(--bg-surface)]">
+          <span class="text-xs font-semibold text-cyan-400">{algo}</span>
+          <button class="hg-copy text-xs text-slate-500 hover:text-cyan-400 transition-colors" data-algo={algo}>Copy</button>
+        </div>
+        <div id={`hg-${algo.replace('-','')}`} class="px-4 py-3 text-slate-200 text-xs font-mono break-all leading-relaxed"></div>
+      </div>
+    ))}
+  </div>
+
+  <div id="hg-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const results = document.getElementById('hg-results');
+  const hashes = {};
+
+  document.getElementById('hg-run').addEventListener('click', async () => {
+    const text = document.getElementById('hg-input').value;
+    const enc = document.getElementById('hg-encoding').value;
+    if (!text) return;
+    const status = document.getElementById('hg-status');
+    status.classList.add('hidden');
+    try {
+      const data = new TextEncoder().encode(text);
+      for (const algo of ['SHA-1', 'SHA-256', 'SHA-384', 'SHA-512']) {
+        const buf = await crypto.subtle.digest(algo, data);
+        const hex = [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
+        const b64 = btoa(String.fromCharCode(...new Uint8Array(buf)));
+        hashes[algo] = enc === 'hex' ? hex : b64;
+        document.getElementById('hg-' + algo.replace('-','')).textContent = hashes[algo];
+      }
+      results.classList.remove('hidden');
+    } catch(e) { status.textContent = '❌ ' + e.message; status.classList.remove('hidden'); }
+  });
+
+  document.getElementById('hg-encoding').addEventListener('change', async () => {
+    if (document.getElementById('hg-input').value) document.getElementById('hg-run').click();
+  });
+
+  document.querySelectorAll('.hg-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = hashes[btn.dataset.algo];
+      if (val) navigator.clipboard.writeText(val);
+    });
+  });
+
+  document.getElementById('hg-clear').addEventListener('click', () => {
+    document.getElementById('hg-input').value = '';
+    results.classList.add('hidden');
+  });
+})();
+</script>

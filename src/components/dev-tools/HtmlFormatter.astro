@@ -1,0 +1,96 @@
+---
+---
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-2 items-end">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Indent</label>
+      <select id="hfm-indent" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-200 text-sm focus:outline-none focus:border-cyan-500">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+        <option value="	">Tab</option>
+      </select>
+    </div>
+    <button id="hfm-format" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors">Format</button>
+    <button id="hfm-minify" class="px-5 py-2.5 bg-[var(--bg-surface-hover)] border border-slate-700 text-slate-300 rounded-lg text-sm transition-colors">Minify</button>
+    <button id="hfm-clear" class="px-4 py-2.5 bg-[var(--bg-surface-hover)] border border-slate-700 text-slate-400 rounded-lg text-sm transition-colors">Clear</button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Input HTML</label>
+      <textarea id="hfm-input" rows="14" placeholder="<div><p>Paste your HTML here...</p></div>" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm resize-y focus:outline-none focus:border-cyan-500 leading-relaxed"></textarea>
+    </div>
+    <div class="space-y-1">
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-slate-500">Output</label>
+        <button id="hfm-copy" class="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">Copy</button>
+      </div>
+      <textarea id="hfm-output" rows="14" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-mono text-sm resize-y focus:outline-none leading-relaxed"></textarea>
+    </div>
+  </div>
+
+  <div id="hfm-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('hfm-input');
+  const output = document.getElementById('hfm-output');
+  const status = document.getElementById('hfm-status');
+
+  const BLOCK = new Set(['html','head','body','div','section','article','aside','nav','header','footer','main','p','ul','ol','li','dl','dt','dd','table','thead','tbody','tfoot','tr','th','td','form','fieldset','legend','details','summary','figure','figcaption','blockquote','pre','h1','h2','h3','h4','h5','h6','script','style','link','meta','title','head','br']);
+  const VOID = new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
+
+  function format(html, indentStr) {
+    const tokens = html.match(/<[^>]+>|[^<]+/g) || [];
+    let depth = 0, out = '';
+    for (const tok of tokens) {
+      const text = tok.trim();
+      if (!text) continue;
+      if (text.startsWith('</')) {
+        const tag = text.slice(2).replace(/[>\s]/g,'').toLowerCase();
+        if (BLOCK.has(tag)) depth = Math.max(0, depth-1);
+        out += indentStr.repeat(depth) + tok.trim() + '\n';
+      } else if (text.startsWith('<')) {
+        const tag = text.replace(/[<\s>\/!]/,'').split(/\s/)[0].toLowerCase();
+        out += indentStr.repeat(depth) + tok.trim() + '\n';
+        if (BLOCK.has(tag) && !VOID.has(tag) && !text.endsWith('/>') && !text.startsWith('<!') && !text.startsWith('<?')) depth++;
+        if (VOID.has(tag)) { /* no depth change */ }
+      } else {
+        const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+        lines.forEach(l => { out += indentStr.repeat(depth) + l + '\n'; });
+      }
+    }
+    return out.trim();
+  }
+
+  document.getElementById('hfm-format').addEventListener('click', () => {
+    if (!input.value.trim()) return;
+    const indent = document.getElementById('hfm-indent').value;
+    const indentStr = indent === '\t' ? '\t' : ' '.repeat(parseInt(indent));
+    output.value = format(input.value, indentStr);
+    showStatus('✅ Formatted successfully.', false);
+  });
+
+  document.getElementById('hfm-minify').addEventListener('click', () => {
+    if (!input.value.trim()) return;
+    output.value = input.value.replace(/\s+/g,' ').replace(/>\s+</g,'><').trim();
+    showStatus('✅ Minified.', false);
+  });
+
+  document.getElementById('hfm-copy').addEventListener('click', () => {
+    if (output.value) navigator.clipboard.writeText(output.value);
+  });
+
+  document.getElementById('hfm-clear').addEventListener('click', () => {
+    input.value = ''; output.value = '';
+    status.classList.add('hidden');
+  });
+
+  function showStatus(msg, isError) {
+    status.textContent = msg;
+    status.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-green-400');
+    status.classList.remove('hidden');
+  }
+})();
+</script>

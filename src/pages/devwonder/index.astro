@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DevHeader from '../../components/DevHeader.astro';
+import Footer from '../../components/Footer.astro';
+import { DEV_TOOLS } from '../../data/devtools.js';
+---
+
+<BaseLayout
+  title="Free Developer Tools Online — JSON, Regex, Hash, UUID & More | DevWonder"
+  description="DevWonder offers 12 free browser-based developer tools. JSON formatter, JWT decoder, regex tester, hash generator, UUID, color converter and more. No signup needed."
+  canonical="/devwonder"
+>
+  <DevHeader />
+
+  <main>
+    <!-- Hero -->
+    <section class="max-w-4xl mx-auto px-4 pt-12 pb-8 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-950/50 border border-cyan-800/40 text-cyan-400 text-xs font-medium mb-5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3"/>
+        </svg>
+        100% browser-based — your data never leaves your device
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight mb-3" style="font-family: 'Space Grotesk', sans-serif;">
+        Dev tools for your<br class="hidden sm:block" /> everyday workflow
+      </h1>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto mb-5">
+        Free, instant developer utilities. Format JSON, decode JWTs, test regex, generate hashes, convert colors — all in your browser.
+      </p>
+      <div class="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500">
+        <span><strong class="text-cyan-400 font-semibold">12</strong> dev tools</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong class="text-cyan-400 font-semibold">100%</strong> browser-based</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong class="text-cyan-400 font-semibold">0</strong> signups required</span>
+      </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {DEV_TOOLS.map(tool => (
+          <a
+            href={`/devwonder/${tool.slug}`}
+            class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-cyan-500/50 hover:bg-[var(--bg-surface-hover)] transition-all"
+          >
+            <div class="flex items-start gap-4 mb-3">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 font-bold text-white text-xs" style={`background:${tool.iconBg}`}>
+                {tool.icon}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h2 class="text-white font-semibold text-base group-hover:text-cyan-400 transition-colors">{tool.name}</h2>
+                <p class="text-slate-400 text-sm leading-snug mt-0.5">{tool.tagline}</p>
+              </div>
+            </div>
+            <div class="flex items-center text-xs text-cyan-400/60 group-hover:text-cyan-400 transition-colors font-medium">
+              Open tool
+              <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Trust section -->
+    <section class="max-w-4xl mx-auto px-4 pb-16">
+      <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-8 text-center">
+        <div class="text-3xl mb-3">🛡️</div>
+        <h2 class="text-xl font-bold text-white mb-2" style="font-family:'Space Grotesk',sans-serif;">Your data stays in your browser</h2>
+        <p class="text-slate-400 text-sm leading-relaxed max-w-lg mx-auto">
+          All tools run entirely in your browser using native Web APIs and open-source libraries.
+          No tokens, no hashes, no source code is ever transmitted to any server.
+        </p>
+      </div>
+    </section>
+
+    <!-- Cross-promo -->
+    <section class="max-w-4xl mx-auto px-4 pb-16 grid sm:grid-cols-2 gap-4">
+      <div class="flex items-center justify-between bg-[var(--bg-surface)] border border-violet-800/30 rounded-2xl p-5">
+        <div>
+          <p class="text-sm text-slate-400">Need text tools?</p>
+          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">Text<span class="text-violet-400">Wonder</span> — 61 utilities</p>
+        </div>
+        <a href="/" class="shrink-0 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
+      </div>
+      <div class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-2xl p-5">
+        <div>
+          <p class="text-sm text-slate-400">Need PDF tools?</p>
+          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">PDF<span class="text-orange-400">Wonder</span> — 10 tools</p>
+        </div>
+        <a href="/pdfwonder" class="shrink-0 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

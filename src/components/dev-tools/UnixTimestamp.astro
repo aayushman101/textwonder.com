@@ -1,0 +1,122 @@
+---
+---
+<div class="space-y-6">
+  <!-- Epoch → Date -->
+  <div class="space-y-3">
+    <h3 class="text-sm font-semibold text-white">Epoch → Human Readable</h3>
+    <div class="flex gap-2">
+      <input id="ts-epoch" type="text" placeholder="e.g. 1718000000 or 1718000000000" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-cyan-500" />
+      <button id="ts-now" class="px-4 py-2 bg-[var(--bg-surface-hover)] hover:bg-slate-700 border border-slate-700 text-slate-300 rounded-xl text-sm transition-colors">Now</button>
+      <button id="ts-convert-epoch" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-medium transition-colors">Convert</button>
+    </div>
+    <div id="ts-epoch-result" class="hidden bg-[var(--bg-base)] border border-slate-700 rounded-xl divide-y divide-slate-800">
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">UTC</span>
+        <span id="ts-utc" class="text-slate-200 text-sm font-mono"></span>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">Local</span>
+        <span id="ts-local" class="text-slate-200 text-sm font-mono"></span>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">ISO 8601</span>
+        <span id="ts-iso" class="text-slate-200 text-sm font-mono"></span>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">Relative</span>
+        <span id="ts-relative" class="text-slate-200 text-sm font-mono"></span>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">Milliseconds</span>
+        <span id="ts-ms" class="text-slate-200 text-sm font-mono"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-slate-800"></div>
+
+  <!-- Date → Epoch -->
+  <div class="space-y-3">
+    <h3 class="text-sm font-semibold text-white">Human Readable → Epoch</h3>
+    <div class="flex gap-2">
+      <input id="ts-date" type="datetime-local" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 text-sm focus:outline-none focus:border-cyan-500" />
+      <button id="ts-convert-date" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-medium transition-colors">Convert</button>
+    </div>
+    <div id="ts-date-result" class="hidden bg-[var(--bg-base)] border border-slate-700 rounded-xl divide-y divide-slate-800">
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">Seconds (Unix)</span>
+        <div class="flex items-center gap-2">
+          <span id="ts-out-sec" class="text-slate-200 text-sm font-mono"></span>
+          <button class="ts-copy text-xs text-cyan-400 hover:text-cyan-300" data-target="ts-out-sec">Copy</button>
+        </div>
+      </div>
+      <div class="flex items-center justify-between px-4 py-3">
+        <span class="text-xs text-slate-500">Milliseconds</span>
+        <div class="flex items-center gap-2">
+          <span id="ts-out-ms" class="text-slate-200 text-sm font-mono"></span>
+          <button class="ts-copy text-xs text-cyan-400 hover:text-cyan-300" data-target="ts-out-ms">Copy</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="ts-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const statusEl = document.getElementById('ts-status');
+
+  document.getElementById('ts-now').addEventListener('click', () => {
+    document.getElementById('ts-epoch').value = Math.floor(Date.now() / 1000);
+    document.getElementById('ts-convert-epoch').click();
+  });
+
+  document.getElementById('ts-convert-epoch').addEventListener('click', () => {
+    const raw = document.getElementById('ts-epoch').value.trim();
+    if (!raw) return;
+    let num = parseInt(raw);
+    if (isNaN(num)) { showErr('Enter a valid integer timestamp.'); return; }
+    if (raw.length <= 10) num = num * 1000;
+    const d = new Date(num);
+    if (isNaN(d)) { showErr('Invalid timestamp.'); return; }
+    statusEl.classList.add('hidden');
+    document.getElementById('ts-utc').textContent = d.toUTCString();
+    document.getElementById('ts-local').textContent = d.toLocaleString();
+    document.getElementById('ts-iso').textContent = d.toISOString();
+    document.getElementById('ts-ms').textContent = num.toLocaleString() + ' ms';
+    document.getElementById('ts-relative').textContent = relativeTime(d);
+    document.getElementById('ts-epoch-result').classList.remove('hidden');
+  });
+
+  document.getElementById('ts-convert-date').addEventListener('click', () => {
+    const val = document.getElementById('ts-date').value;
+    if (!val) return;
+    const d = new Date(val);
+    const sec = Math.floor(d.getTime() / 1000);
+    document.getElementById('ts-out-sec').textContent = sec;
+    document.getElementById('ts-out-ms').textContent = d.getTime();
+    document.getElementById('ts-date-result').classList.remove('hidden');
+  });
+
+  document.querySelectorAll('.ts-copy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.target);
+      if (el) navigator.clipboard.writeText(el.textContent);
+    });
+  });
+
+  function relativeTime(d) {
+    const diff = (Date.now() - d.getTime()) / 1000;
+    if (Math.abs(diff) < 60) return `${Math.round(diff)}s ago`;
+    if (Math.abs(diff) < 3600) return `${Math.round(diff/60)}m ago`;
+    if (Math.abs(diff) < 86400) return `${Math.round(diff/3600)}h ago`;
+    return `${Math.round(diff/86400)} days ago`;
+  }
+
+  function showErr(msg) {
+    statusEl.textContent = '❌ ' + msg;
+    statusEl.classList.remove('hidden');
+  }
+})();
+</script>

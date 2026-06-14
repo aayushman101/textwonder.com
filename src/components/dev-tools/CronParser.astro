@@ -1,0 +1,146 @@
+---
+---
+<div class="space-y-4">
+  <div class="space-y-1">
+    <label class="text-xs text-slate-500">Cron expression (5-field: minute hour day month weekday)</label>
+    <input id="cp-input" type="text" value="0 9 * * 1-5" placeholder="0 9 * * 1-5" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-cyan-500" spellcheck="false" />
+  </div>
+
+  <!-- Quick presets -->
+  <div class="flex flex-wrap gap-1.5">
+    {['0 * * * *','0 9 * * 1-5','0 0 * * *','0 0 * * 0','0 0 1 * *','*/5 * * * *','0 */6 * * *'].map(p => (
+      <button class="cp-preset text-xs px-2.5 py-1 bg-[var(--bg-surface)] border border-slate-800 rounded-lg text-slate-400 hover:text-cyan-400 hover:border-cyan-500/40 font-mono transition-colors" data-val={p}>{p}</button>
+    ))}
+  </div>
+
+  <div id="cp-result" class="hidden space-y-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-5">
+      <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">Human readable</p>
+      <p id="cp-english" class="text-white text-lg font-semibold leading-snug" style="font-family:'Space Grotesk',sans-serif;"></p>
+    </div>
+
+    <div class="grid grid-cols-5 gap-2 text-center text-xs">
+      {['Minute','Hour','Day','Month','Weekday'].map(label => (
+        <div class="bg-[var(--bg-base)] border border-slate-800 rounded-lg p-2">
+          <p class="text-slate-600 mb-1">{label}</p>
+          <p class="cp-field-val text-slate-200 font-mono"></p>
+        </div>
+      ))}
+    </div>
+
+    <div>
+      <p class="text-xs text-slate-500 uppercase tracking-wide mb-2">Next 5 run times (UTC)</p>
+      <div id="cp-next" class="space-y-1"></div>
+    </div>
+  </div>
+
+  <div id="cp-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('cp-input');
+  const result = document.getElementById('cp-result');
+  const status = document.getElementById('cp-status');
+
+  const SHORTCUTS = { '@yearly':'0 0 1 1 *','@annually':'0 0 1 1 *','@monthly':'0 0 1 * *','@weekly':'0 0 * * 0','@daily':'0 0 * * *','@midnight':'0 0 * * *','@hourly':'0 * * * *' };
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  function parse(expr) {
+    expr = (SHORTCUTS[expr.trim()] || expr).trim();
+    const parts = expr.split(/\s+/);
+    if (parts.length !== 5) throw new Error('Enter exactly 5 fields: minute hour day month weekday');
+    return parts;
+  }
+
+  function descField(val, type) {
+    const ranges = { minute:[0,59], hour:[0,23], day:[1,31], month:[1,12], weekday:[0,6] };
+    const [min, max] = ranges[type];
+    if (val === '*') return 'every ' + type;
+    if (val.startsWith('*/')) { const n = parseInt(val.slice(2)); return `every ${n} ${type}${n>1?'s':''}`; }
+    if (val.includes('-')) {
+      const [a,b] = val.split('-').map(Number);
+      if (type === 'weekday') return `${DAYS[a]} through ${DAYS[b]}`;
+      if (type === 'month') return `${MONTHS[a-1]} through ${MONTHS[b-1]}`;
+      return `${type} ${a} to ${b}`;
+    }
+    if (val.includes(',')) {
+      const nums = val.split(',').map(Number);
+      if (type === 'weekday') return nums.map(n=>DAYS[n]).join(', ');
+      if (type === 'month') return nums.map(n=>MONTHS[n-1]).join(', ');
+      return `at ${type}s: ${nums.join(', ')}`;
+    }
+    const n = parseInt(val);
+    if (type === 'weekday') return `on ${DAYS[n]}`;
+    if (type === 'month') return `in ${MONTHS[n-1]}`;
+    if (type === 'minute') return `at minute ${n}`;
+    if (type === 'hour') return `at ${n.toString().padStart(2,'0')}:00`;
+    return `on day ${n}`;
+  }
+
+  function buildEnglish(parts) {
+    const [min, hr, day, mon, wd] = parts;
+    const types = ['minute','hour','day','month','weekday'];
+    const descs = [descField(min,'minute'), descField(hr,'hour'), descField(day,'day'), descField(mon,'month'), descField(wd,'weekday')];
+    let base = '';
+    if (hr === '*' && min.startsWith('*/')) base = `Runs ${descs[0]}`;
+    else if (hr === '*') base = `Runs ${descs[0]} of every hour`;
+    else if (min === '0') base = `Runs ${descs[1]}`;
+    else base = `Runs at ${min} minutes past ${descs[1]}`;
+    if (day !== '*') base += `, ${descs[2]}`;
+    if (mon !== '*') base += `, ${descs[3]}`;
+    if (wd !== '*') base += `, ${descs[4]}`;
+    if (day === '*' && mon === '*' && wd === '*') base += ' every day';
+    return base + '.';
+  }
+
+  function getNextRuns(parts, count = 5) {
+    const [minF, hrF, dayF, monF, wdF] = parts;
+    function matches(val, n, min, max) {
+      if (val === '*') return true;
+      if (val.startsWith('*/')) return n % parseInt(val.slice(2)) === 0;
+      if (val.includes('-')) { const [a,b]=val.split('-').map(Number); return n>=a&&n<=b; }
+      if (val.includes(',')) return val.split(',').map(Number).includes(n);
+      return parseInt(val) === n;
+    }
+    const runs = [];
+    let d = new Date();
+    d.setSeconds(0,0);
+    d.setMinutes(d.getMinutes()+1);
+    let iters = 0;
+    while (runs.length < count && iters++ < 500000) {
+      const ok = matches(minF, d.getUTCMinutes(), 0, 59) &&
+                 matches(hrF,  d.getUTCHours(),   0, 23) &&
+                 matches(dayF, d.getUTCDate(),     1, 31) &&
+                 matches(monF, d.getUTCMonth()+1,  1, 12) &&
+                 matches(wdF,  d.getUTCDay(),      0,  6);
+      if (ok) runs.push(new Date(d));
+      d.setMinutes(d.getMinutes()+1);
+    }
+    return runs;
+  }
+
+  function run() {
+    status.classList.add('hidden');
+    result.classList.add('hidden');
+    try {
+      const parts = parse(input.value);
+      document.getElementById('cp-english').textContent = buildEnglish(parts);
+      const fieldVals = document.querySelectorAll('.cp-field-val');
+      parts.forEach((p, i) => { fieldVals[i].textContent = p; });
+      const nextRuns = getNextRuns(parts);
+      document.getElementById('cp-next').innerHTML = nextRuns.map(d =>
+        `<div class="text-xs font-mono bg-[var(--bg-base)] border border-slate-800 rounded-lg px-3 py-2 text-slate-200">${d.toUTCString()}</div>`
+      ).join('');
+      result.classList.remove('hidden');
+    } catch(e) { status.textContent = '❌ ' + e.message; status.classList.remove('hidden'); }
+  }
+
+  input.addEventListener('input', run);
+  document.querySelectorAll('.cp-preset').forEach(btn => {
+    btn.addEventListener('click', () => { input.value = btn.dataset.val; run(); });
+  });
+  run();
+})();
+</script>

@@ -1,0 +1,43 @@
+---
+import DevToolLayout from '../../layouts/DevToolLayout.astro';
+import JsonFormatter from '../../components/dev-tools/JsonFormatter.astro';
+import JwtDecoder from '../../components/dev-tools/JwtDecoder.astro';
+import RegexTester from '../../components/dev-tools/RegexTester.astro';
+import UnixTimestamp from '../../components/dev-tools/UnixTimestamp.astro';
+import HashGenerator from '../../components/dev-tools/HashGenerator.astro';
+import UuidGenerator from '../../components/dev-tools/UuidGenerator.astro';
+import ColorConverter from '../../components/dev-tools/ColorConverter.astro';
+import NumberBaseConverter from '../../components/dev-tools/NumberBaseConverter.astro';
+import CronParser from '../../components/dev-tools/CronParser.astro';
+import UrlParser from '../../components/dev-tools/UrlParser.astro';
+import HtmlFormatter from '../../components/dev-tools/HtmlFormatter.astro';
+import MarkdownPreviewer from '../../components/dev-tools/MarkdownPreviewer.astro';
+import { DEV_TOOLS } from '../../data/devtools.js';
+
+export function getStaticPaths() {
+  return DEV_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const componentMap: Record<string, any> = {
+  'json-formatter': JsonFormatter,
+  'jwt-decoder': JwtDecoder,
+  'regex-tester': RegexTester,
+  'unix-timestamp': UnixTimestamp,
+  'hash-generator': HashGenerator,
+  'uuid-generator': UuidGenerator,
+  'color-converter': ColorConverter,
+  'number-base-converter': NumberBaseConverter,
+  'cron-parser': CronParser,
+  'url-parser': UrlParser,
+  'html-formatter': HtmlFormatter,
+  'markdown-previewer': MarkdownPreviewer,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<DevToolLayout tool={tool}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</DevToolLayout>

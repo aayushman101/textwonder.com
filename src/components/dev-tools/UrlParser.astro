@@ -1,0 +1,83 @@
+---
+---
+<div class="space-y-4">
+  <div class="flex gap-2">
+    <input id="up-input" type="text" placeholder="https://api.example.com:8080/users?page=2&limit=10#results" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm focus:outline-none focus:border-cyan-500" />
+    <button id="up-parse" class="px-5 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm font-medium transition-colors shrink-0">Parse</button>
+  </div>
+
+  <div id="up-result" class="hidden space-y-4">
+    <!-- Components table -->
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="px-4 py-2 border-b border-slate-800 bg-[var(--bg-surface)]">
+        <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wide">URL Components</span>
+      </div>
+      <div id="up-components" class="divide-y divide-slate-800"></div>
+    </div>
+
+    <!-- Query params table -->
+    <div id="up-params-wrapper" class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="px-4 py-2 border-b border-slate-800 bg-[var(--bg-surface)]">
+        <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wide">Query Parameters</span>
+      </div>
+      <div id="up-params" class="divide-y divide-slate-800"></div>
+    </div>
+  </div>
+
+  <div id="up-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  document.getElementById('up-parse').addEventListener('click', () => {
+    let raw = document.getElementById('up-input').value.trim();
+    const status = document.getElementById('up-status');
+    const result = document.getElementById('up-result');
+    status.classList.add('hidden');
+
+    if (!raw) return;
+    if (!raw.startsWith('http://') && !raw.startsWith('https://') && !raw.startsWith('//')) raw = 'https://' + raw;
+
+    try {
+      const u = new URL(raw);
+      const components = [
+        ['Protocol', u.protocol],
+        ['Hostname', u.hostname],
+        ['Port', u.port || '(default)'],
+        ['Pathname', u.pathname || '/'],
+        ['Search string', u.search || '(none)'],
+        ['Fragment / Hash', u.hash || '(none)'],
+        ['Origin', u.origin],
+        ['Full URL', u.href],
+      ];
+      if (u.username) components.splice(2, 0, ['Username', u.username]);
+      if (u.password) components.splice(3, 0, ['Password', '••••••••']);
+
+      document.getElementById('up-components').innerHTML = components.map(([k, v]) =>
+        `<div class="flex items-start gap-4 px-4 py-2.5">
+          <span class="text-slate-500 text-xs w-28 shrink-0 pt-0.5">${k}</span>
+          <span class="text-slate-200 text-xs font-mono break-all">${v}</span>
+        </div>`
+      ).join('');
+
+      const params = [...u.searchParams.entries()];
+      const pw = document.getElementById('up-params-wrapper');
+      if (params.length) {
+        document.getElementById('up-params').innerHTML = params.map(([k, v]) =>
+          `<div class="flex items-start gap-4 px-4 py-2.5">
+            <span class="text-cyan-400 text-xs font-mono w-28 shrink-0 break-all">${k}</span>
+            <span class="text-slate-200 text-xs font-mono break-all">${v}</span>
+          </div>`
+        ).join('');
+        pw.classList.remove('hidden');
+      } else { pw.classList.add('hidden'); }
+
+      result.classList.remove('hidden');
+    } catch(e) { status.textContent = '❌ ' + e.message; status.classList.remove('hidden'); result.classList.add('hidden'); }
+  });
+
+  document.getElementById('up-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('up-parse').click();
+  });
+})();
+</script>

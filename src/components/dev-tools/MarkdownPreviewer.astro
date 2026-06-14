@@ -1,0 +1,149 @@
+---
+---
+<div class="space-y-3">
+  <div class="flex items-center justify-between">
+    <div class="flex gap-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg p-1">
+      <button id="mp-tab-split" class="px-3 py-1.5 text-xs rounded-md bg-cyan-600 text-white font-medium transition-colors">Split</button>
+      <button id="mp-tab-edit" class="px-3 py-1.5 text-xs rounded-md text-slate-400 hover:text-white transition-colors">Edit</button>
+      <button id="mp-tab-preview" class="px-3 py-1.5 text-xs rounded-md text-slate-400 hover:text-white transition-colors">Preview</button>
+    </div>
+    <div class="flex gap-2">
+      <button id="mp-copy-html" class="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">Copy HTML</button>
+      <button id="mp-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    </div>
+  </div>
+
+  <div id="mp-split" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Markdown</label>
+      <textarea id="mp-input" rows="18" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm resize-none focus:outline-none focus:border-cyan-500 leading-relaxed" placeholder="# Hello world&#10;&#10;Type **Markdown** here..."></textarea>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Preview</label>
+      <div id="mp-preview" class="bg-[var(--bg-base)] border border-slate-700 rounded-xl px-5 py-4 min-h-[18rem] text-slate-200 text-sm leading-relaxed overflow-auto prose-custom"></div>
+    </div>
+  </div>
+
+  <div id="mp-loading" class="hidden text-xs text-slate-500">Loading Markdown parser…</div>
+</div>
+
+<style>
+  .prose-custom h1,.prose-custom h2,.prose-custom h3,.prose-custom h4 { color:#f1f5f9;font-family:'Space Grotesk',sans-serif;font-weight:700;margin:1em 0 .5em; }
+  .prose-custom h1 { font-size:1.5rem;border-bottom:1px solid #334155;padding-bottom:.3em; }
+  .prose-custom h2 { font-size:1.25rem;border-bottom:1px solid #1e293b;padding-bottom:.2em; }
+  .prose-custom h3 { font-size:1.1rem; }
+  .prose-custom p { margin:.6em 0; }
+  .prose-custom code { background:#1e293b;padding:.1em .35em;border-radius:.25em;font-size:.85em;color:#7dd3fc; }
+  .prose-custom pre { background:#0f172a;border:1px solid #1e293b;border-radius:.5em;padding:1em;overflow-x:auto;margin:.8em 0; }
+  .prose-custom pre code { background:none;padding:0;color:#94a3b8;font-size:.8rem; }
+  .prose-custom blockquote { border-left:3px solid #06b6d4;padding-left:1em;color:#94a3b8;margin:.8em 0; }
+  .prose-custom a { color:#06b6d4;text-decoration:underline; }
+  .prose-custom ul { list-style:disc;padding-left:1.5em;margin:.5em 0; }
+  .prose-custom ol { list-style:decimal;padding-left:1.5em;margin:.5em 0; }
+  .prose-custom li { margin:.25em 0; }
+  .prose-custom table { border-collapse:collapse;width:100%;margin:.8em 0; }
+  .prose-custom th { background:#1e293b;padding:.4em .7em;text-align:left;font-size:.85em;color:#cbd5e1;border:1px solid #334155; }
+  .prose-custom td { padding:.4em .7em;border:1px solid #1e293b;font-size:.85em; }
+  .prose-custom hr { border:none;border-top:1px solid #334155;margin:1.2em 0; }
+  .prose-custom del { color:#64748b; }
+  .prose-custom input[type=checkbox] { margin-right:.4em; }
+</style>
+
+<script is:inline>
+(function() {
+  const mdInput = document.getElementById('mp-input');
+  const preview = document.getElementById('mp-preview');
+  const loading = document.getElementById('mp-loading');
+  let markedReady = false, rawHtml = '';
+
+  const DEFAULT_MD = `# Welcome to Markdown Previewer
+
+**Bold**, *italic*, ~~strikethrough~~, and \`inline code\`.
+
+## Lists
+
+- Item one
+- Item two
+  - Nested item
+
+1. First
+2. Second
+
+## Code block
+
+\`\`\`javascript
+const greet = (name) => \`Hello, \${name}!\`;
+console.log(greet('Dev'));
+\`\`\`
+
+## Table
+
+| Name | Role | Level |
+|------|------|-------|
+| Alice | Engineer | Senior |
+| Bob | Designer | Mid |
+
+> Blockquotes look like this.
+
+---
+
+[Link](https://textwonder.com)`;
+
+  mdInput.value = DEFAULT_MD;
+
+  async function loadMarked() {
+    if (markedReady) return;
+    loading.classList.remove('hidden');
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/marked@12/marked.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+    window.marked.use({ gfm: true, breaks: true });
+    markedReady = true;
+    loading.classList.add('hidden');
+  }
+
+  async function render() {
+    await loadMarked();
+    rawHtml = window.marked.parse(mdInput.value);
+    preview.innerHTML = rawHtml;
+  }
+
+  mdInput.addEventListener('input', render);
+
+  // Tab switching
+  function setTab(mode) {
+    const split = document.getElementById('mp-split');
+    const tabs = ['split','edit','preview'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('mp-tab-'+t);
+      btn.className = btn.className.replace('bg-cyan-600 text-white font-medium','text-slate-400 hover:text-white').replace('text-slate-400 hover:text-white text-slate-400 hover:text-white','text-slate-400 hover:text-white');
+    });
+    document.getElementById('mp-tab-'+mode).className = document.getElementById('mp-tab-'+mode).className.replace('text-slate-400 hover:text-white','bg-cyan-600 text-white font-medium');
+
+    if (mode === 'split') {
+      split.className = 'grid grid-cols-1 lg:grid-cols-2 gap-4';
+      mdInput.parentElement.classList.remove('hidden');
+      preview.parentElement.classList.remove('hidden');
+    } else if (mode === 'edit') {
+      split.className = 'grid grid-cols-1 gap-4';
+      mdInput.parentElement.classList.remove('hidden');
+      preview.parentElement.classList.add('hidden');
+    } else {
+      split.className = 'grid grid-cols-1 gap-4';
+      mdInput.parentElement.classList.add('hidden');
+      preview.parentElement.classList.remove('hidden');
+    }
+  }
+
+  document.getElementById('mp-tab-split').addEventListener('click', () => setTab('split'));
+  document.getElementById('mp-tab-edit').addEventListener('click', () => setTab('edit'));
+  document.getElementById('mp-tab-preview').addEventListener('click', () => setTab('preview'));
+  document.getElementById('mp-copy-html').addEventListener('click', () => { if (rawHtml) navigator.clipboard.writeText(rawHtml); });
+  document.getElementById('mp-clear').addEventListener('click', () => { mdInput.value = ''; preview.innerHTML = ''; rawHtml = ''; });
+
+  render();
+})();
+</script>

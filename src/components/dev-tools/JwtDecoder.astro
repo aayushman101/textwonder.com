@@ -1,0 +1,97 @@
+---
+---
+<div class="space-y-4">
+  <div class="space-y-1">
+    <label class="text-xs text-slate-500">JWT Token</label>
+    <textarea id="jwt-input" rows="4" placeholder="Paste your JWT token here (eyJhbGciOiJ...)" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 font-mono text-sm resize-none focus:outline-none focus:border-cyan-500 break-all"></textarea>
+  </div>
+
+  <button id="jwt-decode" class="px-6 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors">Decode Token</button>
+
+  <div id="jwt-result" class="hidden space-y-4">
+    <!-- Header -->
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2 border-b border-slate-700 bg-[var(--bg-surface)]">
+        <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wide">Header</span>
+        <button class="jwt-copy-btn text-xs text-slate-500 hover:text-cyan-400 transition-colors" data-target="jwt-header-out">Copy</button>
+      </div>
+      <pre id="jwt-header-out" class="px-4 py-3 text-slate-200 text-xs font-mono overflow-x-auto"></pre>
+    </div>
+    <!-- Payload -->
+    <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2 border-b border-slate-700 bg-[var(--bg-surface)]">
+        <span class="text-xs font-semibold text-cyan-400 uppercase tracking-wide">Payload</span>
+        <button class="jwt-copy-btn text-xs text-slate-500 hover:text-cyan-400 transition-colors" data-target="jwt-payload-out">Copy</button>
+      </div>
+      <pre id="jwt-payload-out" class="px-4 py-3 text-slate-200 text-xs font-mono overflow-x-auto"></pre>
+    </div>
+    <!-- Claims summary -->
+    <div id="jwt-claims" class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm"></div>
+    <!-- Signature notice -->
+    <div class="flex items-start gap-2 text-xs text-slate-500 bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3">
+      <svg class="w-4 h-4 text-yellow-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+      Signature is <strong class="text-slate-400 mx-1">not verified</strong> — this tool only decodes. Verification requires the signing secret or public key.
+    </div>
+  </div>
+
+  <div id="jwt-status" class="hidden text-sm py-1 text-red-400"></div>
+</div>
+
+<script is:inline>
+(function() {
+  document.getElementById('jwt-decode').addEventListener('click', () => {
+    const raw = document.getElementById('jwt-input').value.trim();
+    const status = document.getElementById('jwt-status');
+    const result = document.getElementById('jwt-result');
+
+    if (!raw) { showErr('Paste a JWT token to decode.'); return; }
+    const parts = raw.split('.');
+    if (parts.length < 2) { showErr('Not a valid JWT — expected format: header.payload.signature'); return; }
+
+    try {
+      function decodeB64(str) {
+        str = str.replace(/-/g, '+').replace(/_/g, '/');
+        while (str.length % 4) str += '=';
+        return JSON.parse(decodeURIComponent(atob(str).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+      }
+      const header = decodeB64(parts[0]);
+      const payload = decodeB64(parts[1]);
+
+      document.getElementById('jwt-header-out').textContent = JSON.stringify(header, null, 2);
+      document.getElementById('jwt-payload-out').textContent = JSON.stringify(payload, null, 2);
+
+      const claims = document.getElementById('jwt-claims');
+      const claimDefs = { iss: 'Issuer', sub: 'Subject', aud: 'Audience', exp: 'Expires', iat: 'Issued At', nbf: 'Not Before' };
+      const rows = [];
+      for (const [k, label] of Object.entries(claimDefs)) {
+        if (payload[k] !== undefined) {
+          let val = payload[k];
+          if ((k === 'exp' || k === 'iat' || k === 'nbf') && typeof val === 'number') {
+            const d = new Date(val * 1000);
+            const expired = k === 'exp' && d < new Date();
+            val = `<span class="${expired ? 'text-red-400' : 'text-green-400'}">${d.toUTCString()}</span>`;
+          }
+          rows.push(`<div><p class="text-xs text-slate-500 mb-0.5">${label}</p><p class="text-slate-200 text-xs font-mono break-all">${val}</p></div>`);
+        }
+      }
+      claims.innerHTML = rows.join('') || '<p class="text-slate-500 text-xs col-span-3">No standard claims found.</p>';
+
+      result.classList.remove('hidden');
+      status.classList.add('hidden');
+    } catch(e) { showErr('Failed to decode: ' + e.message); }
+
+    function showErr(msg) {
+      status.textContent = '❌ ' + msg;
+      status.classList.remove('hidden');
+      result.classList.add('hidden');
+    }
+  });
+
+  document.querySelectorAll('.jwt-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.target);
+      if (el) navigator.clipboard.writeText(el.textContent);
+    });
+  });
+})();
+</script>

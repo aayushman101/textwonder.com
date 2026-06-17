@@ -1,0 +1,132 @@
+---
+---
+<div class="space-y-4">
+  <div class="flex items-center gap-3 flex-wrap">
+    <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">Delimiter:</label>
+    <div class="flex gap-2">
+      <button id="ctt-del-comma" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors" style="background:#f59e0b">Comma</button>
+      <button id="ctt-del-semi" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors">Semicolon</button>
+      <button id="ctt-del-tab" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors">Tab</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-4">
+    <div class="space-y-2">
+      <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">CSV Input</label>
+      <textarea id="ctt-input" rows="8" placeholder="name,age,city&#10;Alice,30,London&#10;Bob,25,Paris" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y focus:outline-none focus:border-amber-500 text-sm font-mono"></textarea>
+    </div>
+  </div>
+
+  <div id="ctt-table-wrap" class="hidden space-y-4">
+    <div>
+      <div class="flex items-center justify-between mb-2">
+        <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">Table Preview</label>
+        <span id="ctt-stats" class="text-xs text-slate-600"></span>
+      </div>
+      <div id="ctt-preview" class="overflow-x-auto rounded-xl border border-slate-700 bg-[var(--bg-base)]"></div>
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">HTML Code</label>
+        <button id="ctt-copy-html" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">Copy HTML</button>
+      </div>
+      <textarea id="ctt-html-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y focus:outline-none text-xs font-mono select-all"></textarea>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button id="ctt-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+  </div>
+  <div id="ctt-error" class="hidden text-red-400 text-sm"></div>
+</div>
+
+<style>
+  #ctt-preview table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  #ctt-preview th { background: #1e293b; color: #e2e8f0; font-weight: 600; padding: 10px 14px; text-align: left; border-bottom: 2px solid #334155; }
+  #ctt-preview td { color: #94a3b8; padding: 8px 14px; border-bottom: 1px solid #1e293b; }
+  #ctt-preview tr:last-child td { border-bottom: none; }
+  #ctt-preview tr:hover td { background: #0f172a; }
+</style>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('ctt-input');
+  const preview = document.getElementById('ctt-preview');
+  const htmlOut = document.getElementById('ctt-html-output');
+  const tableWrap = document.getElementById('ctt-table-wrap');
+  const stats = document.getElementById('ctt-stats');
+  const errorEl = document.getElementById('ctt-error');
+  const delBtns = { comma: document.getElementById('ctt-del-comma'), semi: document.getElementById('ctt-del-semi'), tab: document.getElementById('ctt-del-tab') };
+  let delim = ',';
+
+  function setDelim(d, btn) {
+    delim = d;
+    Object.values(delBtns).forEach(b => {
+      b.style.background = ''; b.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors';
+    });
+    btn.style.background = '#f59e0b'; btn.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors';
+    convert();
+  }
+
+  function parseCSV(text, d) {
+    const rows = [];
+    text.split('\n').forEach(line => {
+      if (!line.trim()) return;
+      const fields = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+        else if (c === d && !inQ) { fields.push(cur); cur = ''; }
+        else cur += c;
+      }
+      fields.push(cur);
+      rows.push(fields);
+    });
+    return rows;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function convert() {
+    errorEl.classList.add('hidden');
+    const val = input.value.trim();
+    if (!val) { tableWrap.classList.add('hidden'); preview.innerHTML = ''; htmlOut.value = ''; return; }
+
+    const rows = parseCSV(val, delim);
+    if (rows.length < 1) return;
+
+    const headers = rows[0];
+    const body = rows.slice(1);
+
+    let html = '<table><thead><tr>';
+    headers.forEach(h => { html += `<th>${escHtml(h)}</th>`; });
+    html += '</tr></thead><tbody>';
+    body.forEach(row => {
+      html += '<tr>';
+      headers.forEach((_, i) => { html += `<td>${escHtml(row[i] || '')}</td>`; });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+
+    preview.innerHTML = html;
+    tableWrap.classList.remove('hidden');
+    stats.textContent = `${body.length} rows · ${headers.length} columns`;
+
+    const prettyHtml = '<table>\n  <thead>\n    <tr>\n' +
+      headers.map(h => `      <th>${escHtml(h)}</th>`).join('\n') +
+      '\n    </tr>\n  </thead>\n  <tbody>\n' +
+      body.map(row => '    <tr>\n' + headers.map((_, i) => `      <td>${escHtml(row[i] || '')}</td>`).join('\n') + '\n    </tr>').join('\n') +
+      '\n  </tbody>\n</table>';
+    htmlOut.value = prettyHtml;
+  }
+
+  delBtns.comma.addEventListener('click', () => setDelim(',', delBtns.comma));
+  delBtns.semi.addEventListener('click', () => setDelim(';', delBtns.semi));
+  delBtns.tab.addEventListener('click', () => setDelim('\t', delBtns.tab));
+  input.addEventListener('input', convert);
+  document.getElementById('ctt-copy-html').addEventListener('click', () => { if (htmlOut.value) navigator.clipboard.writeText(htmlOut.value); });
+  document.getElementById('ctt-clear').addEventListener('click', () => { input.value = ''; preview.innerHTML = ''; htmlOut.value = ''; tableWrap.classList.add('hidden'); stats.textContent = ''; errorEl.classList.add('hidden'); });
+})();
+</script>

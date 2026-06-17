@@ -1,0 +1,85 @@
+---
+---
+<div>
+  <!-- Tabs -->
+  <div class="flex gap-1 mb-4 p-1 bg-[var(--bg-base)] rounded-xl border border-slate-700">
+    <button id="pc-tab1" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-white" style="background:#10b981" onclick="pcTab(1)">X% of Y</button>
+    <button id="pc-tab2" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:text-white" onclick="pcTab(2)">X is ?% of Y</button>
+    <button id="pc-tab3" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:text-white" onclick="pcTab(3)">% Change</button>
+  </div>
+
+  <!-- Tab 1 -->
+  <div id="pc-panel1">
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div><label class="block text-sm text-slate-400 mb-1">Percent (%)</label><input type="number" id="pc-p1x" placeholder="e.g. 20" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+      <div><label class="block text-sm text-slate-400 mb-1">Of Number</label><input type="number" id="pc-p1y" placeholder="e.g. 500" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+    </div>
+    <div id="pc-r1" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Result</div>
+      <div id="pc-r1v" class="text-3xl font-bold" style="color:#10b981"></div>
+    </div>
+  </div>
+
+  <!-- Tab 2 -->
+  <div id="pc-panel2" class="hidden">
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div><label class="block text-sm text-slate-400 mb-1">X (part)</label><input type="number" id="pc-p2x" placeholder="e.g. 75" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+      <div><label class="block text-sm text-slate-400 mb-1">Y (whole)</label><input type="number" id="pc-p2y" placeholder="e.g. 300" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+    </div>
+    <div id="pc-r2" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">X is</div>
+      <div id="pc-r2v" class="text-3xl font-bold" style="color:#10b981"></div>
+      <div class="text-slate-400 text-sm">of Y</div>
+    </div>
+  </div>
+
+  <!-- Tab 3 -->
+  <div id="pc-panel3" class="hidden">
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div><label class="block text-sm text-slate-400 mb-1">From (A)</label><input type="number" id="pc-p3a" placeholder="e.g. 80" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+      <div><label class="block text-sm text-slate-400 mb-1">To (B)</label><input type="number" id="pc-p3b" placeholder="e.g. 100" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+    </div>
+    <div id="pc-r3" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div id="pc-r3label" class="text-sm text-slate-400 mb-1"></div>
+      <div id="pc-r3v" class="text-3xl font-bold"></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  window.pcTab = function(n) {
+    [1,2,3].forEach(i => {
+      document.getElementById('pc-panel'+i).classList.toggle('hidden', i!==n);
+      const tab = document.getElementById('pc-tab'+i);
+      if(i===n){ tab.style.background='#10b981'; tab.classList.remove('text-slate-400'); tab.classList.add('text-white'); }
+      else { tab.style.background=''; tab.classList.add('text-slate-400'); tab.classList.remove('text-white'); }
+    });
+  };
+  // Tab 1
+  ['pc-p1x','pc-p1y'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const x = parseFloat(document.getElementById('pc-p1x').value), y = parseFloat(document.getElementById('pc-p1y').value);
+    const r = document.getElementById('pc-r1');
+    if(!isNaN(x) && !isNaN(y)) { document.getElementById('pc-r1v').textContent = (x/100*y).toLocaleString(undefined,{maximumFractionDigits:4}); r.classList.remove('hidden'); } else r.classList.add('hidden');
+  }));
+  // Tab 2
+  ['pc-p2x','pc-p2y'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const x = parseFloat(document.getElementById('pc-p2x').value), y = parseFloat(document.getElementById('pc-p2y').value);
+    const r = document.getElementById('pc-r2');
+    if(!isNaN(x) && !isNaN(y) && y!==0) { document.getElementById('pc-r2v').textContent = (x/y*100).toFixed(4).replace(/\.?0+$/,'') + '%'; r.classList.remove('hidden'); } else r.classList.add('hidden');
+  }));
+  // Tab 3
+  ['pc-p3a','pc-p3b'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const a = parseFloat(document.getElementById('pc-p3a').value), b = parseFloat(document.getElementById('pc-p3b').value);
+    const r = document.getElementById('pc-r3');
+    if(!isNaN(a) && !isNaN(b) && a!==0) {
+      const pct = (b-a)/Math.abs(a)*100;
+      const inc = pct >= 0;
+      document.getElementById('pc-r3label').textContent = inc ? 'Percentage Increase' : 'Percentage Decrease';
+      document.getElementById('pc-r3v').textContent = (inc?'+':'') + pct.toFixed(2) + '%';
+      document.getElementById('pc-r3v').style.color = inc ? '#10b981' : '#ef4444';
+      r.classList.remove('hidden');
+    } else r.classList.add('hidden');
+  }));
+})();
+</script>

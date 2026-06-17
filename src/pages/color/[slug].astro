@@ -1,0 +1,31 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import HexRgbConverter from '../../components/color-tools/HexRgbConverter.astro';
+import ContrastChecker from '../../components/color-tools/ContrastChecker.astro';
+import GradientGenerator from '../../components/color-tools/GradientGenerator.astro';
+import ColorPaletteGenerator from '../../components/color-tools/ColorPaletteGenerator.astro';
+import TintShadeGenerator from '../../components/color-tools/TintShadeGenerator.astro';
+import { COLOR_TOOLS } from '../../data/colortools.js';
+
+export function getStaticPaths() {
+  return COLOR_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'ColorWonder', prefix:'Color', suffix:'Wonder', rootPath:'/color', accentColor:'#ec4899', idPrefix:'color' };
+
+const componentMap: Record<string, any> = {
+  'hex-rgb-converter': HexRgbConverter,
+  'contrast-checker': ContrastChecker,
+  'gradient-generator': GradientGenerator,
+  'color-palette-generator': ColorPaletteGenerator,
+  'tint-shade-generator': TintShadeGenerator,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={COLOR_TOOLS}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

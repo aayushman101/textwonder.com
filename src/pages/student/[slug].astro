@@ -1,0 +1,33 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import CgpaCalculator from '../../components/student-tools/CgpaCalculator.astro';
+import GpaCalculator from '../../components/student-tools/GpaCalculator.astro';
+import AttendanceCalculator from '../../components/student-tools/AttendanceCalculator.astro';
+import MarksPercentageCalculator from '../../components/student-tools/MarksPercentageCalculator.astro';
+import ExamCountdown from '../../components/student-tools/ExamCountdown.astro';
+import StudyPlanner from '../../components/student-tools/StudyPlanner.astro';
+import { STUDENT_TOOLS } from '../../data/studenttools.js';
+
+export function getStaticPaths() {
+  return STUDENT_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'StudentWonder', prefix:'Student', suffix:'Wonder', rootPath:'/student', accentColor:'#3b82f6', idPrefix:'student' };
+
+const componentMap: Record<string, any> = {
+  'cgpa-calculator': CgpaCalculator,
+  'gpa-calculator': GpaCalculator,
+  'attendance-calculator': AttendanceCalculator,
+  'marks-percentage-calculator': MarksPercentageCalculator,
+  'exam-countdown': ExamCountdown,
+  'study-planner': StudyPlanner,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={STUDENT_TOOLS}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

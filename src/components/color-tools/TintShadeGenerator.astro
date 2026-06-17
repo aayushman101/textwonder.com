@@ -1,0 +1,47 @@
+---
+---
+<div>
+  <div class="flex gap-3 mb-6 items-end">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Base Color</label>
+      <input type="color" id="tsg-picker" value="#ec4899" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+    </div>
+    <div class="flex-1">
+      <label class="block text-sm text-slate-400 mb-1">HEX value</label>
+      <input type="text" id="tsg-input" value="#ec4899" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+    </div>
+  </div>
+
+  <div class="space-y-5">
+    <div>
+      <div class="text-sm font-semibold text-slate-300 mb-2">Tints (lighter &larr; base)</div>
+      <div id="tsg-tints" class="flex gap-1"></div>
+    </div>
+    <div>
+      <div class="text-sm font-semibold text-slate-300 mb-2">Shades (base &rarr; darker)</div>
+      <div id="tsg-shades" class="flex gap-1"></div>
+    </div>
+  </div>
+  <p class="text-xs text-slate-500 mt-4">Click any swatch to copy its HEX code.</p>
+</div>
+
+<script is:inline>
+(function(){
+  function hexToRgb(hex){hex=hex.replace('#','');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');return{r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};}
+  function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>Math.round(Math.max(0,Math.min(255,v))).toString(16).padStart(2,'0')).join('');}
+  function mix(r,g,b,mixR,mixG,mixB,t){return{r:Math.round(r+(mixR-r)*t),g:Math.round(g+(mixG-g)*t),b:Math.round(b+(mixB-b)*t)};}
+  function swatch(hex){return `<div class="flex-1 cursor-pointer group" onclick="navigator.clipboard.writeText('${hex}').catch(()=>{});this.querySelector('.tsg-lbl').textContent='Copied!'"><div class="h-12 rounded" style="background:${hex}"></div><div class="tsg-lbl text-xs text-center mt-1 text-slate-500 group-hover:text-slate-300 font-mono" style="font-size:10px">${hex}</div></div>`;}
+  function generate(hex){
+    if(!/^#[0-9a-fA-F]{6}$/i.test(hex))return;
+    const {r,g,b}=hexToRgb(hex);
+    const tints=[];const shades=[];
+    for(let i=10;i>=1;i--){const m=mix(r,g,b,255,255,255,i*0.09);tints.push(rgbToHex(m.r,m.g,m.b));}
+    for(let i=1;i<=10;i++){const m=mix(r,g,b,0,0,0,i*0.09);shades.push(rgbToHex(m.r,m.g,m.b));}
+    document.getElementById('tsg-tints').innerHTML=tints.map(h=>swatch(h)).join('');
+    document.getElementById('tsg-shades').innerHTML=shades.map(h=>swatch(h)).join('');
+  }
+  document.getElementById('tsg-picker').addEventListener('input',function(){document.getElementById('tsg-input').value=this.value;generate(this.value);});
+  document.getElementById('tsg-input').addEventListener('input',function(){const v=this.value.startsWith('#')?this.value:'#'+this.value;if(/^#[0-9a-fA-F]{6}$/i.test(v)){document.getElementById('tsg-picker').value=v;generate(v);}});
+  generate('#ec4899');
+})();
+</script>

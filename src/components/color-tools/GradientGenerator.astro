@@ -1,0 +1,78 @@
+---
+---
+<div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Color 1</label>
+      <div class="flex gap-2">
+        <input type="color" id="gg-c1" value="#ec4899" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+        <input type="text" id="gg-c1t" value="#ec4899" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Color 2</label>
+      <div class="flex gap-2">
+        <input type="color" id="gg-c2" value="#6366f1" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+        <input type="text" id="gg-c2t" value="#6366f1" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Type</label>
+      <select id="gg-type" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500">
+        <option value="linear">Linear</option>
+        <option value="radial">Radial</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Direction</label>
+      <select id="gg-dir" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500">
+        <option value="to right">&#8594; To Right</option>
+        <option value="to bottom">&#8595; To Bottom</option>
+        <option value="to bottom right">&#8600; To Bottom Right</option>
+        <option value="to bottom left">&#8601; To Bottom Left</option>
+        <option value="45deg">45&deg;</option>
+        <option value="135deg">135&deg;</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div id="gg-preview" class="h-32 rounded-xl border border-slate-700 mb-4 transition-all"></div>
+
+  <!-- CSS Output -->
+  <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl p-4">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-xs text-slate-400">CSS Code</span>
+      <button onclick="ggCopy()" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">Copy</button>
+    </div>
+    <code id="gg-css" class="text-sm text-pink-400 font-mono break-all"></code>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function update(){
+    const c1=document.getElementById('gg-c1t').value||document.getElementById('gg-c1').value;
+    const c2=document.getElementById('gg-c2t').value||document.getElementById('gg-c2').value;
+    const type=document.getElementById('gg-type').value;
+    const dir=document.getElementById('gg-dir').value;
+    let grad,css;
+    if(type==='linear'){grad=`linear-gradient(${dir}, ${c1}, ${c2})`;css=`background-image: linear-gradient(${dir}, ${c1}, ${c2});`;}
+    else{grad=`radial-gradient(circle, ${c1}, ${c2})`;css=`background-image: radial-gradient(circle, ${c1}, ${c2});`;}
+    document.getElementById('gg-preview').style.backgroundImage=grad;
+    document.getElementById('gg-css').textContent=css;
+  }
+  window.ggCopy=function(){navigator.clipboard.writeText(document.getElementById('gg-css').textContent).catch(()=>{});};
+  // Sync pickers and text
+  ['gg-c1','gg-c2'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',function(){document.getElementById(id+'t').value=this.value;update();});
+  });
+  ['gg-c1t','gg-c2t'].forEach(id=>{
+    document.getElementById(id).addEventListener('input',function(){const v=this.value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById(id.replace('t','')).value=v;}update();});
+  });
+  ['gg-type','gg-dir'].forEach(id=>document.getElementById(id).addEventListener('change',update));
+  update();
+})();
+</script>

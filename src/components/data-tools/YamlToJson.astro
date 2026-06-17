@@ -1,0 +1,60 @@
+---
+---
+<div class="space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="space-y-2">
+      <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">YAML Input</label>
+      <textarea id="ytj-input" rows="16" placeholder="name: Alice&#10;age: 30&#10;hobbies:&#10;  - reading&#10;  - coding" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y focus:outline-none focus:border-amber-500 text-sm font-mono"></textarea>
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">JSON Output</label>
+        <button id="ytj-copy" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">Copy</button>
+      </div>
+      <textarea id="ytj-output" rows="16" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y focus:outline-none text-sm font-mono select-all"></textarea>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="ytj-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+  </div>
+  <div id="ytj-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('ytj-input');
+  const output = document.getElementById('ytj-output');
+  const status = document.getElementById('ytj-status');
+
+  function showStatus(msg, isError) {
+    status.textContent = msg;
+    status.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function loadJsYaml() {
+    if (window.jsyaml) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  async function convert() {
+    const val = input.value.trim();
+    status.classList.add('hidden');
+    if (!val) { output.value = ''; return; }
+    await loadJsYaml();
+    try {
+      const parsed = window.jsyaml.load(val);
+      output.value = JSON.stringify(parsed, null, 2);
+    } catch(e) { showStatus('YAML Error: ' + e.message, true); output.value = ''; }
+  }
+
+  input.addEventListener('input', convert);
+  document.getElementById('ytj-copy').addEventListener('click', () => { if (output.value) navigator.clipboard.writeText(output.value); });
+  document.getElementById('ytj-clear').addEventListener('click', () => { input.value = ''; output.value = ''; status.classList.add('hidden'); });
+})();
+</script>

@@ -9,8 +9,20 @@ export default defineConfig({
   integrations: [
     sitemap({
       changefreq: 'weekly',
-      priority: 0.8,
       lastmod: new Date(),
+      serialize(item) {
+        const url = item.url;
+        if (url === 'https://textwonder.com/') {
+          return { ...item, priority: 1.0 };
+        }
+        if (/\/(tools|calc|unit|health|student|color|data|pdfwonder|devwonder)\/?$/.test(url)) {
+          return { ...item, priority: 0.9 };
+        }
+        if (/\/(tools|calc|unit|health|student|color|data|pdfwonder|devwonder)\/.+/.test(url)) {
+          return { ...item, priority: 0.8 };
+        }
+        return { ...item, priority: 0.6 };
+      },
     }),
   ],
   vite: {

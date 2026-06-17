@@ -1,0 +1,79 @@
+---
+---
+<div>
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-1" for="sp-hours">Available Study Hours per Day</label>
+    <input type="number" id="sp-hours" placeholder="e.g. 6" step="0.5" min="0.5" max="24" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500" />
+  </div>
+
+  <div class="mb-3">
+    <div class="grid grid-cols-12 gap-2 text-xs text-slate-500 px-1 mb-2">
+      <span class="col-span-6">Subject</span>
+      <span class="col-span-4">Priority Weight (1–10)</span>
+      <span class="col-span-2"></span>
+    </div>
+    <div id="sp-subjects" class="space-y-2"></div>
+  </div>
+
+  <div class="flex gap-2 mb-4">
+    <button onclick="spAdd()" class="px-3 py-2 rounded-lg text-sm font-medium text-white" style="background:#3b82f6">+ Add Subject</button>
+    <button onclick="spCalc()" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Generate Plan</button>
+  </div>
+
+  <div id="sp-result" class="hidden space-y-3">
+    <div class="text-sm font-semibold text-white mb-2">Your Daily Study Schedule</div>
+    <div id="sp-plan" class="space-y-2"></div>
+    <p class="text-xs text-slate-500 mt-2">Times rounded to 15-minute blocks. Adjust based on your actual schedule.</p>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  let count=0;
+  function row(i){
+    return `<div id="sp-row-${i}" class="grid grid-cols-12 gap-2 items-center">
+      <input class="col-span-6 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Subject name" id="sp-name-${i}" />
+      <input type="number" class="col-span-4 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Weight (1–10)" id="sp-weight-${i}" min="1" max="10" value="5" />
+      <button onclick="spRemove(${i})" class="col-span-2 text-slate-500 hover:text-red-400 text-lg leading-none">×</button>
+    </div>`;
+  }
+  window.spAdd=function(){count++;const c=document.createElement('div');c.innerHTML=row(count);document.getElementById('sp-subjects').appendChild(c.firstChild);};
+  window.spRemove=function(i){const el=document.getElementById('sp-row-'+i);if(el)el.remove();};
+  window.spCalc=function(){
+    const hours=parseFloat(document.getElementById('sp-hours').value);
+    const res=document.getElementById('sp-result');
+    if(!hours||hours<=0){res.classList.add('hidden');return;}
+    const subjects=[];
+    let totalWeight=0;
+    for(let i=1;i<=count;i++){
+      const name=(document.getElementById('sp-name-'+i)||{}).value||('Subject '+i);
+      const w=parseFloat((document.getElementById('sp-weight-'+i)||{}).value)||5;
+      if(document.getElementById('sp-row-'+i)){subjects.push({name,w});totalWeight+=w;}
+    }
+    if(!subjects.length){res.classList.add('hidden');return;}
+    const totalMin=hours*60;
+    const bars=['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#f43f5e','#a3e635'];
+    const plan=subjects.map((s,idx)=>{
+      const rawMin=s.w/totalWeight*totalMin;
+      const min=Math.round(rawMin/15)*15;
+      const h=Math.floor(min/60);
+      const m=min%60;
+      const timeStr=h>0?(m>0?`${h}h ${m}m`:`${h}h`):`${m}m`;
+      const pct=Math.round(s.w/totalWeight*100);
+      return `<div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-700">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-white text-sm font-medium">${s.name}</span>
+          <span class="text-white text-sm font-semibold" style="color:${bars[idx%bars.length]}">${timeStr}</span>
+        </div>
+        <div class="h-2 bg-slate-800 rounded-full overflow-hidden">
+          <div class="h-full rounded-full" style="width:${pct}%;background:${bars[idx%bars.length]}"></div>
+        </div>
+        <div class="text-xs text-slate-500 mt-1">${pct}% of study time</div>
+      </div>`;
+    });
+    document.getElementById('sp-plan').innerHTML=plan.join('');
+    res.classList.remove('hidden');
+  };
+  spAdd();spAdd();spAdd();
+})();
+</script>

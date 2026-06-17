@@ -1,0 +1,148 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the fastest way to remove duplicate lines from text?', a: 'The fastest way is to use a free online tool like TextWonder\'s Remove Duplicate Lines tool. Paste your text, click nothing — the unique lines appear instantly. No downloads, no formulas, no terminal commands.' },
+  { q: 'Does removing duplicate lines care about case?', a: 'It depends on the tool. TextWonder offers both case-sensitive (treats "Apple" and "apple" as different) and case-insensitive (treats them as the same) deduplication. Most tools default to case-sensitive.' },
+  { q: 'Can I remove duplicates from a CSV file?', a: 'Yes. Paste the CSV content into a duplicate line remover. Each row becomes a "line," and duplicate rows get removed. For large CSV files with millions of rows, a spreadsheet tool like Excel or Python\'s pandas library is more appropriate.' },
+  { q: 'How do I remove duplicate lines in Excel?', a: 'Select your data range, go to Data → Remove Duplicates, select the columns to check, and click OK. Excel removes exact duplicate rows.' },
+  { q: 'How do I remove duplicates in Google Sheets?', a: 'In Google Sheets: Data → Data cleanup → Remove duplicates. Select the columns to check. Alternatively, use the UNIQUE() function to extract unique values into a new column.' },
+];
+---
+
+<BlogLayout
+  title="How to Remove Duplicate Lines from Text: 3 Fast Methods"
+  description="Remove duplicate lines from text, lists, and CSV files in seconds. Covers free online tools, Excel, Google Sheets, and command-line methods."
+  canonical="/blog/remove-duplicate-lines-guide"
+  date="2025-06-10"
+  readTime="4 min read"
+  category="Text Cleaning"
+  faqs={faqs}
+>
+
+<p>
+  Duplicate lines in text are one of the most common problems when working with lists, database exports, email lists, or any aggregated data. Whether you're cleaning up a keyword list, deduplicating email addresses, or removing repeated entries from a CSV, there are several fast ways to do it. This guide covers the three best methods.
+</p>
+
+<h2>Method 1: Online Tool (Fastest, No Software Required)</h2>
+
+<p>
+  If you have a list pasted in a text file, browser, or document, a free online tool is the fastest option with no software installation needed.
+</p>
+
+<ol>
+  <li>Go to <a href="/tools/remove-duplicate-lines">TextWonder's Remove Duplicate Lines tool</a>.</li>
+  <li>Paste your text (any size) into the input field.</li>
+  <li>The tool instantly shows only the unique lines.</li>
+  <li>Choose <strong>case-sensitive</strong> or <strong>case-insensitive</strong> matching.</li>
+  <li>Copy the output or download it.</li>
+</ol>
+
+<a href="/tools/remove-duplicate-lines" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Remove Duplicate Lines →</div>
+  <div class="cta-desc">Paste any list and instantly remove duplicate lines. Case-sensitive and case-insensitive options. Free, browser-based.</div>
+</a>
+
+<p>
+  This method works for any text — keyword lists, email addresses, log lines, product names, URLs, and more.
+</p>
+
+<h2>Method 2: Excel or Google Sheets</h2>
+
+<p>
+  For data already in a spreadsheet, use the built-in deduplication features:
+</p>
+
+<h3>In Microsoft Excel:</h3>
+<ol>
+  <li>Select the column or range of data you want to deduplicate.</li>
+  <li>Go to <strong>Data</strong> tab → click <strong>Remove Duplicates</strong>.</li>
+  <li>In the dialog, select which columns define a "duplicate".</li>
+  <li>Click OK. Excel removes duplicate rows and tells you how many were removed.</li>
+</ol>
+
+<h3>In Google Sheets:</h3>
+<ol>
+  <li>Select your data range.</li>
+  <li>Go to <strong>Data</strong> → <strong>Data cleanup</strong> → <strong>Remove duplicates</strong>.</li>
+  <li>Choose whether your data has a header row and which columns to check.</li>
+  <li>Click Remove duplicates.</li>
+</ol>
+
+<p>
+  Alternatively, use the <code>=UNIQUE(A1:A100)</code> formula to extract unique values into a new column without modifying the original data.
+</p>
+
+<h2>Method 3: Command Line (Linux/Mac Terminal or Windows PowerShell)</h2>
+
+<p>
+  For large files (millions of lines) or automated workflows, the command line is the most efficient approach.
+</p>
+
+<h3>Linux / macOS (bash):</h3>
+<p>
+  To remove duplicate lines while preserving order:
+</p>
+<p><code>awk '!seen[$0]++' input.txt &gt; output.txt</code></p>
+
+<p>
+  To sort first and then remove duplicates:
+</p>
+<p><code>sort -u input.txt &gt; output.txt</code></p>
+
+<h3>Windows PowerShell:</h3>
+<p><code>Get-Content input.txt | Sort-Object -Unique | Set-Content output.txt</code></p>
+
+<h3>Python (for large datasets):</h3>
+<p>
+  For CSV files with millions of rows, Python with pandas is the right tool:
+</p>
+
+```python
+import pandas as pd
+df = pd.read_csv('input.csv')
+df.drop_duplicates(inplace=True)
+df.to_csv('output.csv', index=False)
+```
+
+<h2>When to Use Each Method</h2>
+
+<ul>
+  <li><strong>Online tool:</strong> Quick one-off tasks, small to medium lists, no software available</li>
+  <li><strong>Excel/Sheets:</strong> Data already in a spreadsheet, non-technical users, preserving other columns</li>
+  <li><strong>Command line:</strong> Large files, automation, scripting pipelines, repeated tasks</li>
+  <li><strong>Python/pandas:</strong> Very large CSV files, complex conditions, integration with other data processing</li>
+</ul>
+
+<h2>Keeping Order vs Sorting</h2>
+
+<p>
+  An important consideration: do you want to keep the original order of lines, or is sorting acceptable?
+</p>
+
+<ul>
+  <li><code>sort -u</code> (Linux) <strong>sorts alphabetically</strong> while removing duplicates — order changes</li>
+  <li><code>awk '!seen[$0]++'</code> <strong>preserves original order</strong> while removing duplicates</li>
+  <li>TextWonder's tool offers both options</li>
+  <li>Excel's Remove Duplicates <strong>preserves first occurrence order</strong></li>
+</ul>
+
+<p>
+  For most use cases (email lists, keyword lists, product names), preserving original order is preferable.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

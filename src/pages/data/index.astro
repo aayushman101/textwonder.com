@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WonderHeader from '../../components/WonderHeader.astro';
+import Footer from '../../components/Footer.astro';
+import { DATA_TOOLS } from '../../data/datatools.js';
+
+const brand = { name: 'DataWonder', prefix: 'Data', suffix: 'Wonder', rootPath: '/data', accentColor: '#f59e0b', idPrefix: 'data' };
+---
+
+<BaseLayout
+  title="Free Data Converters — CSV, JSON, YAML & More | DataWonder"
+  description="Free data format converters: CSV to JSON, JSON to YAML, YAML to JSON, TSV to CSV, CSV to HTML table, number formatter. Instant, free, no signup."
+  canonical="/data"
+>
+  <WonderHeader brand={brand} tools={DATA_TOOLS} />
+
+  <main>
+    <!-- Hero -->
+    <section class="max-w-4xl mx-auto px-4 pt-12 pb-8 text-center">
+      <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-amber-950/50 border border-amber-800/40 text-amber-400 text-xs font-medium mb-5">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+        No upload needed — runs in your browser
+      </div>
+      <h1 class="text-4xl md:text-5xl font-bold text-white leading-tight mb-3" style="font-family: 'Space Grotesk', sans-serif;">
+        Convert any data format<br class="hidden sm:block" /> instantly
+      </h1>
+      <p class="text-slate-400 text-lg max-w-xl mx-auto mb-5">
+        CSV, JSON, YAML, TSV converters and formatters — instant results, no upload needed.
+      </p>
+      <div class="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500">
+        <span><strong style="color:#f59e0b" class="font-semibold">7</strong> tools</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong style="color:#f59e0b" class="font-semibold">100%</strong> free</span>
+        <span class="hidden sm:inline text-slate-700">·</span>
+        <span><strong style="color:#f59e0b" class="font-semibold">No</strong> upload</span>
+      </div>
+    </section>
+
+    <!-- Tools Grid -->
+    <section class="max-w-6xl mx-auto px-4 pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {DATA_TOOLS.map(tool => (
+          <a
+            href={`/data/${tool.slug}`}
+            class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-amber-500/50 hover:bg-[var(--bg-surface-hover)] transition-all"
+          >
+            <div class="flex items-start gap-4 mb-3">
+              <div class="w-11 h-11 rounded-xl flex items-center justify-center shrink-0 text-xl" style={`background:${tool.iconBg}`}>
+                {tool.icon}
+              </div>
+              <div class="flex-1 min-w-0">
+                <h2 class="text-white font-semibold text-base transition-colors" style="transition: color 0.15s;" onmouseover="this.style.color='#f59e0b'" onmouseout="this.style.color=''">{tool.name}</h2>
+                <p class="text-slate-400 text-sm leading-snug mt-0.5">{tool.tagline}</p>
+              </div>
+            </div>
+            <div class="flex items-center text-xs font-medium transition-colors" style="color: rgba(245,158,11,0.6);" onmouseover="this.style.color='#f59e0b'" onmouseout="this.style.color='rgba(245,158,11,0.6)'">
+              Open tool
+              <svg class="w-3.5 h-3.5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </div>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- Sister Sites -->
+    <section class="max-w-4xl mx-auto px-4 pb-16">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <a href="/" class="flex items-center justify-between bg-[var(--bg-surface)] border border-violet-800/30 rounded-xl p-4 hover:border-violet-500/50 transition-colors">
+          <div>
+            <p class="text-xs text-slate-500 mb-0.5">Text tools</p>
+            <p class="text-white font-semibold text-sm">Text<span class="text-violet-400">Wonder</span></p>
+          </div>
+          <span class="text-slate-500 text-sm">→</span>
+        </a>
+        <a href="/pdfwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-xl p-4 hover:border-orange-500/50 transition-colors">
+          <div>
+            <p class="text-xs text-slate-500 mb-0.5">PDF tools</p>
+            <p class="text-white font-semibold text-sm">PDF<span class="text-orange-400">Wonder</span></p>
+          </div>
+          <span class="text-slate-500 text-sm">→</span>
+        </a>
+        <a href="/devwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-sky-800/30 rounded-xl p-4 hover:border-sky-500/50 transition-colors">
+          <div>
+            <p class="text-xs text-slate-500 mb-0.5">Dev tools</p>
+            <p class="text-white font-semibold text-sm">Dev<span class="text-sky-400">Wonder</span></p>
+          </div>
+          <span class="text-slate-500 text-sm">→</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

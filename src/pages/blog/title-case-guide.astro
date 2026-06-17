@@ -1,0 +1,142 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What words are not capitalized in title case?', a: 'Short prepositions (in, on, at, by, for, of, to), coordinating conjunctions (and, but, or, nor, so, yet), and articles (a, an, the) are typically lowercased unless they appear as the first or last word in the title.' },
+  { q: 'Is title case the same as headline case?', a: 'Yes. "Title case" and "headline case" refer to the same capitalization style, where the principal words are capitalized. Both terms are used interchangeably.' },
+  { q: 'What is the difference between title case and sentence case?', a: 'In title case, most words are capitalized (e.g., "The Art of Writing Well"). In sentence case, only the first word and proper nouns are capitalized (e.g., "The art of writing well"). Many blogs and modern publications prefer sentence case for a more conversational tone.' },
+  { q: 'Does Google care about title case in page titles?', a: 'Google does not penalize or reward based on capitalization style. However, consistent and professional capitalization in title tags makes them appear more polished in search results and can improve click-through rates.' },
+  { q: 'How do I convert text to title case online?', a: 'Use TextWonder\'s Title Case Converter: paste your text, and it instantly capitalizes the correct words following standard capitalization rules. Free, no signup required.' },
+];
+---
+
+<BlogLayout
+  title="What Is Title Case? Rules, Examples & When to Use It"
+  description="Master title case capitalization rules. Learn which words to capitalize, see clear examples, and discover when to use title case vs sentence case."
+  canonical="/blog/title-case-guide"
+  date="2025-06-12"
+  readTime="6 min read"
+  category="Writing Tips"
+  faqs={faqs}
+>
+
+<p>
+  Title case is a capitalization style where the principal words in a title or heading are written with an initial capital letter. It's the standard format for book titles, article headlines, movie names, and formal documents. But the rules have nuances — not every word gets capitalized, and different style guides disagree on the finer points.
+</p>
+<p>
+  This guide covers exactly which words to capitalize, explains the differences between the major style guides, and shows you how to convert any text to title case instantly.
+</p>
+
+<h2>Title Case Rules: The Core Principle</h2>
+
+<p>
+  The fundamental rule of title case is: <strong>capitalize all "principal" words and lowercase the minor words</strong> (unless they appear at the start or end of the title).
+</p>
+
+<p><strong>Always capitalize:</strong></p>
+<ul>
+  <li>The first and last word of the title (regardless of what they are)</li>
+  <li>Nouns: <em>river, teacher, city, idea</em></li>
+  <li>Pronouns: <em>I, he, she, it, we, they</em></li>
+  <li>Verbs: <em>run, be, think, write</em></li>
+  <li>Adjectives: <em>free, long, beautiful, first</em></li>
+  <li>Adverbs: <em>quickly, never, always</em></li>
+  <li>Subordinating conjunctions: <em>although, because, since, while, if, when</em></li>
+</ul>
+
+<p><strong>Usually lowercase:</strong></p>
+<ul>
+  <li>Articles: <em>a, an, the</em></li>
+  <li>Short prepositions (under 5 letters): <em>at, by, for, in, of, on, to, up</em></li>
+  <li>Coordinating conjunctions: <em>and, but, or, nor, for, so, yet</em></li>
+</ul>
+
+<h2>Title Case Examples</h2>
+
+<p>Here's how the rules apply in practice:</p>
+
+<ul>
+  <li>✅ <strong>The Art of Public Speaking</strong> ("of" is lowercased)</li>
+  <li>✅ <strong>A Guide to Writing for the Web</strong> ("A" capitalized as first word, "to" and "for" and "the" lowercased)</li>
+  <li>✅ <strong>How to Start and Run a Successful Blog</strong> ("to", "and", "a" lowercased)</li>
+  <li>✅ <strong>Up in the Air</strong> ("Up" capitalized as first word, "in" and "the" lowercased)</li>
+  <li>✅ <strong>Running for Office Is Hard</strong> ("for" lowercased, "Is" capitalized as a verb)</li>
+</ul>
+
+<a href="/tools/title-case-converter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Title Case Converter →</div>
+  <div class="cta-desc">Convert any text to title case instantly. Handles all the rules automatically. Free, no signup.</div>
+</a>
+
+<h2>Title Case vs Sentence Case</h2>
+
+<p>
+  These two styles are the most common choices for web content and headings:
+</p>
+
+<p>
+  <strong>Title Case:</strong> The First Letter of Most Words Is Capitalized<br />
+  <strong>Sentence case:</strong> Only the first word and proper nouns are capitalized
+</p>
+
+<p>
+  Modern web writing and content marketing have largely shifted to sentence case for headings because it feels less formal and more readable at a glance. Publications like The Guardian, Medium, and most tech blogs use sentence case for article headings.
+</p>
+
+<p>
+  Book titles, movie names, album names, and formal document titles traditionally use title case.
+</p>
+
+<h2>Style Guide Differences</h2>
+
+<p>
+  Different style guides have slightly different rules for edge cases:
+</p>
+
+<h3>APA (American Psychological Association)</h3>
+<p>Capitalize words of 4 letters or more. Lowercase: <em>a, an, the, and, but, for, or, nor, at, by, in, of, on, to, up</em>.</p>
+
+<h3>Chicago Manual of Style</h3>
+<p>One of the most detailed guides. Capitalizes all words except articles, prepositions of any length, and coordinating conjunctions — unless they appear first or last.</p>
+
+<h3>AP Style (Associated Press)</h3>
+<p>Used by most news outlets. Capitalizes all words of 4 letters or more, including longer prepositions like "from," "with," and "into."</p>
+
+<h3>MLA (Modern Language Association)</h3>
+<p>Similar to Chicago: capitalize all words except articles, short prepositions, and coordinating conjunctions.</p>
+
+<h2>When to Use Title Case</h2>
+
+<ul>
+  <li><strong>Book, film, song, and album titles</strong> — always title case</li>
+  <li><strong>Formal report headings</strong> — title case adds authority</li>
+  <li><strong>Website navigation items</strong> — short labels benefit from title case</li>
+  <li><strong>Email subject lines</strong> — some brands use title case for a professional appearance</li>
+  <li><strong>Product names and features</strong> — e.g., "Premium Plan", "Advanced Analytics"</li>
+</ul>
+
+<h2>Converting to Title Case Online</h2>
+
+<p>
+  Manually applying title case rules to every heading is tedious and error-prone. TextWonder's <a href="/tools/title-case-converter">Title Case Converter</a> applies the rules automatically — just paste your text and it instantly capitalizes the right words and lowercases the minor ones.
+</p>
+
+<p>
+  The tool also offers other case conversions: <a href="/tools/sentence-case-converter">sentence case</a>, <a href="/tools/uppercase-converter">uppercase</a>, <a href="/tools/lowercase-converter">lowercase</a>, <a href="/tools/camel-case-converter">camelCase</a>, and <a href="/tools/snake-case-converter">snake_case</a>.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

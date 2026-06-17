@@ -1,0 +1,66 @@
+---
+---
+<div>
+  <div class="grid grid-cols-1 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Weight</label>
+      <div class="flex gap-2">
+        <input type="number" id="pi-weight" placeholder="e.g. 70" step="0.1" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" />
+        <select id="pi-unit" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500">
+          <option value="kg">kg</option>
+          <option value="lbs">lbs</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Activity Level</label>
+      <select id="pi-activity" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500">
+        <option value="0.8">Sedentary</option>
+        <option value="1.2">Lightly active</option>
+        <option value="1.4" selected>Moderately active</option>
+        <option value="1.6">Very active</option>
+        <option value="1.8">Endurance athlete</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Goal</label>
+      <select id="pi-goal" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500">
+        <option value="0">Maintain weight</option>
+        <option value="0.2">Lose fat (preserve muscle)</option>
+        <option value="0.4">Gain muscle</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="pi-result" class="hidden space-y-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Daily Protein Target</div>
+      <div id="pi-day" class="text-4xl font-bold" style="color:#22c55e"></div>
+      <div class="text-slate-400 text-sm">grams per day</div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+      <div class="flex justify-between"><span class="text-slate-400">Per meal (3 meals)</span><span id="pi-3meal" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Per meal (4 meals)</span><span id="pi-4meal" class="text-white font-medium"></span></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function calc(){
+    let w=parseFloat(document.getElementById('pi-weight').value);
+    const unit=document.getElementById('pi-unit').value;
+    const base=parseFloat(document.getElementById('pi-activity').value);
+    const bonus=parseFloat(document.getElementById('pi-goal').value);
+    const res=document.getElementById('pi-result');
+    if(!w||w<=0){res.classList.add('hidden');return;}
+    if(unit==='lbs')w=w*0.453592;
+    const gDay=Math.round(w*(base+bonus));
+    document.getElementById('pi-day').textContent=gDay;
+    document.getElementById('pi-3meal').textContent=Math.round(gDay/3)+'g';
+    document.getElementById('pi-4meal').textContent=Math.round(gDay/4)+'g';
+    res.classList.remove('hidden');
+  }
+  ['pi-weight','pi-unit','pi-activity','pi-goal'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+})();
+</script>

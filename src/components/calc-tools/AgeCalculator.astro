@@ -1,0 +1,87 @@
+---
+---
+<div>
+  <div class="space-y-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="ac-birthdate">Date of Birth</label>
+      <input type="date" id="ac-birthdate" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="ac-asof">Age as of (optional, defaults to today)</label>
+      <input type="date" id="ac-asof" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+  </div>
+  <button id="ac-calc" class="px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors" style="background:#10b981">Calculate Age</button>
+
+  <div id="ac-result" class="hidden mt-6 space-y-3">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div id="ac-years" class="text-3xl font-bold" style="color:#10b981">0</div>
+        <div class="text-xs text-slate-400 mt-1">Years</div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div id="ac-months" class="text-3xl font-bold text-white">0</div>
+        <div class="text-xs text-slate-400 mt-1">Months</div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div id="ac-days" class="text-3xl font-bold text-white">0</div>
+        <div class="text-xs text-slate-400 mt-1">Days</div>
+      </div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+      <div class="flex justify-between"><span class="text-slate-400">Total days lived</span><span id="ac-total-days" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Day of week born</span><span id="ac-dayofweek" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Next birthday in</span><span id="ac-nextbday" class="font-medium" style="color:#10b981"></span></div>
+    </div>
+  </div>
+  <p id="ac-error" class="hidden text-red-400 text-sm mt-3"></p>
+</div>
+
+<script is:inline>
+(function() {
+  const bdate = document.getElementById('ac-birthdate');
+  const asof = document.getElementById('ac-asof');
+  const btn = document.getElementById('ac-calc');
+  const result = document.getElementById('ac-result');
+  const err = document.getElementById('ac-error');
+
+  // Set default asof to today
+  const today = new Date();
+  asof.value = today.toISOString().split('T')[0];
+
+  btn.addEventListener('click', calculate);
+
+  function calculate() {
+    err.classList.add('hidden');
+    result.classList.add('hidden');
+    if (!bdate.value) { err.textContent = 'Please enter a date of birth.'; err.classList.remove('hidden'); return; }
+    const birth = new Date(bdate.value);
+    const ref = asof.value ? new Date(asof.value) : new Date();
+    if (birth > ref) { err.textContent = 'Date of birth cannot be in the future.'; err.classList.remove('hidden'); return; }
+
+    // Years, months, days
+    let y = ref.getFullYear() - birth.getFullYear();
+    let m = ref.getMonth() - birth.getMonth();
+    let d = ref.getDate() - birth.getDate();
+    if (d < 0) { m--; const prevMonth = new Date(ref.getFullYear(), ref.getMonth(), 0); d += prevMonth.getDate(); }
+    if (m < 0) { y--; m += 12; }
+
+    document.getElementById('ac-years').textContent = y;
+    document.getElementById('ac-months').textContent = m;
+    document.getElementById('ac-days').textContent = d;
+    document.getElementById('ac-total-days').textContent = Math.floor((ref - birth) / 86400000).toLocaleString() + ' days';
+
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    document.getElementById('ac-dayofweek').textContent = days[birth.getDay()];
+
+    // Next birthday
+    const refNow = asof.value ? new Date(asof.value) : new Date();
+    let nextBday = new Date(refNow.getFullYear(), birth.getMonth(), birth.getDate());
+    if (nextBday <= refNow) nextBday.setFullYear(refNow.getFullYear() + 1);
+    const daysToNext = Math.ceil((nextBday - refNow) / 86400000);
+    document.getElementById('ac-nextbday').textContent = daysToNext === 0 ? 'Today! 🎂' : daysToNext + ' days';
+
+    result.classList.remove('hidden');
+  }
+})();
+</script>

@@ -1,0 +1,58 @@
+---
+---
+<div>
+  <div class="flex gap-3 mb-6 items-end">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Base Color</label>
+      <input type="color" id="cpg-picker" value="#ec4899" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+    </div>
+    <div class="flex-1">
+      <label class="block text-sm text-slate-400 mb-1">HEX value</label>
+      <input type="text" id="cpg-input" value="#ec4899" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+    </div>
+  </div>
+
+  <div id="cpg-result" class="space-y-5">
+    <div><div class="text-sm font-semibold text-slate-300 mb-2">Complementary</div><div id="cpg-comp" class="flex gap-2"></div></div>
+    <div><div class="text-sm font-semibold text-slate-300 mb-2">Triadic</div><div id="cpg-tri" class="flex gap-2"></div></div>
+    <div><div class="text-sm font-semibold text-slate-300 mb-2">Split-Complementary</div><div id="cpg-split" class="flex gap-2"></div></div>
+    <div><div class="text-sm font-semibold text-slate-300 mb-2">Analogous</div><div id="cpg-ana" class="flex gap-2"></div></div>
+    <div><div class="text-sm font-semibold text-slate-300 mb-2">Monochromatic</div><div id="cpg-mono" class="flex gap-2"></div></div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function hexToHsl(hex){
+    hex=hex.replace('#','');
+    if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');
+    const r=parseInt(hex.slice(0,2),16)/255,g=parseInt(hex.slice(2,4),16)/255,b=parseInt(hex.slice(4,6),16)/255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b);let h,s,l=(max+min)/2;
+    if(max===min){h=s=0;}else{const d=max-min;s=l>0.5?d/(2-max-min):d/(max+min);if(max===r)h=(g-b)/d+(g<b?6:0);else if(max===g)h=(b-r)/d+2;else h=(r-g)/d+4;h/=6;}
+    return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+  }
+  function hslToHex(h,s,l){s/=100;l/=100;const a=s*Math.min(l,1-l);function f(n){const k=(n+h/30)%12;const color=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*color).toString(16).padStart(2,'0');}return '#'+f(0)+f(8)+f(4);}
+  function swatch(hex){return `<div class="flex-1 cursor-pointer group relative" onclick="navigator.clipboard.writeText('${hex}').catch(()=>{})"><div class="h-16 rounded-lg" style="background:${hex}"></div><div class="text-xs text-center mt-1 text-slate-400 font-mono group-hover:text-white transition-colors">${hex}</div></div>`;}
+  function rotate(h,deg){return (h+deg+360)%360;}
+
+  function generate(hex){
+    if(!/^#[0-9a-fA-F]{6}$/i.test(hex))return;
+    const [h,s,l]=hexToHsl(hex);
+    // Complementary
+    document.getElementById('cpg-comp').innerHTML=[hex,hslToHex(rotate(h,180),s,l)].map(swatch).join('');
+    // Triadic
+    document.getElementById('cpg-tri').innerHTML=[hex,hslToHex(rotate(h,120),s,l),hslToHex(rotate(h,240),s,l)].map(swatch).join('');
+    // Split-complementary
+    document.getElementById('cpg-split').innerHTML=[hex,hslToHex(rotate(h,150),s,l),hslToHex(rotate(h,210),s,l)].map(swatch).join('');
+    // Analogous
+    document.getElementById('cpg-ana').innerHTML=[hslToHex(rotate(h,-30),s,l),hex,hslToHex(rotate(h,30),s,l),hslToHex(rotate(h,60),s,l)].map(swatch).join('');
+    // Monochromatic
+    const monoL=[20,35,50,65,80];
+    document.getElementById('cpg-mono').innerHTML=monoL.map(li=>hslToHex(h,s,li)).map(swatch).join('');
+  }
+
+  document.getElementById('cpg-picker').addEventListener('input',function(){document.getElementById('cpg-input').value=this.value;generate(this.value);});
+  document.getElementById('cpg-input').addEventListener('input',function(){const v=this.value.startsWith('#')?this.value:'#'+this.value;if(/^#[0-9a-fA-F]{6}$/i.test(v)){document.getElementById('cpg-picker').value=v;generate(v);}});
+  generate('#ec4899');
+})();
+</script>

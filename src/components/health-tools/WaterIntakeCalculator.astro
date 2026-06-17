@@ -1,0 +1,60 @@
+---
+---
+<div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Weight</label>
+      <div class="flex gap-2">
+        <input type="number" id="wi-weight" placeholder="e.g. 70" step="0.1" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" />
+        <select id="wi-unit" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-2 text-white text-sm focus:outline-none focus:border-green-500">
+          <option value="kg">kg</option>
+          <option value="lbs">lbs</option>
+        </select>
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Activity Level</label>
+      <select id="wi-activity" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500">
+        <option value="0">Sedentary</option>
+        <option value="250">Lightly active</option>
+        <option value="500" selected>Moderately active</option>
+        <option value="750">Very active</option>
+        <option value="1000">Athlete / intense exercise</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="wi-result" class="hidden grid grid-cols-3 gap-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div id="wi-ml" class="text-2xl font-bold" style="color:#22c55e"></div>
+      <div class="text-xs text-slate-400 mt-1">mL / day</div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div id="wi-l" class="text-2xl font-bold text-white"></div>
+      <div class="text-xs text-slate-400 mt-1">Litres / day</div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div id="wi-glasses" class="text-2xl font-bold text-white"></div>
+      <div class="text-xs text-slate-400 mt-1">Glasses (250mL)</div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function calc(){
+    let w=parseFloat(document.getElementById('wi-weight').value);
+    const unit=document.getElementById('wi-unit').value;
+    const extra=parseFloat(document.getElementById('wi-activity').value);
+    const res=document.getElementById('wi-result');
+    if(!w||w<=0){res.classList.add('hidden');return;}
+    if(unit==='lbs')w=w*0.453592;
+    const ml=Math.round(w*35+extra);
+    document.getElementById('wi-ml').textContent=ml.toLocaleString();
+    document.getElementById('wi-l').textContent=(ml/1000).toFixed(2);
+    document.getElementById('wi-glasses').textContent=Math.round(ml/250);
+    res.classList.remove('hidden');
+  }
+  ['wi-weight','wi-unit','wi-activity'].forEach(id=>document.getElementById(id).addEventListener('input',calc));
+})();
+</script>

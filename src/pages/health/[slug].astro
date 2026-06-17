@@ -1,0 +1,37 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import BmiCalculator from '../../components/health-tools/BmiCalculator.astro';
+import BmrCalculator from '../../components/health-tools/BmrCalculator.astro';
+import CalorieCalculator from '../../components/health-tools/CalorieCalculator.astro';
+import IdealWeightCalculator from '../../components/health-tools/IdealWeightCalculator.astro';
+import BodyFatCalculator from '../../components/health-tools/BodyFatCalculator.astro';
+import WaterIntakeCalculator from '../../components/health-tools/WaterIntakeCalculator.astro';
+import ProteinIntakeCalculator from '../../components/health-tools/ProteinIntakeCalculator.astro';
+import MacroCalculator from '../../components/health-tools/MacroCalculator.astro';
+import { HEALTH_TOOLS } from '../../data/healthtools.js';
+
+export function getStaticPaths() {
+  return HEALTH_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'HealthWonder', prefix:'Health', suffix:'Wonder', rootPath:'/health', accentColor:'#22c55e', idPrefix:'health' };
+
+const componentMap: Record<string, any> = {
+  'bmi-calculator': BmiCalculator,
+  'bmr-calculator': BmrCalculator,
+  'calorie-calculator': CalorieCalculator,
+  'ideal-weight-calculator': IdealWeightCalculator,
+  'body-fat-calculator': BodyFatCalculator,
+  'water-intake-calculator': WaterIntakeCalculator,
+  'protein-intake-calculator': ProteinIntakeCalculator,
+  'macro-calculator': MacroCalculator,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={HEALTH_TOOLS}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

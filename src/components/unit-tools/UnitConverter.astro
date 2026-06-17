@@ -1,0 +1,118 @@
+---
+interface Props {
+  tool: any;
+}
+const { tool } = Astro.props;
+---
+
+<div id="uc-container" data-slug={tool.slug} data-type={tool.unitType}>
+  {tool.unitType === 'temperature' ? (
+    <div class="space-y-3" id="uc-temp-inputs">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Celsius (°C)</label>
+        <input type="number" id="uc-celsius" placeholder="Enter °C" step="any"
+          class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500" />
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Fahrenheit (°F)</label>
+        <input type="number" id="uc-fahrenheit" placeholder="Enter °F" step="any"
+          class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500" />
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Kelvin (K)</label>
+        <input type="number" id="uc-kelvin" placeholder="Enter K" step="any"
+          class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500" />
+      </div>
+    </div>
+  ) : (
+    <div class="space-y-3" id="uc-linear-inputs">
+      {tool.units.map((unit: any) => (
+        <div class="flex items-center gap-3">
+          <div class="w-28 shrink-0 text-right">
+            <span class="text-slate-300 text-sm font-medium">{unit.name}</span>
+            <span class="text-slate-500 text-xs block">{unit.symbol}</span>
+          </div>
+          <input
+            type="number"
+            data-tobase={unit.toBase}
+            data-symbol={unit.symbol}
+            placeholder={`Enter ${unit.symbol}`}
+            step="any"
+            class="uc-unit-input flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-indigo-500"
+          />
+        </div>
+      ))}
+    </div>
+  )}
+  <p class="text-xs text-slate-600 mt-4">Type in any field to convert all others instantly.</p>
+</div>
+
+<script is:inline>
+(function() {
+  const container = document.getElementById('uc-container');
+  const type = container.dataset.type;
+
+  if (type === 'temperature') {
+    const cInput = document.getElementById('uc-celsius');
+    const fInput = document.getElementById('uc-fahrenheit');
+    const kInput = document.getElementById('uc-kelvin');
+
+    function round(n, d) { return parseFloat(n.toFixed(d)); }
+
+    cInput.addEventListener('input', function() {
+      const c = parseFloat(this.value);
+      if (isNaN(c)) { fInput.value=''; kInput.value=''; return; }
+      fInput.value = round(c * 9/5 + 32, 6);
+      kInput.value = round(c + 273.15, 6);
+    });
+
+    fInput.addEventListener('input', function() {
+      const f = parseFloat(this.value);
+      if (isNaN(f)) { cInput.value=''; kInput.value=''; return; }
+      const c = (f - 32) * 5/9;
+      cInput.value = round(c, 6);
+      kInput.value = round(c + 273.15, 6);
+    });
+
+    kInput.addEventListener('input', function() {
+      const k = parseFloat(this.value);
+      if (isNaN(k)) { cInput.value=''; fInput.value=''; return; }
+      const c = k - 273.15;
+      cInput.value = round(c, 6);
+      fInput.value = round(c * 9/5 + 32, 6);
+    });
+
+  } else {
+    // Linear
+    const inputs = container.querySelectorAll('.uc-unit-input');
+    let updating = false;
+
+    inputs.forEach(function(input) {
+      input.addEventListener('input', function() {
+        if (updating) return;
+        updating = true;
+        const val = parseFloat(this.value);
+        const toBase = parseFloat(this.dataset.tobase);
+        if (isNaN(val)) {
+          inputs.forEach(function(inp) { if (inp !== input) inp.value = ''; });
+        } else {
+          const baseVal = val * toBase;
+          inputs.forEach(function(inp) {
+            if (inp !== input) {
+              const otherToBase = parseFloat(inp.dataset.tobase);
+              const converted = baseVal / otherToBase;
+              // Smart formatting: avoid scientific notation for reasonable numbers
+              if (Math.abs(converted) < 1e-6 && converted !== 0) {
+                inp.value = converted.toExponential(6);
+              } else {
+                inp.value = parseFloat(converted.toPrecision(10));
+              }
+            }
+          });
+        }
+        updating = false;
+      });
+    });
+  }
+})();
+</script>

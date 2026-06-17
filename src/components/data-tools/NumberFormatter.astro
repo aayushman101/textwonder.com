@@ -1,0 +1,140 @@
+---
+---
+<div class="space-y-4">
+  <div class="space-y-2">
+    <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">Input Number</label>
+    <input id="nf-input" type="text" placeholder="e.g. 1234567.89 or 1500000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-amber-500 text-sm font-mono" />
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500 font-medium">Format</label>
+      <select id="nf-format" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-amber-500">
+        <option value="intl-us">US (1,234,567.89)</option>
+        <option value="intl-eu">European (1.234.567,89)</option>
+        <option value="intl-in">Indian (12,34,567.89)</option>
+        <option value="plain">Plain (1234567.89)</option>
+        <option value="short">Short (1.23M)</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500 font-medium">Decimal Places</label>
+      <select id="nf-decimals" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-amber-500">
+        <option value="auto">Auto</option>
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2" selected>2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500 font-medium">Currency Symbol</label>
+      <select id="nf-currency" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-3 py-2.5 text-slate-200 text-sm focus:outline-none focus:border-amber-500">
+        <option value="">None</option>
+        <option value="$">$ USD</option>
+        <option value="€">€ EUR</option>
+        <option value="£">£ GBP</option>
+        <option value="₹">₹ INR</option>
+        <option value="¥">¥ JPY</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-[var(--bg-base)] border border-slate-700 rounded-xl p-5">
+    <div class="text-xs text-slate-500 font-medium uppercase tracking-wide mb-3">Formatted Output</div>
+    <div id="nf-result" class="text-3xl font-bold text-amber-400 font-mono min-h-[2.5rem]"></div>
+    <div id="nf-alt-formats" class="mt-4 space-y-1.5"></div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <button id="nf-copy" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">Copy Result</button>
+    <button id="nf-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    <span id="nf-error" class="text-xs text-red-400 hidden"></span>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const inputEl = document.getElementById('nf-input');
+  const formatSel = document.getElementById('nf-format');
+  const decimalsSel = document.getElementById('nf-decimals');
+  const currencySel = document.getElementById('nf-currency');
+  const resultEl = document.getElementById('nf-result');
+  const altEl = document.getElementById('nf-alt-formats');
+  const errorEl = document.getElementById('nf-error');
+
+  function toIndian(num, decimals) {
+    const parts = num.toFixed(decimals === 'auto' ? (num % 1 === 0 ? 0 : 2) : parseInt(decimals)).split('.');
+    let intPart = parts[0];
+    const sign = intPart.startsWith('-') ? '-' : '';
+    intPart = intPart.replace('-', '');
+    let result = '';
+    if (intPart.length <= 3) {
+      result = intPart;
+    } else {
+      result = intPart.slice(-3);
+      intPart = intPart.slice(0, -3);
+      while (intPart.length > 2) {
+        result = intPart.slice(-2) + ',' + result;
+        intPart = intPart.slice(0, -2);
+      }
+      result = intPart + ',' + result;
+    }
+    return sign + result + (parts[1] ? '.' + parts[1] : '');
+  }
+
+  function toShort(num) {
+    const abs = Math.abs(num);
+    const sign = num < 0 ? '-' : '';
+    if (abs >= 1e12) return sign + (abs / 1e12).toFixed(2).replace(/\.?0+$/, '') + 'T';
+    if (abs >= 1e9)  return sign + (abs / 1e9).toFixed(2).replace(/\.?0+$/, '') + 'B';
+    if (abs >= 1e6)  return sign + (abs / 1e6).toFixed(2).replace(/\.?0+$/, '') + 'M';
+    if (abs >= 1e3)  return sign + (abs / 1e3).toFixed(2).replace(/\.?0+$/, '') + 'K';
+    return sign + abs.toString();
+  }
+
+  function format() {
+    errorEl.classList.add('hidden');
+    const raw = inputEl.value.trim().replace(/,/g, '');
+    if (!raw) { resultEl.textContent = ''; altEl.innerHTML = ''; return; }
+
+    const num = parseFloat(raw);
+    if (isNaN(num)) { errorEl.textContent = 'Invalid number'; errorEl.classList.remove('hidden'); resultEl.textContent = ''; return; }
+
+    const fmt = formatSel.value;
+    const dec = decimalsSel.value;
+    const minDec = dec === 'auto' ? (num % 1 === 0 ? 0 : 2) : parseInt(dec);
+    const currency = currencySel.value;
+
+    let result = '';
+    if (fmt === 'intl-us') {
+      result = new Intl.NumberFormat('en-US', { minimumFractionDigits: minDec, maximumFractionDigits: minDec }).format(num);
+    } else if (fmt === 'intl-eu') {
+      result = new Intl.NumberFormat('de-DE', { minimumFractionDigits: minDec, maximumFractionDigits: minDec }).format(num);
+    } else if (fmt === 'intl-in') {
+      result = toIndian(num, dec);
+    } else if (fmt === 'plain') {
+      result = num.toFixed(minDec);
+    } else if (fmt === 'short') {
+      result = toShort(num);
+    }
+
+    resultEl.textContent = currency ? currency + result : result;
+
+    // Alt formats
+    const altFmts = [
+      { label: 'US', val: new Intl.NumberFormat('en-US', { minimumFractionDigits: minDec, maximumFractionDigits: minDec }).format(num) },
+      { label: 'European', val: new Intl.NumberFormat('de-DE', { minimumFractionDigits: minDec, maximumFractionDigits: minDec }).format(num) },
+      { label: 'Indian', val: toIndian(num, dec) },
+      { label: 'Short', val: toShort(num) },
+    ];
+    altEl.innerHTML = altFmts.map(a => `<div class="flex items-center justify-between text-sm"><span class="text-slate-500">${a.label}</span><span class="text-slate-200 font-mono">${currency ? currency : ''}${a.val}</span></div>`).join('');
+  }
+
+  [inputEl, formatSel, decimalsSel, currencySel].forEach(el => el.addEventListener('change', format));
+  inputEl.addEventListener('input', format);
+  document.getElementById('nf-copy').addEventListener('click', () => { if (resultEl.textContent) navigator.clipboard.writeText(resultEl.textContent); });
+  document.getElementById('nf-clear').addEventListener('click', () => { inputEl.value = ''; resultEl.textContent = ''; altEl.innerHTML = ''; errorEl.classList.add('hidden'); });
+})();
+</script>

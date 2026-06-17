@@ -1,0 +1,94 @@
+---
+---
+<div class="space-y-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="space-y-2">
+      <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">JSON Input</label>
+      <textarea id="jty-input" rows="16" placeholder='{"name":"Alice","age":30,"hobbies":["reading","coding"]}' class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y focus:outline-none focus:border-amber-500 text-sm font-mono"></textarea>
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-slate-500 font-medium uppercase tracking-wide">YAML Output</label>
+        <button id="jty-copy" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">Copy</button>
+      </div>
+      <textarea id="jty-output" rows="16" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y focus:outline-none text-sm font-mono select-all"></textarea>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="flex items-center gap-2">
+      <label class="text-xs text-slate-500">Indent</label>
+      <select id="jty-indent" class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1 text-slate-200 text-xs focus:outline-none">
+        <option value="2">2 spaces</option>
+        <option value="4">4 spaces</option>
+      </select>
+    </div>
+    <button id="jty-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+  </div>
+  <div id="jty-error" class="hidden text-red-400 text-sm"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('jty-input');
+  const output = document.getElementById('jty-output');
+  const errorEl = document.getElementById('jty-error');
+  const indentSel = document.getElementById('jty-indent');
+
+  function jsonToYaml(obj, indent, level) {
+    const pad = ' '.repeat(indent * level);
+    const pad1 = ' '.repeat(indent * (level + 1));
+    if (obj === null) return 'null';
+    if (typeof obj === 'boolean') return obj.toString();
+    if (typeof obj === 'number') return obj.toString();
+    if (typeof obj === 'string') {
+      if (/[:\{\}\[\],&\*#\?\|\-<>=!%@`]/.test(obj) || obj.includes('\n') || obj === '' || /^(true|false|null|yes|no)$/i.test(obj)) {
+        return '"' + obj.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,'\\n') + '"';
+      }
+      return obj;
+    }
+    if (Array.isArray(obj)) {
+      if (obj.length === 0) return '[]';
+      return obj.map(item => {
+        const val = jsonToYaml(item, indent, level + 1);
+        if (typeof item === 'object' && item !== null && !Array.isArray(item)) {
+          const lines = val.split('\n');
+          return pad + '- ' + lines[0].trimStart() + (lines.length > 1 ? '\n' + lines.slice(1).join('\n') : '');
+        }
+        return pad + '- ' + val;
+      }).join('\n');
+    }
+    if (typeof obj === 'object') {
+      const keys = Object.keys(obj);
+      if (keys.length === 0) return '{}';
+      return keys.map(k => {
+        const v = obj[k];
+        const key = /[:\s]/.test(k) ? '"' + k + '"' : k;
+        if (v === null) return pad + key + ': null';
+        if (typeof v === 'object') {
+          if (Array.isArray(v) && v.length === 0) return pad + key + ': []';
+          if (!Array.isArray(v) && Object.keys(v).length === 0) return pad + key + ': {}';
+          return pad + key + ':\n' + jsonToYaml(v, indent, level + 1);
+        }
+        return pad + key + ': ' + jsonToYaml(v, indent, level + 1);
+      }).join('\n');
+    }
+    return String(obj);
+  }
+
+  function convert() {
+    const val = input.value.trim();
+    errorEl.classList.add('hidden');
+    if (!val) { output.value = ''; return; }
+    try {
+      const parsed = JSON.parse(val);
+      const indent = parseInt(indentSel.value);
+      output.value = jsonToYaml(parsed, indent, 0);
+    } catch(e) { errorEl.textContent = 'Invalid JSON: ' + e.message; errorEl.classList.remove('hidden'); output.value = ''; }
+  }
+
+  input.addEventListener('input', convert);
+  indentSel.addEventListener('change', convert);
+  document.getElementById('jty-copy').addEventListener('click', () => { if (output.value) navigator.clipboard.writeText(output.value); });
+  document.getElementById('jty-clear').addEventListener('click', () => { input.value = ''; output.value = ''; errorEl.classList.add('hidden'); });
+})();
+</script>

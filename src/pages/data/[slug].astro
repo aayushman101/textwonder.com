@@ -1,0 +1,35 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import CsvToJson from '../../components/data-tools/CsvToJson.astro';
+import JsonToCsv from '../../components/data-tools/JsonToCsv.astro';
+import JsonToYaml from '../../components/data-tools/JsonToYaml.astro';
+import YamlToJson from '../../components/data-tools/YamlToJson.astro';
+import TsvToCsv from '../../components/data-tools/TsvToCsv.astro';
+import CsvToTable from '../../components/data-tools/CsvToTable.astro';
+import NumberFormatter from '../../components/data-tools/NumberFormatter.astro';
+import { DATA_TOOLS } from '../../data/datatools.js';
+
+export function getStaticPaths() {
+  return DATA_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'DataWonder', prefix:'Data', suffix:'Wonder', rootPath:'/data', accentColor:'#f59e0b', idPrefix:'data' };
+
+const componentMap: Record<string, any> = {
+  'csv-to-json': CsvToJson,
+  'json-to-csv': JsonToCsv,
+  'json-to-yaml': JsonToYaml,
+  'yaml-to-json': YamlToJson,
+  'tsv-to-csv': TsvToCsv,
+  'csv-to-table': CsvToTable,
+  'number-formatter': NumberFormatter,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={DATA_TOOLS}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

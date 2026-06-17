@@ -4,6 +4,7 @@ import '../styles/global.css';
 const { title, description, canonical, ogImage } = Astro.props;
 const siteUrl = 'https://textwonder.com';
 const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
+const ogImg = `${siteUrl}${ogImage || '/og-default.png'}`;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -23,12 +24,17 @@ const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
   <meta property="og:url" content={fullCanonical} />
   <meta property="og:site_name" content="TextWonder" />
   <meta property="og:type" content="website" />
+  <meta property="og:image" content={ogImg} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={title} />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@textwonder" />
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImg} />
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />

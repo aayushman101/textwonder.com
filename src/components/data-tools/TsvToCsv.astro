@@ -1,0 +1,100 @@
+---
+---
+<div class="space-y-4">
+  <div class="flex gap-3 items-center">
+    <label class="text-sm text-slate-400 font-medium">Direction:</label>
+    <div class="flex gap-2">
+      <button id="ttc-dir-tc" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors" style="background:#f59e0b">TSV → CSV</button>
+      <button id="ttc-dir-ct" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors">CSV → TSV</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="space-y-2">
+      <label id="ttc-in-label" class="text-xs text-slate-500 font-medium uppercase tracking-wide">TSV Input (tab-separated)</label>
+      <textarea id="ttc-input" rows="14" placeholder="Paste tab-separated data here (e.g. from Excel copy-paste)" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y focus:outline-none focus:border-amber-500 text-sm font-mono"></textarea>
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <label id="ttc-out-label" class="text-xs text-slate-500 font-medium uppercase tracking-wide">CSV Output</label>
+        <button id="ttc-copy" class="text-xs text-amber-400 hover:text-amber-300 transition-colors">Copy</button>
+      </div>
+      <textarea id="ttc-output" rows="14" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y focus:outline-none text-sm font-mono select-all"></textarea>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="ttc-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+    <span id="ttc-stats" class="text-xs text-slate-600"></span>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('ttc-input');
+  const output = document.getElementById('ttc-output');
+  const inLabel = document.getElementById('ttc-in-label');
+  const outLabel = document.getElementById('ttc-out-label');
+  const dirTc = document.getElementById('ttc-dir-tc');
+  const dirCt = document.getElementById('ttc-dir-ct');
+  const stats = document.getElementById('ttc-stats');
+  let mode = 'tc'; // tsv→csv
+
+  function setMode(m) {
+    mode = m;
+    if (m === 'tc') {
+      dirTc.style.background = '#f59e0b'; dirTc.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors';
+      dirCt.style.background = ''; dirCt.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors';
+      inLabel.textContent = 'TSV Input (tab-separated)'; outLabel.textContent = 'CSV Output';
+      input.placeholder = 'Paste tab-separated data here (e.g. from Excel copy-paste)';
+    } else {
+      dirCt.style.background = '#f59e0b'; dirCt.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-white transition-colors';
+      dirTc.style.background = ''; dirTc.className = 'px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-surface)] border border-slate-700 transition-colors';
+      inLabel.textContent = 'CSV Input (comma-separated)'; outLabel.textContent = 'TSV Output';
+      input.placeholder = 'Paste CSV data here';
+    }
+    convert();
+  }
+
+  function fieldToTarget(field, targetDelim) {
+    if (field.includes(targetDelim) || field.includes('\n') || field.includes('"')) {
+      return '"' + field.replace(/"/g, '""') + '"';
+    }
+    return field;
+  }
+
+  function parseDelimited(text, delim) {
+    const rows = [];
+    text.split('\n').forEach(line => {
+      if (!line.trim()) return;
+      const fields = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const c = line[i];
+        if (c === '"') { if (inQ && line[i+1] === '"') { cur += '"'; i++; } else inQ = !inQ; }
+        else if (c === delim && !inQ) { fields.push(cur); cur = ''; }
+        else cur += c;
+      }
+      fields.push(cur);
+      rows.push(fields);
+    });
+    return rows;
+  }
+
+  function convert() {
+    const val = input.value;
+    if (!val.trim()) { output.value = ''; stats.textContent = ''; return; }
+    const srcDelim = mode === 'tc' ? '\t' : ',';
+    const dstDelim = mode === 'tc' ? ',' : '\t';
+    const rows = parseDelimited(val, srcDelim);
+    const out = rows.map(fields => fields.map(f => fieldToTarget(f, dstDelim)).join(dstDelim)).join('\n');
+    output.value = out;
+    stats.textContent = `${rows.length} rows · ${rows[0]?.length || 0} columns`;
+  }
+
+  dirTc.addEventListener('click', () => setMode('tc'));
+  dirCt.addEventListener('click', () => setMode('ct'));
+  input.addEventListener('input', convert);
+  document.getElementById('ttc-copy').addEventListener('click', () => { if (output.value) navigator.clipboard.writeText(output.value); });
+  document.getElementById('ttc-clear').addEventListener('click', () => { input.value = ''; output.value = ''; stats.textContent = ''; });
+})();
+</script>

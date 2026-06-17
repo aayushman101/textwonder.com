@@ -1,0 +1,30 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import UnitConverter from '../../components/unit-tools/UnitConverter.astro';
+import { UNIT_TOOLS } from '../../data/unittools.js';
+
+export function getStaticPaths() {
+  return UNIT_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'UnitWonder', prefix:'Unit', suffix:'Wonder', rootPath:'/unit', accentColor:'#6366f1', idPrefix:'unit' };
+
+const componentMap: Record<string, any> = {
+  'length-converter': UnitConverter,
+  'weight-converter': UnitConverter,
+  'temperature-converter': UnitConverter,
+  'digital-storage-converter': UnitConverter,
+  'area-converter': UnitConverter,
+  'speed-converter': UnitConverter,
+  'time-converter': UnitConverter,
+  'volume-converter': UnitConverter,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={UNIT_TOOLS}>
+  {ToolComponent ? <ToolComponent tool={tool} /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

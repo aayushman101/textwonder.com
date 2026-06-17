@@ -1,0 +1,127 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Are online text tools safe to use for confidential writing?', a: 'TextWonder processes everything in your browser using JavaScript — your text never leaves your device and is never sent to any server. This makes it safe for confidential writing, client documents, and sensitive data.' },
+  { q: 'Do I need to create an account to use TextWonder?', a: 'No. Every tool on TextWonder is completely free with no account, no email, and no signup of any kind.' },
+  { q: 'What is the best free word counter for writers?', a: 'TextWonder\'s Word Counter shows word count, character count, sentence count, paragraph count, and estimated reading time in real time as you type.' },
+  { q: 'Is there a free tool to check writing readability?', a: 'Yes. TextWonder\'s Readability Score tool calculates Flesch Reading Ease, Flesch-Kincaid Grade Level, and other readability metrics for any text you paste.' },
+];
+---
+
+<BlogLayout
+  title="10 Free Online Text Tools Every Writer Should Know"
+  description="10 essential free online text tools for writers, bloggers, and content creators. Save hours every week with these browser-based utilities — no downloads, no signup."
+  canonical="/blog/free-online-text-tools-for-writers"
+  date="2025-05-28"
+  readTime="7 min read"
+  category="Productivity"
+  faqs={faqs}
+>
+
+<p>
+  Writers spend hours on the actual craft — but a surprising amount of time also goes to text housekeeping: counting words, fixing formatting, checking readability, cleaning pasted content from PDFs, and converting between formats. The right set of free browser-based tools can cut this overhead dramatically.
+</p>
+<p>
+  Here are 10 free online text tools that belong in every writer's workflow.
+</p>
+
+<h2>1. Word Counter</h2>
+<p>
+  Every writer needs a word counter. But a good one does more than just count words. TextWonder's <a href="/tools/word-counter">Word Counter</a> shows word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading time — all updating in real time as you type.
+</p>
+<p>
+  Useful for: hitting essay word limits, checking blog post length for SEO targets, meeting client deliverable word counts, estimating reading time for newsletter intros.
+</p>
+
+<h2>2. Readability Score Checker</h2>
+<p>
+  Writing that's hard to read gets abandoned. The <a href="/tools/readability-score">Readability Score tool</a> calculates Flesch Reading Ease (higher = easier), Flesch-Kincaid Grade Level (target: grade 8 for general audiences), Gunning Fog Index, and SMOG Index. Paste any text and see your score in seconds.
+</p>
+<p>
+  Useful for: making blog posts more accessible, simplifying technical documentation, checking whether website copy is appropriate for your audience.
+</p>
+
+<h2>3. Title Case Converter</h2>
+<p>
+  Manually applying title case rules is error-prone. The <a href="/tools/title-case-converter">Title Case Converter</a> instantly capitalizes the correct words and lowercases articles, short prepositions, and conjunctions — no need to remember the rules.
+</p>
+<p>
+  Useful for: formatting article headlines, book chapter titles, email subject lines, and navigation labels.
+</p>
+
+<h2>4. Remove Extra Spaces</h2>
+<p>
+  Text pasted from PDFs, Word documents, or emails often arrives with double spaces, leading/trailing spaces, or extra blank lines. <a href="/tools/remove-extra-spaces">Remove Extra Spaces</a> cleans it all up in one click.
+</p>
+<p>
+  Useful for: cleaning up copied research, fixing formatting before publishing, standardising text for databases.
+</p>
+
+<a href="/" class="tool-cta">
+  <div class="cta-label">All 61+ Tools</div>
+  <div class="cta-title">Browse TextWonder Tools →</div>
+  <div class="cta-desc">Free, browser-based text tools for writers, developers, and analysts. No signup ever.</div>
+</a>
+
+<h2>5. Remove Duplicate Lines</h2>
+<p>
+  Whether you're deduplicating keyword lists, cleaning email exports, or removing repeated lines from research notes, <a href="/tools/remove-duplicate-lines">Remove Duplicate Lines</a> does it instantly. Choose case-sensitive or case-insensitive matching and preserve the original order.
+</p>
+
+<h2>6. Sort Lines</h2>
+<p>
+  Sorting lists alphabetically, numerically, or in reverse is a surprisingly frequent task. The <a href="/tools/sort-lines">Sort Lines</a> tool handles it in one click — paste a list, choose your sort order, copy the result.
+</p>
+<p>
+  Useful for: sorting keyword lists, organizing bibliography entries, alphabetizing glossaries, cleaning data before import.
+</p>
+
+<h2>7. Find and Replace</h2>
+<p>
+  The <a href="/tools/find-and-replace">Find and Replace</a> tool lets you search for any text (including regex patterns) and replace it with something else across a document. More powerful than a word processor's basic find/replace when you're working with structured text or need to preview all matches before replacing.
+</p>
+
+<h2>8. Character Counter</h2>
+<p>
+  Where word count tells you how long something is, <a href="/tools/character-counter">Character Counter</a> tells you whether it fits in character-limited contexts: Twitter/X (280 chars), SMS (160 chars), meta descriptions (155 chars), email subject lines (50–60 chars), Instagram bio (150 chars).
+</p>
+
+<h2>9. Lorem Ipsum Generator</h2>
+<p>
+  When you need placeholder text for designs, mockups, or templates, <a href="/tools/lorem-ipsum-generator">Lorem Ipsum Generator</a> produces clean Latin-style placeholder text in configurable paragraph, sentence, or word quantities.
+</p>
+
+<h2>10. Text Diff Checker</h2>
+<p>
+  The <a href="/tools/text-diff-checker">Text Diff Checker</a> shows exactly what changed between two versions of a document — highlighting additions in green and deletions in red. Invaluable for tracking edits, comparing drafts, or reviewing client-revised copy before accepting changes.
+</p>
+
+<h2>Honourable Mentions</h2>
+
+<ul>
+  <li><a href="/tools/sentence-counter">Sentence Counter</a> — count sentences without manually scanning</li>
+  <li><a href="/tools/keyword-density-checker">Keyword Density Checker</a> — check if your target keyword appears the right number of times</li>
+  <li><a href="/tools/add-line-numbers">Add Line Numbers</a> — number every line for reference in review documents</li>
+  <li><a href="/tools/text-repeater">Text Repeater</a> — repeat text a specified number of times (useful for test data)</li>
+  <li><a href="/tools/extract-emails">Extract Emails</a> — pull all email addresses out of a block of text</li>
+</ul>
+
+<p>
+  All tools on TextWonder are completely free, require no account, and run entirely in your browser. Your text never leaves your device.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

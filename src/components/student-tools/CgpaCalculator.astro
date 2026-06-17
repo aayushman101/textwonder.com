@@ -1,0 +1,75 @@
+---
+---
+<div>
+  <div id="cgpa-subjects" class="space-y-2 mb-3">
+    <div class="grid grid-cols-12 gap-2 text-xs text-slate-500 px-1">
+      <span class="col-span-5">Subject</span>
+      <span class="col-span-3">Credits</span>
+      <span class="col-span-3">Grade (0–10)</span>
+      <span class="col-span-1"></span>
+    </div>
+  </div>
+  <div class="flex gap-2 mb-4">
+    <button onclick="cgpaAdd()" class="px-3 py-2 rounded-lg text-sm font-medium text-white transition-colors" style="background:#3b82f6">+ Add Subject</button>
+    <button onclick="cgpaCalc()" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white transition-colors">Calculate</button>
+  </div>
+
+  <div id="cgpa-result" class="hidden space-y-3">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">CGPA</div>
+        <div id="cgpa-val" class="text-3xl font-bold" style="color:#3b82f6"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">% (×9.5)</div>
+        <div id="cgpa-pct95" class="text-3xl font-bold text-white"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">% (×10)</div>
+        <div id="cgpa-pct10" class="text-3xl font-bold text-white"></div>
+      </div>
+    </div>
+    <p class="text-xs text-slate-500">Most Indian universities use CGPA × 9.5. Check your university's specific formula.</p>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  let count=0;
+  function row(i){
+    return `<div id="cgpa-row-${i}" class="grid grid-cols-12 gap-2 items-center">
+      <input class="col-span-5 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Subject name" id="cgpa-name-${i}" />
+      <input type="number" class="col-span-3 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Credits" id="cgpa-credits-${i}" min="1" max="10" />
+      <input type="number" class="col-span-3 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Grade" id="cgpa-grade-${i}" min="0" max="10" step="0.1" />
+      <button onclick="cgpaRemove(${i})" class="col-span-1 text-slate-500 hover:text-red-400 transition-colors text-lg leading-none">×</button>
+    </div>`;
+  }
+  window.cgpaAdd=function(){
+    count++;
+    const c=document.createElement('div');
+    c.innerHTML=row(count);
+    document.getElementById('cgpa-subjects').appendChild(c.firstChild);
+  };
+  window.cgpaRemove=function(i){
+    const el=document.getElementById('cgpa-row-'+i);
+    if(el)el.remove();
+  };
+  window.cgpaCalc=function(){
+    let totalCred=0,totalGP=0,found=false;
+    for(let i=1;i<=count;i++){
+      const cr=parseFloat((document.getElementById('cgpa-credits-'+i)||{}).value);
+      const gr=parseFloat((document.getElementById('cgpa-grade-'+i)||{}).value);
+      if(!isNaN(cr)&&!isNaN(gr)&&cr>0){totalCred+=cr;totalGP+=cr*gr;found=true;}
+    }
+    const res=document.getElementById('cgpa-result');
+    if(!found||totalCred===0){res.classList.add('hidden');return;}
+    const cgpa=totalGP/totalCred;
+    document.getElementById('cgpa-val').textContent=cgpa.toFixed(2);
+    document.getElementById('cgpa-pct95').textContent=(cgpa*9.5).toFixed(2)+'%';
+    document.getElementById('cgpa-pct10').textContent=(cgpa*10).toFixed(2)+'%';
+    res.classList.remove('hidden');
+  };
+  // Add 3 rows by default
+  cgpaAdd();cgpaAdd();cgpaAdd();
+})();
+</script>

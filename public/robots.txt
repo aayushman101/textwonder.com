@@ -1,8 +1,7 @@
 User-agent: *
 Allow: /
 
-# Block build artifacts and private paths
-Disallow: /_astro/
+# Block only non-public paths
 Disallow: /api/
 
 # Sitemap

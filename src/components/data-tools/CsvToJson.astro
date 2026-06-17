@@ -1,0 +1,92 @@
+---
+---
+<div>
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">CSV Input</label>
+      <textarea id="ctj-input" rows="8" placeholder="name,age,city&#10;Alice,30,New York&#10;Bob,25,London" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-amber-500 resize-none"></textarea>
+    </div>
+    <div class="flex flex-wrap gap-3 items-center">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Delimiter</label>
+        <select id="ctj-delim" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-amber-500">
+          <option value=",">Comma (,)</option>
+          <option value=";">Semicolon (;)</option>
+          <option value="\t">Tab</option>
+          <option value="|">Pipe (|)</option>
+        </select>
+      </div>
+      <div class="flex items-center gap-2 mt-5">
+        <input type="checkbox" id="ctj-header" checked class="accent-amber-500" />
+        <label for="ctj-header" class="text-sm text-slate-300">First row is header</label>
+      </div>
+      <button onclick="ctjConvert()" class="mt-5 px-3 py-2 rounded-lg text-white text-sm font-medium" style="background:#f59e0b">Convert</button>
+    </div>
+  </div>
+
+  <div id="ctj-output-section" class="hidden space-y-3">
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-sm text-slate-400">JSON Output</label>
+        <div class="flex gap-2">
+          <button onclick="ctjCopy()" class="px-3 py-1.5 rounded-lg text-sm text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Copy</button>
+          <button onclick="ctjDownload()" class="px-3 py-1.5 rounded-lg text-sm text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Download .json</button>
+        </div>
+      </div>
+      <textarea id="ctj-output" rows="10" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none resize-none"></textarea>
+    </div>
+    <p id="ctj-stats" class="text-xs text-slate-500"></p>
+  </div>
+  <p id="ctj-error" class="hidden text-red-400 text-sm mt-3"></p>
+</div>
+
+<script is:inline>
+(function(){
+  function parseCSV(text, delim, hasHeader) {
+    const lines = text.trim().split(/\r?\n/);
+    if(!lines.length) return [];
+    function parseLine(line) {
+      const fields = []; let cur = '', inQ = false;
+      for(let i=0;i<line.length;i++){
+        const c=line[i];
+        if(c==='"'){if(inQ&&line[i+1]==='"'){cur+='"';i++;}else{inQ=!inQ;}}
+        else if(c===delim&&!inQ){fields.push(cur);cur='';}
+        else cur+=c;
+      }
+      fields.push(cur);
+      return fields;
+    }
+    if(hasHeader){
+      const headers=parseLine(lines[0]);
+      return lines.slice(1).filter(l=>l.trim()).map(l=>{const vals=parseLine(l);const obj={};headers.forEach((h,i)=>obj[h.trim()]=vals[i]!==undefined?vals[i].trim():'');return obj;});
+    } else {
+      return lines.filter(l=>l.trim()).map(l=>parseLine(l).map(v=>v.trim()));
+    }
+  }
+  window.ctjConvert=function(){
+    const text=document.getElementById('ctj-input').value;
+    const delimRaw=document.getElementById('ctj-delim').value;
+    const delim=delimRaw==='\t'?'\t':delimRaw;
+    const header=document.getElementById('ctj-header').checked;
+    const err=document.getElementById('ctj-error');
+    const out=document.getElementById('ctj-output-section');
+    err.classList.add('hidden');
+    if(!text.trim()){err.textContent='Please enter CSV data.';err.classList.remove('hidden');out.classList.add('hidden');return;}
+    try{
+      const data=parseCSV(text,delim,header);
+      const json=JSON.stringify(data,null,2);
+      document.getElementById('ctj-output').value=json;
+      document.getElementById('ctj-stats').textContent=`${data.length} record${data.length===1?'':'s'} converted.`;
+      out.classList.remove('hidden');
+    }catch(e){err.textContent='Error: '+e.message;err.classList.remove('hidden');out.classList.add('hidden');}
+  };
+  window.ctjCopy=function(){navigator.clipboard.writeText(document.getElementById('ctj-output').value).catch(()=>{});};
+  window.ctjDownload=function(){
+    const blob=new Blob([document.getElementById('ctj-output').value],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.json';a.click();
+  };
+  document.getElementById('ctj-input').addEventListener('input',ctjConvert);
+  document.getElementById('ctj-delim').addEventListener('change',ctjConvert);
+  document.getElementById('ctj-header').addEventListener('change',ctjConvert);
+})();
+</script>

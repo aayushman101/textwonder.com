@@ -1,0 +1,129 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Is Base64 the same as encryption?', a: 'No. Base64 is an encoding scheme, not encryption. It transforms data into a different representation but provides no security. Anyone can decode Base64 without a key. Never use Base64 to secure sensitive data.' },
+  { q: 'Why does Base64 output end in == (equals signs)?', a: 'Base64 works in groups of 3 bytes. If the input length is not divisible by 3, padding characters (=) are added to complete the final group. One = means 1 byte of padding; == means 2 bytes of padding.' },
+  { q: 'What does "Base64" mean?', a: 'The name comes from the alphabet used: 64 printable ASCII characters (A–Z, a–z, 0–9, +, /). Every 3 bytes of input is encoded as 4 of these 64 characters.' },
+  { q: 'How do I encode and decode Base64 online for free?', a: 'Use TextWonder\'s Base64 Encoder/Decoder tool. Paste text or a Base64 string and it instantly encodes or decodes. No signup, fully browser-based.' },
+  { q: 'Does Base64 make files larger?', a: 'Yes. Base64 encoding increases size by approximately 33%. A 100KB image encoded in Base64 becomes ~133KB. This is a trade-off — portability and compatibility for increased size.' },
+];
+---
+
+<BlogLayout
+  title="What Is Base64 Encoding? A Plain-English Guide"
+  description="Base64 explained simply. Learn what Base64 encoding is, why it exists, when it's used, and how to encode and decode Base64 strings online for free."
+  canonical="/blog/what-is-base64-encoding"
+  date="2025-06-02"
+  readTime="6 min read"
+  category="Developer Tools"
+  faqs={faqs}
+>
+
+<p>
+  If you've ever worked with APIs, emails, or web development, you've almost certainly encountered Base64 — a string of letters, numbers, and symbols that looks like garbled text. But Base64 isn't random: it's a deliberate encoding scheme that solves a very specific and common problem. Here's what it is, why it exists, and how to use it.
+</p>
+
+<h2>What Is Base64 Encoding?</h2>
+
+<p>
+  Base64 is a way of encoding binary data (files, images, arbitrary bytes) into a string of printable ASCII characters. The "64" refers to the 64-character alphabet it uses: A–Z, a–z, 0–9, plus (+), and slash (/).
+</p>
+
+<p>
+  Every 3 bytes of binary data becomes 4 Base64 characters. A 9-byte input becomes 12 Base64 characters. A 3MB image becomes a ~4MB Base64 string.
+</p>
+
+<p>
+  Base64 is <strong>not encryption</strong>. It's a reversible transformation — anyone can decode it without a key. Its purpose is <em>portability</em>, not security.
+</p>
+
+<h2>Why Does Base64 Exist?</h2>
+
+<p>
+  The web and most modern systems run on text-based protocols — HTTP, SMTP (email), JSON, XML. These protocols were designed to carry text, not arbitrary binary data. Base64 solves this mismatch by converting any binary data into safe, text-friendly characters.
+</p>
+
+<p>Common scenarios where this matters:</p>
+
+<ul>
+  <li><strong>Email attachments:</strong> SMTP is a text protocol. PDF files, images, and documents are binary. Email clients encode them in Base64 before transmission.</li>
+  <li><strong>Data URLs in HTML/CSS:</strong> Embedding small images directly in HTML/CSS (<code>src="data:image/png;base64,iVBOR..."</code>) avoids a separate HTTP request.</li>
+  <li><strong>API authentication:</strong> HTTP Basic Auth sends credentials as <code>Authorization: Basic base64(username:password)</code>.</li>
+  <li><strong>JWT tokens:</strong> JSON Web Tokens use a URL-safe variant (Base64url) to encode header and payload data.</li>
+  <li><strong>Storing binary in JSON:</strong> JSON only supports text. Storing image data or binary blobs in a JSON API requires Base64 encoding.</li>
+</ul>
+
+<a href="/tools/base64-encoder-decoder" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Base64 Encoder / Decoder →</div>
+  <div class="cta-desc">Encode text to Base64 or decode a Base64 string back to text. Instant, browser-based, no signup required.</div>
+</a>
+
+<h2>How Does Base64 Encoding Work?</h2>
+
+<p>
+  The encoding process takes input in groups of 3 bytes (24 bits) and splits each group into four 6-bit chunks. Each 6-bit chunk maps to one of the 64 characters in the Base64 alphabet:
+</p>
+
+<ul>
+  <li>Values 0–25 → A–Z</li>
+  <li>Values 26–51 → a–z</li>
+  <li>Values 52–61 → 0–9</li>
+  <li>Value 62 → +</li>
+  <li>Value 63 → /</li>
+</ul>
+
+<p>
+  If the input isn't a multiple of 3 bytes, <code>=</code> padding characters are added. One <code>=</code> means one padding byte; <code>==</code> means two.
+</p>
+
+<h2>Base64 vs Base64url</h2>
+
+<p>
+  Standard Base64 uses <code>+</code> and <code>/</code> as its last two characters. These are problematic in URLs (where <code>+</code> means a space and <code>/</code> is a path separator). <strong>Base64url</strong> replaces them: <code>+</code> → <code>-</code> and <code>/</code> → <code>_</code>. JWT tokens and some APIs use Base64url.
+</p>
+
+<h2>How to Encode and Decode Base64 in Code</h2>
+
+<h3>JavaScript (browser or Node.js):</h3>
+<p>
+  Encode: <code>btoa("Hello, World!")</code> → <code>SGVsbG8sIFdvcmxkIQ==</code><br />
+  Decode: <code>atob("SGVsbG8sIFdvcmxkIQ==")</code> → <code>Hello, World!</code>
+</p>
+
+<h3>Python:</h3>
+<p>
+  Encode: <code>import base64; base64.b64encode(b"Hello")</code><br />
+  Decode: <code>base64.b64decode("SGVsbG8=")</code>
+</p>
+
+<h3>Command line (Linux/Mac):</h3>
+<p>
+  Encode: <code>echo -n "Hello" | base64</code><br />
+  Decode: <code>echo "SGVsbG8=" | base64 --decode</code>
+</p>
+
+<h2>Common Base64 Mistakes to Avoid</h2>
+
+<ul>
+  <li><strong>Using Base64 for security:</strong> Base64 is not encryption. Never encode passwords or sensitive data in Base64 thinking it's protected — it isn't.</li>
+  <li><strong>Ignoring the size increase:</strong> Base64 adds ~33% overhead. Avoid Base64-encoding large binary files for storage.</li>
+  <li><strong>Forgetting charset for text:</strong> When encoding text strings, specify UTF-8 encoding explicitly to handle non-ASCII characters correctly.</li>
+  <li><strong>Confusing Base64 with hex:</strong> Hex (hexadecimal) encoding uses 16 characters (0–9, a–f) and doubles the size. Base64 uses 64 characters and adds ~33%.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

@@ -1,0 +1,70 @@
+---
+---
+<div>
+  <div class="flex gap-2 mb-4">
+    <button id="iw-metric-btn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white" style="background:#22c55e" onclick="iwUnit('metric')">Metric (cm)</button>
+    <button id="iw-imperial-btn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 bg-[var(--bg-base)] border border-slate-700" onclick="iwUnit('imperial')">Imperial (ft/in)</button>
+  </div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Gender</label>
+      <div class="flex gap-3 pt-1">
+        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="iw-gender" value="male" checked class="accent-green-500" /><span class="text-white text-sm">Male</span></label>
+        <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="iw-gender" value="female" class="accent-green-500" /><span class="text-white text-sm">Female</span></label>
+      </div>
+    </div>
+    <div id="iw-metric-input"><label class="block text-sm text-slate-400 mb-1">Height (cm)</label><input type="number" id="iw-cm" placeholder="e.g. 175" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+  </div>
+  <div id="iw-imperial-input" class="hidden grid grid-cols-2 gap-4 mb-4">
+    <div><label class="block text-sm text-slate-400 mb-1">Height (ft)</label><input type="number" id="iw-ft" placeholder="5" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+    <div><label class="block text-sm text-slate-400 mb-1">Height (in)</label><input type="number" id="iw-in" placeholder="9" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+  </div>
+
+  <div id="iw-result" class="hidden space-y-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Average Ideal Weight</div>
+      <div id="iw-avg" class="text-3xl font-bold" style="color:#22c55e"></div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+      <div class="flex justify-between"><span class="text-slate-400">Hamwi formula</span><span id="iw-hamwi" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Devine formula</span><span id="iw-devine" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Robinson formula</span><span id="iw-robinson" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Miller formula</span><span id="iw-miller" class="text-white font-medium"></span></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  let unitMode='metric';
+  window.iwUnit=function(m){
+    unitMode=m;
+    document.getElementById('iw-metric-input').classList.toggle('hidden',m!=='metric');
+    document.getElementById('iw-imperial-input').classList.toggle('hidden',m!=='imperial');
+    const mb=document.getElementById('iw-metric-btn'),ib=document.getElementById('iw-imperial-btn');
+    if(m==='metric'){mb.style.background='#22c55e';mb.classList.add('text-white');mb.classList.remove('text-slate-400');ib.style.background='';ib.classList.remove('text-white');ib.classList.add('text-slate-400');}
+    else{ib.style.background='#22c55e';ib.classList.add('text-white');ib.classList.remove('text-slate-400');mb.style.background='';mb.classList.remove('text-white');mb.classList.add('text-slate-400');}
+    calc();
+  };
+  function calc(){
+    const gender=document.querySelector('input[name="iw-gender"]:checked').value;
+    let totalIn;
+    if(unitMode==='metric'){const cm=parseFloat(document.getElementById('iw-cm').value);if(!cm||cm<=0){document.getElementById('iw-result').classList.add('hidden');return;}totalIn=cm/2.54;}
+    else{const ft=parseFloat(document.getElementById('iw-ft').value)||0;const inch=parseFloat(document.getElementById('iw-in').value)||0;totalIn=ft*12+inch;if(!totalIn){document.getElementById('iw-result').classList.add('hidden');return;}}
+    const inchOver5ft=Math.max(0,totalIn-60);
+    let hamwi,devine,robinson,miller;
+    if(gender==='male'){hamwi=48+2.7*inchOver5ft;devine=50+2.3*inchOver5ft;robinson=52+1.9*inchOver5ft;miller=56.2+1.41*inchOver5ft;}
+    else{hamwi=45.5+2.2*inchOver5ft;devine=45.5+2.3*inchOver5ft;robinson=49+1.7*inchOver5ft;miller=53.1+1.36*inchOver5ft;}
+    const avg=(hamwi+devine+robinson+miller)/4;
+    function fmt(v){return v.toFixed(1)+' kg ('+(v*2.20462).toFixed(1)+' lbs)';}
+    document.getElementById('iw-avg').textContent=avg.toFixed(1)+' kg';
+    document.getElementById('iw-hamwi').textContent=fmt(hamwi);
+    document.getElementById('iw-devine').textContent=fmt(devine);
+    document.getElementById('iw-robinson').textContent=fmt(robinson);
+    document.getElementById('iw-miller').textContent=fmt(miller);
+    document.getElementById('iw-result').classList.remove('hidden');
+  }
+  ['iw-cm','iw-ft','iw-in'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calc);});
+  document.querySelectorAll('input[name="iw-gender"]').forEach(r=>r.addEventListener('change',calc));
+})();
+</script>

@@ -1,0 +1,6 @@
+# Path-based redirects for Cloudflare Pages
+# Note: www → non-www is handled in functions/_middleware.js (host-based, not path-based)
+# Cloudflare dashboard "Always Use HTTPS" handles http → https
+
+# Legacy URL redirects (add as needed)
+# /old-path  /new-path  301

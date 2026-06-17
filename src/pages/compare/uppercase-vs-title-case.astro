@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    { '@type': 'Question', name: 'When should I use uppercase vs title case?', acceptedAnswer: { '@type': 'Answer', text: 'Use UPPERCASE for acronyms (NASA, API, CEO), warnings, emphasis in informal contexts, and some design treatments. Use title case for book/film/article titles, formal headings, navigation items, and product names. Uppercase for entire sentences or paragraphs comes across as shouting.' } },
+    { '@type': 'Question', name: 'Is title case or sentence case better for blog headings?', acceptedAnswer: { '@type': 'Answer', text: 'Most modern publications and tech blogs use sentence case for headings (only capitalize the first word and proper nouns). Title case is more formal and traditional — better for academic papers, book titles, and formal reports.' } },
+    { '@type': 'Question', name: 'Does Google prefer title case or sentence case in title tags?', acceptedAnswer: { '@type': 'Answer', text: 'Google has no stated preference for title case vs sentence case in title tags. Both can rank well. Consistency matters more than which style you choose.' } },
+    { '@type': 'Question', name: 'How do I convert text to title case or uppercase online?', acceptedAnswer: { '@type': 'Answer', text: 'Use TextWonder\'s free tools: Title Case Converter for title case and Uppercase Converter for ALL CAPS. Both run entirely in your browser with no signup required.' } },
+  ],
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://textwonder.com' },
+    { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://textwonder.com/compare' },
+    { '@type': 'ListItem', position: 3, name: 'Uppercase vs Title Case', item: 'https://textwonder.com/compare/uppercase-vs-title-case' },
+  ],
+};
+---
+
+<BaseLayout
+  title="Uppercase vs Title Case: Key Differences & When to Use Each"
+  description="Uppercase (ALL CAPS) vs title case — when to use each, style guide rules, examples, and free conversion tools. A clear side-by-side comparison."
+  canonical="/compare/uppercase-vs-title-case"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  </Fragment>
+
+  <Header />
+
+  <main class="max-w-4xl mx-auto px-4 py-12">
+    <nav class="flex items-center gap-1 text-sm text-slate-500 mb-8">
+      <a href="/" class="hover:text-violet-400 transition-colors">Home</a>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <a href="/compare" class="hover:text-violet-400 transition-colors">Compare</a>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <span class="text-slate-400">Uppercase vs Title Case</span>
+    </nav>
+
+    <header class="mb-10">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-900/40 text-violet-300 border border-violet-800/50 mb-4">Comparison</span>
+      <h1 class="text-3xl md:text-4xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">Uppercase vs Title Case: When to Use Each</h1>
+      <p class="text-slate-400 text-lg leading-relaxed">Two capitalization styles that look similar but serve very different purposes. Here's a complete breakdown.</p>
+    </header>
+
+    <!-- Visual comparison -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <div class="bg-[var(--bg-surface)] border border-red-800/40 rounded-2xl p-6">
+        <div class="text-red-400 text-xs font-semibold uppercase tracking-wider mb-3">Uppercase (ALL CAPS)</div>
+        <div class="text-3xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">LIKE THIS</div>
+        <p class="text-slate-400 text-sm mb-4">Every single letter is a capital. No lowercase letters at all.</p>
+        <div class="space-y-2 text-sm text-slate-400 mb-5">
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Acronyms: NASA, API, HTML, CEO</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Warning labels: CAUTION, DO NOT</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Brand names by style choice</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Button labels in some UI designs</div>
+          <div class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Full sentences — reads as shouting</div>
+          <div class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Long headings — reduces readability</div>
+        </div>
+        <a href="/tools/uppercase-converter" class="block text-center bg-red-700 hover:bg-red-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+          Use Uppercase Converter →
+        </a>
+      </div>
+
+      <div class="bg-[var(--bg-surface)] border border-violet-800/40 rounded-2xl p-6">
+        <div class="text-violet-400 text-xs font-semibold uppercase tracking-wider mb-3">Title Case</div>
+        <div class="text-3xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">Like This One</div>
+        <p class="text-slate-400 text-sm mb-4">Principal words are capitalized; minor words (articles, short prepositions) are lowercase.</p>
+        <div class="space-y-2 text-sm text-slate-400 mb-5">
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Book / film / song titles</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Article and blog post headlines</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Navigation menu items</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Product names and features</div>
+          <div class="flex items-start gap-2"><span class="text-emerald-400 mt-0.5">✓</span> Formal document headings</div>
+          <div class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Body text — too many capitals</div>
+        </div>
+        <a href="/tools/title-case-converter" class="block text-center bg-violet-700 hover:bg-violet-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+          Use Title Case Converter →
+        </a>
+      </div>
+    </div>
+
+    <!-- Examples Table -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-6" style="font-family: 'Space Grotesk', sans-serif;">Examples: Same Text, Different Cases</h2>
+      <div class="overflow-x-auto rounded-xl border border-slate-800">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b border-slate-800">
+              <th class="text-left px-5 py-3 text-slate-400 font-medium">Original</th>
+              <th class="text-left px-5 py-3 text-red-400 font-medium">UPPERCASE</th>
+              <th class="text-left px-5 py-3 text-violet-400 font-medium">Title Case</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60">
+            {[
+              ['the art of public speaking', 'THE ART OF PUBLIC SPEAKING', 'The Art of Public Speaking'],
+              ['a guide to writing online', 'A GUIDE TO WRITING ONLINE', 'A Guide to Writing Online'],
+              ['best free tools for developers', 'BEST FREE TOOLS FOR DEVELOPERS', 'Best Free Tools for Developers'],
+              ['how to remove duplicate lines', 'HOW TO REMOVE DUPLICATE LINES', 'How to Remove Duplicate Lines'],
+              ['word counter vs character counter', 'WORD COUNTER VS CHARACTER COUNTER', 'Word Counter vs Character Counter'],
+            ].map(([orig, upper, title]) => (
+              <tr>
+                <td class="px-5 py-3 text-slate-500 italic">{orig}</td>
+                <td class="px-5 py-3 text-slate-200 font-medium tracking-wide">{upper}</td>
+                <td class="px-5 py-3 text-slate-200">{title}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Third option: Sentence case -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">Don't Overlook: Sentence Case</h2>
+      <p class="text-slate-400 leading-relaxed mb-4">
+        For web content — blog headings, UI labels, email subjects — many modern brands prefer <strong class="text-white">sentence case</strong>: only the first word and proper nouns are capitalized.
+      </p>
+      <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-xl p-5">
+        <div class="text-slate-500 text-xs font-medium uppercase tracking-wider mb-2">Example</div>
+        <div class="space-y-2 text-sm">
+          <div class="flex items-start gap-3"><span class="text-red-400 w-24 shrink-0">Uppercase:</span><span class="text-slate-300">HOW TO WRITE BETTER CONTENT</span></div>
+          <div class="flex items-start gap-3"><span class="text-violet-400 w-24 shrink-0">Title case:</span><span class="text-slate-300">How to Write Better Content</span></div>
+          <div class="flex items-start gap-3"><span class="text-emerald-400 w-24 shrink-0">Sentence:</span><span class="text-slate-300">How to write better content</span></div>
+        </div>
+      </div>
+      <p class="text-slate-400 text-sm mt-4">
+        The Guardian, BBC, Notion, Linear, and most tech publications use sentence case for article and UI headings. Use TextWonder's <a href="/tools/sentence-case-converter" class="text-violet-400 hover:underline">Sentence Case Converter</a> to apply it instantly.
+      </p>
+    </section>
+
+    <!-- FAQ -->
+    <section>
+      <h2 class="text-2xl font-bold text-white mb-5" style="font-family: 'Space Grotesk', sans-serif;">Frequently Asked Questions</h2>
+      <div class="space-y-2">
+        {faqSchema.mainEntity.map(item => (
+          <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group">
+            <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+              <span class="text-white font-medium text-sm">{item.name}</span>
+              <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{item.acceptedAnswer.text}</p></div>
+          </details>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</BaseLayout>

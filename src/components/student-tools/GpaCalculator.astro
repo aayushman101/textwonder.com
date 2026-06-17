@@ -1,0 +1,61 @@
+---
+---
+<div>
+  <div id="gpa-courses" class="space-y-2 mb-3">
+    <div class="grid grid-cols-12 gap-2 text-xs text-slate-500 px-1">
+      <span class="col-span-5">Course</span>
+      <span class="col-span-3">Credits</span>
+      <span class="col-span-3">Grade</span>
+      <span class="col-span-1"></span>
+    </div>
+  </div>
+  <div class="flex gap-2 mb-4">
+    <button onclick="gpaAdd()" class="px-3 py-2 rounded-lg text-sm font-medium text-white" style="background:#3b82f6">+ Add Course</button>
+    <button onclick="gpaCalc()" class="px-3 py-2 rounded-lg text-sm font-medium text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Calculate</button>
+  </div>
+
+  <div id="gpa-result" class="hidden space-y-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-6 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">GPA (4.0 Scale)</div>
+      <div id="gpa-val" class="text-5xl font-bold" style="color:#3b82f6"></div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 space-y-1 text-sm">
+      <div class="flex justify-between"><span class="text-slate-400">Total Credits</span><span id="gpa-cred" class="text-white font-medium"></span></div>
+      <div class="flex justify-between"><span class="text-slate-400">Quality Points</span><span id="gpa-qp" class="text-white font-medium"></span></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  const grades={'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'D':1.0,'F':0.0};
+  let count=0;
+  function gradeOpts(){return Object.keys(grades).map(g=>`<option value="${g}">${g}</option>`).join('');}
+  function row(i){
+    return `<div id="gpa-row-${i}" class="grid grid-cols-12 gap-2 items-center">
+      <input class="col-span-5 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Course name" id="gpa-name-${i}" />
+      <input type="number" class="col-span-3 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500" placeholder="Credits" id="gpa-credits-${i}" min="1" max="10" />
+      <select id="gpa-grade-${i}" class="col-span-3 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-blue-500">${gradeOpts()}</select>
+      <button onclick="gpaRemove(${i})" class="col-span-1 text-slate-500 hover:text-red-400 text-lg leading-none">×</button>
+    </div>`;
+  }
+  window.gpaAdd=function(){count++;const c=document.createElement('div');c.innerHTML=row(count);document.getElementById('gpa-courses').appendChild(c.firstChild);};
+  window.gpaRemove=function(i){const el=document.getElementById('gpa-row-'+i);if(el)el.remove();};
+  window.gpaCalc=function(){
+    let totalCred=0,totalQP=0,found=false;
+    for(let i=1;i<=count;i++){
+      const cr=parseFloat((document.getElementById('gpa-credits-'+i)||{}).value);
+      const gr=(document.getElementById('gpa-grade-'+i)||{}).value;
+      if(!isNaN(cr)&&cr>0&&gr in grades){totalCred+=cr;totalQP+=cr*grades[gr];found=true;}
+    }
+    const res=document.getElementById('gpa-result');
+    if(!found||totalCred===0){res.classList.add('hidden');return;}
+    const gpa=totalQP/totalCred;
+    document.getElementById('gpa-val').textContent=gpa.toFixed(2);
+    document.getElementById('gpa-cred').textContent=totalCred;
+    document.getElementById('gpa-qp').textContent=totalQP.toFixed(2);
+    res.classList.remove('hidden');
+  };
+  gpaAdd();gpaAdd();gpaAdd();
+})();
+</script>

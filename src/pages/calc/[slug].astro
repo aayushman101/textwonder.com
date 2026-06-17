@@ -1,0 +1,37 @@
+---
+import WonderToolLayout from '../../layouts/WonderToolLayout.astro';
+import AgeCalculator from '../../components/calc-tools/AgeCalculator.astro';
+import PercentageCalculator from '../../components/calc-tools/PercentageCalculator.astro';
+import EmiCalculator from '../../components/calc-tools/EmiCalculator.astro';
+import SipCalculator from '../../components/calc-tools/SipCalculator.astro';
+import CompoundInterestCalculator from '../../components/calc-tools/CompoundInterestCalculator.astro';
+import SimpleInterestCalculator from '../../components/calc-tools/SimpleInterestCalculator.astro';
+import GstCalculator from '../../components/calc-tools/GstCalculator.astro';
+import DiscountCalculator from '../../components/calc-tools/DiscountCalculator.astro';
+import { CALC_TOOLS } from '../../data/calctools.js';
+
+export function getStaticPaths() {
+  return CALC_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const brand = { name:'CalcWonder', prefix:'Calc', suffix:'Wonder', rootPath:'/calc', accentColor:'#10b981', idPrefix:'calc' };
+
+const componentMap: Record<string, any> = {
+  'age-calculator': AgeCalculator,
+  'percentage-calculator': PercentageCalculator,
+  'emi-calculator': EmiCalculator,
+  'sip-calculator': SipCalculator,
+  'compound-interest-calculator': CompoundInterestCalculator,
+  'simple-interest-calculator': SimpleInterestCalculator,
+  'gst-calculator': GstCalculator,
+  'discount-calculator': DiscountCalculator,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<WonderToolLayout tool={tool} brand={brand} tools={CALC_TOOLS}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</WonderToolLayout>

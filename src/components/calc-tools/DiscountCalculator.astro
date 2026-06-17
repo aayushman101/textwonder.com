@@ -1,0 +1,65 @@
+---
+---
+<div>
+  <div class="flex gap-1 mb-4 p-1 bg-[var(--bg-base)] rounded-xl border border-slate-700">
+    <button id="dc-tab1" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-white" style="background:#10b981" onclick="dcTab(1)">Find Sale Price</button>
+    <button id="dc-tab2" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:text-white" onclick="dcTab(2)">Find Discount %</button>
+  </div>
+
+  <div id="dc-panel1">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div><label class="block text-sm text-slate-400 mb-1">Original Price (₹)</label><input type="number" id="dc-orig1" placeholder="e.g. 1500" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+      <div><label class="block text-sm text-slate-400 mb-1">Discount (%)</label><input type="number" id="dc-pct" placeholder="e.g. 20" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+    </div>
+    <div id="dc-r1" class="hidden grid grid-cols-2 gap-3">
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center"><div class="text-xs text-slate-400 mb-1">Sale Price</div><div id="dc-sale" class="text-2xl font-bold" style="color:#10b981"></div></div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center"><div class="text-xs text-slate-400 mb-1">You Save</div><div id="dc-save" class="text-2xl font-bold text-white"></div></div>
+    </div>
+  </div>
+
+  <div id="dc-panel2" class="hidden">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div><label class="block text-sm text-slate-400 mb-1">Original Price (₹)</label><input type="number" id="dc-orig2" placeholder="e.g. 1500" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+      <div><label class="block text-sm text-slate-400 mb-1">Sale Price (₹)</label><input type="number" id="dc-saleprice" placeholder="e.g. 1200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" /></div>
+    </div>
+    <div id="dc-r2" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-xs text-slate-400 mb-1">Discount Applied</div>
+      <div id="dc-dpct" class="text-3xl font-bold" style="color:#10b981"></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  window.dcTab = function(n) {
+    [1,2].forEach(i => {
+      document.getElementById('dc-panel'+i).classList.toggle('hidden', i!==n);
+      const tab = document.getElementById('dc-tab'+i);
+      if(i===n){ tab.style.background='#10b981'; tab.classList.remove('text-slate-400'); tab.classList.add('text-white'); }
+      else { tab.style.background=''; tab.classList.add('text-slate-400'); tab.classList.remove('text-white'); }
+    });
+  };
+  // Tab 1
+  ['dc-orig1','dc-pct'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const orig = parseFloat(document.getElementById('dc-orig1').value);
+    const pct = parseFloat(document.getElementById('dc-pct').value);
+    const r = document.getElementById('dc-r1');
+    if(!isNaN(orig)&&!isNaN(pct)&&orig>0&&pct>=0&&pct<=100) {
+      const save = orig*pct/100;
+      document.getElementById('dc-sale').textContent = '₹'+(orig-save).toLocaleString('en-IN',{maximumFractionDigits:2});
+      document.getElementById('dc-save').textContent = '₹'+save.toLocaleString('en-IN',{maximumFractionDigits:2});
+      r.classList.remove('hidden');
+    } else r.classList.add('hidden');
+  }));
+  // Tab 2
+  ['dc-orig2','dc-saleprice'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const orig = parseFloat(document.getElementById('dc-orig2').value);
+    const sale = parseFloat(document.getElementById('dc-saleprice').value);
+    const r = document.getElementById('dc-r2');
+    if(!isNaN(orig)&&!isNaN(sale)&&orig>0&&sale>=0&&sale<=orig) {
+      document.getElementById('dc-dpct').textContent = ((orig-sale)/orig*100).toFixed(2)+'%';
+      r.classList.remove('hidden');
+    } else r.classList.add('hidden');
+  }));
+})();
+</script>

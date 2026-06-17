@@ -1,0 +1,133 @@
+---
+interface Props {
+  brand: {
+    name: string;      // e.g. "CalcWonder"
+    prefix: string;    // e.g. "Calc"
+    suffix: string;    // e.g. "Wonder"
+    rootPath: string;  // e.g. "/calc"
+    accentColor: string; // e.g. "#10b981"
+    idPrefix: string;  // e.g. "calc" — for unique DOM ids
+  };
+  tools: Array<{ slug: string; name: string }>;
+}
+const { brand, tools } = Astro.props;
+const toggleId = `${brand.idPrefix}-theme-toggle`;
+const sunId = `${brand.idPrefix}-icon-sun`;
+const moonId = `${brand.idPrefix}-icon-moon`;
+const searchOpenId = `${brand.idPrefix}-search-open`;
+const searchModalId = `${brand.idPrefix}-search-modal`;
+const searchInputId = `${brand.idPrefix}-search-input`;
+const searchResultsId = `${brand.idPrefix}-search-results`;
+const searchCloseId = `${brand.idPrefix}-search-close`;
+const searchBackdropId = `${brand.idPrefix}-search-backdrop`;
+---
+
+<header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
+  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href={brand.rootPath} class="flex items-center gap-2 group">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={`background:${brand.accentColor}`}>
+        <slot name="icon">
+          <span class="text-white font-bold text-xs">{brand.prefix[0]}</span>
+        </slot>
+      </div>
+      <span class="text-2xl font-bold text-white transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+        {brand.prefix}<span style={`color:${brand.accentColor}`}>{brand.suffix}</span>
+      </span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-5">
+      <a href={brand.rootPath} class="text-slate-300 hover:text-white transition-colors text-sm font-medium">All Tools</a>
+      <a href="/" class="flex items-center gap-1 text-slate-400 hover:text-white transition-colors text-sm font-medium">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        TextWonder
+      </a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <!-- Theme toggle -->
+      <button id={toggleId} class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors" aria-label="Toggle theme">
+        <svg id={sunId} class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+        <svg id={moonId} class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+
+      <!-- Search -->
+      <button id={searchOpenId} class="flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-400 hover:text-white px-3 py-2 rounded-lg transition-colors text-sm" aria-label="Search tools">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="hidden sm:inline">Search…</span>
+      </button>
+
+      <!-- Mobile back -->
+      <a href="/" class="md:hidden text-xs text-slate-400 hover:text-white px-2 py-1.5 rounded-lg border border-slate-700 hover:border-slate-500 transition-colors">← Text</a>
+    </div>
+  </div>
+</header>
+
+<!-- Search Modal -->
+<div id={searchModalId} class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id={searchBackdropId}></div>
+  <div class="relative max-w-lg mx-auto mt-20 mx-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-700">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input id={searchInputId} type="text" placeholder={`Search ${brand.name} tools…`} class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base" autocomplete="off"/>
+        <button id={searchCloseId} class="text-slate-400 hover:text-white transition-colors text-sm">ESC</button>
+      </div>
+      <ul id={searchResultsId} class="max-h-72 overflow-y-auto py-2"></ul>
+    </div>
+  </div>
+</div>
+
+<script define:vars={{ tools, brand, toggleId, sunId, moonId, searchOpenId, searchModalId, searchInputId, searchResultsId, searchCloseId, searchBackdropId }}>
+(function() {
+  // Theme
+  const toggle = document.getElementById(toggleId);
+  const sun = document.getElementById(sunId);
+  const moon = document.getElementById(moonId);
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('tw-theme', t);
+    if (t === 'dark') { sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+    else { sun.classList.add('hidden'); moon.classList.remove('hidden'); }
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+  toggle.addEventListener('click', () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+  // Search
+  const modal = document.getElementById(searchModalId);
+  const input = document.getElementById(searchInputId);
+  const results = document.getElementById(searchResultsId);
+  const openBtn = document.getElementById(searchOpenId);
+  const closeBtn = document.getElementById(searchCloseId);
+  const backdrop = document.getElementById(searchBackdropId);
+
+  function openModal() { modal.classList.remove('hidden'); setTimeout(() => input.focus(), 50); renderResults(''); }
+  function closeModal() { modal.classList.add('hidden'); input.value = ''; }
+
+  openBtn.addEventListener('click', openModal);
+  closeBtn.addEventListener('click', closeModal);
+  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+  });
+
+  function renderResults(query) {
+    const q = query.toLowerCase().trim();
+    const filtered = q ? tools.filter(t => t.name.toLowerCase().includes(q)) : tools.slice(0, 8);
+    results.innerHTML = filtered.length
+      ? filtered.map(t => `<li><a href="${brand.rootPath}/${t.slug}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><span class="text-white text-sm font-medium">${t.name}</span></a></li>`).join('')
+      : '<li class="px-4 py-4 text-slate-500 text-sm text-center">No tools found</li>';
+  }
+  input.addEventListener('input', e => renderResults(e.target.value));
+})();
+</script>

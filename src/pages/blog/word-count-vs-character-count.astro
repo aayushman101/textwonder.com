@@ -1,0 +1,139 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Is word count or character count more important for SEO?', a: 'Word count is more relevant for SEO content length decisions (aim for 1,500+ words for ranking posts). Character count matters specifically for meta titles (under 60 chars) and meta descriptions (under 155 chars) to avoid truncation in search results.' },
+  { q: 'Does Twitter count characters or words?', a: 'Twitter/X counts characters, not words. The limit is 280 characters per tweet. URLs count as 23 characters regardless of their actual length.' },
+  { q: 'Do spaces count in character count?', a: 'Depends on the tool and context. Most character count tools offer both options: "with spaces" (includes every space) and "without spaces" (counts only letters, numbers, and punctuation). SMS limits count spaces.' },
+  { q: 'How many characters is 500 words?', a: 'Approximately 2,500–3,000 characters including spaces (average English word is 5 characters + 1 space = ~6 characters). This varies significantly based on vocabulary — technical writing uses longer words than conversational text.' },
+  { q: 'What free tool shows both word count and character count?', a: 'TextWonder\'s Word Counter shows word count, character count (with and without spaces), sentence count, paragraph count, and reading time simultaneously in real time.' },
+];
+---
+
+<BlogLayout
+  title="Word Count vs Character Count: Key Differences & When Each Matters"
+  description="Word count and character count measure different things. Learn when to use each metric for social media, SMS, essays, SEO meta tags, and content writing."
+  canonical="/blog/word-count-vs-character-count"
+  date="2025-06-08"
+  readTime="5 min read"
+  category="Text Analysis"
+  faqs={faqs}
+>
+
+<p>
+  Word count and character count both measure the length of text, but they answer different questions and matter in completely different contexts. Knowing which one to check — and when — prevents a lot of frustration: truncated Google titles, cut-off tweets, rejected essay submissions, and SMS messages that split into two.
+</p>
+
+<h2>What Is Word Count?</h2>
+
+<p>
+  Word count is the number of words in a text — defined as sequences of non-whitespace characters separated by spaces or punctuation. "Hello, World!" is two words. "The quick brown fox" is four words.
+</p>
+
+<p>
+  Most word counting tools follow the same rule: any sequence of characters separated by whitespace counts as a word. Hyphens and apostrophes within words (don't, self-aware) typically count as part of the word, not as word separators.
+</p>
+
+<h2>What Is Character Count?</h2>
+
+<p>
+  Character count is the total number of individual characters in a text — including letters, numbers, spaces, punctuation, and special characters. "Hello" has 5 characters. "Hello, World!" has 13 characters.
+</p>
+
+<p>
+  <strong>With spaces:</strong> Counts every space as a character (relevant for SMS, social media).<br />
+  <strong>Without spaces:</strong> Counts only non-space characters (relevant for some academic submissions).
+</p>
+
+<h2>Side-by-Side Comparison</h2>
+
+<ul>
+  <li><strong>Word count for:</strong> essays, blog posts, books, academic papers, journalism, content marketing</li>
+  <li><strong>Character count for:</strong> social media, SMS, meta tags, form fields, database columns, URLs</li>
+</ul>
+
+<h2>When Word Count Matters</h2>
+
+<h3>Academic writing</h3>
+<p>
+  Universities set word limits for essays, dissertations, and reports. These are word counts, not character counts. Going over by more than 10% can result in grade deductions. Going significantly under can signal insufficient depth.
+</p>
+
+<h3>Blog posts and SEO content</h3>
+<p>
+  Word count is the standard measure for content length in SEO. Most SEO practitioners recommend 1,500–2,500 words for posts targeting competitive keywords. Thin content (under 300 words) often ranks poorly.
+</p>
+
+<h3>Publishing and journalism</h3>
+<p>
+  Magazine features, newspaper articles, and op-eds are commissioned and measured in word counts. A feature article is typically 1,000–3,000 words; a news brief is 150–300 words.
+</p>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Word Counter →</div>
+  <div class="cta-desc">Count words, characters, sentences, and paragraphs in real time. Free, browser-based, no signup.</div>
+</a>
+
+<h2>When Character Count Matters</h2>
+
+<h3>Social media</h3>
+<ul>
+  <li><strong>Twitter/X:</strong> 280 characters per tweet (URLs count as 23 chars)</li>
+  <li><strong>Instagram captions:</strong> 2,200 characters (preview truncates at ~125)</li>
+  <li><strong>Instagram bio:</strong> 150 characters</li>
+  <li><strong>LinkedIn posts:</strong> 3,000 characters (preview collapses at ~210)</li>
+  <li><strong>Facebook posts:</strong> 63,206 characters</li>
+</ul>
+
+<h3>SMS (text messages)</h3>
+<p>
+  Standard SMS messages use 160 characters per message. If you go over 160, it splits into two messages and you're charged twice. If your message contains any non-standard characters (accents, emojis, curly quotes), the limit drops to 70 characters per message.
+</p>
+
+<h3>SEO meta tags</h3>
+<ul>
+  <li><strong>Meta title:</strong> Under 60 characters to avoid Google truncating it with "..."</li>
+  <li><strong>Meta description:</strong> 120–155 characters for the full snippet to show in search results</li>
+</ul>
+
+<h3>Database fields and form inputs</h3>
+<p>
+  Database columns are defined with a maximum character length (VARCHAR(255), TEXT, etc.). Input forms validate character counts for phone numbers, postcodes, passwords, and usernames.
+</p>
+
+<h2>Converting Between the Two</h2>
+
+<p>
+  A rough approximation: average English words are 5 characters long, plus one space, making the average word about 6 characters with spaces.
+</p>
+
+<ul>
+  <li>100 words ≈ 600 characters (with spaces)</li>
+  <li>280 characters ≈ 46 words (for social media context)</li>
+  <li>160 characters (SMS) ≈ 27 words</li>
+  <li>155 characters (meta description) ≈ 25–28 words</li>
+</ul>
+
+<p>
+  These are approximations — actual ratios vary based on vocabulary. Technical writing with long words has fewer words per character; casual writing with short words has more.
+</p>
+
+<p>
+  Use <a href="/tools/word-counter">TextWonder's Word Counter</a> to see both metrics simultaneously.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

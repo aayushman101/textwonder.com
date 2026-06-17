@@ -1,0 +1,129 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  date: string;
+  readTime: string;
+  category: string;
+  faqs?: Array<{ q: string; a: string }>;
+}
+
+const { title, description, canonical, date, readTime, category, faqs = [] } = Astro.props;
+const siteUrl = 'https://textwonder.com';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  description: description,
+  url: `${siteUrl}${canonical}`,
+  datePublished: date,
+  dateModified: date,
+  author: { '@type': 'Organization', name: 'TextWonder', url: siteUrl },
+  publisher: { '@type': 'Organization', name: 'TextWonder', url: siteUrl, logo: { '@type': 'ImageObject', url: `${siteUrl}/favicon.svg` } },
+  mainEntityOfPage: { '@type': 'WebPage', '@id': `${siteUrl}${canonical}` },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: siteUrl },
+    { '@type': 'ListItem', position: 2, name: 'Blog', item: `${siteUrl}/blog` },
+    { '@type': 'ListItem', position: 3, name: title, item: `${siteUrl}${canonical}` },
+  ],
+};
+
+const faqSchema = faqs.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+} : null;
+
+const dateObj = new Date(date);
+const displayDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title={title} description={description} canonical={canonical}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+    <meta property="og:type" content="article" />
+    <meta property="article:published_time" content={date} />
+  </Fragment>
+
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-10">
+    <!-- Breadcrumb -->
+    <nav class="flex items-center gap-1 text-sm text-slate-500 mb-8">
+      <a href="/" class="hover:text-violet-400 transition-colors">Home</a>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <a href="/blog" class="hover:text-violet-400 transition-colors">Blog</a>
+      <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      <span class="text-slate-400 truncate max-w-[200px]">{title}</span>
+    </nav>
+
+    <!-- Header -->
+    <header class="mb-10">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-violet-900/40 text-violet-300 border border-violet-800/50">{category}</span>
+        <span class="text-slate-600 text-xs">·</span>
+        <span class="text-slate-500 text-xs">{readTime}</span>
+        <span class="text-slate-600 text-xs">·</span>
+        <time datetime={date} class="text-slate-500 text-xs">{displayDate}</time>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-bold text-white leading-tight mb-4" style="font-family: 'Space Grotesk', sans-serif;">{title}</h1>
+      <p class="text-slate-400 text-lg leading-relaxed">{description}</p>
+    </header>
+
+    <!-- Article content -->
+    <article class="
+      prose-headings:font-semibold prose-headings:text-white prose-headings:leading-snug
+      prose-h2:text-2xl prose-h2:mt-10 prose-h2:mb-4 prose-h2:font-bold
+      prose-h3:text-xl prose-h3:mt-7 prose-h3:mb-3
+      prose-p:text-slate-400 prose-p:leading-relaxed prose-p:mb-5
+      prose-strong:text-white prose-strong:font-semibold
+      prose-a:text-violet-400 prose-a:no-underline hover:prose-a:underline
+      prose-ul:text-slate-400 prose-ul:leading-relaxed prose-ul:mb-5 prose-ul:pl-6
+      prose-li:mb-1.5
+      prose-ol:text-slate-400 prose-ol:leading-relaxed prose-ol:mb-5 prose-ol:pl-6
+      prose-blockquote:border-l-4 prose-blockquote:border-violet-500 prose-blockquote:pl-4 prose-blockquote:text-slate-400 prose-blockquote:italic
+      prose-code:text-violet-300 prose-code:bg-[var(--bg-surface)] prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
+    ">
+      <slot />
+    </article>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  article h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-top: 2.5rem; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; }
+  article h3 { font-size: 1.2rem; font-weight: 600; color: #e2e8f0; margin-top: 1.75rem; margin-bottom: 0.75rem; }
+  article p { color: #94a3b8; line-height: 1.8; margin-bottom: 1.25rem; }
+  article strong { color: #e2e8f0; font-weight: 600; }
+  article a { color: #a78bfa; text-decoration: none; }
+  article a:hover { text-decoration: underline; }
+  article ul, article ol { color: #94a3b8; line-height: 1.8; margin-bottom: 1.25rem; padding-left: 1.5rem; }
+  article li { margin-bottom: 0.4rem; }
+  article blockquote { border-left: 3px solid #7c3aed; padding-left: 1rem; color: #94a3b8; font-style: italic; margin: 1.5rem 0; }
+  article code { color: #c4b5fd; background: var(--bg-surface, #1e293b); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.875em; }
+  .tool-cta { display: block; background: linear-gradient(135deg, #4c1d95, #6d28d9); border: 1px solid #7c3aed40; border-radius: 1rem; padding: 1.5rem; margin: 2rem 0; text-decoration: none !important; transition: all 0.2s; }
+  .tool-cta:hover { border-color: #7c3aed80; box-shadow: 0 0 24px rgba(124,58,237,0.2); }
+  .tool-cta .cta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #a78bfa; font-weight: 600; margin-bottom: 0.25rem; }
+  .tool-cta .cta-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; font-family: 'Space Grotesk', sans-serif; }
+  .tool-cta .cta-desc { font-size: 0.875rem; color: #94a3b8; }
+  .faq-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1e293b; }
+  .faq-section h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; }
+</style>

@@ -1,0 +1,55 @@
+---
+---
+<div>
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-1">JSON Array Input</label>
+    <textarea id="jtc-input" rows="8" placeholder='[&#10;  {"name": "Alice", "age": 30},&#10;  {"name": "Bob", "age": 25}&#10;]' class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-amber-500 resize-none"></textarea>
+  </div>
+
+  <div id="jtc-output-section" class="hidden space-y-3">
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-sm text-slate-400">CSV Output</label>
+        <div class="flex gap-2">
+          <button onclick="jtcCopy()" class="px-3 py-1.5 rounded-lg text-sm text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Copy</button>
+          <button onclick="jtcDownload()" class="px-3 py-1.5 rounded-lg text-sm text-slate-300 bg-[var(--bg-base)] border border-slate-700 hover:text-white">Download .csv</button>
+        </div>
+      </div>
+      <textarea id="jtc-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none resize-none"></textarea>
+    </div>
+    <p id="jtc-stats" class="text-xs text-slate-500"></p>
+  </div>
+  <p id="jtc-error" class="hidden text-red-400 text-sm mt-3"></p>
+</div>
+
+<script is:inline>
+(function(){
+  function escapeCSV(val){
+    const s=String(val===null||val===undefined?'':val);
+    if(s.includes(',')||s.includes('"')||s.includes('\n')){return '"'+s.replace(/"/g,'""')+'"';}
+    return s;
+  }
+  function convert(){
+    const text=document.getElementById('jtc-input').value;
+    const err=document.getElementById('jtc-error');
+    const out=document.getElementById('jtc-output-section');
+    err.classList.add('hidden');
+    if(!text.trim()){out.classList.add('hidden');return;}
+    try{
+      const data=JSON.parse(text);
+      if(!Array.isArray(data)){err.textContent='Input must be a JSON array.';err.classList.remove('hidden');out.classList.add('hidden');return;}
+      if(!data.length){err.textContent='Array is empty.';err.classList.remove('hidden');out.classList.add('hidden');return;}
+      const keys=[...new Set(data.flatMap(obj=>Object.keys(obj)))];
+      const rows=[keys.map(escapeCSV).join(',')];
+      data.forEach(obj=>rows.push(keys.map(k=>escapeCSV(obj[k])).join(',')));
+      const csv=rows.join('\n');
+      document.getElementById('jtc-output').value=csv;
+      document.getElementById('jtc-stats').textContent=`${data.length} row${data.length===1?'':'s'}, ${keys.length} column${keys.length===1?'':'s'}.`;
+      out.classList.remove('hidden');
+    }catch(e){err.textContent='JSON parse error: '+e.message;err.classList.remove('hidden');out.classList.add('hidden');}
+  }
+  window.jtcCopy=function(){navigator.clipboard.writeText(document.getElementById('jtc-output').value).catch(()=>{});};
+  window.jtcDownload=function(){const blob=new Blob([document.getElementById('jtc-output').value],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='data.csv';a.click();};
+  document.getElementById('jtc-input').addEventListener('input',convert);
+})();
+</script>

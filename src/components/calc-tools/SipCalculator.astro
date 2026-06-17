@@ -1,0 +1,56 @@
+---
+---
+<div>
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="sip-amount">Monthly Investment (₹)</label>
+      <input type="number" id="sip-amount" placeholder="e.g. 5000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="sip-rate">Expected Return (% p.a.)</label>
+      <input type="number" id="sip-rate" placeholder="e.g. 12" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="sip-years">Period (years)</label>
+      <input type="number" id="sip-years" placeholder="e.g. 10" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+  </div>
+
+  <div id="sip-result" class="hidden space-y-3">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">Invested Amount</div>
+        <div id="sip-invested" class="text-lg font-bold text-white"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">Est. Returns</div>
+        <div id="sip-returns" class="text-lg font-bold" style="color:#10b981"></div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+        <div class="text-xs text-slate-400 mb-1">Total Value</div>
+        <div id="sip-total" class="text-lg font-bold text-white"></div>
+      </div>
+    </div>
+    <p class="text-xs text-slate-500">* Returns are estimated. Actual mutual fund returns may vary.</p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+  function calc() {
+    const P = parseFloat(document.getElementById('sip-amount').value);
+    const r = parseFloat(document.getElementById('sip-rate').value) / 100 / 12;
+    const n = parseInt(document.getElementById('sip-years').value) * 12;
+    const res = document.getElementById('sip-result');
+    if(!P||!r||!n||P<=0||r<=0||n<=0) { res.classList.add('hidden'); return; }
+    const fv = P * ((Math.pow(1+r,n)-1)/r) * (1+r);
+    const invested = P * n;
+    document.getElementById('sip-invested').textContent = fmt(invested);
+    document.getElementById('sip-returns').textContent = fmt(fv-invested);
+    document.getElementById('sip-total').textContent = fmt(fv);
+    res.classList.remove('hidden');
+  }
+  ['sip-amount','sip-rate','sip-years'].forEach(id => document.getElementById(id).addEventListener('input', calc));
+})();
+</script>

@@ -1,0 +1,67 @@
+---
+---
+<div>
+  <div class="space-y-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1" for="gst-amount">Amount (₹)</label>
+      <input type="number" id="gst-amount" placeholder="e.g. 1000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1" for="gst-rate">GST Rate</label>
+        <select id="gst-rate" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500">
+          <option value="5">5%</option>
+          <option value="12">12%</option>
+          <option value="18" selected>18%</option>
+          <option value="28">28%</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Mode</label>
+        <div class="flex gap-3 pt-2">
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" id="gst-add" name="gst-mode" value="add" checked class="accent-emerald-500" /><span class="text-white text-sm">Add GST</span></label>
+          <label class="flex items-center gap-2 cursor-pointer"><input type="radio" id="gst-remove" name="gst-mode" value="remove" class="accent-emerald-500" /><span class="text-white text-sm">Remove GST</span></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="gst-result" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 space-y-2 text-sm">
+    <div class="flex justify-between border-b border-slate-700 pb-2 mb-2">
+      <span class="text-slate-400">Base Amount</span><span id="gst-base" class="text-white font-medium"></span>
+    </div>
+    <div class="flex justify-between"><span class="text-slate-400">GST Amount</span><span id="gst-gst" class="font-medium" style="color:#10b981"></span></div>
+    <div class="flex justify-between"><span class="text-slate-400">CGST (<span id="gst-half-rate"></span>%)</span><span id="gst-cgst" class="text-white"></span></div>
+    <div class="flex justify-between"><span class="text-slate-400">SGST (<span id="gst-half-rate2"></span>%)</span><span id="gst-sgst" class="text-white"></span></div>
+    <div class="flex justify-between border-t border-slate-700 pt-2 mt-2 font-semibold">
+      <span class="text-white">Total Amount</span><span id="gst-total" class="text-white"></span>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  function fmt(n) { return '₹' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function calc() {
+    const amt = parseFloat(document.getElementById('gst-amount').value);
+    const rate = parseFloat(document.getElementById('gst-rate').value);
+    const mode = document.querySelector('input[name="gst-mode"]:checked').value;
+    const res = document.getElementById('gst-result');
+    if(!amt || amt<=0) { res.classList.add('hidden'); return; }
+    let base, gst, total;
+    if(mode === 'add') { base=amt; gst=amt*rate/100; total=amt+gst; }
+    else { total=amt; base=amt/(1+rate/100); gst=total-base; }
+    const halfRate = rate/2;
+    document.getElementById('gst-base').textContent = fmt(base);
+    document.getElementById('gst-gst').textContent = fmt(gst);
+    document.getElementById('gst-cgst').textContent = fmt(gst/2);
+    document.getElementById('gst-sgst').textContent = fmt(gst/2);
+    document.getElementById('gst-total').textContent = fmt(total);
+    document.getElementById('gst-half-rate').textContent = halfRate;
+    document.getElementById('gst-half-rate2').textContent = halfRate;
+    res.classList.remove('hidden');
+  }
+  ['gst-amount','gst-rate'].forEach(id => document.getElementById(id).addEventListener('input', calc));
+  document.querySelectorAll('input[name="gst-mode"]').forEach(r => r.addEventListener('change', calc));
+})();
+</script>

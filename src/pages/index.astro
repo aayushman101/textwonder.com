@@ -33,6 +33,16 @@ const homepageFaqs = [
   { q: 'Does it support languages other than English?', a: 'Yes. The tools work with Unicode text, supporting Hindi, Arabic, Chinese, Spanish, French, and most other languages.' },
 ];
 
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: homepageFaqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
 type ToolVisual = { bg: string; iconHtml: string };
 
 const toolIcons: Record<string, ToolVisual> = {
@@ -284,13 +294,14 @@ const toolIcons: Record<string, ToolVisual> = {
 ---
 
 <BaseLayout
-  title="Free Online Text Tools — Word Counter, Case Converter & More | TextWonder"
+  title="Free Online Text Tools – Word Counter, Case Converter & More"
   description="TextWonder offers 61+ free browser-based text tools. Remove emojis, count words, convert case, sort lines and more. No signup, no ads, 100% private."
   canonical="/"
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
     <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
   </Fragment>
 
   <Header />
@@ -349,7 +360,7 @@ const toolIcons: Record<string, ToolVisual> = {
               >
                 <Fragment set:html={visual.iconHtml} />
               </div>
-              <h3 class="text-white font-semibold text-sm mb-1 group-hover:text-violet-300 transition-colors leading-snug">{tool.name}</h3>
+              <p class="text-white font-semibold text-sm mb-1 group-hover:text-violet-300 transition-colors leading-snug">{tool.name}</p>
               <p class="text-slate-500 text-xs leading-relaxed line-clamp-2">{tool.tagline}</p>
             </a>
           );

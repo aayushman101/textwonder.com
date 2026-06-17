@@ -1,0 +1,130 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the difference between uppercase and title case?', a: 'Uppercase converts every letter to a capital (ALL CAPS). Title case capitalizes only the first letter of principal words — it reads normally but looks formal.' },
+  { q: 'What is camelCase used for?', a: 'camelCase (also written camelCase) is used in programming for variable and function names. The first word is lowercase, subsequent words start with uppercase: myVariableName, getUserData().' },
+  { q: 'What is snake_case?', a: 'snake_case uses all lowercase letters with words separated by underscores: my_variable_name. It\'s common in Python, Ruby, and SQL for variable and function names.' },
+  { q: 'What is kebab-case?', a: 'kebab-case uses all lowercase letters with words separated by hyphens: my-variable-name. It\'s used in CSS class names, HTML attributes, and URL slugs.' },
+  { q: 'Can I convert text case online for free?', a: 'Yes. TextWonder has free tools for every case type: uppercase, lowercase, title case, sentence case, camelCase, snake_case, kebab-case, and CONSTANT_CASE. All run in your browser with no signup.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text Case: Uppercase, Lowercase, Title Case & More"
+  description="Learn how to convert text to uppercase, lowercase, title case, sentence case, camelCase, snake_case, and kebab-case — with free online tools and rules for each."
+  canonical="/blog/text-case-converter-guide"
+  date="2025-06-05"
+  readTime="5 min read"
+  category="Text Conversion"
+  faqs={faqs}
+>
+
+<p>
+  Text case conversion is one of the most common everyday tasks for writers, developers, data analysts, and SEO professionals. Whether you're formatting a headline, naming a variable, building a URL slug, or cleaning messy imported data, knowing which case style to use — and how to convert between them quickly — saves real time.
+</p>
+
+<h2>The 8 Most Common Text Case Types</h2>
+
+<h3>1. lowercase</h3>
+<p>Every letter is lowercase. Used for: general text, email addresses, URLs, CSS properties.</p>
+<p>Example: <code>the quick brown fox</code></p>
+
+<h3>2. UPPERCASE</h3>
+<p>Every letter is a capital. Used for: acronyms, abbreviations, shouting in informal text, database column names in some conventions.</p>
+<p>Example: <code>THE QUICK BROWN FOX</code></p>
+
+<h3>3. Title Case</h3>
+<p>Principal words are capitalized; articles, short prepositions, and conjunctions are lowercase. Used for: book titles, article headlines, formal document headings, navigation labels.</p>
+<p>Example: <code>The Quick Brown Fox Jumps Over the Lazy Dog</code></p>
+
+<h3>4. Sentence case</h3>
+<p>Only the first word and proper nouns are capitalized. Used for: blog headings, casual writing, most modern web content.</p>
+<p>Example: <code>The quick brown fox jumps over the lazy dog</code></p>
+
+<h3>5. camelCase</h3>
+<p>No spaces; each word after the first starts with uppercase. Used for: JavaScript variables and functions, Java class members, API response field names.</p>
+<p>Example: <code>theQuickBrownFox</code></p>
+
+<h3>6. PascalCase</h3>
+<p>Like camelCase, but the first word is also capitalized. Used for: class names in most programming languages (JavaScript, TypeScript, C#, Java), React component names.</p>
+<p>Example: <code>TheQuickBrownFox</code></p>
+
+<h3>7. snake_case</h3>
+<p>All lowercase with underscores between words. Used for: Python variables and functions, Ruby methods, database column names, file names on Unix systems.</p>
+<p>Example: <code>the_quick_brown_fox</code></p>
+
+<h3>8. kebab-case</h3>
+<p>All lowercase with hyphens between words. Used for: URL slugs, HTML/CSS class names, HTML data attributes, file names in web projects.</p>
+<p>Example: <code>the-quick-brown-fox</code></p>
+
+<h2>Quick Reference: Which Case Style for What</h2>
+
+<ul>
+  <li><strong>Book/film titles:</strong> Title Case</li>
+  <li><strong>Blog headings (modern style):</strong> Sentence case</li>
+  <li><strong>URL slugs:</strong> kebab-case</li>
+  <li><strong>CSS class names:</strong> kebab-case</li>
+  <li><strong>JavaScript variables:</strong> camelCase</li>
+  <li><strong>JavaScript class names:</strong> PascalCase</li>
+  <li><strong>Python variables:</strong> snake_case</li>
+  <li><strong>Database columns:</strong> snake_case</li>
+  <li><strong>Acronyms (NASA, CEO):</strong> UPPERCASE</li>
+  <li><strong>Email subject lines:</strong> Sentence case or Title Case</li>
+</ul>
+
+<a href="/tools/title-case-converter" class="tool-cta">
+  <div class="cta-label">Free Tools</div>
+  <div class="cta-title">Text Case Converters →</div>
+  <div class="cta-desc">Convert to any case type: title case, sentence case, camelCase, snake_case, kebab-case, and more. All free, all browser-based.</div>
+</a>
+
+<h2>Converting Text Case Automatically</h2>
+
+<p>
+  TextWonder has dedicated free tools for each case type. Here's a quick guide to all available converters:
+</p>
+
+<ul>
+  <li><a href="/tools/uppercase-converter">Uppercase Converter</a> — convert all text to ALL CAPS</li>
+  <li><a href="/tools/lowercase-converter">Lowercase Converter</a> — convert all text to lowercase</li>
+  <li><a href="/tools/title-case-converter">Title Case Converter</a> — capitalize principal words</li>
+  <li><a href="/tools/sentence-case-converter">Sentence Case Converter</a> — capitalize first word only</li>
+  <li><a href="/tools/camel-case-converter">camelCase Converter</a> — for JavaScript and API naming</li>
+  <li><a href="/tools/snake-case-converter">snake_case Converter</a> — for Python and database naming</li>
+  <li><a href="/tools/kebab-case-converter">kebab-case Converter</a> — for URLs and CSS class names</li>
+  <li><a href="/tools/url-slug-generator">URL Slug Generator</a> — creates SEO-friendly URL slugs</li>
+</ul>
+
+<p>
+  All tools are free, work entirely in your browser, and require no signup. Paste text and results appear instantly.
+</p>
+
+<h2>Programming Languages and Their Preferred Case Style</h2>
+
+<p>Most languages have official style guides that mandate specific naming conventions:</p>
+
+<ul>
+  <li><strong>JavaScript/TypeScript:</strong> camelCase for variables/functions, PascalCase for classes</li>
+  <li><strong>Python (PEP 8):</strong> snake_case for variables/functions, PascalCase for classes</li>
+  <li><strong>Java:</strong> camelCase for variables/methods, PascalCase for classes</li>
+  <li><strong>Go:</strong> camelCase for unexported, PascalCase for exported identifiers</li>
+  <li><strong>Rust:</strong> snake_case for variables/functions, PascalCase for types</li>
+  <li><strong>CSS:</strong> kebab-case for class names and custom properties</li>
+  <li><strong>SQL:</strong> UPPER_SNAKE_CASE for keywords; snake_case for column names</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

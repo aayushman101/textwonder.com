@@ -1,0 +1,147 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is a good Flesch Reading Ease score?', a: '60–70 is considered "standard" (readable by 13–15 year olds, ideal for most web content). 70–80 is "fairly easy" (accessible to a wide audience). Below 30 is "very difficult" (academic/scientific). Most blog content should target 60–70.' },
+  { q: 'What is a good Flesch-Kincaid Grade Level for blog posts?', a: 'Grade 7–8 is recommended for general web audiences. This means the text is appropriate for a 12–13 year old reader — which is actually where most adult newspapers aim. Grade 6 or below is excellent for mass-market content.' },
+  { q: 'Does readability score affect SEO?', a: 'Google does not use readability scores as a direct ranking factor. However, easier-to-read content tends to have lower bounce rates, higher time-on-page, and more social shares — all of which indirectly help rankings.' },
+  { q: 'What makes text hard to read?', a: 'Long sentences, complex vocabulary (multisyllabic words), passive voice, dense paragraphs, lack of subheadings, and no visual breaks all reduce readability. The fix: shorter sentences, simpler words, active voice, and clear structure.' },
+  { q: 'How do I check readability online for free?', a: 'Use TextWonder\'s Readability Score tool. Paste any text and get Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog Index, average sentence length, and average word length — all at once, for free.' },
+];
+---
+
+<BlogLayout
+  title="How to Check Your Writing's Readability Score"
+  description="Learn how readability scores work, what Flesch-Kincaid grade level means, and how to improve your writing to reach a wider audience. Check readability free."
+  canonical="/blog/readability-score-guide"
+  date="2025-05-22"
+  readTime="6 min read"
+  category="Writing Tips"
+  faqs={faqs}
+>
+
+<p>
+  Readability is how easily a reader can understand your writing. It's not about writing "simply" — it's about writing <em>efficiently</em>: clear, direct, well-structured text that delivers ideas without friction. Readability scores quantify this so you can measure and improve it.
+</p>
+
+<h2>Why Readability Matters</h2>
+
+<p>
+  The web is brutal for attention. Studies show most people scan rather than read — they skim headlines, the first sentence of paragraphs, and bullet points. Dense walls of text lose readers immediately.
+</p>
+
+<p>
+  Readable content benefits you in several ways:
+</p>
+<ul>
+  <li><strong>Lower bounce rate:</strong> Readers stay on the page when they can follow the text without effort</li>
+  <li><strong>Broader audience:</strong> Content written at grade 8 is accessible to ~80% of adults, not just specialists</li>
+  <li><strong>Better conversion:</strong> Landing pages and emails with clearer copy convert better</li>
+  <li><strong>Indirect SEO:</strong> More time-on-page and fewer bounces are positive user experience signals</li>
+</ul>
+
+<h2>The Most Common Readability Formulas</h2>
+
+<h3>Flesch Reading Ease</h3>
+<p>
+  The most widely used readability metric. Scores range from 0 to 100 — higher is easier.
+</p>
+<ul>
+  <li><strong>90–100:</strong> Very easy (5th grade). Conversational, simple.</li>
+  <li><strong>70–80:</strong> Fairly easy (6th grade). Most consumer content.</li>
+  <li><strong>60–70:</strong> Standard (7th grade). Most blog posts and news articles.</li>
+  <li><strong>50–60:</strong> Fairly difficult (10th–12th grade). Technical topics.</li>
+  <li><strong>30–50:</strong> Difficult (college level). Academic papers.</li>
+  <li><strong>0–30:</strong> Very difficult. Legal and scientific texts.</li>
+</ul>
+
+<h3>Flesch-Kincaid Grade Level</h3>
+<p>
+  Translates readability into a US school grade level. A score of 8.0 means an 8th grader can understand it. Most major newspapers target grade 8. Most web content should target grade 6–8.
+</p>
+
+<h3>Gunning Fog Index</h3>
+<p>
+  Estimates the years of formal education required to read text on first pass. Focus is on polysyllabic words (3+ syllables). A score of 12 = US high school graduation level. Target: below 12 for general content.
+</p>
+
+<h3>SMOG Index</h3>
+<p>
+  Similar to Gunning Fog but considered more accurate for health communication. Counts words with 3+ syllables. Used extensively in health and patient education materials.
+</p>
+
+<a href="/tools/readability-score" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Readability Score Checker →</div>
+  <div class="cta-desc">Check Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, and more. Free, instant, browser-based.</div>
+</a>
+
+<h2>How to Check Readability Online</h2>
+
+<p>
+  Use TextWonder's <a href="/tools/readability-score">Readability Score tool</a>:
+</p>
+<ol>
+  <li>Paste your text into the tool.</li>
+  <li>Get instant scores: Flesch Reading Ease, Flesch-Kincaid Grade Level, Gunning Fog, SMOG, average sentence length, average word length, and syllable count.</li>
+  <li>Use the scores to identify which parts of your text need simplification.</li>
+</ol>
+
+<h2>How to Improve Readability</h2>
+
+<h3>1. Shorten your sentences</h3>
+<p>
+  Long sentences are the single biggest readability killer. Aim for an average sentence length of 15–20 words. If a sentence exceeds 30 words, split it.
+</p>
+
+<h3>2. Use simple words</h3>
+<p>
+  Replace polysyllabic words with simpler alternatives. Readability formulas penalise words with 3+ syllables because they slow readers down.
+</p>
+<ul>
+  <li>"utilise" → "use"</li>
+  <li>"demonstrate" → "show"</li>
+  <li>"approximately" → "about"</li>
+  <li>"facilitate" → "help"</li>
+  <li>"terminate" → "end"</li>
+</ul>
+
+<h3>3. Use active voice</h3>
+<p>
+  Passive voice adds words and makes sentences harder to follow. "The report was written by the team" → "The team wrote the report."
+</p>
+
+<h3>4. Break up paragraphs</h3>
+<p>
+  Short paragraphs (3–4 sentences max) are easier to scan. Long paragraphs feel dense and invite skipping. Use subheadings to signal topic changes.
+</p>
+
+<h3>5. Use lists for parallel items</h3>
+<p>
+  When you have 3+ parallel items, a bullet list is almost always more readable than a sentence listing them with commas.
+</p>
+
+<h2>Readability Targets by Content Type</h2>
+<ul>
+  <li><strong>General blog posts:</strong> Flesch 60–70, Grade 7–8</li>
+  <li><strong>News articles:</strong> Flesch 60–65, Grade 8</li>
+  <li><strong>Email newsletters:</strong> Flesch 65–75, Grade 6–7</li>
+  <li><strong>Technical documentation:</strong> Flesch 40–60, Grade 10–12 (some complexity unavoidable)</li>
+  <li><strong>Health information:</strong> Flesch 70+, Grade 6 or below</li>
+  <li><strong>Academic papers:</strong> Flesch 20–40, Grade 14–16</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

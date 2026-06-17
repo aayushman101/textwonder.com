@@ -3,6 +3,13 @@ export async function onRequest(context) {
   const isPagesDev = host.includes('pages.dev');
   const { pathname } = new URL(context.request.url);
 
+  // Redirect www → non-www with 301
+  if (host.startsWith('www.') && !isPagesDev) {
+    const url = new URL(context.request.url);
+    url.hostname = url.hostname.replace(/^www\./, '');
+    return Response.redirect(url.toString(), 301);
+  }
+
   // Serve blocking robots.txt on pages.dev to prevent indexing
   if (isPagesDev && pathname === '/robots.txt') {
     return new Response('User-agent: *\nDisallow: /\n', {

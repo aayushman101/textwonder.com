@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0%" stop-color="#4c1d95" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="dots" x="0" y="0" width="32" height="32" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="#1e293b"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Top accent bar -->
+  <rect x="0" y="0" width="1200" height="4" fill="#7c3aed"/>
+
+  <!-- Logo text -->
+  <text x="600" y="240" font-family="system-ui,-apple-system,sans-serif" font-size="88" font-weight="700" text-anchor="middle" fill="#ffffff" letter-spacing="-2">Text<tspan fill="#7c3aed">Wonder</tspan></text>
+
+  <!-- Tagline -->
+  <text x="600" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" text-anchor="middle" fill="#94a3b8">Free Browser-Based Text Tools — Private, No Signup</text>
+
+  <!-- Divider -->
+  <rect x="480" y="348" width="240" height="2" fill="#1e293b" rx="1"/>
+
+  <!-- Stats row -->
+  <text x="310" y="410" font-family="system-ui,-apple-system,sans-serif" font-size="48" font-weight="700" text-anchor="middle" fill="#7c3aed">100+</text>
+  <text x="310" y="445" font-family="system-ui,-apple-system,sans-serif" font-size="20" text-anchor="middle" fill="#64748b">Free Tools</text>
+
+  <text x="600" y="410" font-family="system-ui,-apple-system,sans-serif" font-size="48" font-weight="700" text-anchor="middle" fill="#7c3aed">0</text>
+  <text x="600" y="445" font-family="system-ui,-apple-system,sans-serif" font-size="20" text-anchor="middle" fill="#64748b">Signups Required</text>
+
+  <text x="890" y="410" font-family="system-ui,-apple-system,sans-serif" font-size="48" font-weight="700" text-anchor="middle" fill="#7c3aed">100%</text>
+  <text x="890" y="445" font-family="system-ui,-apple-system,sans-serif" font-size="20" text-anchor="middle" fill="#64748b">Browser-Based</text>
+
+  <!-- URL badge -->
+  <rect x="490" y="500" width="220" height="44" rx="22" fill="#1e293b"/>
+  <text x="600" y="528" font-family="system-ui,-apple-system,sans-serif" font-size="20" font-weight="500" text-anchor="middle" fill="#94a3b8">textwonder.com</text>
+</svg>

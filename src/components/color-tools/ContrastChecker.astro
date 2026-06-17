@@ -1,0 +1,85 @@
+---
+---
+<div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Foreground (Text)</label>
+      <div class="flex gap-2 items-center">
+        <input type="color" id="cc-fg" value="#ffffff" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+        <input type="text" id="cc-fg-text" value="#ffffff" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Background</label>
+      <div class="flex gap-2 items-center">
+        <input type="color" id="cc-bg" value="#1e293b" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" />
+        <input type="text" id="cc-bg-text" value="#1e293b" class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-pink-500 font-mono" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview -->
+  <div id="cc-preview" class="rounded-xl p-6 mb-4 border border-slate-700 text-center" style="background:#1e293b">
+    <p id="cc-preview-text" class="text-2xl font-semibold" style="color:#ffffff">Sample Text Preview</p>
+    <p id="cc-preview-small" class="text-sm mt-1" style="color:#ffffff">Small text (14px) looks like this</p>
+  </div>
+
+  <div id="cc-result" class="space-y-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Contrast Ratio</div>
+      <div id="cc-ratio" class="text-4xl font-bold" style="color:#ec4899"></div>
+    </div>
+    <div class="grid grid-cols-3 gap-2 text-sm">
+      <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-700 text-center">
+        <div class="text-slate-400 text-xs mb-2">AA Normal Text</div>
+        <div id="cc-aa-normal" class="font-bold text-base"></div>
+        <div class="text-slate-500 text-xs">≥ 4.5:1</div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-700 text-center">
+        <div class="text-slate-400 text-xs mb-2">AA Large Text</div>
+        <div id="cc-aa-large" class="font-bold text-base"></div>
+        <div class="text-slate-500 text-xs">≥ 3:1</div>
+      </div>
+      <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-700 text-center">
+        <div class="text-slate-400 text-xs mb-2">AAA Normal</div>
+        <div id="cc-aaa" class="font-bold text-base"></div>
+        <div class="text-slate-500 text-xs">≥ 7:1</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function hexToRgb(hex){hex=hex.replace(/^#/,'');if(hex.length===3)hex=hex.split('').map(c=>c+c).join('');if(hex.length!==6)return null;const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);return isNaN(r)||isNaN(g)||isNaN(b)?null:{r,g,b};}
+  function luminance(r,g,b){const s=[r,g,b].map(v=>{v/=255;return v<=0.03928?v/12.92:Math.pow((v+0.055)/1.055,2.4);});return 0.2126*s[0]+0.7152*s[1]+0.0722*s[2];}
+  function badge(pass){return pass?'<span style="color:#22c55e">&#10003; Pass</span>':'<span style="color:#ef4444">&#10007; Fail</span>';}
+
+  function calc(){
+    const fgHex=document.getElementById('cc-fg-text').value.trim();
+    const bgHex=document.getElementById('cc-bg-text').value.trim();
+    const fg=hexToRgb(fgHex.startsWith('#')?fgHex:'#'+fgHex);
+    const bg=hexToRgb(bgHex.startsWith('#')?bgHex:'#'+bgHex);
+    if(!fg||!bg)return;
+    const l1=luminance(fg.r,fg.g,fg.b),l2=luminance(bg.r,bg.g,bg.b);
+    const ratio=(Math.max(l1,l2)+0.05)/(Math.min(l1,l2)+0.05);
+    document.getElementById('cc-ratio').textContent=ratio.toFixed(2)+':1';
+    document.getElementById('cc-aa-normal').innerHTML=badge(ratio>=4.5);
+    document.getElementById('cc-aa-large').innerHTML=badge(ratio>=3);
+    document.getElementById('cc-aaa').innerHTML=badge(ratio>=7);
+    // Preview
+    const fgStr='#'+fgHex.replace('#','');
+    const bgStr='#'+bgHex.replace('#','');
+    document.getElementById('cc-preview').style.background=bgStr;
+    document.getElementById('cc-preview-text').style.color=fgStr;
+    document.getElementById('cc-preview-small').style.color=fgStr;
+    document.getElementById('cc-fg').value=fgStr;
+    document.getElementById('cc-bg').value=bgStr;
+  }
+  document.getElementById('cc-fg').addEventListener('input',function(){document.getElementById('cc-fg-text').value=this.value;calc();});
+  document.getElementById('cc-bg').addEventListener('input',function(){document.getElementById('cc-bg-text').value=this.value;calc();});
+  document.getElementById('cc-fg-text').addEventListener('input',function(){const v=this.value.startsWith('#')?this.value:'#'+this.value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('cc-fg').value=v;}calc();});
+  document.getElementById('cc-bg-text').addEventListener('input',function(){const v=this.value.startsWith('#')?this.value:'#'+this.value;if(/^#[0-9a-fA-F]{6}$/.test(v)){document.getElementById('cc-bg').value=v;}calc();});
+  calc();
+})();
+</script>

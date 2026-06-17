@@ -1,0 +1,132 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I sort lines of text alphabetically online?', a: 'Paste your text into TextWonder\'s Sort Lines tool and it instantly sorts all lines alphabetically (A–Z). You can also sort in reverse (Z–A), numerically, or randomly. Free, no signup.' },
+  { q: 'Can I sort lines numerically?', a: 'Yes. TextWonder\'s Sort Lines tool offers numeric sorting, which sorts numbers by value (1, 2, 10, 100) rather than lexicographically (1, 10, 100, 2).' },
+  { q: 'How do I sort lines in Excel?', a: 'In Excel, select your column and use Data → Sort. Choose ascending (A–Z) or descending (Z–A). For a single column of text items, select it and sort directly without affecting other columns.' },
+  { q: 'How do I sort lines in Notepad++ or VS Code?', a: 'Notepad++: Select all text, then Edit → Line Operations → Sort Lines Lexicographically Ascending. VS Code: There\'s no built-in sort, but the "Sort Lines" extension adds it, or use the command palette with a terminal sort command.' },
+  { q: 'What is lexicographic sorting vs natural sorting?', a: 'Lexicographic (alphabetical) sorting compares characters one by one: "10" comes before "9" because "1" < "9". Natural sorting understands numbers: "9" comes before "10". For numbered lists, natural sorting gives more intuitive results.' },
+];
+---
+
+<BlogLayout
+  title="How to Sort Lines of Text Alphabetically: 4 Methods"
+  description="Learn how to sort lines of text alphabetically, numerically, or randomly using free online tools, Excel, Google Sheets, and the command line."
+  canonical="/blog/how-to-sort-text-lines"
+  date="2025-05-18"
+  readTime="4 min read"
+  category="Text Formatting"
+  faqs={faqs}
+>
+
+<p>
+  Sorting lines of text is a surprisingly common task: alphabetising bibliography entries, sorting keyword lists for SEO, organising product names, sorting log entries, or just cleaning up a list. Here are four reliable methods.
+</p>
+
+<h2>Method 1: Free Online Tool (Instant)</h2>
+
+<p>
+  The fastest option for any one-off sorting task:
+</p>
+
+<ol>
+  <li>Go to <a href="/tools/sort-lines">TextWonder's Sort Lines tool</a>.</li>
+  <li>Paste your text (any number of lines).</li>
+  <li>Choose: A→Z, Z→A, numeric, or random.</li>
+  <li>Copy the sorted output.</li>
+</ol>
+
+<p>
+  The tool preserves blank lines, handles case-insensitive matching, and works instantly in your browser with no data leaving your device.
+</p>
+
+<a href="/tools/sort-lines" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Sort Lines →</div>
+  <div class="cta-desc">Sort any list of lines alphabetically, reverse, numerically, or randomly. Free, instant, browser-based.</div>
+</a>
+
+<h2>Method 2: Excel or Google Sheets</h2>
+
+<p>
+  If your data is already in a spreadsheet:
+</p>
+
+<h3>Excel:</h3>
+<ol>
+  <li>Select the column containing your lines.</li>
+  <li>Go to <strong>Data</strong> → <strong>Sort</strong>.</li>
+  <li>Choose ascending (A–Z) or descending (Z–A).</li>
+  <li>If you have other columns, choose whether to expand the selection (sort entire rows) or sort the column only.</li>
+</ol>
+
+<h3>Google Sheets:</h3>
+<ol>
+  <li>Select the column.</li>
+  <li>Right-click → <strong>Sort sheet A→Z</strong> (or Z→A).</li>
+  <li>Alternatively: <strong>Data</strong> → <strong>Sort range</strong> for more options.</li>
+</ol>
+
+<h2>Method 3: Command Line</h2>
+
+<p>
+  For large files (thousands or millions of lines), the command line is the most efficient:
+</p>
+
+<p><strong>Linux / macOS:</strong></p>
+<p><code>sort input.txt &gt; sorted.txt</code> — alphabetical ascending</p>
+<p><code>sort -r input.txt &gt; sorted.txt</code> — reverse alphabetical</p>
+<p><code>sort -n input.txt &gt; sorted.txt</code> — numeric sort</p>
+<p><code>sort -u input.txt &gt; sorted.txt</code> — sort and remove duplicates simultaneously</p>
+
+<p><strong>Windows PowerShell:</strong></p>
+<p><code>Get-Content input.txt | Sort-Object | Set-Content sorted.txt</code></p>
+<p><code>Get-Content input.txt | Sort-Object -Descending | Set-Content sorted.txt</code></p>
+
+<h2>Method 4: Text Editors</h2>
+
+<p>
+  Some text editors have built-in sort functionality:
+</p>
+
+<ul>
+  <li><strong>Notepad++:</strong> Select all → Edit → Line Operations → Sort Lines Lexicographically Ascending/Descending</li>
+  <li><strong>Sublime Text:</strong> <code>F9</code> to sort selected lines (requires selecting all first)</li>
+  <li><strong>VS Code:</strong> No built-in sort. Install the "Sort Lines" extension or use the terminal.</li>
+  <li><strong>Vim:</strong> <code>:sort</code> to sort all lines, <code>:sort!</code> to sort in reverse</li>
+</ul>
+
+<h2>Alphabetical vs Numeric Sorting: An Important Difference</h2>
+
+<p>
+  Alphabetical (lexicographic) sorting compares character by character. This means <code>10</code> comes before <code>9</code> alphabetically (because "1" &lt; "9"), which is unintuitive when sorting numbers.
+</p>
+
+<p>
+  For lists containing numbers, always use <strong>numeric sort</strong>:
+</p>
+
+<ul>
+  <li>Alphabetical: 1, 10, 100, 2, 20, 3</li>
+  <li>Numeric: 1, 2, 3, 10, 20, 100</li>
+</ul>
+
+<p>
+  TextWonder's Sort Lines tool offers both options. The command-line <code>sort -n</code> flag enables numeric sorting.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

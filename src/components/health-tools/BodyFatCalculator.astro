@@ -1,0 +1,99 @@
+---
+---
+<div>
+  <div class="flex gap-2 mb-4">
+    <button id="bf-metric-btn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-white" style="background:#22c55e" onclick="bfUnit('metric')">Metric (cm)</button>
+    <button id="bf-imperial-btn" class="px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 bg-[var(--bg-base)] border border-slate-700" onclick="bfUnit('imperial')">Imperial (in)</button>
+  </div>
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-1">Gender</label>
+    <div class="flex gap-3">
+      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="bf-gender" value="male" checked class="accent-green-500" onchange="bfGender()" /><span class="text-white text-sm">Male</span></label>
+      <label class="flex items-center gap-2 cursor-pointer"><input type="radio" name="bf-gender" value="female" class="accent-green-500" onchange="bfGender()" /><span class="text-white text-sm">Female</span></label>
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    <div><label class="block text-sm text-slate-400 mb-1" id="bf-height-label">Height (cm)</label><input type="number" id="bf-height" placeholder="e.g. 175" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+    <div><label class="block text-sm text-slate-400 mb-1" id="bf-neck-label">Neck circumference (cm)</label><input type="number" id="bf-neck" placeholder="e.g. 38" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+    <div><label class="block text-sm text-slate-400 mb-1" id="bf-waist-label">Waist circumference (cm)</label><input type="number" id="bf-waist" placeholder="e.g. 80" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+    <div id="bf-hip-div"><label class="block text-sm text-slate-400 mb-1" id="bf-hip-label">Hip circumference (cm) <span class="text-slate-600">(women)</span></label><input type="number" id="bf-hip" placeholder="e.g. 95" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-green-500" /></div>
+  </div>
+
+  <div id="bf-result" class="hidden space-y-3">
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Estimated Body Fat</div>
+      <div id="bf-value" class="text-4xl font-bold" style="color:#22c55e"></div>
+    </div>
+    <div class="bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700 text-center">
+      <div class="text-sm text-slate-400 mb-1">Category</div>
+      <div id="bf-cat" class="text-lg font-semibold"></div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  let unitMode='metric';
+  window.bfUnit=function(m){
+    unitMode=m;
+    const unit=m==='metric'?'cm':'in';
+    ['height','neck','waist','hip'].forEach(f=>{
+      const el=document.getElementById('bf-'+f+'-label');
+      if(el)el.textContent=el.textContent.replace(/cm|in/g,unit);
+    });
+    const mb=document.getElementById('bf-metric-btn'),ib=document.getElementById('bf-imperial-btn');
+    if(m==='metric'){mb.style.background='#22c55e';mb.classList.add('text-white');mb.classList.remove('text-slate-400');ib.style.background='';ib.classList.remove('text-white');ib.classList.add('text-slate-400');}
+    else{ib.style.background='#22c55e';ib.classList.add('text-white');ib.classList.remove('text-slate-400');mb.style.background='';mb.classList.remove('text-white');mb.classList.add('text-slate-400');}
+    calc();
+  };
+  window.bfGender=function(){
+    const male=document.querySelector('input[name="bf-gender"]:checked').value==='male';
+    document.getElementById('bf-hip-div').classList.toggle('hidden',male);
+    calc();
+  };
+  function toIn(v){return unitMode==='metric'?v/2.54:v;}
+  function calc(){
+    const gender=document.querySelector('input[name="bf-gender"]:checked').value;
+    const height=parseFloat(document.getElementById('bf-height').value);
+    const neck=parseFloat(document.getElementById('bf-neck').value);
+    const waist=parseFloat(document.getElementById('bf-waist').value);
+    const res=document.getElementById('bf-result');
+    if(!height||!neck||!waist){res.classList.add('hidden');return;}
+    const h=toIn(height),n=toIn(neck),w=toIn(waist);
+    let bf;
+    if(gender==='male'){
+      if(w<=n){res.classList.add('hidden');return;}
+      bf=86.010*Math.log10(w-n)-70.041*Math.log10(h)+36.76;
+    } else {
+      const hip=parseFloat(document.getElementById('bf-hip').value);
+      if(!hip){res.classList.add('hidden');return;}
+      const hi=toIn(hip);
+      if(w+hi<=n){res.classList.add('hidden');return;}
+      bf=163.205*Math.log10(w+hi-n)-97.684*Math.log10(h)-78.387;
+    }
+    if(bf<0||bf>70){res.classList.add('hidden');return;}
+    let cat,color;
+    if(gender==='male'){
+      if(bf<6){cat='Essential Fat';color='#3b82f6';}
+      else if(bf<14){cat='Athletic';color='#22c55e';}
+      else if(bf<18){cat='Fitness';color='#86efac';}
+      else if(bf<25){cat='Average';color='#f59e0b';}
+      else{cat='Obese';color='#ef4444';}
+    } else {
+      if(bf<14){cat='Essential Fat';color='#3b82f6';}
+      else if(bf<21){cat='Athletic';color='#22c55e';}
+      else if(bf<25){cat='Fitness';color='#86efac';}
+      else if(bf<32){cat='Average';color='#f59e0b';}
+      else{cat='Obese';color='#ef4444';}
+    }
+    document.getElementById('bf-value').textContent=bf.toFixed(1)+'%';
+    document.getElementById('bf-cat').textContent=cat;
+    document.getElementById('bf-cat').style.color=color;
+    res.classList.remove('hidden');
+  }
+  ['bf-height','bf-neck','bf-waist','bf-hip'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',calc);});
+  document.querySelectorAll('input[name="bf-gender"]').forEach(r=>r.addEventListener('change',calc));
+  // Hide hip initially (male is default)
+  document.getElementById('bf-hip-div').classList.add('hidden');
+})();
+</script>

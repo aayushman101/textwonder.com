@@ -1,0 +1,121 @@
+---
+---
+<div>
+  <!-- Mode tabs -->
+  <div class="flex gap-2 mb-4">
+    <button id="sg-tab-box" onclick="sgSetMode('box')"
+      class="px-4 py-1.5 rounded-full text-sm font-medium bg-pink-600 text-white transition-colors">Box Shadow</button>
+    <button id="sg-tab-text" onclick="sgSetMode('text')"
+      class="px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white transition-colors">Text Shadow</button>
+  </div>
+
+  <div class="grid md:grid-cols-2 gap-4">
+    <!-- Controls -->
+    <div class="space-y-3">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Horizontal Offset <span id="sg-hval" class="text-white">4</span>px</label>
+          <input type="range" id="sg-h" min="-50" max="50" value="4" class="w-full accent-pink-500" oninput="sgUpdate()" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Vertical Offset <span id="sg-vval" class="text-white">4</span>px</label>
+          <input type="range" id="sg-v" min="-50" max="50" value="4" class="w-full accent-pink-500" oninput="sgUpdate()" />
+        </div>
+        <div>
+          <label class="block text-xs text-slate-400 mb-1">Blur Radius <span id="sg-bval" class="text-white">12</span>px</label>
+          <input type="range" id="sg-b" min="0" max="100" value="12" class="w-full accent-pink-500" oninput="sgUpdate()" />
+        </div>
+        <div id="sg-spread-row">
+          <label class="block text-xs text-slate-400 mb-1">Spread Radius <span id="sg-sval" class="text-white">0</span>px</label>
+          <input type="range" id="sg-s" min="-20" max="20" value="0" class="w-full accent-pink-500" oninput="sgUpdate()" />
+        </div>
+      </div>
+
+      <div class="flex gap-3 items-end">
+        <div class="flex-1">
+          <label class="block text-xs text-slate-400 mb-1">Shadow Color</label>
+          <input type="color" id="sg-color" value="#000000" class="h-10 w-full rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" oninput="sgUpdate()" />
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs text-slate-400 mb-1">Opacity <span id="sg-aval" class="text-white">60</span>%</label>
+          <input type="range" id="sg-a" min="0" max="100" value="60" class="w-full accent-pink-500" oninput="sgUpdate()" />
+        </div>
+        <div id="sg-inset-row" class="flex items-center gap-2 pb-1">
+          <input type="checkbox" id="sg-inset" class="accent-pink-500" onchange="sgUpdate()" />
+          <label for="sg-inset" class="text-xs text-slate-400 cursor-pointer">Inset</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class="flex flex-col gap-3">
+      <div class="flex-1 bg-slate-200 rounded-xl flex items-center justify-center p-6 min-h-[140px]">
+        <div id="sg-box-preview" class="w-24 h-24 rounded-xl bg-white"></div>
+        <p id="sg-text-preview" class="hidden text-2xl font-bold text-slate-800 text-center">Shadow Text</p>
+      </div>
+      <div class="flex gap-2 items-center bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2">
+        <span class="text-slate-500 text-xs w-16 shrink-0">CSS</span>
+        <span id="sg-output" class="flex-1 text-white text-xs font-mono break-all">box-shadow: 4px 4px 12px rgba(0,0,0,0.60);</span>
+        <button onclick="sgCopy()" class="shrink-0 text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">Copy</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  let mode='box';
+  window.sgSetMode=function(m){
+    mode=m;
+    const tabBox=document.getElementById('sg-tab-box');
+    const tabText=document.getElementById('sg-tab-text');
+    const ACTIVE='px-4 py-1.5 rounded-full text-sm font-medium bg-pink-600 text-white transition-colors';
+    const INACTIVE='px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white transition-colors';
+    if(m==='box'){tabBox.className=ACTIVE;tabText.className=INACTIVE;}
+    else{tabText.className=ACTIVE;tabBox.className=INACTIVE;}
+    document.getElementById('sg-spread-row').style.display=m==='box'?'':'none';
+    document.getElementById('sg-inset-row').style.display=m==='box'?'':'none';
+    document.getElementById('sg-box-preview').classList.toggle('hidden',m!=='box');
+    document.getElementById('sg-text-preview').classList.toggle('hidden',m!=='text');
+    sgUpdate();
+  };
+
+  function hexToRgba(hex,alpha){
+    hex=hex.replace('#','');
+    const r=parseInt(hex.slice(0,2),16),g=parseInt(hex.slice(2,4),16),b=parseInt(hex.slice(4,6),16);
+    return `rgba(${r},${g},${b},${alpha.toFixed(2)})`;
+  }
+
+  window.sgUpdate=function(){
+    const h=document.getElementById('sg-h').value;
+    const v=document.getElementById('sg-v').value;
+    const b=document.getElementById('sg-b').value;
+    const s=document.getElementById('sg-s').value;
+    const color=document.getElementById('sg-color').value;
+    const a=document.getElementById('sg-a').value/100;
+    const inset=document.getElementById('sg-inset').checked;
+    document.getElementById('sg-hval').textContent=h;
+    document.getElementById('sg-vval').textContent=v;
+    document.getElementById('sg-bval').textContent=b;
+    document.getElementById('sg-sval').textContent=s;
+    document.getElementById('sg-aval').textContent=document.getElementById('sg-a').value;
+    const rgba=hexToRgba(color,a);
+    let css;
+    if(mode==='box'){
+      const insetStr=inset?'inset ':'';
+      css=`box-shadow: ${insetStr}${h}px ${v}px ${b}px ${s}px ${rgba};`;
+      document.getElementById('sg-box-preview').style.boxShadow=`${insetStr}${h}px ${v}px ${b}px ${s}px ${rgba}`;
+    } else {
+      css=`text-shadow: ${h}px ${v}px ${b}px ${rgba};`;
+      document.getElementById('sg-text-preview').style.textShadow=`${h}px ${v}px ${b}px ${rgba}`;
+    }
+    document.getElementById('sg-output').textContent=css;
+  };
+
+  window.sgCopy=function(){
+    navigator.clipboard.writeText(document.getElementById('sg-output').textContent).catch(()=>{});
+  };
+
+  sgUpdate();
+})();
+</script>

@@ -5,6 +5,9 @@ import ContrastChecker from '../../components/color-tools/ContrastChecker.astro'
 import GradientGenerator from '../../components/color-tools/GradientGenerator.astro';
 import ColorPaletteGenerator from '../../components/color-tools/ColorPaletteGenerator.astro';
 import TintShadeGenerator from '../../components/color-tools/TintShadeGenerator.astro';
+import ShadowGenerator from '../../components/color-tools/ShadowGenerator.astro';
+import ColorMixer from '../../components/color-tools/ColorMixer.astro';
+import RandomColorGenerator from '../../components/color-tools/RandomColorGenerator.astro';
 import { COLOR_TOOLS } from '../../data/colortools.js';
 
 export function getStaticPaths() {
@@ -21,6 +24,9 @@ const componentMap: Record<string, any> = {
   'gradient-generator': GradientGenerator,
   'color-palette-generator': ColorPaletteGenerator,
   'tint-shade-generator': TintShadeGenerator,
+  'shadow-generator': ShadowGenerator,
+  'color-mixer': ColorMixer,
+  'random-color-generator': RandomColorGenerator,
 };
 
 const ToolComponent = componentMap[tool.slug];

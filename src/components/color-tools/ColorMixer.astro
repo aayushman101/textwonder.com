@@ -1,0 +1,99 @@
+---
+---
+<div>
+  <div class="grid sm:grid-cols-2 gap-4 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Color A</label>
+      <div class="flex gap-2">
+        <input type="color" id="cm-a" value="#6366f1" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" oninput="cmUpdate()" />
+        <input type="text" id="cm-a-text" value="#6366f1" placeholder="#rrggbb"
+          class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-pink-500" oninput="cmTextA()" />
+      </div>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Color B</label>
+      <div class="flex gap-2">
+        <input type="color" id="cm-b" value="#ec4899" class="h-10 w-14 rounded-lg border border-slate-700 bg-[var(--bg-base)] cursor-pointer" oninput="cmUpdate()" />
+        <input type="text" id="cm-b-text" value="#ec4899" placeholder="#rrggbb"
+          class="flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm font-mono focus:outline-none focus:border-pink-500" oninput="cmTextB()" />
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-2">Mix Ratio — Color A <span id="cm-ratio-label" class="text-white font-medium">50%</span> : Color B <span id="cm-ratio-b" class="text-white font-medium">50%</span></label>
+    <input type="range" id="cm-ratio" min="0" max="100" value="50" class="w-full accent-pink-500" oninput="cmUpdate()" />
+  </div>
+
+  <!-- Preview swatches -->
+  <div class="flex rounded-xl overflow-hidden h-24 mb-4 border border-slate-700">
+    <div id="cm-swatch-a" class="flex-1 transition-colors" style="background:#6366f1"></div>
+    <div id="cm-swatch-mix" class="flex-1 transition-colors" style="background:#a855f7"></div>
+    <div id="cm-swatch-b" class="flex-1 transition-colors" style="background:#ec4899"></div>
+  </div>
+  <div class="flex text-xs text-slate-500 justify-between mb-4">
+    <span>Color A</span><span class="font-medium text-white">Mixed Result</span><span>Color B</span>
+  </div>
+
+  <!-- Output -->
+  <div class="space-y-2">
+    <div class="flex items-center gap-2 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2">
+      <span class="text-slate-500 text-xs w-10">HEX</span>
+      <span id="cm-hex" class="flex-1 text-white text-sm font-mono">#a855f7</span>
+      <button onclick="cmCopy('cm-hex')" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">Copy</button>
+    </div>
+    <div class="flex items-center gap-2 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2">
+      <span class="text-slate-500 text-xs w-10">RGB</span>
+      <span id="cm-rgb" class="flex-1 text-white text-sm font-mono">rgb(168, 85, 247)</span>
+      <button onclick="cmCopy('cm-rgb')" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">Copy</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  function hexToRgb(hex){
+    hex=hex.replace(/^#/,'');
+    if(hex.length===3) hex=hex.split('').map(c=>c+c).join('');
+    if(hex.length!==6) return null;
+    return {r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};
+  }
+  function rgbToHex(r,g,b){return '#'+[r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');}
+
+  window.cmUpdate=function(){
+    const ratio=parseInt(document.getElementById('cm-ratio').value)/100;
+    document.getElementById('cm-ratio-label').textContent=Math.round((1-ratio)*100)+'%';
+    document.getElementById('cm-ratio-b').textContent=Math.round(ratio*100)+'%';
+    const hexA=document.getElementById('cm-a').value;
+    const hexB=document.getElementById('cm-b').value;
+    document.getElementById('cm-a-text').value=hexA;
+    document.getElementById('cm-b-text').value=hexB;
+    document.getElementById('cm-swatch-a').style.background=hexA;
+    document.getElementById('cm-swatch-b').style.background=hexB;
+    const a=hexToRgb(hexA);const b=hexToRgb(hexB);
+    if(!a||!b) return;
+    const mr=Math.round(a.r*(1-ratio)+b.r*ratio);
+    const mg=Math.round(a.g*(1-ratio)+b.g*ratio);
+    const mb=Math.round(a.b*(1-ratio)+b.b*ratio);
+    const mhex=rgbToHex(mr,mg,mb);
+    document.getElementById('cm-swatch-mix').style.background=mhex;
+    document.getElementById('cm-hex').textContent=mhex;
+    document.getElementById('cm-rgb').textContent=`rgb(${mr}, ${mg}, ${mb})`;
+  };
+
+  window.cmTextA=function(){
+    const val=document.getElementById('cm-a-text').value.trim();
+    const rgb=hexToRgb(val);
+    if(rgb){document.getElementById('cm-a').value=val;cmUpdate();}
+  };
+  window.cmTextB=function(){
+    const val=document.getElementById('cm-b-text').value.trim();
+    const rgb=hexToRgb(val);
+    if(rgb){document.getElementById('cm-b').value=val;cmUpdate();}
+  };
+
+  window.cmCopy=function(id){navigator.clipboard.writeText(document.getElementById(id).textContent).catch(()=>{});};
+
+  cmUpdate();
+})();
+</script>

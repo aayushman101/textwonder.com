@@ -1,0 +1,121 @@
+---
+---
+<div>
+  <div class="grid md:grid-cols-2 gap-3 mb-3">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">XML Input</label>
+      <textarea id="xtj-input" rows="12" placeholder="Paste your XML here…"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm font-mono focus:outline-none focus:border-sky-500 resize-y"
+        oninput="xtjConvert()"></textarea>
+    </div>
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <label class="text-sm text-slate-400">JSON Output</label>
+        <button onclick="xtjCopy()" class="text-xs text-slate-400 hover:text-white px-2 py-1 rounded bg-slate-800 hover:bg-slate-700 transition-colors">Copy</button>
+      </div>
+      <textarea id="xtj-output" rows="12" readonly placeholder="JSON will appear here…"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm font-mono focus:outline-none resize-y"></textarea>
+    </div>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+      <input type="checkbox" id="xtj-pretty" checked class="accent-sky-500" onchange="xtjConvert()" />
+      Pretty-print output
+    </label>
+    <label class="flex items-center gap-2 text-sm text-slate-400 cursor-pointer">
+      <input type="checkbox" id="xtj-attrs" checked class="accent-sky-500" onchange="xtjConvert()" />
+      Include attributes (@)
+    </label>
+    <button onclick="xtjSample()" class="ml-auto text-xs text-sky-400 hover:text-sky-300 transition-colors">Load sample</button>
+  </div>
+
+  <div id="xtj-error" class="hidden mt-3 text-sm text-red-400 bg-red-950/30 border border-red-800 rounded-lg px-4 py-2"></div>
+</div>
+
+<script is:inline>
+(function(){
+  const SAMPLE=`<?xml version="1.0" encoding="UTF-8"?>
+<library>
+  <book id="1" genre="fiction">
+    <title>The Great Gatsby</title>
+    <author>F. Scott Fitzgerald</author>
+    <year>1925</year>
+  </book>
+  <book id="2" genre="science">
+    <title>A Brief History of Time</title>
+    <author>Stephen Hawking</author>
+    <year>1988</year>
+  </book>
+</library>`;
+
+  function nodeToObj(node,includeAttrs){
+    if(node.nodeType===3){
+      const t=node.textContent.trim();
+      return t||null;
+    }
+    if(node.nodeType!==1) return null;
+    const obj={};
+    if(includeAttrs&&node.attributes.length>0){
+      Array.from(node.attributes).forEach(a=>{obj['@'+a.name]=a.value;});
+    }
+    const children=Array.from(node.childNodes).filter(n=>{
+      if(n.nodeType===3) return n.textContent.trim()!=='';
+      return n.nodeType===1;
+    });
+    if(children.length===0){
+      const text=node.textContent.trim();
+      if(Object.keys(obj).length===0) return text||'';
+      if(text) obj['#text']=text;
+      return obj;
+    }
+    const tagCounts={};
+    children.forEach(c=>{if(c.nodeType===1) tagCounts[c.tagName]=(tagCounts[c.tagName]||0)+1;});
+    children.forEach(c=>{
+      if(c.nodeType===3){obj['#text']=(obj['#text']||'')+c.textContent.trim();return;}
+      const key=c.tagName;
+      const val=nodeToObj(c,includeAttrs);
+      if(tagCounts[key]>1){
+        if(!Array.isArray(obj[key])) obj[key]=obj[key]!==undefined?[obj[key]]:[];
+        obj[key].push(val);
+      } else {
+        obj[key]=val;
+      }
+    });
+    return obj;
+  }
+
+  window.xtjConvert=function(){
+    const xml=document.getElementById('xtj-input').value.trim();
+    const errEl=document.getElementById('xtj-error');
+    const out=document.getElementById('xtj-output');
+    errEl.classList.add('hidden');
+    if(!xml){out.value='';return;}
+    try{
+      const parser=new DOMParser();
+      const doc=parser.parseFromString(xml,'application/xml');
+      const parseErr=doc.querySelector('parseerror');
+      if(parseErr) throw new Error(parseErr.textContent.split('\n')[0]);
+      const root=doc.documentElement;
+      const includeAttrs=document.getElementById('xtj-attrs').checked;
+      const result={[root.tagName]:nodeToObj(root,includeAttrs)};
+      const pretty=document.getElementById('xtj-pretty').checked;
+      out.value=pretty?JSON.stringify(result,null,2):JSON.stringify(result);
+    }catch(e){
+      out.value='';
+      errEl.textContent='XML parse error: '+e.message;
+      errEl.classList.remove('hidden');
+    }
+  };
+
+  window.xtjCopy=function(){
+    const val=document.getElementById('xtj-output').value;
+    if(val) navigator.clipboard.writeText(val).catch(()=>{});
+  };
+
+  window.xtjSample=function(){
+    document.getElementById('xtj-input').value=SAMPLE;
+    xtjConvert();
+  };
+})();
+</script>

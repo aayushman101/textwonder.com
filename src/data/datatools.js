@@ -125,6 +125,25 @@ export const DATA_TOOLS = [
     icon: '🔢',
     iconBg: '#9f1239',
   },
+  {
+    slug: 'xml-to-json',
+    name: 'XML to JSON Converter',
+    tagline: 'Convert XML documents to JSON format instantly.',
+    metaTitle: 'XML to JSON Converter — Convert XML to JSON Online Free | DataWonder',
+    metaDescription: 'Convert XML to JSON online. Paste any XML document and get clean, formatted JSON output instantly. Free browser-based XML to JSON converter.',
+    h1: 'XML to JSON Converter',
+    descriptionLong: 'Paste any XML document and instantly convert it to formatted JSON. Handles nested elements, attributes (prefixed with @), text content, and XML arrays. Useful for processing RSS feeds, API responses, config files, and SOAP data in JavaScript environments.',
+    useCases: 'Converting RSS/Atom feeds to JSON for JavaScript apps, transforming SOAP XML API responses, processing XML config files in Node.js, migrating legacy XML data to JSON databases, parsing SVG or HTML as structured data.',
+    howItWorks: 'Uses the browser\'s built-in DOMParser to parse the XML into a DOM tree, then recursively converts each node to a JavaScript object — attributes become "@attr" keys, text content becomes a "text" or "#text" key, and child elements become nested objects or arrays.',
+    faqs: [
+      { q: 'What happens to XML attributes?', a: 'Attributes are included in the JSON object with an "@" prefix. For example, <item id="1"> becomes { "@id": "1", ... }.' },
+      { q: 'What if an element appears multiple times?', a: 'Repeated sibling elements with the same tag name are grouped into a JSON array automatically.' },
+      { q: 'Does it handle XML namespaces?', a: 'Namespaced elements are included with their full qualified name (e.g. "ns:element"). Namespace declarations are preserved as "@xmlns" attributes.' },
+    ],
+    relatedTools: ['json-to-yaml', 'yaml-to-json', 'csv-to-json'],
+    icon: '🗂️',
+    iconBg: '#0369a1',
+  },
 ];
 
 export function getDataToolBySlug(slug) {

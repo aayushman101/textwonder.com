@@ -107,6 +107,43 @@ export const STUDENT_TOOLS = [
     icon: '📅',
     iconBg: '#0e7490',
   },
+  {
+    slug: 'pomodoro-timer',
+    name: 'Pomodoro Timer',
+    tagline: 'Focus with 25-minute work sessions and short breaks.',
+    metaTitle: 'Pomodoro Timer — Online Focus Timer for Students | StudentWonder',
+    metaDescription: 'Use the Pomodoro technique to study effectively. 25-minute focus sessions with 5-minute short breaks and 15-minute long breaks. Free online Pomodoro timer.',
+    h1: 'Pomodoro Focus Timer',
+    descriptionLong: 'The Pomodoro Technique is a time management method that breaks work into 25-minute focused sessions separated by 5-minute breaks. After 4 sessions, take a longer 15-minute break. This timer counts your completed pomodoros and automatically transitions between work and break phases.',
+    useCases: 'Focused study sessions for exams, avoiding distractions while revising, managing energy levels during long study days, building consistent study habits, maintaining focus during assignment writing.',
+    howItWorks: 'Uses a countdown timer (25:00 work, 5:00 short break, 15:00 long break). Each completed work session increments the pomodoro counter. After 4 work sessions the cycle resets with a long break. Browser notifications alert when each phase ends.',
+    faqs: [
+      { q: 'What is the Pomodoro Technique?', a: 'Developed by Francesco Cirillo in the 1980s, it uses a tomato-shaped timer (Pomodoro = Italian for tomato) to split work into 25-minute focused intervals followed by short breaks, improving concentration and reducing burnout.' },
+      { q: 'Can I adjust the time intervals?', a: 'Yes. The timer lets you customise work duration (15–50 min), short break (3–10 min), and long break (10–30 min) to fit your preference.' },
+      { q: 'Will I be notified when the timer ends?', a: 'Yes. The tool plays an audio beep and requests browser notification permission to alert you when a session ends — even if the tab is in the background.' },
+    ],
+    relatedTools: ['exam-countdown', 'study-planner', 'attendance-calculator'],
+    icon: '🍅',
+    iconBg: '#dc2626',
+  },
+  {
+    slug: 'gpa-goal-calculator',
+    name: 'GPA Goal Calculator',
+    tagline: 'Find out what GPA you need this semester to hit your target CGPA.',
+    metaTitle: 'GPA Goal Calculator — What GPA Do I Need? | StudentWonder',
+    metaDescription: 'Calculate what semester GPA you need to achieve your target CGPA. Enter your current CGPA, completed credits, and remaining semester credits. Free GPA goal calculator.',
+    h1: 'GPA Goal Calculator',
+    descriptionLong: 'Enter your current cumulative GPA, total credits completed, target CGPA, and the number of credits in the upcoming semester. The calculator tells you exactly what GPA you need this semester to reach your target — and whether it is achievable.',
+    useCases: 'Planning which GPA to aim for this semester, checking if a target CGPA is still reachable, setting realistic academic goals, calculating minimum GPA required for scholarship eligibility, understanding the impact of one semester on CGPA.',
+    howItWorks: 'Target Semester GPA = (Target CGPA × (completed + semester credits) − Current CGPA × completed credits) / semester credits. Clamps to [0, 4.0] and marks impossible targets.',
+    faqs: [
+      { q: 'What if the required GPA is above 4.0?', a: 'The calculator will flag this as "not achievable this semester" — meaning you cannot reach the target CGPA in one semester from your current standing. You\'ll need to plan across multiple semesters.' },
+      { q: 'Does it work for 10-point CGPA scales?', a: 'Yes. Switch to the 10-point scale option and enter your CGPA on the 0–10 scale used by most Indian universities.' },
+    ],
+    relatedTools: ['cgpa-calculator', 'gpa-calculator', 'marks-percentage-calculator'],
+    icon: '🎯',
+    iconBg: '#0e7490',
+  },
 ];
 
 export function getStudentToolBySlug(slug) {

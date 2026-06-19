@@ -6,6 +6,8 @@ import AttendanceCalculator from '../../components/student-tools/AttendanceCalcu
 import MarksPercentageCalculator from '../../components/student-tools/MarksPercentageCalculator.astro';
 import ExamCountdown from '../../components/student-tools/ExamCountdown.astro';
 import StudyPlanner from '../../components/student-tools/StudyPlanner.astro';
+import PomodoroTimer from '../../components/student-tools/PomodoroTimer.astro';
+import GpaGoalCalculator from '../../components/student-tools/GpaGoalCalculator.astro';
 import { STUDENT_TOOLS } from '../../data/studenttools.js';
 
 export function getStaticPaths() {
@@ -23,6 +25,8 @@ const componentMap: Record<string, any> = {
   'marks-percentage-calculator': MarksPercentageCalculator,
   'exam-countdown': ExamCountdown,
   'study-planner': StudyPlanner,
+  'pomodoro-timer': PomodoroTimer,
+  'gpa-goal-calculator': GpaGoalCalculator,
 };
 
 const ToolComponent = componentMap[tool.slug];

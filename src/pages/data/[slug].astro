@@ -7,6 +7,7 @@ import YamlToJson from '../../components/data-tools/YamlToJson.astro';
 import TsvToCsv from '../../components/data-tools/TsvToCsv.astro';
 import CsvToTable from '../../components/data-tools/CsvToTable.astro';
 import NumberFormatter from '../../components/data-tools/NumberFormatter.astro';
+import XmlToJson from '../../components/data-tools/XmlToJson.astro';
 import { DATA_TOOLS } from '../../data/datatools.js';
 
 export function getStaticPaths() {
@@ -25,6 +26,7 @@ const componentMap: Record<string, any> = {
   'tsv-to-csv': TsvToCsv,
   'csv-to-table': CsvToTable,
   'number-formatter': NumberFormatter,
+  'xml-to-json': XmlToJson,
 };
 
 const ToolComponent = componentMap[tool.slug];

@@ -1,0 +1,83 @@
+---
+---
+<div>
+  <div class="flex items-center gap-3 mb-4">
+    <button onclick="rcgGenerate()" class="px-5 py-2 rounded-lg text-white text-sm font-medium transition-all" style="background:#0f766e">
+      Generate Colors
+    </button>
+    <span class="text-slate-500 text-xs">Click a swatch to copy its HEX · Click 🔒 to lock a color</span>
+  </div>
+
+  <div id="rcg-grid" class="grid grid-cols-5 gap-2 mb-4"></div>
+
+  <div class="text-xs text-slate-600 text-center">Press <kbd class="px-1 py-0.5 bg-slate-800 rounded text-slate-400">Space</kbd> to regenerate</div>
+</div>
+
+<script is:inline>
+(function(){
+  const COUNT=5;
+  let colors=[];
+  let locked=new Array(COUNT).fill(false);
+
+  function hslToHex(h,s,l){
+    s/=100;l/=100;
+    const a=s*Math.min(l,1-l);
+    const f=n=>{const k=(n+h/30)%12;const c=l-a*Math.max(Math.min(k-3,9-k,1),-1);return Math.round(255*c).toString(16).padStart(2,'0');};
+    return '#'+f(0)+f(8)+f(4);
+  }
+  function randomColor(){
+    const h=Math.floor(Math.random()*360);
+    const s=40+Math.floor(Math.random()*50);
+    const l=35+Math.floor(Math.random()*35);
+    return hslToHex(h,s,l);
+  }
+  function hexToRgb(hex){
+    hex=hex.replace('#','');
+    return {r:parseInt(hex.slice(0,2),16),g:parseInt(hex.slice(2,4),16),b:parseInt(hex.slice(4,6),16)};
+  }
+  function luminance(hex){const{r,g,b}=hexToRgb(hex);return 0.2126*r/255+0.7152*g/255+0.0722*b/255;}
+  function textColor(hex){return luminance(hex)>0.5?'#000000':'#ffffff';}
+
+  window.rcgGenerate=function(){
+    for(let i=0;i<COUNT;i++){
+      if(!locked[i]) colors[i]=randomColor();
+    }
+    renderGrid();
+  };
+  window.rcgToggleLock=function(i,e){
+    e.stopPropagation();
+    locked[i]=!locked[i];
+    renderGrid();
+  };
+  window.rcgCopy=function(hex){
+    navigator.clipboard.writeText(hex).then(()=>{
+      const btn=document.querySelector(`[data-hex="${hex}"] .rcg-copy-label`);
+      if(btn){btn.textContent='Copied!';setTimeout(()=>{btn.textContent=hex;},1000);}
+    }).catch(()=>{});
+  };
+
+  function renderGrid(){
+    const grid=document.getElementById('rcg-grid');
+    grid.innerHTML=colors.map((hex,i)=>`
+      <div data-hex="${hex}" onclick="rcgCopy('${hex}')"
+        class="group relative rounded-xl cursor-pointer transition-transform hover:scale-105 overflow-hidden"
+        style="background:${hex};min-height:140px">
+        <button onclick="rcgToggleLock(${i},event)"
+          class="absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center text-sm transition-colors"
+          style="background:rgba(0,0,0,0.3)">
+          ${locked[i]?'🔒':'🔓'}
+        </button>
+        <div class="absolute bottom-0 left-0 right-0 px-2 py-2 text-center">
+          <span class="rcg-copy-label text-xs font-mono font-bold" style="color:${textColor(hex)}">${hex}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // Init
+  for(let i=0;i<COUNT;i++) colors.push(randomColor());
+  renderGrid();
+
+  document.addEventListener('keydown',e=>{if(e.code==='Space'&&e.target.tagName!=='INPUT'){e.preventDefault();rcgGenerate();}});
+})();
+</script>

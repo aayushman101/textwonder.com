@@ -1,0 +1,107 @@
+---
+---
+<div>
+  <div class="grid sm:grid-cols-2 gap-3 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Scale</label>
+      <select id="ggc-scale" onchange="ggcCalc()"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500">
+        <option value="4">4.0 Scale (US / International)</option>
+        <option value="10">10.0 Scale (Indian Universities)</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Current CGPA</label>
+      <input type="number" id="ggc-current" placeholder="e.g. 3.2" step="0.01" min="0"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500" oninput="ggcCalc()" />
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Credits Completed So Far</label>
+      <input type="number" id="ggc-done" placeholder="e.g. 90" min="0"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500" oninput="ggcCalc()" />
+    </div>
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Credits This Semester</label>
+      <input type="number" id="ggc-sem" placeholder="e.g. 20" min="1"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500" oninput="ggcCalc()" />
+    </div>
+    <div class="sm:col-span-2">
+      <label class="block text-sm text-slate-400 mb-1">Target CGPA</label>
+      <input type="number" id="ggc-target" placeholder="e.g. 3.5" step="0.01" min="0"
+        class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-cyan-500" oninput="ggcCalc()" />
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="ggc-result" class="hidden rounded-xl p-5 border">
+    <div class="text-center mb-3">
+      <div class="text-slate-400 text-sm mb-1">GPA needed this semester</div>
+      <div id="ggc-needed" class="text-5xl font-bold" style="font-family:'Space Grotesk',sans-serif;">—</div>
+    </div>
+    <div id="ggc-msg" class="text-sm text-center"></div>
+  </div>
+
+  <!-- Breakdown -->
+  <div id="ggc-breakdown" class="hidden mt-3 space-y-2 text-sm text-slate-400">
+    <div class="flex justify-between bg-[var(--bg-base)] rounded-lg px-4 py-2 border border-slate-800">
+      <span>Total credits after semester</span>
+      <span id="ggc-total" class="text-white font-medium"></span>
+    </div>
+    <div class="flex justify-between bg-[var(--bg-base)] rounded-lg px-4 py-2 border border-slate-800">
+      <span>Grade points needed this semester</span>
+      <span id="ggc-pts" class="text-white font-medium"></span>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function(){
+  window.ggcCalc=function(){
+    const scale=parseFloat(document.getElementById('ggc-scale').value);
+    const current=parseFloat(document.getElementById('ggc-current').value);
+    const done=parseFloat(document.getElementById('ggc-done').value);
+    const sem=parseFloat(document.getElementById('ggc-sem').value);
+    const target=parseFloat(document.getElementById('ggc-target').value);
+    const res=document.getElementById('ggc-result');
+    const breakdown=document.getElementById('ggc-breakdown');
+
+    if(isNaN(current)||isNaN(done)||isNaN(sem)||isNaN(target)||sem<=0){
+      res.classList.add('hidden');breakdown.classList.add('hidden');return;
+    }
+    if(current<0||current>scale||target<0||target>scale){
+      res.classList.remove('hidden');breakdown.classList.add('hidden');
+      res.className='rounded-xl p-5 border border-red-800 bg-red-950/30';
+      document.getElementById('ggc-needed').textContent='—';
+      document.getElementById('ggc-msg').innerHTML='<span class="text-red-400">Please enter valid GPA values within the selected scale.</span>';
+      return;
+    }
+
+    const total=done+sem;
+    const needed=(target*total - current*done)/sem;
+    const ptsNeeded=needed*sem;
+
+    res.classList.remove('hidden');breakdown.classList.remove('hidden');
+    document.getElementById('ggc-total').textContent=total+' credits';
+    document.getElementById('ggc-pts').textContent=ptsNeeded.toFixed(2);
+
+    if(needed>scale){
+      res.className='rounded-xl p-5 border border-red-800 bg-red-950/30';
+      document.getElementById('ggc-needed').textContent='>'+scale.toFixed(1);
+      document.getElementById('ggc-needed').style.color='#f87171';
+      document.getElementById('ggc-msg').innerHTML=`<span class="text-red-400">Not achievable in one semester. Your target CGPA of ${target} requires a GPA above the maximum (${scale.toFixed(1)}) this semester. Consider spreading the goal over more semesters.</span>`;
+    } else if(needed<0){
+      res.className='rounded-xl p-5 border border-green-800 bg-green-950/30';
+      document.getElementById('ggc-needed').textContent='Already met!';
+      document.getElementById('ggc-needed').style.color='#4ade80';
+      document.getElementById('ggc-msg').innerHTML=`<span class="text-green-400">Your current CGPA already meets or exceeds your target. Any passing grade this semester will keep you there!</span>`;
+    } else {
+      const color=needed>=3.5?'#4ade80':needed>=2.5?'#facc15':'#fb923c';
+      res.className=`rounded-xl p-5 border ${needed>=3.5?'border-green-800 bg-green-950/30':needed>=2.5?'border-yellow-800 bg-yellow-950/30':'border-orange-800 bg-orange-950/30'}`;
+      document.getElementById('ggc-needed').textContent=needed.toFixed(2);
+      document.getElementById('ggc-needed').style.color=color;
+      const difficulty=needed>=scale*0.9?'very high':needed>=scale*0.75?'high':needed>=scale*0.5?'moderate':'low';
+      document.getElementById('ggc-msg').innerHTML=`<span style="color:${color}">You need a <strong>${needed.toFixed(2)}</strong> GPA this semester to reach a CGPA of <strong>${target}</strong>. Difficulty: ${difficulty}.</span>`;
+    }
+  };
+})();
+</script>

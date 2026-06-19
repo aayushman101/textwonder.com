@@ -1,0 +1,154 @@
+---
+---
+<div>
+  <!-- Mode tabs -->
+  <div class="flex gap-2 mb-5">
+    <button id="pt-tab-work" onclick="ptSetMode('work')"
+      class="px-4 py-1.5 rounded-full text-sm font-medium bg-red-600 text-white transition-colors">Work</button>
+    <button id="pt-tab-short" onclick="ptSetMode('short')"
+      class="px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white transition-colors">Short Break</button>
+    <button id="pt-tab-long" onclick="ptSetMode('long')"
+      class="px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white transition-colors">Long Break</button>
+  </div>
+
+  <!-- Timer display -->
+  <div class="text-center mb-6">
+    <div id="pt-time" class="text-7xl font-bold text-white tabular-nums" style="font-family:'Space Grotesk',sans-serif;">25:00</div>
+    <div class="flex items-center justify-center gap-2 mt-3">
+      <span class="text-slate-500 text-sm">Session</span>
+      <div class="flex gap-1" id="pt-dots"></div>
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <div class="flex justify-center gap-3 mb-6">
+    <button onclick="ptToggle()" id="pt-btn"
+      class="px-8 py-3 rounded-xl text-white font-semibold text-base transition-all hover:opacity-90"
+      style="background:#dc2626">Start</button>
+    <button onclick="ptReset()"
+      class="px-4 py-3 rounded-xl text-slate-400 hover:text-white bg-[var(--bg-surface)] border border-slate-700 transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+    </button>
+  </div>
+
+  <!-- Settings -->
+  <details class="bg-[var(--bg-base)] border border-slate-700 rounded-xl">
+    <summary class="px-4 py-3 text-sm text-slate-400 cursor-pointer hover:text-white list-none flex items-center gap-2">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+      Customise durations
+    </summary>
+    <div class="px-4 pb-4 pt-2 grid grid-cols-3 gap-3">
+      <div>
+        <label class="block text-xs text-slate-500 mb-1">Work (min)</label>
+        <input type="number" id="pt-set-work" value="25" min="5" max="90"
+          class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-red-500" oninput="ptApplySettings()" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-500 mb-1">Short break (min)</label>
+        <input type="number" id="pt-set-short" value="5" min="1" max="30"
+          class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-red-500" oninput="ptApplySettings()" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-500 mb-1">Long break (min)</label>
+        <input type="number" id="pt-set-long" value="15" min="5" max="60"
+          class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-1.5 text-white text-sm focus:outline-none focus:border-red-500" oninput="ptApplySettings()" />
+      </div>
+    </div>
+  </details>
+</div>
+
+<script is:inline>
+(function(){
+  const MODES={
+    work:{label:'Work',color:'#dc2626',minutes:25},
+    short:{label:'Short Break',color:'#16a34a',minutes:5},
+    long:{label:'Long Break',color:'#2563eb',minutes:15},
+  };
+  let mode='work';
+  let totalSec=25*60;
+  let remaining=totalSec;
+  let running=false;
+  let interval=null;
+  let sessions=0;
+
+  window.ptSetMode=function(m){
+    if(running)ptToggle();
+    mode=m;
+    const mins=parseInt(document.getElementById(`pt-set-${m==='long'?'long':m==='short'?'short':'work'}`).value)||MODES[m].minutes;
+    totalSec=mins*60;remaining=totalSec;
+    ['work','short','long'].forEach(t=>{
+      const tab=document.getElementById(`pt-tab-${t}`);
+      const ACTIVE=`px-4 py-1.5 rounded-full text-sm font-medium text-white transition-colors`;
+      const INACTIVE='px-4 py-1.5 rounded-full text-sm font-medium bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white transition-colors';
+      tab.className=t===m?ACTIVE:INACTIVE;
+      if(t===m) tab.style.background=MODES[m].color; else tab.style.background='';
+    });
+    document.getElementById('pt-btn').style.background=MODES[m].color;
+    renderTime();
+  };
+
+  window.ptApplySettings=function(){
+    const key=mode==='work'?'work':mode==='short'?'short':'long';
+    const mins=parseInt(document.getElementById(`pt-set-${key}`).value)||MODES[mode].minutes;
+    totalSec=mins*60;remaining=totalSec;
+    if(running){clearInterval(interval);running=false;document.getElementById('pt-btn').textContent='Start';}
+    renderTime();
+  };
+
+  function renderTime(){
+    const m=Math.floor(remaining/60);const s=remaining%60;
+    document.getElementById('pt-time').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    const dots=document.getElementById('pt-dots');
+    dots.innerHTML=Array.from({length:4},(_,i)=>
+      `<div class="w-2.5 h-2.5 rounded-full" style="background:${i<(sessions%4)?MODES.work.color:'#334155'}"></div>`
+    ).join('');
+  }
+
+  function beep(){
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator();const gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=880;gain.gain.value=0.3;
+      osc.start();osc.stop(ctx.currentTime+0.3);
+    }catch(e){}
+  }
+
+  function sessionDone(){
+    running=false;clearInterval(interval);
+    document.getElementById('pt-btn').textContent='Start';
+    beep();
+    if(mode==='work'){
+      sessions++;renderTime();
+      if(sessions%4===0){ptSetMode('long');}else{ptSetMode('short');}
+    } else {
+      ptSetMode('work');
+    }
+  }
+
+  window.ptToggle=function(){
+    if(running){
+      clearInterval(interval);running=false;
+      document.getElementById('pt-btn').textContent='Start';
+    } else {
+      running=true;
+      document.getElementById('pt-btn').textContent='Pause';
+      interval=setInterval(()=>{
+        remaining--;renderTime();
+        if(remaining<=0) sessionDone();
+      },1000);
+    }
+  };
+
+  window.ptReset=function(){
+    if(running){clearInterval(interval);running=false;}
+    const key=mode==='work'?'work':mode==='short'?'short':'long';
+    const mins=parseInt(document.getElementById(`pt-set-${key}`).value)||MODES[mode].minutes;
+    totalSec=mins*60;remaining=totalSec;
+    document.getElementById('pt-btn').textContent='Start';
+    renderTime();
+  };
+
+  renderTime();
+})();
+</script>

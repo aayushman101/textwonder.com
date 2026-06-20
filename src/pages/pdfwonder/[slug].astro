@@ -16,6 +16,14 @@ import PdfPageNumbers from '../../components/pdf-tools/PdfPageNumbers.astro';
 import PdfPasswordProtect from '../../components/pdf-tools/PdfPasswordProtect.astro';
 import PdfSign from '../../components/pdf-tools/PdfSign.astro';
 import PdfWordCount from '../../components/pdf-tools/PdfWordCount.astro';
+import PdfUnlock from '../../components/pdf-tools/PdfUnlock.astro';
+import PdfToPng from '../../components/pdf-tools/PdfToPng.astro';
+import PdfDarkMode from '../../components/pdf-tools/PdfDarkMode.astro';
+import PdfGrayscale from '../../components/pdf-tools/PdfGrayscale.astro';
+import PdfRemoveBlankPages from '../../components/pdf-tools/PdfRemoveBlankPages.astro';
+import PdfHeaderFooter from '../../components/pdf-tools/PdfHeaderFooter.astro';
+import PdfCrop from '../../components/pdf-tools/PdfCrop.astro';
+import PdfResize from '../../components/pdf-tools/PdfResize.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
 
 export function getStaticPaths() {
@@ -41,6 +49,14 @@ const componentMap: Record<string, any> = {
   'pdf-password-protect': PdfPasswordProtect,
   'pdf-sign': PdfSign,
   'pdf-word-count': PdfWordCount,
+  'pdf-unlock': PdfUnlock,
+  'pdf-to-png': PdfToPng,
+  'pdf-dark-mode': PdfDarkMode,
+  'pdf-grayscale': PdfGrayscale,
+  'pdf-remove-blank-pages': PdfRemoveBlankPages,
+  'pdf-header-footer': PdfHeaderFooter,
+  'pdf-crop': PdfCrop,
+  'pdf-resize': PdfResize,
 };
 
 const ToolComponent = componentMap[tool.slug];

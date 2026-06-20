@@ -1,0 +1,100 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Does converting a PDF to dark mode affect text quality?', a: 'The dark mode conversion renders each page as an image, so the output is pixel-based rather than vector text. Text remains very readable at the 2x rendering resolution, but it will no longer be selectable or searchable in the output PDF. Keep the original for text-based tasks.' },
+  { q: 'Why does dark mode invert my images and charts?', a: 'Colour inversion affects everything on the page — not just the white background. Photographs become negative images and coloured charts look unusual. Dark mode PDF conversion works best for text-heavy documents with minimal colour graphics.' },
+  { q: 'Can I convert back from dark mode to light mode?', a: 'Yes. Run the dark mode converter on the already-dark PDF — applying the inversion twice restores the original colours.' },
+  { q: 'Will this work on a scanned PDF?', a: 'Yes. Scanned PDFs are already image-based, so the conversion works the same way as any other PDF — the scanner output is re-rendered in inverted colours.' },
+  { q: 'Is the dark mode PDF smaller in file size?', a: 'The output is image-based so it may be slightly larger than the original text-based PDF, depending on compression. Use the PDF Compressor afterward to reduce the size.' },
+  { q: 'Are my files uploaded when I use the tool?', a: 'No. PDFWonder processes everything in your browser. No files are sent to any server.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a PDF to Dark Mode Free Online (Invert PDF Colours)"
+  description="Convert any PDF to dark mode for comfortable night reading — white backgrounds become dark and text becomes light. Free browser tool, no upload."
+  canonical="/blog/how-to-convert-pdf-to-dark-mode"
+  date="2026-06-12"
+  readTime="4 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Reading a white PDF at night is hard on the eyes. Dark mode — where the background turns dark and text turns white — dramatically reduces eye strain in low-light conditions. This guide explains how to convert any PDF to dark mode for free, directly in your browser.
+</p>
+
+<h2>The Fastest Method: Free PDF Dark Mode Converter (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-dark-mode">PDFWonder's PDF Dark Mode tool</a> inverts the colours of every page in your PDF — turning white backgrounds dark and black text white. Everything happens in your browser; nothing is uploaded.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-dark-mode">PDF Dark Mode tool</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>The tool processes each page and downloads the dark-mode version automatically.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-dark-mode" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF Dark Mode Converter — Free Online →</div>
+  <div class="cta-desc">Invert all page colours for comfortable night reading. No upload, no account — 100% browser-based.</div>
+</a>
+
+<h2>What Happens When You Convert a PDF to Dark Mode?</h2>
+
+<p>
+  The conversion works by inverting every pixel's colour value: a white pixel (RGB 255, 255, 255) becomes black (0, 0, 0), and a dark grey text pixel becomes a light grey. The result is a "negative" version of each page.
+</p>
+
+<p>For text-heavy documents like research papers, textbooks, and reports this looks excellent — white page becomes near-black, black text becomes near-white. For PDFs with coloured images or charts, the result looks like a photo negative (colours are inverted), which may not be ideal.</p>
+
+<h2>Converting Back: Dark Mode to Light Mode</h2>
+
+<p>
+  If you want to switch back to the original light appearance, simply run the dark PDF through the same tool again. Applying the colour inversion twice returns the document to its original colours.
+</p>
+
+<h2>Alternatives: Reading PDF in Dark Mode Without Converting</h2>
+
+<p>If you do not want to permanently convert the file, some readers offer built-in dark mode viewing:</p>
+
+<ul>
+  <li><strong>Adobe Acrobat Reader:</strong> Edit → Preferences → Accessibility → check "Replace document colours" → set custom colours (e.g. black background, white text). This only changes how you see it — the file is not modified.</li>
+  <li><strong>Firefox PDF viewer:</strong> Firefox 106+ has a built-in dark mode toggle in the PDF viewer toolbar. No conversion needed.</li>
+  <li><strong>Edge PDF viewer:</strong> Microsoft Edge has an "Immersive Reader" mode and some dark mode support in its built-in PDF viewer.</li>
+  <li><strong>Foxit Reader:</strong> Supports dark mode display in Tools → Preferences → Accessibility.</li>
+</ul>
+
+<h2>When to Use a Converted Dark Mode PDF vs. Viewer Settings</h2>
+
+<ul>
+  <li><strong>Use a converted file</strong> when you want to share the dark version with someone, when your PDF reader does not support dark mode, or when you are printing on a dark-background template.</li>
+  <li><strong>Use viewer settings</strong> when you only need dark mode for yourself temporarily and want to keep the original editable/searchable PDF.</li>
+</ul>
+
+<h2>Tips for Best Dark Mode Results</h2>
+
+<ul>
+  <li>Dark mode works best on <strong>text-heavy PDFs</strong> — academic papers, books, reports, ebooks</li>
+  <li>Avoid converting PDFs with <strong>full-colour photographs</strong> — they will appear as colour negatives</li>
+  <li>If the document has a <strong>yellow or cream background</strong> instead of pure white, the inverted result will have a slightly blue/teal tint — this is still readable but not as clean as pure black-and-white</li>
+  <li>After converting, compress the output with the <a href="/pdfwonder/pdf-compress">PDF Compressor</a> to reduce file size</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

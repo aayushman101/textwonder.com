@@ -1,0 +1,116 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Does PDF cropping permanently remove content?', a: 'No. PDF cropping works by setting a CropBox — a property that tells PDF viewers to display only a portion of each page. The content outside the crop area is hidden, not deleted. The original full-size content is still inside the file and can be uncropped at any time.' },
+  { q: 'Will all pages be cropped the same way?', a: 'Yes — the PDFWonder crop tool applies the same margin amounts to all pages. For cropping individual pages differently, extract them first with the PDF Splitter, crop each separately, then merge them back.' },
+  { q: 'What unit does the tool use?', a: 'Millimetres (mm). The tool converts internally to PDF points (1 mm = 2.835 points).' },
+  { q: 'Why does my cropped PDF still show the full page in some viewers?', a: 'Some PDF viewers (especially older ones) ignore the CropBox and display the full MediaBox instead. Most modern viewers (Adobe Reader, Chrome, Edge, Preview on Mac) respect the CropBox correctly.' },
+  { q: 'Can I crop a scanned PDF to remove black borders?', a: 'Yes. Scanner black borders are part of the visual content, but cropping via CropBox will hide them from view. This is the most common use case for PDF cropping.' },
+  { q: 'Is my PDF uploaded when I use PDFWonder?', a: 'No. All processing happens in your browser using pdf-lib. Your files never leave your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Crop a PDF Online Free — Remove White Margins &amp; Borders"
+  description="Crop PDF margins to remove white space, scanner borders, or trim pages for e-readers. Free browser-based tool — no upload, no software."
+  canonical="/blog/how-to-crop-a-pdf"
+  date="2026-06-16"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Cropping a PDF removes excess white space, scanner borders, or large margins that waste screen space — especially useful when reading on tablets or e-readers. This guide explains how to crop a PDF for free, how PDF cropping works technically, and alternative methods for Mac, Windows, and Acrobat.
+</p>
+
+<h2>The Fastest Method: Free PDF Crop Tool (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-crop">PDFWonder's Crop PDF tool</a> lets you set custom crop margins in millimetres for each side of every page. Everything happens in your browser — nothing is uploaded.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-crop">Crop PDF Margins tool</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>Enter the amount to crop from each side in mm (Top, Bottom, Left, Right). Set to 0 to leave a side unchanged.</li>
+  <li>Click <strong>Crop PDF &amp; Download</strong>.</li>
+  <li>The cropped PDF downloads immediately to your device.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-crop" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Crop PDF Margins — Free Online →</div>
+  <div class="cta-desc">Set custom crop amounts per side in mm. Removes white space, scanner borders, and oversized margins. No upload.</div>
+</a>
+
+<h2>How PDF Cropping Works (CropBox vs. MediaBox)</h2>
+
+<p>
+  PDF pages have two invisible rectangles that control what is visible:
+</p>
+<ul>
+  <li><strong>MediaBox:</strong> The full physical size of the page, including all content. This is the actual page dimensions.</li>
+  <li><strong>CropBox:</strong> The visible window — what PDF viewers display. Setting a CropBox smaller than the MediaBox "hides" the content outside the crop area.</li>
+</ul>
+<p>
+  PDF cropping tools like PDFWonder set the CropBox, not the MediaBox. This means the hidden content is still technically in the file — it is just masked from view. This is why PDF cropping is non-destructive and reversible.
+</p>
+
+<h2>How to Crop a PDF in Adobe Acrobat</h2>
+
+<ol>
+  <li>Open the PDF in Adobe Acrobat (Pro required for editing).</li>
+  <li>Go to <strong>Tools → Edit PDF → Crop Pages</strong>.</li>
+  <li>Draw a selection rectangle on the page to define the crop area.</li>
+  <li>Double-click inside the selection to open the "Set Page Boxes" dialog.</li>
+  <li>Set the CropBox margins, then choose to apply to all pages or a range.</li>
+  <li>Click <strong>OK</strong> and save the file.</li>
+</ol>
+
+<h2>How to Crop a PDF on Mac (Preview)</h2>
+
+<ol>
+  <li>Open the PDF in Preview.</li>
+  <li>Use the selection tool (the dotted rectangle icon) to draw a crop rectangle on a page.</li>
+  <li>Go to <strong>Tools → Crop</strong> (or press Command+K).</li>
+  <li>Note: Preview's crop permanently alters the MediaBox, not just the CropBox — this is a destructive crop unlike the PDFWonder approach.</li>
+  <li>Save the file. The content outside the crop area is permanently removed.</li>
+</ol>
+
+<h2>How to Crop a PDF in Google Chrome (Print Method)</h2>
+
+<p>Chrome has a limited workaround:</p>
+<ol>
+  <li>Open the PDF in Chrome.</li>
+  <li>Press <strong>Ctrl+P</strong> to print.</li>
+  <li>In the print dialog, set a custom "Scale" and adjust margins to achieve a rough crop.</li>
+  <li>Print to PDF (choose "Save as PDF" as the printer).</li>
+</ol>
+<p>This method is imprecise and does not support exact mm-level cropping — use the browser tool above for precise control.</p>
+
+<h2>Common Reasons to Crop a PDF</h2>
+
+<ul>
+  <li><strong>Scanner black borders:</strong> Remove the dark border that appears around scanned pages</li>
+  <li><strong>Oversized margins:</strong> Academic papers and reports often have very wide margins — crop them for e-reader display</li>
+  <li><strong>Removing headers/footers:</strong> Strip existing headers or footers before adding new ones</li>
+  <li><strong>Fitting a smaller screen:</strong> Crop down to just the content area for better readability on phones and tablets</li>
+  <li><strong>Booklet printing:</strong> Crop to a specific paper size before sending to print</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

@@ -1,0 +1,99 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Will text still be readable after converting to grayscale?', a: 'Yes. Text in the original PDF will appear as dark grey or black on a white or light grey background — perfectly readable. Only colour information is removed.' },
+  { q: 'Does the output PDF have selectable text?', a: 'No — the tool renders each page as an image and embeds it in the PDF, so the output is image-based. Text will not be selectable or searchable. Keep the original PDF for text-based tasks.' },
+  { q: 'How does converting to grayscale save money when printing?', a: 'Most printers charge significantly more per page for colour printing than black-and-white. Converting a colour PDF to grayscale before printing means your printer uses only black toner/ink, even if the source document was in colour.' },
+  { q: 'What is the difference between grayscale and black-and-white?', a: 'Grayscale preserves shades of grey between pure black and pure white — photographs and gradients look natural. Pure black-and-white (1-bit monochrome) has no grey, only black or white pixels. The PDFWonder tool produces grayscale, which looks more natural.' },
+  { q: 'Will the file size change after converting to grayscale?', a: 'The output is image-based and may be slightly larger than the original text-based PDF. Use the PDF Compressor tool afterward to reduce the file size.' },
+  { q: 'Are my files uploaded anywhere?', a: 'No. All processing happens locally in your browser using PDF.js and pdf-lib. Your files never leave your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a PDF to Grayscale (Black &amp; White) Free Online"
+  description="Convert any colour PDF to grayscale for free — ideal for printing, reducing ink costs, or archiving. Browser-based, no upload, instant download."
+  canonical="/blog/how-to-convert-pdf-to-grayscale"
+  date="2026-06-18"
+  readTime="4 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Converting a colour PDF to grayscale is the easiest way to reduce printing costs, create printer-friendly document versions, and produce archives that look consistent on any device. This guide explains how to convert a PDF to black and white for free.
+</p>
+
+<h2>The Fastest Method: Free PDF to Grayscale Converter (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-grayscale">PDFWonder's PDF to Grayscale tool</a> converts every page of your PDF to black and white entirely in your browser. No files are uploaded anywhere.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-grayscale">PDF to Grayscale Converter</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>The tool processes each page and automatically downloads the grayscale PDF.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-grayscale" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF to Grayscale Converter — Free Online →</div>
+  <div class="cta-desc">Remove all colour from a PDF. Ideal for printing, archiving, and reducing ink costs. No upload.</div>
+</a>
+
+<h2>Why Convert a PDF to Grayscale?</h2>
+
+<ul>
+  <li><strong>Reduce printing costs:</strong> Colour printing costs 2–5× more per page than black-and-white. Converting to grayscale before printing saves significant money, especially for long documents.</li>
+  <li><strong>Printer compatibility:</strong> Some printers are black-and-white only. A grayscale PDF prints cleanly on monochrome printers without colour-to-grayscale translation artefacts.</li>
+  <li><strong>Archiving:</strong> Grayscale archives are smaller, more consistent, and render identically across all devices regardless of colour display settings.</li>
+  <li><strong>Accessibility:</strong> Some readers have colour vision deficiencies. A well-designed grayscale document is easier to read than a colour document that relies on colour to convey meaning.</li>
+  <li><strong>Professional appearance:</strong> Some formal or legal documents are expected to be black and white.</li>
+</ul>
+
+<h2>How to Convert PDF to Grayscale in Adobe Acrobat</h2>
+
+<ol>
+  <li>Open the PDF in Adobe Acrobat Pro.</li>
+  <li>Go to <strong>Tools → Print Production → Convert Colors</strong>.</li>
+  <li>Set the "Conversion Space" to "Gray Gamma 2.2" (or another grayscale profile).</li>
+  <li>Set "Document Colors" to include all colour spaces.</li>
+  <li>Click <strong>OK</strong> and save.</li>
+</ol>
+
+<p>Note: Adobe Acrobat Pro is a paid application. The PDFWonder browser tool above is free.</p>
+
+<h2>How to Print a Colour PDF in Black and White (Without Converting the File)</h2>
+
+<p>If you only need grayscale for printing (not to save a grayscale file), you can set your printer to black-and-white mode without converting the PDF:</p>
+
+<ul>
+  <li><strong>Windows:</strong> Open print dialog → Printer Properties → look for "Color Mode" or "Grayscale" option → select Black &amp; White → print.</li>
+  <li><strong>Mac:</strong> Open print dialog → click "Show Details" → Colour/Quality settings → select "Black &amp; White" or "Grayscale".</li>
+  <li><strong>Specific printers:</strong> Most HP, Canon, and Epson printers have a grayscale print option in their advanced settings.</li>
+</ul>
+
+<p>This does not create a grayscale PDF — it only prints in grayscale. Use the browser tool to create a grayscale PDF file.</p>
+
+<h2>Grayscale vs. Compressing a PDF — Not the Same Thing</h2>
+
+<p>
+  Converting to grayscale removes colour but does not necessarily reduce file size. To reduce file size, use the <a href="/pdfwonder/pdf-compress">PDF Compressor</a>. For the best result on a large colour PDF: convert to grayscale first, then run through the compressor.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

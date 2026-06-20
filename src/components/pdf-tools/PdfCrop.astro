@@ -1,0 +1,151 @@
+---
+---
+<div class="space-y-5">
+  <div id="pcr-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="pcr-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">✂️</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Set margins to trim from each side of every page</p>
+  </div>
+
+  <div id="pcr-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="pcr-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="pcr-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <p class="text-xs text-slate-500">Enter the amount to crop from each side in millimetres (mm). Set to 0 to leave that side unchanged.</p>
+
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Top (mm)</label>
+        <input type="number" id="pcr-top" value="10" min="0" max="200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Bottom (mm)</label>
+        <input type="number" id="pcr-bottom" value="10" min="0" max="200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Left (mm)</label>
+        <input type="number" id="pcr-left" value="10" min="0" max="200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Right (mm)</label>
+        <input type="number" id="pcr-right" value="10" min="0" max="200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="pcr-crop" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Crop PDF &amp; Download</button>
+      <button id="pcr-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear</button>
+    </div>
+  </div>
+
+  <div id="pcr-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function () {
+  const MM_TO_PT = 2.8346;
+  const drop = document.getElementById('pcr-drop');
+  const fileInput = document.getElementById('pcr-file');
+  const panel = document.getElementById('pcr-panel');
+  const statusEl = document.getElementById('pcr-status');
+  let currentFile = null;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      currentFile = { file, doc };
+      document.getElementById('pcr-name').textContent = file.name;
+      document.getElementById('pcr-info').textContent = `${doc.getPageCount()} pages · ${(file.size / 1024).toFixed(1)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      statusEl.classList.add('hidden');
+    } catch (e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('pcr-crop').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const topMm = parseFloat(document.getElementById('pcr-top').value) || 0;
+    const bottomMm = parseFloat(document.getElementById('pcr-bottom').value) || 0;
+    const leftMm = parseFloat(document.getElementById('pcr-left').value) || 0;
+    const rightMm = parseFloat(document.getElementById('pcr-right').value) || 0;
+
+    if (topMm === 0 && bottomMm === 0 && leftMm === 0 && rightMm === 0) {
+      showStatus('All margins are 0 — no crop applied. Enter a value for at least one side.', 'error');
+      return;
+    }
+
+    showStatus('Cropping PDF…', 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const doc = await PDFDocument.load(await currentFile.file.arrayBuffer(), { ignoreEncryption: true });
+      const pages = doc.getPages();
+
+      pages.forEach(page => {
+        const { width, height } = page.getSize();
+        const top = topMm * MM_TO_PT;
+        const bottom = bottomMm * MM_TO_PT;
+        const left = leftMm * MM_TO_PT;
+        const right = rightMm * MM_TO_PT;
+        const cropX = left;
+        const cropY = bottom;
+        const cropW = Math.max(1, width - left - right);
+        const cropH = Math.max(1, height - top - bottom);
+        page.setCropBox(cropX, cropY, cropW, cropH);
+      });
+
+      const outBytes = await doc.save();
+      const outName = currentFile.file.name.replace(/\.pdf$/i, '') + '-cropped.pdf';
+      downloadBytes(outBytes, outName);
+      showStatus(`✅ Cropped ${pages.length} page${pages.length !== 1 ? 's' : ''} and downloaded.`, 'success');
+    } catch (e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('pcr-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+    fileInput.value = '';
+  });
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

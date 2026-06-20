@@ -1,0 +1,122 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Will the text and images scale when I resize the page?', a: 'Yes. The PDFWonder resize tool scales the entire page content to fit the new page size while maintaining the original aspect ratio. Text, images, and layout all scale together — nothing is cropped.' },
+  { q: 'What is the difference between resizing a PDF and cropping it?', a: 'Resizing changes the page dimensions and scales the content to fit — the result is a smaller or larger version of the same content. Cropping hides parts of the page around the edges without changing the content scale.' },
+  { q: 'Can I resize only specific pages?', a: 'The PDFWonder tool resizes all pages to the same target size. To resize individual pages, extract them with the PDF Splitter, resize each separately, then merge them back with the PDF Merger.' },
+  { q: 'What happens if my PDF is landscape and I resize to A4 portrait?', a: 'The content is scaled to fit within the A4 portrait dimensions while maintaining the original landscape aspect ratio — resulting in horizontal letterboxing (white space at top and bottom). If you want true landscape output, choose "Landscape" in the orientation option.' },
+  { q: 'Does resizing affect PDF text quality?', a: 'The PDFWonder tool uses pdf-lib\'s page embedding, which preserves vector text as vectors. Text quality is maintained at the new size. This is different from canvas-based methods that rasterise text into pixels.' },
+  { q: 'Is my file uploaded anywhere?', a: 'No. All processing happens locally in your browser using pdf-lib. Files never leave your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Resize PDF Pages to A4, Letter, or Custom Size Free Online"
+  description="Resize PDF pages to A4, US Letter, A3, A5, or a custom size online for free. Content is scaled to fit. Browser-based, no upload, instant download."
+  canonical="/blog/how-to-resize-pdf-pages"
+  date="2026-06-17"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Resizing a PDF changes its page dimensions — for example, converting a US Letter document to A4, or shrinking A3 pages down to A5. This is different from cropping (which trims the edges) or compressing (which reduces file size). This guide shows how to resize PDF pages for free.
+</p>
+
+<h2>The Fastest Method: Free PDF Page Resizer (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-resize">PDFWonder's Resize PDF Pages tool</a> scales your PDF pages to A4, US Letter, A3, A5, or a custom size — with all content scaled to fit. Nothing is uploaded.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-resize">Resize PDF Pages tool</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>Choose your target page size from the dropdown: A4, US Letter, A3, A5, or Custom.</li>
+  <li>Choose portrait or landscape orientation.</li>
+  <li>Click <strong>Resize PDF &amp; Download</strong>.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-resize" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Resize PDF Pages — A4, Letter, A3, Custom — Free Online →</div>
+  <div class="cta-desc">Resize all PDF pages to your target paper size. Content is scaled to fit while maintaining aspect ratio. No upload.</div>
+</a>
+
+<h2>Common PDF Resize Scenarios</h2>
+
+<h3>Converting US Letter to A4</h3>
+<p>
+  US Letter (8.5 × 11 inches) and A4 (210 × 297 mm) are close in size but slightly different — Letter is wider and shorter. When converting Letter PDFs for international audiences, resize to A4 so they print correctly on standard European paper.
+</p>
+
+<h3>Converting A4 to US Letter</h3>
+<p>
+  If you receive A4 PDFs but need to print on US Letter paper (common in North America), resizing to Letter prevents the printer from scaling the content or adding unwanted white borders.
+</p>
+
+<h3>Converting A3 to A4</h3>
+<p>
+  Large A3 documents (posters, architectural drawings, spreadsheets) can be resized to A4 for standard printing. The content will be scaled down to half the original size.
+</p>
+
+<h3>Standardising mixed-size PDFs</h3>
+<p>
+  When you merge PDFs from different sources, the pages may have different sizes. Resize all pages to a uniform size before merging for a consistent result.
+</p>
+
+<h2>How to Resize a PDF in Adobe Acrobat</h2>
+
+<ol>
+  <li>Open the PDF in Acrobat Pro.</li>
+  <li>Go to <strong>File → Print</strong>.</li>
+  <li>Select the target paper size from the printer settings.</li>
+  <li>Check <strong>Scale</strong> → <strong>Fit</strong> (or custom scale percentage).</li>
+  <li>Print to Adobe PDF or "Save as PDF".</li>
+</ol>
+
+<p>Alternatively, use <strong>Tools → Edit PDF → More → Crop Pages</strong> to set a custom page size.</p>
+
+<h2>How to Resize a PDF on Mac (Preview)</h2>
+
+<ol>
+  <li>Open the PDF in Preview.</li>
+  <li>Go to <strong>File → Print</strong> (Cmd+P).</li>
+  <li>Change the paper size to your target (A4, Letter, etc.).</li>
+  <li>Enable <strong>Scale to fit page</strong> in the print settings.</li>
+  <li>Choose "Save as PDF" as the printer to export instead of printing.</li>
+</ol>
+
+<h2>How to Change PDF Page Size in Microsoft Word</h2>
+
+<p>If you have the original Word source document:</p>
+<ol>
+  <li>Go to <strong>Layout → Size</strong> and choose the target page size (A4 or Letter).</li>
+  <li>Adjust margins if needed.</li>
+  <li>Re-export as PDF: <strong>File → Save As → PDF</strong>.</li>
+</ol>
+
+<h2>Resize vs. Crop vs. Compress — What Is the Difference?</h2>
+
+<ul>
+  <li><strong>Resize:</strong> Changes the page dimensions and scales content proportionally to fit — same content, different size</li>
+  <li><strong>Crop:</strong> Hides the edges of a page without changing page size or scaling content — useful for removing white margins</li>
+  <li><strong>Compress:</strong> Reduces file size without changing page dimensions — optimises internal PDF structure for smaller downloads</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

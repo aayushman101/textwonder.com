@@ -1,0 +1,153 @@
+---
+---
+<div class="space-y-5">
+  <div id="prb-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="prb-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">🗒️</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Pages with no text content will be automatically removed</p>
+  </div>
+
+  <div id="prb-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="prb-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="prb-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Blank page threshold — pages with fewer than this many characters of text are removed</label>
+      <div class="flex items-center gap-3">
+        <input type="range" id="prb-threshold" min="0" max="100" value="10" class="flex-1 accent-orange-500" />
+        <span id="prb-threshold-val" class="text-slate-300 text-sm w-20 text-right">10 chars</span>
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="prb-remove" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Remove Blank Pages & Download</button>
+      <button id="prb-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear</button>
+    </div>
+  </div>
+
+  <div id="prb-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('prb-drop');
+  const fileInput = document.getElementById('prb-file');
+  const panel = document.getElementById('prb-panel');
+  const statusEl = document.getElementById('prb-status');
+  const thresholdInput = document.getElementById('prb-threshold');
+  const thresholdVal = document.getElementById('prb-threshold-val');
+  let currentFile = null;
+
+  thresholdInput.addEventListener('input', () => {
+    thresholdVal.textContent = thresholdInput.value + ' chars';
+  });
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfJs();
+    try {
+      const buf = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: buf }).promise;
+      currentFile = { file, pageCount: pdf.numPages };
+      document.getElementById('prb-name').textContent = file.name;
+      document.getElementById('prb-info').textContent = `${pdf.numPages} pages · ${(file.size / 1024).toFixed(1)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      statusEl.classList.add('hidden');
+    } catch (e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('prb-remove').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const threshold = parseInt(thresholdInput.value, 10);
+    showStatus('Analysing pages…', 'info');
+    await Promise.all([loadPdfJs(), loadPdfLib()]);
+    try {
+      const [buf1, buf2] = await Promise.all([currentFile.file.arrayBuffer(), currentFile.file.arrayBuffer()]);
+      const pdf = await window.pdfjsLib.getDocument({ data: buf1 }).promise;
+      const numPages = pdf.numPages;
+
+      const keepPages = [];
+      for (let i = 1; i <= numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        const text = textContent.items.map(item => item.str).join('').trim();
+        if (text.length >= threshold) keepPages.push(i - 1);
+      }
+
+      if (keepPages.length === 0) { showStatus('All pages appear blank with the current threshold. Lower the threshold and try again.', 'error'); return; }
+      if (keepPages.length === numPages) { showStatus('No blank pages found — all pages have enough text content.', 'success'); return; }
+
+      const { PDFDocument } = window.PDFLib;
+      const srcDoc = await PDFDocument.load(buf2, { ignoreEncryption: true });
+      const outDoc = await PDFDocument.create();
+      const copied = await outDoc.copyPages(srcDoc, keepPages);
+      copied.forEach(p => outDoc.addPage(p));
+
+      const outBytes = await outDoc.save();
+      const removed = numPages - keepPages.length;
+      const outName = currentFile.file.name.replace(/\.pdf$/i, '') + '-no-blank.pdf';
+      downloadBytes(outBytes, outName);
+      showStatus(`✅ Removed ${removed} blank page${removed !== 1 ? 's' : ''} — ${keepPages.length} page${keepPages.length !== 1 ? 's' : ''} kept.`, 'success');
+    } catch (e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('prb-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+    fileInput.value = '';
+  });
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve();
+      };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

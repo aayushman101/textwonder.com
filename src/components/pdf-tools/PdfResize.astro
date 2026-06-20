@@ -1,0 +1,172 @@
+---
+---
+<div class="space-y-5">
+  <div id="prs-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="prs-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">📐</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Pages will be resized to the selected paper size</p>
+  </div>
+
+  <div id="prs-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl">📄</span>
+      <div>
+        <p id="prs-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="prs-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Target page size</label>
+        <select id="prs-size" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="a4" selected>A4 (210 × 297 mm)</option>
+          <option value="letter">US Letter (8.5 × 11 in)</option>
+          <option value="a3">A3 (297 × 420 mm)</option>
+          <option value="a5">A5 (148 × 210 mm)</option>
+          <option value="custom">Custom size…</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Orientation</label>
+        <select id="prs-orient" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="portrait" selected>Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="prs-custom" class="hidden grid grid-cols-2 gap-4">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Width (mm)</label>
+        <input type="number" id="prs-w" value="210" min="10" max="2000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Height (mm)</label>
+        <input type="number" id="prs-h" value="297" min="10" max="2000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="prs-resize" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Resize PDF &amp; Download</button>
+      <button id="prs-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear</button>
+    </div>
+  </div>
+
+  <div id="prs-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function () {
+  const MM_TO_PT = 2.8346;
+  const SIZES = {
+    a4:     [210 * MM_TO_PT, 297 * MM_TO_PT],
+    letter: [612, 792],
+    a3:     [297 * MM_TO_PT, 420 * MM_TO_PT],
+    a5:     [148 * MM_TO_PT, 210 * MM_TO_PT],
+  };
+
+  const drop = document.getElementById('prs-drop');
+  const fileInput = document.getElementById('prs-file');
+  const panel = document.getElementById('prs-panel');
+  const statusEl = document.getElementById('prs-status');
+  const sizeSelect = document.getElementById('prs-size');
+  const customDiv = document.getElementById('prs-custom');
+  let currentFile = null;
+
+  sizeSelect.addEventListener('change', () => {
+    customDiv.classList.toggle('hidden', sizeSelect.value !== 'custom');
+  });
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      currentFile = { file, doc };
+      document.getElementById('prs-name').textContent = file.name;
+      document.getElementById('prs-info').textContent = `${doc.getPageCount()} pages · ${(file.size / 1024).toFixed(1)} KB`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      statusEl.classList.add('hidden');
+    } catch (e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('prs-resize').addEventListener('click', async () => {
+    if (!currentFile) return;
+    showStatus('Resizing pages…', 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const srcBytes = await currentFile.file.arrayBuffer();
+      const srcDoc = await PDFDocument.load(srcBytes, { ignoreEncryption: true });
+      const outDoc = await PDFDocument.create();
+      const numPages = srcDoc.getPageCount();
+
+      const sizeKey = sizeSelect.value;
+      let [tw, th] = sizeKey === 'custom'
+        ? [(parseFloat(document.getElementById('prs-w').value) || 210) * MM_TO_PT,
+           (parseFloat(document.getElementById('prs-h').value) || 297) * MM_TO_PT]
+        : SIZES[sizeKey];
+
+      if (document.getElementById('prs-orient').value === 'landscape') [tw, th] = [th, tw];
+
+      for (let i = 0; i < numPages; i++) {
+        const [embedded] = await outDoc.embedPdf(srcDoc, [i]);
+        const ew = embedded.width;
+        const eh = embedded.height;
+        const scale = Math.min(tw / ew, th / eh);
+        const x = (tw - ew * scale) / 2;
+        const y = (th - eh * scale) / 2;
+        const newPage = outDoc.addPage([tw, th]);
+        newPage.drawPage(embedded, { x, y, width: ew * scale, height: eh * scale });
+      }
+
+      const outBytes = await outDoc.save();
+      const outName = currentFile.file.name.replace(/\.pdf$/i, '') + '-resized.pdf';
+      downloadBytes(outBytes, outName);
+      showStatus(`✅ Resized ${numPages} page${numPages !== 1 ? 's' : ''} and downloaded.`, 'success');
+    } catch (e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('prs-clear').addEventListener('click', () => {
+    currentFile = null;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+    fileInput.value = '';
+  });
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

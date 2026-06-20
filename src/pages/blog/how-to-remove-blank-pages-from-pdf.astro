@@ -1,0 +1,115 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How does the tool detect blank pages?', a: 'It analyses the text content of each page using PDF.js. Pages with fewer characters of extractable text than your chosen threshold are classified as blank and removed. You can adjust the threshold slider to be more or less aggressive.' },
+  { q: 'Will it remove pages that have only images?', a: 'Yes — if a page has no text layer (for example, a full-page scanned image or a diagram with no text), it is treated as blank. If you want to keep image-only pages, increase the threshold slider to zero so only completely empty pages are removed.' },
+  { q: 'Does it work on scanned PDFs?', a: 'Scanned PDFs typically have no text layer at all, so all pages would be detected as blank. Run the scanned PDF through an OCR tool first to add a text layer, then use this tool to remove genuinely blank pages.' },
+  { q: 'Can I undo if it removes the wrong pages?', a: 'Your original file is never modified — the tool creates a new PDF and downloads it. Simply run the tool again on the original file with a different threshold setting.' },
+  { q: 'What if all pages are detected as blank?', a: 'If the threshold is set too high, or the PDF is scanned without a text layer, the tool will warn you rather than produce an empty PDF. Lower the threshold or use an OCR tool first.' },
+  { q: 'Is my PDF uploaded anywhere?', a: 'No. All processing uses PDF.js and pdf-lib running entirely in your browser. Your file never leaves your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Remove Blank Pages from a PDF Free Online (Automatic)"
+  description="Automatically detect and delete blank pages from a PDF file for free — one click, no upload, browser-based. Adjustable blank-page threshold."
+  canonical="/blog/how-to-remove-blank-pages-from-pdf"
+  date="2026-06-14"
+  readTime="4 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Blank pages in a PDF waste paper when printing and make documents look unfinished. They commonly appear after merging PDFs, scanning documents, or exporting from word processors. This guide shows how to remove blank pages from a PDF automatically and for free.
+</p>
+
+<h2>The Fastest Method: Automatic Blank Page Remover (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-remove-blank-pages">PDFWonder's Remove Blank Pages tool</a> scans your PDF, detects pages with no meaningful text content, and removes them in one click. Everything runs in your browser.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-remove-blank-pages">Remove Blank Pages from PDF tool</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>Adjust the threshold slider if needed — the default (10 characters) catches most blank pages.</li>
+  <li>Click <strong>Remove Blank Pages &amp; Download</strong>.</li>
+  <li>The tool shows how many pages were removed and downloads the cleaned PDF.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-remove-blank-pages" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Remove Blank Pages from PDF — Free Online →</div>
+  <div class="cta-desc">Automatically scan and delete blank pages. Adjustable threshold, no upload, instant download.</div>
+</a>
+
+<h2>Why Do Blank Pages Appear in PDFs?</h2>
+
+<p>Common causes of blank pages in PDFs:</p>
+
+<ul>
+  <li><strong>Merging PDFs:</strong> When combining PDFs with different page counts, separator or filler pages may be inserted</li>
+  <li><strong>Word processor exports:</strong> Microsoft Word and Google Docs sometimes insert a blank page at the end to round out to an even page count</li>
+  <li><strong>Scanner errors:</strong> Double-sided scanners sometimes scan a blank reverse side of a one-sided document</li>
+  <li><strong>Section breaks:</strong> Documents with section breaks force content to start on a new page, leaving the previous page partially or fully empty</li>
+  <li><strong>Print-ready layouts:</strong> Some formats require even page counts for booklet printing, leaving the last page blank</li>
+</ul>
+
+<h2>How to Remove Blank Pages in Microsoft Word (Before Exporting as PDF)</h2>
+
+<p>If you have access to the source Word document, it is easier to fix blank pages there before exporting:</p>
+
+<ol>
+  <li>Press <strong>Ctrl+End</strong> to go to the end of the document.</li>
+  <li>If you see a blank page, click in it and press <strong>Backspace</strong> until it disappears.</li>
+  <li>To reveal hidden section breaks: Home tab → Show/Hide (¶) button → delete any unwanted section breaks.</li>
+  <li>Export to PDF again: File → Save As → PDF.</li>
+</ol>
+
+<h2>How to Remove Blank Pages in Adobe Acrobat</h2>
+
+<ol>
+  <li>Open the PDF in Adobe Acrobat (paid).</li>
+  <li>Click the <strong>Page Thumbnails</strong> panel on the left.</li>
+  <li>Scroll through thumbnails to identify blank pages.</li>
+  <li>Click a blank page thumbnail to select it (Ctrl+click for multiple).</li>
+  <li>Right-click → <strong>Delete Pages…</strong> → confirm.</li>
+</ol>
+
+<p>This method is precise but requires Acrobat and manual identification of each blank page — the automated browser tool above is faster for documents with many blanks.</p>
+
+<h2>How to Remove Blank Pages on Mac (Preview)</h2>
+
+<ol>
+  <li>Open the PDF in Preview.</li>
+  <li>Go to <strong>View → Thumbnails</strong> to show the sidebar.</li>
+  <li>Click each blank page thumbnail you want to remove.</li>
+  <li>Press <strong>Delete</strong> (or Edit → Delete).</li>
+  <li>Save the file: File → Export as PDF.</li>
+</ol>
+
+<h2>Tips for Best Results</h2>
+
+<ul>
+  <li>If the tool removes too many pages (e.g. pages with only headers), lower the threshold slider</li>
+  <li>If blank pages remain, raise the threshold — some "blank" pages may have a few invisible characters or whitespace</li>
+  <li>For scanned PDFs, run OCR first to add a text layer before using this tool</li>
+  <li>Always check the page count before and after to verify the expected number of pages were removed</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

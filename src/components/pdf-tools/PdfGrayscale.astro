@@ -1,0 +1,129 @@
+---
+---
+<div class="space-y-5">
+  <div id="pgs-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="pgs-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">⚫</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">All colour will be removed — output is black and white</p>
+  </div>
+
+  <div id="pgs-progress" class="hidden space-y-2">
+    <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
+      <div id="pgs-bar" class="h-full bg-orange-500 transition-all duration-300" style="width:0%"></div>
+    </div>
+    <p class="text-xs text-slate-500" id="pgs-progress-text">Processing page 0 of 0…</p>
+  </div>
+
+  <div id="pgs-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('pgs-drop');
+  const fileInput = document.getElementById('pgs-file');
+  const progressEl = document.getElementById('pgs-progress');
+  const bar = document.getElementById('pgs-bar');
+  const progressText = document.getElementById('pgs-progress-text');
+  const statusEl = document.getElementById('pgs-status');
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); handleFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => handleFile(fileInput.files[0]));
+
+  async function handleFile(file) {
+    if (!file || file.type !== 'application/pdf') { showStatus('Please select a valid PDF file.', 'error'); return; }
+    progressEl.classList.remove('hidden');
+    bar.style.width = '0%';
+    showStatus('Loading libraries…', 'info');
+
+    await Promise.all([loadPdfJs(), loadPdfLib()]);
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const numPages = pdf.numPages;
+      const { PDFDocument } = window.PDFLib;
+      const outDoc = await PDFDocument.create();
+
+      for (let i = 1; i <= numPages; i++) {
+        progressText.textContent = `Processing page ${i} of ${numPages}…`;
+        bar.style.width = `${Math.round(((i - 1) / numPages) * 100)}%`;
+
+        const page = await pdf.getPage(i);
+        const vpNorm = page.getViewport({ scale: 1.0 });
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        const ctx = canvas.getContext('2d');
+        await page.render({ canvasContext: ctx, viewport }).promise;
+
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const d = imageData.data;
+        for (let j = 0; j < d.length; j += 4) {
+          const gray = Math.round(0.299 * d[j] + 0.587 * d[j + 1] + 0.114 * d[j + 2]);
+          d[j] = d[j + 1] = d[j + 2] = gray;
+        }
+        ctx.putImageData(imageData, 0, 0);
+
+        const pngDataUrl = canvas.toDataURL('image/png');
+        const base64 = pngDataUrl.split(',')[1];
+        const imgBytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+        const img = await outDoc.embedPng(imgBytes);
+
+        const outPage = outDoc.addPage([vpNorm.width, vpNorm.height]);
+        outPage.drawImage(img, { x: 0, y: 0, width: vpNorm.width, height: vpNorm.height });
+      }
+
+      bar.style.width = '100%';
+      progressEl.classList.add('hidden');
+      const outBytes = await outDoc.save();
+      const outName = file.name.replace(/\.pdf$/i, '') + '-grayscale.pdf';
+      downloadBytes(outBytes, outName);
+      showStatus(`✅ Grayscale PDF ready — ${numPages} page${numPages !== 1 ? 's' : ''} converted.`, 'success');
+    } catch (err) {
+      progressEl.classList.add('hidden');
+      showStatus('Error: ' + (err.message || 'Could not process PDF'), 'error');
+    }
+  }
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfJs() {
+    if (window.pdfjsLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => {
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        resolve();
+      };
+      s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

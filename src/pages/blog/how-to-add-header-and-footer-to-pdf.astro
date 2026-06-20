@@ -1,0 +1,120 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Can I add different text to the header and footer?', a: 'Yes. In the PDFWonder tool, the header and footer fields are fully independent. Enter different text in each, or leave one blank if you only need a header or only a footer.' },
+  { q: 'Can I include the page number in the header or footer?', a: 'For page numbers, use the dedicated Add Page Numbers to PDF tool. The header/footer tool is designed for static text labels like company names, document titles, and website URLs.' },
+  { q: 'Will the header or footer overlap my existing content?', a: 'The text is placed within the margin area — within 20pt of the top or bottom edge. If your PDF has very narrow margins or content that reaches the very edge of the page, there may be overlap. Crop or resize the PDF to add margin first if needed.' },
+  { q: 'What font is used?', a: 'The tool uses Helvetica (a standard PDF font that does not require embedding). This ensures maximum compatibility with all PDF viewers.' },
+  { q: 'Can I use different headers on different pages?', a: 'The current tool applies the same header and footer text to all pages. For per-page headers, you would need a tool like Adobe Acrobat.' },
+  { q: 'Is my file uploaded anywhere?', a: 'No. All processing happens locally in your browser using pdf-lib. Your files never leave your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Add a Header and Footer to a PDF Free Online"
+  description="Add custom header and footer text to every page of a PDF for free — company name, page title, URL, or any text. Browser-based, no upload needed."
+  canonical="/blog/how-to-add-header-and-footer-to-pdf"
+  date="2026-06-15"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Adding a header or footer to a PDF lets you stamp every page with a document title, company name, date, confidentiality notice, or website URL. This guide explains how to do it for free — and covers methods for Adobe Acrobat, Word, and LibreOffice too.
+</p>
+
+<h2>The Fastest Method: Free PDF Header &amp; Footer Tool (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-header-footer">PDFWonder's Add Header &amp; Footer tool</a> lets you add custom text to the top and bottom of every PDF page instantly. No software installation and no upload required.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-header-footer">Add Header &amp; Footer to PDF tool</a>.</li>
+  <li>Drop your PDF onto the upload area or click to select it.</li>
+  <li>Enter your header text (e.g. your company name or document title).</li>
+  <li>Enter your footer text (e.g. a website URL or confidentiality notice).</li>
+  <li>Choose alignment (left, centre, or right) and font size.</li>
+  <li>Click <strong>Add Header &amp; Footer &amp; Download</strong>.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-header-footer" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Add Header &amp; Footer to PDF — Free Online →</div>
+  <div class="cta-desc">Stamp every PDF page with custom header and footer text. Choose alignment, font size, and position. No upload required.</div>
+</a>
+
+<h2>How to Add a Header and Footer in Adobe Acrobat</h2>
+
+<p>Acrobat Pro offers the most control for headers and footers:</p>
+
+<ol>
+  <li>Open the PDF in Adobe Acrobat Pro.</li>
+  <li>Go to <strong>Tools → Edit PDF → Header &amp; Footer → Add</strong>.</li>
+  <li>Enter text in the header and/or footer fields. Use the date, page number, and Bates number buttons to insert dynamic content.</li>
+  <li>Adjust font, size, colour, and margins using the settings panel.</li>
+  <li>Click <strong>OK</strong>, then save the file.</li>
+</ol>
+
+<p>Acrobat also lets you remove or update headers/footers from the same menu: <strong>Tools → Edit PDF → Header &amp; Footer → Remove</strong>.</p>
+
+<h2>How to Add Headers and Footers in Microsoft Word (Then Export as PDF)</h2>
+
+<p>If you have the source document in Word format, add the header/footer before exporting to PDF:</p>
+
+<ol>
+  <li>Open the document in Word.</li>
+  <li>Go to <strong>Insert → Header</strong> or <strong>Insert → Footer</strong>.</li>
+  <li>Choose a layout and type your text.</li>
+  <li>Use the <strong>Insert → Page Number</strong> option to add dynamic page numbers.</li>
+  <li>Double-click outside the header/footer to return to the main document.</li>
+  <li>Export: <strong>File → Save As → PDF</strong>.</li>
+</ol>
+
+<h2>How to Add Headers and Footers in LibreOffice Writer</h2>
+
+<ol>
+  <li>Go to <strong>Insert → Headers and Footers → Header → Default Page Style</strong> (to enable header).</li>
+  <li>Click inside the header area and type your text.</li>
+  <li>For page numbers: position the cursor in the header/footer → Insert → Field → Page Number.</li>
+  <li>Repeat for the footer: <strong>Insert → Headers and Footers → Footer</strong>.</li>
+  <li>Export as PDF: <strong>File → Export as PDF</strong>.</li>
+</ol>
+
+<h2>How to Add Headers and Footers in Google Docs</h2>
+
+<ol>
+  <li>Open the document in Google Docs.</li>
+  <li>Go to <strong>Insert → Headers &amp; Footers → Header</strong> or <strong>Footer</strong>.</li>
+  <li>Type your text in the header or footer area.</li>
+  <li>To add page numbers: Insert → Page Numbers → choose a layout.</li>
+  <li>Download as PDF: <strong>File → Download → PDF Document</strong>.</li>
+</ol>
+
+<h2>Common Header and Footer Use Cases</h2>
+
+<ul>
+  <li><strong>Company branding:</strong> Add your company name or logo text to the header of all client-facing documents</li>
+  <li><strong>Confidentiality notices:</strong> Stamp "CONFIDENTIAL — Do Not Distribute" in the footer of sensitive reports</li>
+  <li><strong>Document versioning:</strong> Add "Version 2.1 — Draft" to the footer to track revision history</li>
+  <li><strong>Date stamps:</strong> Add the document date to the header for compliance records</li>
+  <li><strong>Website attribution:</strong> Add your URL to the footer when sharing PDFs publicly</li>
+  <li><strong>Legal notices:</strong> Add copyright or disclaimer text to every page of published documents</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

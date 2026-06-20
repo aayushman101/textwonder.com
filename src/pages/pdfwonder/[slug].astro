@@ -10,6 +10,12 @@ import PdfWatermark from '../../components/pdf-tools/PdfWatermark.astro';
 import PdfMetadataViewer from '../../components/pdf-tools/PdfMetadataViewer.astro';
 import PdfReorderPages from '../../components/pdf-tools/PdfReorderPages.astro';
 import PdfCompress from '../../components/pdf-tools/PdfCompress.astro';
+import PdfToJpg from '../../components/pdf-tools/PdfToJpg.astro';
+import JpgToPdf from '../../components/pdf-tools/JpgToPdf.astro';
+import PdfPageNumbers from '../../components/pdf-tools/PdfPageNumbers.astro';
+import PdfPasswordProtect from '../../components/pdf-tools/PdfPasswordProtect.astro';
+import PdfSign from '../../components/pdf-tools/PdfSign.astro';
+import PdfWordCount from '../../components/pdf-tools/PdfWordCount.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
 
 export function getStaticPaths() {
@@ -29,6 +35,12 @@ const componentMap: Record<string, any> = {
   'pdf-metadata-viewer': PdfMetadataViewer,
   'pdf-reorder-pages': PdfReorderPages,
   'pdf-compress': PdfCompress,
+  'pdf-to-jpg': PdfToJpg,
+  'jpg-to-pdf': JpgToPdf,
+  'pdf-page-numbers': PdfPageNumbers,
+  'pdf-password-protect': PdfPasswordProtect,
+  'pdf-sign': PdfSign,
+  'pdf-word-count': PdfWordCount,
 };
 
 const ToolComponent = componentMap[tool.slug];

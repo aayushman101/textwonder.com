@@ -1,0 +1,165 @@
+---
+---
+<div class="space-y-5">
+  <div id="psg-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+    <input type="file" id="psg-file" accept=".pdf" class="hidden" />
+    <div class="text-4xl mb-2">✍️</div>
+    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
+    <p class="text-slate-500 text-sm">Type your signature and place it on any page</p>
+  </div>
+
+  <div id="psg-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-blue-400 text-2xl">📄</span>
+      <div>
+        <p id="psg-name" class="text-slate-200 text-sm font-medium"></p>
+        <p id="psg-info" class="text-slate-500 text-xs"></p>
+      </div>
+    </div>
+
+    <!-- Signature preview -->
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Your signature</label>
+      <input type="text" id="psg-text" placeholder="Type your name or initials" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500 placeholder-slate-600" />
+      <div id="psg-preview" class="mt-2 bg-white rounded-lg p-3 text-center min-h-[60px] flex items-center justify-center">
+        <span id="psg-preview-text" class="text-slate-900" style="font-family: 'Dancing Script', cursive; font-size: 2rem; color: #1a237e;"></span>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Page number</label>
+        <input type="number" id="psg-page" value="1" min="1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Position</label>
+        <select id="psg-position" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="bottom-right" selected>Bottom Right</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="bottom-center">Bottom Centre</option>
+          <option value="top-right">Top Right</option>
+          <option value="top-left">Top Left</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Font size (pt)</label>
+        <input type="number" id="psg-size" value="20" min="8" max="48" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+    </div>
+
+    <div class="flex gap-2">
+      <button id="psg-add" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Add Signature & Download</button>
+      <button id="psg-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear</button>
+    </div>
+  </div>
+
+  <div id="psg-status" class="hidden text-sm py-1"></div>
+</div>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('psg-drop');
+  const fileInput = document.getElementById('psg-file');
+  const panel = document.getElementById('psg-panel');
+  const status = document.getElementById('psg-status');
+  const sigText = document.getElementById('psg-text');
+  const preview = document.getElementById('psg-preview-text');
+  let currentFile = null, pageCount = 0;
+
+  sigText.addEventListener('input', () => { preview.textContent = sigText.value || ''; });
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  async function loadFile(file) {
+    if (!file || file.type !== 'application/pdf') return;
+    showStatus('Loading…', 'info');
+    await loadPdfLib();
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const bytes = await file.arrayBuffer();
+      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pageCount = doc.getPageCount();
+      currentFile = file;
+      document.getElementById('psg-name').textContent = file.name;
+      document.getElementById('psg-info').textContent = `${pageCount} pages · ${(file.size / 1024).toFixed(1)} KB`;
+      document.getElementById('psg-page').max = pageCount;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      status.classList.add('hidden');
+    } catch (e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+  }
+
+  document.getElementById('psg-add').addEventListener('click', async () => {
+    const sig = sigText.value.trim();
+    if (!sig) { showStatus('Please type your signature text.', 'error'); return; }
+    if (!currentFile) return;
+    let pageNum = parseInt(document.getElementById('psg-page').value, 10);
+    if (isNaN(pageNum) || pageNum < 1) pageNum = 1;
+    if (pageNum > pageCount) pageNum = pageCount;
+
+    showStatus('Adding signature…', 'info');
+    try {
+      const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+      const doc = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      const font = await doc.embedFont(StandardFonts.TimesRomanItalic);
+      const page = doc.getPage(pageNum - 1);
+      const { width, height } = page.getSize();
+      const fontSize = parseInt(document.getElementById('psg-size').value, 10) || 20;
+      const textWidth = font.widthOfTextAtSize(sig, fontSize);
+      const pos = document.getElementById('psg-position').value;
+      const margin = 36;
+      let x, y;
+
+      if (pos === 'bottom-right') { x = width - textWidth - margin; y = margin; }
+      else if (pos === 'bottom-left') { x = margin; y = margin; }
+      else if (pos === 'bottom-center') { x = (width - textWidth) / 2; y = margin; }
+      else if (pos === 'top-right') { x = width - textWidth - margin; y = height - margin - fontSize; }
+      else { x = margin; y = height - margin - fontSize; }
+
+      page.drawText(sig, { x, y, size: fontSize, font, color: rgb(0.05, 0.1, 0.45) });
+
+      const out = await doc.save();
+      downloadBytes(out, 'signed.pdf');
+      showStatus('✅ Signature added and PDF downloaded', 'success');
+    } catch (e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('psg-clear').addEventListener('click', () => {
+    currentFile = null; pageCount = 0;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+    sigText.value = ''; preview.textContent = '';
+  });
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

@@ -1,0 +1,171 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is a PDF file?', a: 'A PDF (Portable Document Format) is a file format that presents documents — including text, images, fonts, and layouts — in a way that is consistent across all devices and operating systems. PDFs look the same whether opened on Windows, Mac, Android, or iOS.' },
+  { q: 'Who created the PDF format?', a: 'Adobe Systems co-founder John Warnock introduced PDF in 1991 as part of the "Camelot" project. Adobe released it publicly in 1993 and made the specification open in 2008, after which ISO published it as ISO 32000.' },
+  { q: 'Can I edit a PDF file?', a: 'Yes, but it requires specific tools. Adobe Acrobat (paid) and many free alternatives let you edit PDFs. For simple edits like adding text, using an online PDF editor works. Our free PDF tools let you merge, split, rotate, and add watermarks to PDFs without installing anything.' },
+  { q: 'Is a PDF the same as a scanned document?', a: 'No. A scanned document converted to PDF is just an image inside a PDF container — the text is not selectable or searchable. A true PDF contains actual text data. Scanned PDFs require OCR (Optical Character Recognition) to become searchable.' },
+  { q: 'What is the difference between PDF and PDF/A?', a: 'PDF/A is a version of PDF standardised for long-term archiving (ISO 19005). It restricts certain features (like embedded audio/video and encryption) to ensure the document remains readable in the future without special software.' },
+  { q: 'How do I reduce a PDF file size?', a: 'Use a PDF compressor. Our free PDF Compressor tool reduces file size by optimising the internal structure without changing content or quality. For image-heavy PDFs, compressing the images themselves gives the best results.' },
+];
+---
+
+<BlogLayout
+  title="What Is a PDF File? Everything You Need to Know (2026 Guide)"
+  description="Learn exactly what a PDF file is, why it was invented, how it works, and how to create, edit, compress, and convert PDFs for free online."
+  canonical="/blog/what-is-a-pdf"
+  date="2026-06-01"
+  readTime="7 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  You have almost certainly worked with a PDF. They are the default format for invoices, contracts, ebooks, academic papers, government forms, and countless other documents. But what exactly <em>is</em> a PDF, and why is it the most widely used document format in the world? This guide answers everything.
+</p>
+
+<h2>What Does PDF Stand For?</h2>
+
+<p>
+  <strong>PDF stands for Portable Document Format.</strong> The name reflects its core purpose: a document format that looks exactly the same regardless of which device, operating system, or software you use to open it. A PDF created on Windows opens identically on a Mac, iPhone, or Android tablet — fonts, layouts, and images are all preserved.
+</p>
+
+<h2>Who Invented the PDF?</h2>
+
+<p>
+  Adobe Systems co-founder John Warnock conceived the PDF format in 1991 as part of an internal project called "Camelot." The problem Warnock wanted to solve was simple: how do you share a document so that anyone, anywhere, can view it exactly as intended — without needing the original software?
+</p>
+<p>
+  Adobe released PDF publicly in 1993. For the first decade, reading a PDF required the free Adobe Acrobat Reader but creating and editing PDFs required expensive Adobe software. In 2008, Adobe released the PDF specification as an open standard. The International Organization for Standardization (ISO) then published it as <strong>ISO 32000</strong>, making PDF a truly open format that anyone can implement.
+</p>
+
+<h2>How Does a PDF File Work?</h2>
+
+<p>
+  A PDF file is a <strong>self-contained container</strong> that packages together everything needed to display a document correctly:
+</p>
+
+<ul>
+  <li><strong>Text content</strong> — the actual characters and their positions on the page</li>
+  <li><strong>Embedded fonts</strong> — the exact typefaces used, so text looks the same even if the font is not installed on your device</li>
+  <li><strong>Images and graphics</strong> — compressed inside the file</li>
+  <li><strong>Page layout information</strong> — margins, columns, headers, and footers</li>
+  <li><strong>Metadata</strong> — title, author, creation date, and keywords</li>
+  <li><strong>Interactive elements</strong> (in more advanced PDFs) — hyperlinks, form fields, digital signatures, bookmarks, and embedded video</li>
+</ul>
+
+<p>
+  This self-contained nature is what makes PDFs "portable." Unlike a Word document that may look different depending on which fonts are installed, a PDF renders identically everywhere.
+</p>
+
+<h2>Types of PDF Files</h2>
+
+<p>
+  Not all PDFs are the same. Understanding the type of PDF you have determines what you can do with it:
+</p>
+
+<h3>Text-Based PDFs</h3>
+<p>
+  Created by exporting from Word, Excel, PowerPoint, or a web browser. The text is fully selectable, searchable, and extractable. These are the most common PDFs for documents, reports, and ebooks.
+</p>
+
+<h3>Scanned PDFs (Image PDFs)</h3>
+<p>
+  Created by scanning a physical document with a scanner or mobile app. The PDF contains images of the pages — text is not selectable or searchable unless OCR (Optical Character Recognition) is applied. Scanned PDFs are typically much larger in file size for the same content.
+</p>
+
+<h3>Interactive PDFs (PDF Forms)</h3>
+<p>
+  Contain fillable form fields, checkboxes, dropdown menus, and signature fields. Used for government applications, insurance forms, surveys, and contracts. Adobe Acrobat and PDF readers that support forms can fill them in digitally.
+</p>
+
+<h3>PDF/A (Archival PDF)</h3>
+<p>
+  A subset of PDF standardised by ISO (ISO 19005) specifically for long-term archiving. PDF/A restricts features that could make a document unreadable in the future (like encryption, external font dependencies, and embedded multimedia). Government agencies and legal institutions often require PDF/A for official filings.
+</p>
+
+<h3>PDF/X</h3>
+<p>
+  A subset of PDF for professional print production. Ensures all colours are correct for printing and all fonts are embedded. Used by publishers, printers, and design agencies.
+</p>
+
+<h2>What Can You Do With a PDF?</h2>
+
+<p>
+  Modern PDF tools — including our free browser-based tools at <a href="/pdfwonder">PDFWonder</a> — let you:
+</p>
+
+<ul>
+  <li><strong>Merge PDFs</strong> — combine multiple files into one</li>
+  <li><strong>Split PDFs</strong> — extract specific pages into a new file</li>
+  <li><strong>Compress PDFs</strong> — reduce file size for email or upload</li>
+  <li><strong>Rotate pages</strong> — fix sideways or upside-down pages</li>
+  <li><strong>Add watermarks</strong> — stamp "DRAFT" or your company name</li>
+  <li><strong>Extract text</strong> — copy text content from a text-based PDF</li>
+  <li><strong>Convert PDF to JPG</strong> — turn pages into images</li>
+  <li><strong>Convert images to PDF</strong> — combine photos into a single document</li>
+  <li><strong>Add page numbers</strong> — number pages automatically</li>
+  <li><strong>Password-protect PDFs</strong> — encrypt for secure sharing</li>
+  <li><strong>Sign PDFs</strong> — add a digital signature</li>
+</ul>
+
+<a href="/pdfwonder" class="tool-cta">
+  <div class="cta-label">Free PDF Tools</div>
+  <div class="cta-title">PDFWonder — 16 Free PDF Tools →</div>
+  <div class="cta-desc">Merge, split, compress, convert, sign, and protect PDFs entirely in your browser. No upload, no account, 100% private.</div>
+</a>
+
+<h2>PDF vs Other Document Formats</h2>
+
+<p>
+  Why choose PDF over Word (.docx), plain text (.txt), or HTML?
+</p>
+
+<ul>
+  <li><strong>PDF vs Word (.docx):</strong> Word documents can look different on different computers depending on which fonts are installed and which version of Word is used. PDFs always look identical. However, Word documents are much easier to edit after creation.</li>
+  <li><strong>PDF vs plain text (.txt):</strong> Plain text has no formatting — no fonts, no images, no layout. PDFs preserve all visual formatting. Use plain text when formatting is irrelevant; use PDF when visual presentation matters.</li>
+  <li><strong>PDF vs HTML:</strong> HTML documents are designed for the web and reflow to fit different screen sizes. PDFs have fixed-page layouts designed for a specific page size (usually A4 or US Letter). PDFs are better for print-ready documents; HTML is better for responsive web content.</li>
+  <li><strong>PDF vs JPEG/PNG:</strong> Image formats only store a visual snapshot. PDFs can contain both visual output and searchable/copyable text. Use images for photographs; use PDFs for documents.</li>
+</ul>
+
+<h2>How to Open a PDF</h2>
+
+<p>
+  Every major operating system and device can open PDFs natively:
+</p>
+<ul>
+  <li><strong>Windows 10/11:</strong> Edge browser or the built-in Photos app opens PDFs by default. Adobe Acrobat Reader is a popular alternative.</li>
+  <li><strong>Mac:</strong> Preview app (pre-installed) opens PDFs natively.</li>
+  <li><strong>iPhone/iPad:</strong> The Files app or any web browser can open PDFs.</li>
+  <li><strong>Android:</strong> Chrome browser opens PDFs. Adobe Acrobat Reader is widely used.</li>
+  <li><strong>Web browser:</strong> Chrome, Firefox, Safari, and Edge all include built-in PDF viewers. You can open any PDF directly in a browser tab.</li>
+</ul>
+
+<h2>How to Create a PDF</h2>
+
+<p>
+  There are several ways to create a PDF for free:
+</p>
+<ul>
+  <li><strong>From Word/Google Docs:</strong> File → Export → PDF (Word) or File → Download → PDF (Google Docs)</li>
+  <li><strong>From any application:</strong> Print → "Save as PDF" (available on Windows, Mac, and most Linux distributions)</li>
+  <li><strong>From a web page:</strong> Ctrl+P → "Save as PDF" in Chrome or Edge</li>
+  <li><strong>From images:</strong> Use our free <a href="/pdfwonder/jpg-to-pdf">Image to PDF converter</a></li>
+  <li><strong>From plain text:</strong> Use our free <a href="/pdfwonder/text-to-pdf">Text to PDF converter</a></li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

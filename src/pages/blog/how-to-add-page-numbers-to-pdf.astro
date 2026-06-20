@@ -1,0 +1,126 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I add page numbers to a PDF for free?', a: 'Use PDFWonder\'s free Add Page Numbers tool. Upload your PDF, choose position and format, and download the numbered PDF. All processing happens in your browser — no file is uploaded anywhere.' },
+  { q: 'Can I start page numbering from a number other than 1?', a: 'Yes. You can set any starting number — useful when a document is part of a larger series (e.g., a chapter starting at page 45).' },
+  { q: 'Can I add "Page X of Y" format?', a: 'Yes. Select the "Page 1 of N" format option to include the total page count in each number.' },
+  { q: 'Will adding page numbers change the PDF layout?', a: 'Page numbers are added to the footer area (bottom 20 points of each page). For most documents this is within the existing margin and does not overlap content. If your PDF has very tight margins, the number may overlap — use the position options to adjust.' },
+  { q: 'Can I add page numbers in Adobe Acrobat?', a: 'Yes. In Adobe Acrobat Pro, go to Tools → Edit PDF → Header & Footer → Add Header & Footer. This gives full control over position, font, and Bates numbering. It requires Acrobat Pro (paid).' },
+  { q: 'Can I remove page numbers from a PDF?', a: 'Removing page numbers from a PDF that already has them embedded is very difficult without the original source document. If you added them with PDFWonder, simply re-run the original PDF without numbers through the tool.' },
+];
+---
+
+<BlogLayout
+  title="How to Add Page Numbers to a PDF for Free Online"
+  description="Step-by-step guide to adding page numbers to a PDF — using a free browser tool, Adobe Acrobat, Microsoft Word, and Mac Preview. No upload needed."
+  canonical="/blog/how-to-add-page-numbers-to-pdf"
+  date="2026-06-06"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Adding page numbers to a PDF is essential for academic papers, legal documents, business reports, and any document where readers need to navigate or reference specific pages. This guide shows you how to add page numbers to any PDF for free.
+</p>
+
+<h2>Method 1: Free Browser-Based Tool (Fastest, No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-page-numbers">PDFWonder's Add Page Numbers tool</a> stamps page numbers onto every page of your PDF in seconds. Choose the position (left, centre, or right), format (1, 2, 3 or "Page 1 of N" or "— 1 —"), and starting number.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-page-numbers">Add Page Numbers to PDF</a> tool.</li>
+  <li>Upload your PDF by clicking or dragging.</li>
+  <li>Choose your preferred position, format, and starting number.</li>
+  <li>Click <strong>Add Page Numbers &amp; Download</strong>.</li>
+  <li>The numbered PDF downloads immediately.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-page-numbers" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Add Page Numbers to PDF — Free, No Upload →</div>
+  <div class="cta-desc">Choose position, format, and starting number. Browser-based — your files never leave your device.</div>
+</a>
+
+<h2>Method 2: Adding Page Numbers in Adobe Acrobat Pro</h2>
+
+<p>
+  Adobe Acrobat Pro (paid subscription) gives full control over headers and footers:
+</p>
+<ol>
+  <li>Open your PDF in Adobe Acrobat Pro.</li>
+  <li>Go to <strong>Tools → Edit PDF → Header &amp; Footer → Add</strong>.</li>
+  <li>Click in the header or footer area where you want the number.</li>
+  <li>Click <strong>Insert Page Number</strong>.</li>
+  <li>Customise font, size, and margins.</li>
+  <li>Click <strong>OK</strong> to apply and save.</li>
+</ol>
+<p>
+  Acrobat also supports <strong>Bates numbering</strong> for legal documents — sequential numbers with optional prefixes for document management.
+</p>
+
+<h2>Method 3: Add Page Numbers in Microsoft Word Before Exporting</h2>
+
+<p>
+  If you are creating a document that you plan to save as PDF, add page numbers in Word before exporting — this is the cleanest approach:
+</p>
+<ol>
+  <li>In Word, go to <strong>Insert → Page Number</strong>.</li>
+  <li>Choose the position: Top of Page, Bottom of Page, Page Margins, or Current Position.</li>
+  <li>Select a style (simple number, X of Y, etc.).</li>
+  <li>Go to <strong>File → Save As → PDF</strong> or <strong>File → Export → Create PDF/XPS</strong>.</li>
+</ol>
+<p>
+  This produces the cleanest results because the numbers are part of the document layout, not added as an overlay.
+</p>
+
+<h2>Method 4: Add Page Numbers in Google Docs</h2>
+
+<ol>
+  <li>In Google Docs, go to <strong>Insert → Headers &amp; footers → Footer</strong>.</li>
+  <li>With the cursor in the footer, go to <strong>Insert → Page numbers</strong>.</li>
+  <li>Choose whether to show page numbers in the footer and which page to start on.</li>
+  <li>Download as PDF via <strong>File → Download → PDF Document</strong>.</li>
+</ol>
+
+<h2>Method 5: Adding Page Numbers on Mac with Preview</h2>
+
+<p>
+  Mac's Preview app cannot add page numbers to an existing PDF. To add numbers to a PDF on Mac without Adobe Acrobat, use the browser-based tool above — it works in Safari on Mac just as well as on any other device.
+</p>
+
+<h2>When Do You Need Page Numbers in a PDF?</h2>
+
+<ul>
+  <li><strong>Academic papers and theses:</strong> Most universities require page-numbered submissions. Even when using Word, the PDF export should carry the numbers.</li>
+  <li><strong>Legal documents:</strong> Court filings, contracts, and briefs often require Bates numbering or standard page numbers for reference during hearings.</li>
+  <li><strong>Business reports:</strong> Multi-page reports benefit from page numbers so readers can navigate and reference specific sections.</li>
+  <li><strong>Merged PDFs:</strong> When you merge multiple PDFs, the pages of the combined document may not have consistent numbering. Add page numbers afterward to fix this.</li>
+  <li><strong>Ebooks and guides:</strong> Even simple PDF ebooks benefit from page numbers for referencing.</li>
+</ul>
+
+<h2>Tips for Page Numbering</h2>
+
+<ul>
+  <li>If your document has a cover page, set the starting number to 0 so the first content page shows "1" while the cover is technically page 0.</li>
+  <li>For documents that are part of a series, set the starting number to match where this section begins in the full document (e.g., if Chapter 3 starts at page 47 in the full book, start numbering from 47).</li>
+  <li>After adding page numbers, use the <a href="/pdfwonder/pdf-compress">PDF Compressor</a> if the file size increased significantly.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

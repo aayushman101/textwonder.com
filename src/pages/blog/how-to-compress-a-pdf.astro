@@ -1,0 +1,131 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I compress a PDF for free?', a: 'Use a free browser-based PDF compressor like PDFWonder. Upload your PDF, click Compress, and download the smaller version. No file is uploaded to any server — everything runs in your browser.' },
+  { q: 'How much can a PDF be compressed?', a: 'It depends on the content. Text-heavy PDFs with redundant internal structure can shrink 10–30%. Image-heavy PDFs see less reduction because the images are already compressed. If images are the main source of size, reducing image resolution before embedding gives better results.' },
+  { q: 'Will compressing a PDF reduce its quality?', a: 'Our PDF Compressor uses lossless structural compression — removing redundant data without changing any text, image quality, or layout. The visual output is identical to the original.' },
+  { q: 'What is the maximum size for email attachments?', a: 'Most email providers allow 25 MB attachments (Gmail, Outlook). Some corporate email servers limit attachments to 10 MB or even 5 MB. Compress your PDF if it exceeds the limit.' },
+  { q: 'How do I reduce PDF size in Adobe Acrobat?', a: 'Open the PDF in Acrobat → File → Reduce File Size (or "Compress PDF" in newer versions). Choose a compatibility level and click OK. Adobe Acrobat Pro offers more compression options including image downsampling.' },
+  { q: 'Why is my PDF so large?', a: 'PDFs become large when they contain high-resolution images, embedded fonts at large sizes, duplicate data, or unused objects from repeated edits. Scanned PDFs are particularly large because each page is stored as a high-resolution image.' },
+];
+---
+
+<BlogLayout
+  title="How to Compress a PDF Without Losing Quality (Free, Online)"
+  description="Learn how to reduce PDF file size for free without losing quality — using browser-based tools, Adobe Acrobat, Mac Preview, and Google Drive. No software needed."
+  canonical="/blog/how-to-compress-a-pdf"
+  date="2026-06-04"
+  readTime="6 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  A large PDF can be impossible to attach to an email, slow to upload to a web portal, and frustrating to share. This guide shows you how to compress a PDF and reduce its file size — for free, without installing software, and without sacrificing quality.
+</p>
+
+<h2>Why Are PDFs So Large?</h2>
+
+<p>Before compressing, it helps to know what makes PDFs large:</p>
+<ul>
+  <li><strong>High-resolution images:</strong> A scanned document at 300+ DPI stores enormous amounts of image data. A single scanned A4 page can be 1–2 MB on its own.</li>
+  <li><strong>Embedded fonts:</strong> PDFs embed complete font files so text looks identical on every device. Each embedded font adds 50–500 KB to the file size.</li>
+  <li><strong>Redundant internal objects:</strong> Every time you edit and save a PDF in desktop software, new objects are added without removing the old ones. Over time, this "cruft" inflates the file significantly.</li>
+  <li><strong>Unoptimised export settings:</strong> Exporting a document from Word, Excel, or PowerPoint with default settings often generates larger-than-necessary PDFs.</li>
+</ul>
+
+<h2>Method 1: Free Browser-Based PDF Compressor (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-compress">PDFWonder's PDF Compressor</a> runs entirely in your browser. Your file is never uploaded anywhere. It removes redundant internal structures and re-saves with optimised object streams.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-compress">PDF Compressor</a>.</li>
+  <li>Drop or select your PDF file.</li>
+  <li>Choose Normal or Aggressive compression.</li>
+  <li>Click <strong>Compress & Download</strong>.</li>
+  <li>The compressed PDF is downloaded to your device.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-compress" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF Compressor — Reduce PDF File Size Free →</div>
+  <div class="cta-desc">Lossless structural compression in your browser. No upload, no account needed. Works best on text-heavy or repeatedly-edited PDFs.</div>
+</a>
+
+<h2>Method 2: Compress a PDF on Windows (No Software)</h2>
+
+<p>
+  If you do not want to use an online tool, try these free Windows options:
+</p>
+<ul>
+  <li><strong>Microsoft Word (if installed):</strong> Open the PDF in Word → Edit the document if needed → File → Export → Create PDF/XPS → click Options → tick "Minimum size (publishing online)." This significantly reduces size, especially for image-heavy PDFs.</li>
+  <li><strong>Print to PDF:</strong> Open the PDF in Edge or Chrome → Ctrl+P → "Save as PDF" → Save. This re-renders the PDF and often produces a smaller file, though it may alter some formatting.</li>
+</ul>
+
+<h2>Method 3: Compress a PDF on Mac with Preview</h2>
+
+<p>
+  Mac's built-in Preview app has a built-in PDF compression filter:
+</p>
+<ol>
+  <li>Open the PDF in <strong>Preview</strong>.</li>
+  <li>Go to <strong>File → Export</strong> (not Save).</li>
+  <li>Change the format to PDF.</li>
+  <li>Click the <strong>Quartz Filter</strong> dropdown and select <strong>Reduce File Size</strong>.</li>
+  <li>Click Save.</li>
+</ol>
+<p>
+  Note: macOS's Reduce File Size filter can be aggressive with image quality reduction. Check the output before using it for print-quality documents.
+</p>
+
+<h2>Method 4: Compress PDF in Adobe Acrobat</h2>
+
+<p>
+  Adobe Acrobat Pro (paid) offers the most powerful compression options:
+</p>
+<ul>
+  <li><strong>File → Reduce File Size:</strong> Quick compression with adjustable PDF compatibility level.</li>
+  <li><strong>File → Save as Other → Optimized PDF:</strong> Full control over image downsampling, font subsetting, and object removal. Offers the best compression ratios for complex PDFs.</li>
+</ul>
+
+<h2>Method 5: Compress PDF in Google Drive</h2>
+
+<p>
+  Google Drive does not compress PDFs directly, but there is a workaround:
+</p>
+<ol>
+  <li>Upload the PDF to Google Drive.</li>
+  <li>Right-click → <strong>Open with Google Docs</strong>.</li>
+  <li>Go to <strong>File → Download → PDF</strong>.</li>
+  <li>Google re-exports the PDF, often at a smaller size.</li>
+</ol>
+<p>
+  Warning: this method converts the PDF through Google Docs, which can affect complex layouts and is not suitable for design documents.
+</p>
+
+<h2>How to Get the Best Compression Results</h2>
+
+<ul>
+  <li><strong>For text-heavy PDFs:</strong> Use our browser-based compressor — structural compression works best here.</li>
+  <li><strong>For image-heavy or scanned PDFs:</strong> Reduce the images before embedding them. Convert each page to a lower-resolution JPG first (use our <a href="/pdfwonder/pdf-to-jpg">PDF to JPG tool</a>), then recombine with our <a href="/pdfwonder/jpg-to-pdf">Image to PDF converter</a> at a lower quality setting.</li>
+  <li><strong>For repeatedly-edited PDFs:</strong> The "aggressive" option in our compressor removes metadata and unused objects accumulated through multiple edits, often giving the largest size reduction.</li>
+  <li><strong>Remove unnecessary pages:</strong> Use the <a href="/pdfwonder/pdf-remove-pages">PDF Page Remover</a> to delete blank pages, cover pages, or appendices before compressing.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

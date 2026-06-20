@@ -1,0 +1,132 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I split a PDF into individual pages for free?', a: 'Use PDFWonder\'s free PDF Splitter. Upload your PDF, enter the page range or individual pages you want to extract, and download the new file. Everything runs in your browser — no upload required.' },
+  { q: 'Can I split a PDF into separate files for each page?', a: 'PDFWonder\'s Splitter extracts a specified range or set of pages into one new PDF. To get every page as a separate file, you would need to run the tool once per page. For extracting pages as images, use the PDF to JPG tool instead.' },
+  { q: 'Will splitting a PDF reduce its quality?', a: 'No. The splitter copies pages exactly as they are into a new PDF. There is no re-rendering or quality loss — text, images, and layout are preserved perfectly.' },
+  { q: 'How do I extract just one page from a PDF?', a: 'In PDFWonder\'s PDF Splitter, enter the single page number (e.g., "5") and click Extract. The result is a one-page PDF containing just that page.' },
+  { q: 'Can I split a PDF on iPhone without an app?', a: 'Yes. Open PDFWonder\'s PDF Splitter in Safari on iPhone, upload the PDF, enter your page range, and download the result. No app installation needed.' },
+  { q: 'How do I split a PDF by size in MB?', a: 'PDFWonder\'s Splitter works by page numbers, not file size. If you need to split by size, divide the total pages roughly in half repeatedly until each part is under your target size.' },
+];
+---
+
+<BlogLayout
+  title="How to Split a PDF Into Multiple Files or Individual Pages (Free)"
+  description="Step-by-step guide to splitting a PDF file — extract specific pages, split by range, or separate into individual pages. Free browser tool, no upload needed."
+  canonical="/blog/how-to-split-a-pdf"
+  date="2026-06-09"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Splitting a PDF lets you extract specific pages, break a large document into smaller sections, or pull out just the pages you need to share. This guide covers every method — from free browser tools to desktop software.
+</p>
+
+<h2>Method 1: Free Browser-Based PDF Splitter (No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-splitter">PDFWonder's PDF Splitter</a> extracts any page or range of pages from a PDF in seconds. Your file never leaves your browser.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-splitter">PDF Splitter tool</a>.</li>
+  <li>Upload your PDF by dropping it or clicking to select.</li>
+  <li>Enter the pages or page range you want to extract (e.g., "1,3,5-8,10").</li>
+  <li>Click <strong>Extract Pages</strong>.</li>
+  <li>The new PDF with only the selected pages downloads automatically.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-splitter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF Splitter — Extract Pages Free →</div>
+  <div class="cta-desc">Enter any page range like "1,3,5-8" to extract exactly what you need. No upload, no account required.</div>
+</a>
+
+<h2>Page Range Syntax You Can Use</h2>
+
+<p>
+  When entering page numbers, you can use:
+</p>
+<ul>
+  <li><strong>Single page:</strong> <code>5</code> — extracts page 5 only</li>
+  <li><strong>Page range:</strong> <code>3-7</code> — extracts pages 3 through 7</li>
+  <li><strong>Multiple specific pages:</strong> <code>1,4,9</code> — extracts pages 1, 4, and 9</li>
+  <li><strong>Mixed:</strong> <code>1,3-5,8,10-12</code> — extracts pages 1, 3, 4, 5, 8, 10, 11, and 12</li>
+</ul>
+
+<h2>Method 2: Split PDF on Mac with Preview (Free, Built-in)</h2>
+
+<ol>
+  <li>Open the PDF in <strong>Preview</strong>.</li>
+  <li>Show the thumbnail sidebar: <strong>View → Thumbnails</strong>.</li>
+  <li>Drag the page thumbnails you want to extract <strong>out of the Preview window</strong> onto your desktop or a folder.</li>
+  <li>Preview creates a new PDF file from the dragged pages.</li>
+</ol>
+<p>
+  This is a simple one-page-at-a-time approach. For extracting ranges, the browser tool is faster.
+</p>
+
+<h2>Method 3: Split PDF in Adobe Acrobat (Free Reader vs Pro)</h2>
+
+<p>
+  Adobe Acrobat Reader (free) cannot split PDFs — that requires Acrobat Pro (paid). With Acrobat Pro:
+</p>
+<ol>
+  <li>Open the PDF in Acrobat Pro.</li>
+  <li>Go to <strong>Tools → Organize Pages</strong>.</li>
+  <li>Select the pages you want (Ctrl+Click or Shift+Click for ranges).</li>
+  <li>Click <strong>Extract</strong> in the toolbar → choose whether to delete originals → click Extract.</li>
+  <li>Save the extracted pages as a new PDF.</li>
+</ol>
+
+<h2>Method 4: Split PDF on iPhone (No App Needed)</h2>
+
+<ol>
+  <li>Open Safari on iPhone and go to <a href="/pdfwonder/pdf-splitter">PDFWonder PDF Splitter</a>.</li>
+  <li>Tap the upload area → select your PDF from Files or iCloud Drive.</li>
+  <li>Enter your page range and tap Extract.</li>
+  <li>The extracted PDF downloads to your device.</li>
+</ol>
+<p>
+  Alternatively, use the iOS Shortcut "Extract PDF Pages" from the Shortcuts app (available in iOS 14+).
+</p>
+
+<h2>Common Reasons to Split a PDF</h2>
+
+<ul>
+  <li><strong>Share a specific section:</strong> A 50-page report may have only 3 relevant pages for a colleague. Extract just those pages.</li>
+  <li><strong>Email attachment size limits:</strong> Split a large PDF into smaller parts to fit within email size limits.</li>
+  <li><strong>Separate combined invoices:</strong> Many accounting systems export multiple invoices in one PDF. Split them into individual files for each client.</li>
+  <li><strong>Extract a chapter:</strong> Pull one chapter out of a compiled ebook or textbook PDF.</li>
+  <li><strong>Remove unwanted sections:</strong> If you only need to share a portion of a document, extract those pages rather than sending the whole thing.</li>
+  <li><strong>Fix wrongly merged PDFs:</strong> If a merge went wrong, split the result back to fix page order.</li>
+</ul>
+
+<h2>Splitting vs Removing Pages vs Extracting</h2>
+
+<p>
+  These three operations are related but different:
+</p>
+<ul>
+  <li><strong>Split (Extract pages):</strong> Creates a new PDF containing only the specified pages. The original PDF is unchanged.</li>
+  <li><strong>Remove pages:</strong> Creates a new PDF with the specified pages deleted. The remaining pages stay. Use the <a href="/pdfwonder/pdf-remove-pages">PDF Page Remover</a>.</li>
+  <li><strong>Split into equal parts:</strong> Divide a large PDF into chunks of N pages each. Not natively supported by PDFWonder — you would need to extract each section manually or use Acrobat Pro's "Split Document" feature.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

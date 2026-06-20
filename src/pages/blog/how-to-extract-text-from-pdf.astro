@@ -1,0 +1,164 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I extract text from a PDF for free?', a: 'Use PDFWonder\'s free PDF to Text tool. Upload a text-based PDF and all readable text is extracted and displayed instantly — no upload to any server, no account needed.' },
+  { q: 'Why can\'t I copy text from a PDF?', a: 'There are two main reasons: (1) the PDF is a scanned image PDF without a text layer — text extraction will not work without OCR; (2) the PDF is password-protected with restrictions on copying. If you know the password, open the PDF and remove restrictions first.' },
+  { q: 'What is the difference between a text-based PDF and a scanned PDF?', a: 'A text-based PDF was created from digital sources (Word, HTML, spreadsheet) and contains actual text data that can be selected and copied. A scanned PDF is a photograph of a document — it is just an image. Text extraction requires OCR for scanned PDFs.' },
+  { q: 'Can I extract text from a scanned PDF?', a: 'Yes, but you need OCR (Optical Character Recognition). Our PDF to Text tool uses PDF.js, which extracts the text layer and does not perform OCR. For scanned PDFs, use Google Docs (free): upload the PDF → Open with Google Docs → Google automatically applies OCR.' },
+  { q: 'How do I copy text from a PDF in Chrome?', a: 'Open the PDF in Chrome. Click and drag to select text, then Ctrl+C (or Cmd+C) to copy. If the text is not selectable, the PDF is either scanned or text-copying is restricted.' },
+  { q: 'Can I extract text from a PDF on iPhone?', a: 'In iOS 15+, Apple\'s Live Text feature can recognise and let you select text from images and documents in the Photos or Camera app. For PDFs, use PDFWonder\'s PDF to Text tool in Safari — it works on mobile.' },
+];
+---
+
+<BlogLayout
+  title="How to Extract Text From a PDF Free Online (Any Device)"
+  description="Learn how to copy, extract, and export text content from a PDF file for free — using browser tools, Google Docs OCR, Adobe Acrobat, and built-in OS features."
+  canonical="/blog/how-to-extract-text-from-pdf"
+  date="2026-06-10"
+  readTime="6 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Whether you need to copy a quote from a PDF report, extract data from a PDF form, or convert a PDF article to editable text, extracting text from a PDF is something almost everyone needs to do. This guide covers every method — from the fastest one-click browser tool to OCR for scanned documents.
+</p>
+
+<h2>Method 1: Free PDF to Text Converter (Browser-Based, No Upload)</h2>
+
+<p>
+  <a href="/pdfwonder/pdf-to-text">PDFWonder's PDF to Text tool</a> extracts all readable text from a PDF and displays it as plain text you can copy or download. Everything runs in your browser.
+</p>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-to-text">PDF to Text tool</a>.</li>
+  <li>Upload your PDF.</li>
+  <li>All text is extracted and displayed instantly.</li>
+  <li>Select all and copy, or look for a Copy button to grab the full text.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-to-text" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF to Text Extractor — Free, No Upload →</div>
+  <div class="cta-desc">Extract all readable text from a PDF instantly. Browser-based, your files never leave your device. Works on text-based PDFs.</div>
+</a>
+
+<h2>Method 2: Copy Text Directly in Your PDF Reader</h2>
+
+<p>
+  For text-based PDFs, the simplest method is just selecting and copying:
+</p>
+<ul>
+  <li><strong>In Chrome/Edge (any OS):</strong> Open PDF → click and drag to select text → Ctrl+C (or Cmd+C on Mac).</li>
+  <li><strong>In Adobe Acrobat Reader:</strong> Click the cursor tool → select text → right-click → Copy. Or Edit → Copy to get all text on a page.</li>
+  <li><strong>Select all text:</strong> Ctrl+A (or Cmd+A) while viewing a PDF in a browser selects all text on the current page.</li>
+</ul>
+<p>
+  If the text is not selectable, the PDF is either a scanned image or has copy restrictions enabled. See the methods below for those cases.
+</p>
+
+<h2>Method 3: Extract Text From a Scanned PDF Using Google Docs (Free OCR)</h2>
+
+<p>
+  Google Docs automatically applies OCR when you open a PDF — this works even on scanned documents:
+</p>
+<ol>
+  <li>Go to <strong>Google Drive</strong> (drive.google.com).</li>
+  <li>Upload the scanned PDF.</li>
+  <li>Right-click the PDF → <strong>Open with → Google Docs</strong>.</li>
+  <li>Google applies OCR and opens the document with recognised text.</li>
+  <li>Select all (Ctrl+A) and copy, or work with it directly in Google Docs.</li>
+  <li>Download as Word or plain text via File → Download.</li>
+</ol>
+<p>
+  Quality of OCR depends on the scan quality. Good scans of printed text produce excellent results; handwritten text or very low-resolution scans may have errors.
+</p>
+
+<h2>Method 4: Extract Text on Mac with Preview</h2>
+
+<ol>
+  <li>Open the PDF in <strong>Preview</strong>.</li>
+  <li>Go to <strong>Edit → Select All</strong> (Cmd+A) to select all text on the page.</li>
+  <li>Copy with Cmd+C.</li>
+</ol>
+<p>
+  Alternatively, go to <strong>File → Export → Text</strong> in some versions of Preview to save the text content as a .txt file.
+</p>
+
+<h2>Method 5: Use Python to Extract PDF Text (for Developers)</h2>
+
+<p>
+  If you need to extract text from many PDFs programmatically, Python makes it easy:
+</p>
+
+<pre><code>pip install pypdf2
+
+from PyPDF2 import PdfReader
+
+reader = PdfReader("document.pdf")
+text = ""
+for page in reader.pages:
+    text += page.extract_text()
+
+print(text)</code></pre>
+
+<p>
+  For scanned PDFs, combine with <code>pytesseract</code> for OCR:
+</p>
+
+<pre><code>pip install pytesseract pdf2image pillow
+
+from pdf2image import convert_from_path
+import pytesseract
+
+pages = convert_from_path("scanned.pdf")
+text = ""
+for page in pages:
+    text += pytesseract.image_to_string(page)
+
+print(text)</code></pre>
+
+<h2>Why Text Extraction Fails (And How to Fix It)</h2>
+
+<h3>The PDF is a scanned image</h3>
+<p>
+  Scanned PDFs contain images of pages — there is no text layer. Solution: use Google Docs OCR (Method 3 above) or a dedicated OCR tool.
+</p>
+
+<h3>Text copying is restricted</h3>
+<p>
+  The PDF owner may have set a permission that prevents copying. Solution: if you know the PDF password, open it with the password in Chrome and use Ctrl+P → Save as PDF to create an unrestricted copy.
+</p>
+
+<h3>Non-standard encoding or fonts</h3>
+<p>
+  Some PDFs with unusual embedded fonts extract as garbled characters. This is a PDF structure issue — a different PDF-to-text tool or OCR is the usual workaround.
+</p>
+
+<h3>Right-to-left or complex scripts</h3>
+<p>
+  Arabic, Hebrew, and some Asian scripts may extract with character order issues in some tools. Adobe Acrobat handles these better than browser-based tools.
+</p>
+
+<h2>When to Use PDF to Text vs PDF to Word</h2>
+
+<ul>
+  <li><strong>Use PDF to Text when:</strong> you only need the raw text content without formatting — for feeding into another tool, copying a quote, or analysing content.</li>
+  <li><strong>Use PDF to Word when:</strong> you need to edit the document while preserving the original formatting, headings, tables, and images. Note that PDF to Word conversion is never perfect for complex layouts.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

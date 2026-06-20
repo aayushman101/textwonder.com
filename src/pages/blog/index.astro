@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
+import { DYNAMIC_BLOG_POSTS } from '../../data/blogposts.js';
 
 const posts = [
   {
@@ -156,6 +157,7 @@ const posts = [
     readTime: '4 min read',
     category: 'Text Formatting',
   },
+  ...DYNAMIC_BLOG_POSTS
 ];
 
 const categoryColors: Record<string, string> = {

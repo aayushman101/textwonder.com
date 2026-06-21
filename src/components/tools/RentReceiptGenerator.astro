@@ -1,0 +1,184 @@
+---
+---
+<style>
+  @media print {
+    body > *:not(#rrg-print-area) { display: none !important; }
+    #rrg-print-area { display: block !important; position: fixed; inset: 0; background: #fff; padding: 40px; }
+    .rrg-no-print { display: none !important; }
+  }
+</style>
+
+<div class="space-y-6 rrg-no-print">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Receipt No.</label>
+      <input id="rrg-receipt-no" type="text" placeholder="001" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Date</label>
+      <input id="rrg-date" type="date" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Tenant Name</label>
+      <input id="rrg-tenant" type="text" placeholder="e.g. Rahul Sharma" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Landlord Name</label>
+      <input id="rrg-landlord" type="text" placeholder="e.g. Priya Mehta" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1 sm:col-span-2">
+      <label class="text-xs text-slate-400">Property Address</label>
+      <input id="rrg-address" type="text" placeholder="e.g. Flat 4B, Sunrise Apartments, MG Road, Bengaluru - 560001" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Rent Amount (₹)</label>
+      <input id="rrg-amount" type="number" placeholder="15000" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">For the Month of</label>
+      <input id="rrg-month" type="month" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Payment Mode</label>
+      <select id="rrg-mode" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500">
+        <option>Cash</option>
+        <option>Bank Transfer</option>
+        <option>UPI</option>
+        <option>Cheque</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Landlord PAN (optional)</label>
+      <input id="rrg-pan" type="text" placeholder="ABCDE1234F" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+  </div>
+  <button id="rrg-print" class="px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Print / Save as PDF</button>
+</div>
+
+<!-- Live preview -->
+<div class="mt-6 border border-slate-700 rounded-xl p-1 rrg-no-print">
+  <div id="rrg-preview" class="bg-white text-slate-900 rounded-lg p-8 font-serif text-sm leading-relaxed"></div>
+</div>
+
+<!-- Print-only area (hidden until print) -->
+<div id="rrg-print-area" style="display:none;" class="bg-white text-slate-900 font-serif text-sm leading-relaxed p-10"></div>
+
+<script>
+  const fields = ['rrg-receipt-no','rrg-date','rrg-tenant','rrg-landlord','rrg-address','rrg-amount','rrg-month','rrg-mode','rrg-pan'];
+
+  function fmt(dateStr) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+  function fmtMonth(monthStr) {
+    if (!monthStr) return '';
+    const [y, m] = monthStr.split('-');
+    const d = new Date(+y, +m - 1, 1);
+    return d.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+  }
+  function fmtAmount(n) {
+    if (!n) return '0';
+    return Number(n).toLocaleString('en-IN');
+  }
+  function amountInWords(n) {
+    const num = parseInt(n) || 0;
+    const ones = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const tens = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    function convert(n) {
+      if (n < 20) return ones[n];
+      if (n < 100) return tens[Math.floor(n/10)] + (n%10 ? ' ' + ones[n%10] : '');
+      if (n < 1000) return ones[Math.floor(n/100)] + ' Hundred' + (n%100 ? ' ' + convert(n%100) : '');
+      if (n < 100000) return convert(Math.floor(n/1000)) + ' Thousand' + (n%1000 ? ' ' + convert(n%1000) : '');
+      if (n < 10000000) return convert(Math.floor(n/100000)) + ' Lakh' + (n%100000 ? ' ' + convert(n%100000) : '');
+      return convert(Math.floor(n/10000000)) + ' Crore' + (n%10000000 ? ' ' + convert(n%10000000) : '');
+    }
+    return num ? convert(num) + ' Only' : 'Zero Only';
+  }
+
+  function buildHTML(v) {
+    const pan = v.pan ? `<p style="margin:0;font-size:11px;color:#555;">Landlord PAN: <strong>${v.pan}</strong></p>` : '';
+    return `
+      <div style="border:2px solid #222;padding:32px;font-family:Georgia,serif;max-width:680px;margin:0 auto;">
+        <h2 style="text-align:center;margin:0 0 4px;font-size:20px;letter-spacing:1px;text-transform:uppercase;">Rent Receipt</h2>
+        <p style="text-align:center;margin:0 0 24px;font-size:12px;color:#555;">Receipt No: <strong>${v.receiptNo || '—'}</strong> &nbsp;|&nbsp; Date: <strong>${fmt(v.date) || '—'}</strong></p>
+        <hr style="border:none;border-top:1px solid #ccc;margin-bottom:20px;">
+        <p style="margin:0 0 16px;line-height:1.8;">
+          Received a sum of <strong>₹${fmtAmount(v.amount)}/- (${amountInWords(v.amount)})</strong>
+          from <strong>${v.tenant || '—'}</strong> towards rent of the property at
+          <strong>${v.address || '—'}</strong>
+          for the month of <strong>${fmtMonth(v.month) || '—'}</strong>
+          via <strong>${v.mode}</strong>.
+        </p>
+        <table style="width:100%;border-collapse:collapse;margin-bottom:20px;font-size:13px;">
+          <tr style="background:#f5f5f5;">
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>Tenant Name</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${v.tenant || '—'}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>Landlord Name</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${v.landlord || '—'}</td>
+          </tr>
+          <tr style="background:#f5f5f5;">
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>Property Address</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${v.address || '—'}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>Rent Amount</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">₹${fmtAmount(v.amount)}/-</td>
+          </tr>
+          <tr style="background:#f5f5f5;">
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>Payment Mode</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${v.mode}</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;border:1px solid #ddd;"><strong>For Month</strong></td>
+            <td style="padding:8px 12px;border:1px solid #ddd;">${fmtMonth(v.month) || '—'}</td>
+          </tr>
+        </table>
+        <div style="margin-top:40px;display:flex;justify-content:space-between;align-items:flex-end;">
+          <div style="font-size:12px;color:#555;">
+            <p style="margin:0;">This is a computer-generated receipt.</p>
+          </div>
+          <div style="text-align:center;">
+            ${pan}
+            <div style="border-top:1px solid #333;padding-top:6px;min-width:160px;margin-top:40px;">
+              <p style="margin:0;font-size:13px;"><strong>${v.landlord || 'Landlord'}</strong></p>
+              <p style="margin:0;font-size:11px;color:#555;">Landlord Signature</p>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function getValues() {
+    return {
+      receiptNo: (document.getElementById('rrg-receipt-no') as HTMLInputElement).value.trim(),
+      date: (document.getElementById('rrg-date') as HTMLInputElement).value,
+      tenant: (document.getElementById('rrg-tenant') as HTMLInputElement).value.trim(),
+      landlord: (document.getElementById('rrg-landlord') as HTMLInputElement).value.trim(),
+      address: (document.getElementById('rrg-address') as HTMLInputElement).value.trim(),
+      amount: (document.getElementById('rrg-amount') as HTMLInputElement).value,
+      month: (document.getElementById('rrg-month') as HTMLInputElement).value,
+      mode: (document.getElementById('rrg-mode') as HTMLSelectElement).value,
+      pan: (document.getElementById('rrg-pan') as HTMLInputElement).value.trim(),
+    };
+  }
+
+  function render() {
+    const html = buildHTML(getValues());
+    document.getElementById('rrg-preview')!.innerHTML = html;
+    document.getElementById('rrg-print-area')!.innerHTML = html;
+  }
+
+  // Set defaults
+  const today = new Date().toISOString().split('T')[0];
+  const thisMonth = today.slice(0, 7);
+  (document.getElementById('rrg-date') as HTMLInputElement).value = today;
+  (document.getElementById('rrg-month') as HTMLInputElement).value = thisMonth;
+
+  fields.forEach(id => document.getElementById(id)?.addEventListener('input', render));
+  document.getElementById('rrg-mode')?.addEventListener('change', render);
+  document.getElementById('rrg-print')?.addEventListener('click', () => window.print());
+  render();
+</script>

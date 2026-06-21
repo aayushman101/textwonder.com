@@ -1,0 +1,134 @@
+---
+---
+<style>
+  @media print {
+    body > *:not(#rlg-print-area) { display: none !important; }
+    #rlg-print-area { display: block !important; position: fixed; inset: 0; background: #fff; padding: 40px; }
+    .rlg-no-print { display: none !important; }
+  }
+</style>
+
+<div class="space-y-6 rlg-no-print">
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="space-y-1 sm:col-span-2">
+      <label class="text-xs text-slate-400">Company Name</label>
+      <input id="rlg-company" type="text" placeholder="e.g. Acme Technologies Pvt. Ltd." class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1 sm:col-span-2">
+      <label class="text-xs text-slate-400">Company Address</label>
+      <input id="rlg-company-address" type="text" placeholder="e.g. 12, Tech Park, Whitefield, Bengaluru - 560066" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Letter Date</label>
+      <input id="rlg-date" type="date" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Reference No. (optional)</label>
+      <input id="rlg-ref" type="text" placeholder="e.g. HR/REL/2024/012" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Employee Name</label>
+      <input id="rlg-employee" type="text" placeholder="e.g. Amit Kumar" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Designation</label>
+      <input id="rlg-designation" type="text" placeholder="e.g. Senior Software Engineer" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Department (optional)</label>
+      <input id="rlg-dept" type="text" placeholder="e.g. Engineering" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Last Working Date</label>
+      <input id="rlg-lwd" type="date" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Signatory Name</label>
+      <input id="rlg-sign-name" type="text" placeholder="e.g. Sunita Rao" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Signatory Designation</label>
+      <input id="rlg-sign-desig" type="text" placeholder="e.g. HR Manager" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-violet-500" />
+    </div>
+  </div>
+  <button id="rlg-print" class="px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Print / Save as PDF</button>
+</div>
+
+<div class="mt-6 border border-slate-700 rounded-xl p-1 rlg-no-print">
+  <div id="rlg-preview" class="bg-white text-slate-900 rounded-lg p-8 font-serif text-sm leading-relaxed"></div>
+</div>
+
+<div id="rlg-print-area" style="display:none;" class="bg-white text-slate-900 font-serif text-sm leading-relaxed p-10"></div>
+
+<script>
+  function fmt(dateStr: string) {
+    if (!dateStr) return '';
+    const d = new Date(dateStr + 'T00:00:00');
+    return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+  }
+
+  function buildHTML(v: Record<string, string>) {
+    const ref = v.ref ? `<p style="margin:0 0 2px;font-size:12px;color:#555;">Ref: ${v.ref}</p>` : '';
+    const dept = v.dept ? ` in the <strong>${v.dept}</strong> department` : '';
+    const firstName = v.employee ? v.employee.split(' ')[0] : 'the employee';
+    return `
+      <div style="font-family:Georgia,serif;max-width:700px;margin:0 auto;padding:32px;">
+        <div style="margin-bottom:24px;">
+          <h2 style="margin:0 0 4px;font-size:18px;">${v.company || 'Company Name'}</h2>
+          <p style="margin:0;font-size:12px;color:#555;">${v.companyAddress || ''}</p>
+        </div>
+        <hr style="border:none;border-top:1px solid #ccc;margin-bottom:20px;">
+        ${ref}
+        <p style="margin:0 0 20px;font-size:12px;color:#555;">Date: <strong>${fmt(v.date) || '—'}</strong></p>
+        <h3 style="text-align:center;text-decoration:underline;margin:0 0 24px;font-size:15px;letter-spacing:0.5px;">RELIEVING LETTER</h3>
+        <p style="margin:0 0 4px;font-size:13px;"><strong>To,</strong></p>
+        <p style="margin:0 0 20px;font-size:13px;"><strong>${v.employee || '—'}</strong></p>
+        <p style="margin:0 0 16px;line-height:1.9;font-size:13px;">
+          This is to confirm that <strong>${v.employee || '—'}</strong>, who was serving as
+          <strong>${v.designation || '—'}</strong>${dept} at <strong>${v.company || '—'}</strong>,
+          has been relieved of all duties and responsibilities with effect from
+          <strong>${fmt(v.lwd) || '—'}</strong> (Last Working Date).
+        </p>
+        <p style="margin:0 0 16px;line-height:1.9;font-size:13px;">
+          ${firstName.charAt(0).toUpperCase() + firstName.slice(1)} has cleared all formalities and we confirm that there are no dues pending.
+          We wish ${firstName} the very best in future endeavours.
+        </p>
+        <div style="margin-top:60px;">
+          <div style="border-top:1px solid #333;padding-top:6px;display:inline-block;min-width:180px;">
+            <p style="margin:0;font-size:13px;"><strong>${v.signName || 'Authorised Signatory'}</strong></p>
+            <p style="margin:0;font-size:11px;color:#555;">${v.signDesig || ''}</p>
+            <p style="margin:0;font-size:11px;color:#555;">${v.company || ''}</p>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function getValues(): Record<string, string> {
+    return {
+      company: (document.getElementById('rlg-company') as HTMLInputElement).value.trim(),
+      companyAddress: (document.getElementById('rlg-company-address') as HTMLInputElement).value.trim(),
+      date: (document.getElementById('rlg-date') as HTMLInputElement).value,
+      ref: (document.getElementById('rlg-ref') as HTMLInputElement).value.trim(),
+      employee: (document.getElementById('rlg-employee') as HTMLInputElement).value.trim(),
+      designation: (document.getElementById('rlg-designation') as HTMLInputElement).value.trim(),
+      dept: (document.getElementById('rlg-dept') as HTMLInputElement).value.trim(),
+      lwd: (document.getElementById('rlg-lwd') as HTMLInputElement).value,
+      signName: (document.getElementById('rlg-sign-name') as HTMLInputElement).value.trim(),
+      signDesig: (document.getElementById('rlg-sign-desig') as HTMLInputElement).value.trim(),
+    };
+  }
+
+  function render() {
+    const html = buildHTML(getValues());
+    document.getElementById('rlg-preview')!.innerHTML = html;
+    document.getElementById('rlg-print-area')!.innerHTML = html;
+  }
+
+  const today = new Date().toISOString().split('T')[0];
+  (document.getElementById('rlg-date') as HTMLInputElement).value = today;
+  (document.getElementById('rlg-lwd') as HTMLInputElement).value = today;
+
+  document.querySelectorAll('#rlg-company,#rlg-company-address,#rlg-date,#rlg-ref,#rlg-employee,#rlg-designation,#rlg-dept,#rlg-lwd,#rlg-sign-name,#rlg-sign-desig').forEach(el => el.addEventListener('input', render));
+  document.getElementById('rlg-print')?.addEventListener('click', () => window.print());
+  render();
+</script>

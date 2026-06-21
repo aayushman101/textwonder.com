@@ -61,6 +61,11 @@ import TextWrapper from '../../components/tools/TextWrapper.astro';
 import TextDiffChecker from '../../components/tools/TextDiffChecker.astro';
 import ExtractEmails from '../../components/tools/ExtractEmails.astro';
 import ExtractUrls from '../../components/tools/ExtractUrls.astro';
+import RentReceiptGenerator from '../../components/tools/RentReceiptGenerator.astro';
+import ExperienceLetterGenerator from '../../components/tools/ExperienceLetterGenerator.astro';
+import RelievingLetterGenerator from '../../components/tools/RelievingLetterGenerator.astro';
+import SalarySlipGenerator from '../../components/tools/SalarySlipGenerator.astro';
+import ProformaInvoiceGenerator from '../../components/tools/ProformaInvoiceGenerator.astro';
 import { TOOLS } from '../../data/tools.js';
 
 export function getStaticPaths() {
@@ -131,6 +136,11 @@ const componentMap: Record<string, any> = {
   'text-diff-checker': TextDiffChecker,
   'extract-emails': ExtractEmails,
   'extract-urls': ExtractUrls,
+  'rent-receipt-generator': RentReceiptGenerator,
+  'experience-letter-generator': ExperienceLetterGenerator,
+  'relieving-letter-generator': RelievingLetterGenerator,
+  'salary-slip-generator': SalarySlipGenerator,
+  'proforma-invoice-generator': ProformaInvoiceGenerator,
 };
 
 const ToolComponent = componentMap[tool.slug];

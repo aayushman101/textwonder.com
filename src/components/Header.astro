@@ -1,30 +1,19 @@
 ---
-import { TOOLS } from '../data/tools.js';
+import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
 
-const toolsForSearch = TOOLS.map(t => ({ slug: t.slug, name: t.name, category: t.category }));
-
-const wonderSections = [
-  { label: 'PDF', suffix: 'Wonder', path: '/pdfwonder', color: '#f97316', shadow: 'rgba(249,115,22,0.45)' },
-  { label: 'Dev', suffix: 'Wonder', path: '/devwonder', color: '#06b6d4', shadow: 'rgba(6,182,212,0.4)' },
-  { label: 'Calc', suffix: 'Wonder', path: '/calc', color: '#10b981', shadow: 'rgba(16,185,129,0.4)' },
-  { label: 'Unit', suffix: 'Wonder', path: '/unit', color: '#6366f1', shadow: 'rgba(99,102,241,0.4)' },
-  { label: 'Health', suffix: 'Wonder', path: '/health', color: '#22c55e', shadow: 'rgba(34,197,94,0.4)' },
-  { label: 'Student', suffix: 'Wonder', path: '/student', color: '#3b82f6', shadow: 'rgba(59,130,246,0.4)' },
-  { label: 'Color', suffix: 'Wonder', path: '/color', color: '#ec4899', shadow: 'rgba(236,72,153,0.4)' },
-  { label: 'Data', suffix: 'Wonder', path: '/data', color: '#f59e0b', shadow: 'rgba(245,158,11,0.4)' },
-];
+const toolsForSearch = getGlobalSearchIndex();
 ---
 
 <header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
 
-  <!-- Mobile: 4-column grid of all Wonder sections (hidden on md+) -->
-  <div class="md:hidden grid grid-cols-4 gap-1.5 px-3 py-2 border-b border-slate-800/60">
-    {wonderSections.map(s => (
+  <!-- Mobile: horizontal scrolling swipeable category pill bar (hidden on md+) -->
+  <div class="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2.5 border-b border-slate-800/60 bg-[var(--bg-surface)] scrollbar-none">
+    {SECTIONS.map(s => (
       <a href={s.path}
-        class="flex flex-col items-center justify-center py-1.5 rounded-lg text-white font-semibold text-xs transition-colors"
-        style={`background:${s.color}; box-shadow: 0 0 8px ${s.shadow}`}>
-        <span class="leading-tight">{s.label}</span>
-        <span class="text-[9px] opacity-80 font-normal">{s.suffix}</span>
+        class="flex items-center gap-1.5 shrink-0 px-3 py-1 rounded-full text-xs font-semibold text-white border transition-all"
+        style={`background:rgba(${s.accentRgb},0.04);border-color:rgba(${s.accentRgb},0.15);`}>
+        <span class="text-xs leading-none">{s.icon}</span>
+        <span class="leading-none">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
       </a>
     ))}
   </div>
@@ -38,44 +27,48 @@ const wonderSections = [
     </a>
 
     <!-- Desktop Nav -->
-    <nav class="hidden md:flex items-center gap-4">
+    <nav class="hidden md:flex items-center gap-5">
       <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
-      <a href="/tools" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Tools</a>
-
-      <!-- PDF + Dev as prominent pills -->
-      <a href="/pdfwonder" class="flex items-center gap-1.5 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all" style="background:#f97316;box-shadow:0 0 12px rgba(249,115,22,0.45)">
-        <svg class="w-3.5 h-3.5 shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg>
-        PDF<span class="font-extrabold">Wonder</span>
-      </a>
-      <a href="/devwonder" class="flex items-center gap-1.5 text-white px-3 py-1.5 rounded-lg text-sm font-semibold transition-all" style="background:#06b6d4;box-shadow:0 0 12px rgba(6,182,212,0.4)">
-        <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3"/></svg>
-        Dev<span class="font-extrabold">Wonder</span>
-      </a>
-
-      <!-- More dropdown -->
-      <div class="relative" id="more-menu-wrapper">
-        <button id="more-menu-btn" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
-          More
+      
+      <!-- Unified Categories Mega-Menu -->
+      <div class="relative" id="categories-menu-wrapper">
+        <button id="categories-menu-btn" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          Categories
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        <div id="more-menu-dropdown" class="hidden absolute right-0 top-full mt-2 w-64 bg-[var(--bg-surface)] border border-slate-700 rounded-xl shadow-2xl overflow-hidden z-50">
-          <div class="p-2 grid grid-cols-2 gap-1.5">
-            {wonderSections.slice(2).map(s => (
+        
+        <div id="categories-menu-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[600px] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
+            {SECTIONS.map(s => (
               <a href={s.path}
-                class="flex items-center gap-2 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] transition-colors group">
-                <div class="w-2 h-2 rounded-full shrink-0" style={`background:${s.color}`}></div>
-                <span class="text-sm font-medium text-slate-300 group-hover:text-white transition-colors">{s.label}<span class="font-bold" style={`color:${s.color}`}>{s.suffix}</span></span>
+                class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-slate-800 transition-all group">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105" 
+                  style={`background:rgba(${s.accentRgb},0.08); border: 1px solid rgba(${s.accentRgb},0.2)`}>
+                  {s.icon}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-bold text-white">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium" 
+                      style={`background:rgba(${s.accentRgb},0.1); color:${s.color};`}>
+                      {s.count}
+                    </span>
+                  </div>
+                  <p class="text-slate-500 text-xs mt-0.5 leading-snug truncate group-hover:text-slate-400">{s.tagline}</p>
+                </div>
               </a>
             ))}
           </div>
-          <div class="border-t border-slate-800 px-3 py-2">
-            <a href="/" class="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors">
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-              All TextWonder tools (61)
+          <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs">
+            <span class="text-slate-500">Fast, private, and 100% browser-based tools</span>
+            <a href="/tools" class="flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium transition-colors">
+              View all tools ({toolsForSearch.length}) &rarr;
             </a>
           </div>
         </div>
       </div>
+
+      <a href="/blog" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Blog</a>
     </nav>
 
     <div class="flex items-center gap-2">
@@ -109,13 +102,24 @@ const wonderSections = [
         <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
-        <input id="search-input" type="text" placeholder="Search tools…" class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base" autocomplete="off"/>
+        <input id="search-input" type="text" placeholder="Search 150+ free tools…" class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base" autocomplete="off"/>
         <button id="search-close" class="text-slate-400 hover:text-white transition-colors text-sm">ESC</button>
       </div>
       <ul id="search-results" class="max-h-72 overflow-y-auto py-2"></ul>
     </div>
   </div>
 </div>
+
+<style>
+  /* Custom scrollbar hiding helper */
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-none {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+</style>
 
 <script define:vars={{ toolsForSearch }}>
 (function() {
@@ -134,15 +138,17 @@ const wonderSections = [
   closeBtn.addEventListener('click', closeModal);
   backdrop.addEventListener('click', closeModal);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeMoreMenu(); }
+    if (e.key === 'Escape') { closeModal(); closeCategoriesMenu(); }
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
   });
 
   function renderResults(query) {
     const q = query.toLowerCase().trim();
-    const filtered = q ? toolsForSearch.filter(t => t.name.toLowerCase().includes(q) || t.category.includes(q)) : toolsForSearch.slice(0, 8);
+    const filtered = q 
+      ? toolsForSearch.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q)) 
+      : toolsForSearch.slice(0, 8);
     results.innerHTML = filtered.length
-      ? filtered.map(t => `<li><a href="/tools/${t.slug}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><span class="text-white text-sm font-medium">${t.name}</span><span class="text-xs text-slate-500 ml-auto capitalize">${t.category.replace(/-/g, ' ')}</span></a></li>`).join('')
+      ? filtered.map(t => `<li><a href="${t.path}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${t.color}15;color:${t.color}">${t.icon || '⚙️'}</div><span class="text-white text-sm font-medium">${t.name}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-medium ml-auto" style="background:${t.color}15;color:${t.color}">${t.category}</span></a></li>`).join('')
       : '<li class="px-4 py-4 text-slate-500 text-sm text-center">No tools found</li>';
   }
   input.addEventListener('input', e => renderResults(e.target.value));
@@ -160,14 +166,14 @@ const wonderSections = [
   applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
   themeToggle.addEventListener('click', () => applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
 
-  // More dropdown
-  const moreBtn = document.getElementById('more-menu-btn');
-  const moreDropdown = document.getElementById('more-menu-dropdown');
+  // Categories Dropdown
+  const categoriesBtn = document.getElementById('categories-menu-btn');
+  const categoriesDropdown = document.getElementById('categories-menu-dropdown');
 
-  function closeMoreMenu() { moreDropdown && moreDropdown.classList.add('hidden'); }
-  if (moreBtn && moreDropdown) {
-    moreBtn.addEventListener('click', e => { e.stopPropagation(); moreDropdown.classList.toggle('hidden'); });
-    document.addEventListener('click', e => { if (!moreBtn.contains(e.target) && !moreDropdown.contains(e.target)) closeMoreMenu(); });
+  function closeCategoriesMenu() { categoriesDropdown && categoriesDropdown.classList.add('hidden'); }
+  if (categoriesBtn && categoriesDropdown) {
+    categoriesBtn.addEventListener('click', e => { e.stopPropagation(); categoriesDropdown.classList.toggle('hidden'); });
+    document.addEventListener('click', e => { if (!categoriesBtn.contains(e.target) && !categoriesDropdown.contains(e.target)) closeCategoriesMenu(); });
   }
 })();
 </script>

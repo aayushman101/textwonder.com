@@ -1,0 +1,113 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert text to handwriting online?', a: 'Use an online handwriting font generator: type your text, choose a handwriting-style font, and download or screenshot the result. Sites like Calligraphr or Font generators can convert typed text to a handwriting appearance.' },
+  { q: 'Can I convert typed text to look like handwriting?', a: 'Yes. Use a handwriting font generator online — these sites render your text in a realistic cursive or print handwriting style. You can then screenshot or export the result as an image.' },
+  { q: 'Is there a free app to convert text to handwriting?', a: 'Several free options exist: online font generators, Canva (free tier) with handwriting fonts, or Microsoft Word with a cursive/handwriting font like Segoe Script or Krinkes.' },
+  { q: 'How do I make text look like handwriting in Word?', a: 'Open Word and select your text. In the Font dropdown, search for handwriting-style fonts like "Segoe Script", "Bradley Hand ITC", or "Freestyle Script". Change the font and the text will appear in a handwriting style.' },
+  { q: 'Can AI convert text to handwriting?', a: 'Yes. AI handwriting tools like Calligraphr (lets you create a font from your own handwriting), WriteMind, or imitating handwriting generators can produce very realistic handwritten text from typed input.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text to Handwriting Online — 4 Free Methods"
+  description="Convert typed text to handwriting online for free. Use handwriting font generators, Canva, Word, or AI tools to make text look handwritten. Step-by-step guide."
+  canonical="/blog/how-to-convert-text-to-handwriting"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+
+<p>
+  Converting typed text to handwriting style is useful for personalised cards, notes, worksheets, creative projects, and social media content. There is no single universal tool, but several free methods produce convincing handwriting from typed text.
+</p>
+
+<h2>Method 1: Handwriting Font Generator (Fastest)</h2>
+
+<p>
+  Handwriting font generators render your text in a realistic handwriting font and let you download or screenshot the result.
+</p>
+
+<ol>
+  <li>Search for "handwriting text generator" online — several free tools are available.</li>
+  <li>Type or paste your text into the input box.</li>
+  <li>Choose a handwriting style (cursive, print, messy, neat, etc.).</li>
+  <li>Screenshot or use the download option to save the image.</li>
+</ol>
+
+<p>Popular free options include LingoJam's Handwriting Generator and similar tools you can find via Google.</p>
+
+<h2>Method 2: Make Text Look Like Handwriting in Microsoft Word</h2>
+
+<ol>
+  <li>Open Word and type your text.</li>
+  <li>Select the text and open the <strong>Font</strong> dropdown.</li>
+  <li>Search for handwriting fonts:
+    <ul>
+      <li><strong>Segoe Script</strong> — modern cursive, comes with Windows</li>
+      <li><strong>Bradley Hand ITC</strong> — casual handwriting style</li>
+      <li><strong>Freestyle Script</strong> — flowing cursive</li>
+      <li><strong>Lucida Handwriting</strong> — clean cursive</li>
+    </ul>
+  </li>
+  <li>Apply the font. The text appears in a handwriting style.</li>
+  <li>Export as PDF or take a screenshot to save as an image.</li>
+</ol>
+
+<h2>Method 3: Canva (For Designed Output)</h2>
+
+<p>
+  Canva's free tier includes dozens of handwriting fonts and lets you place text on custom backgrounds:
+</p>
+
+<ol>
+  <li>Open <a href="https://canva.com" rel="noopener noreferrer" target="_blank">Canva</a> and create a new design (A4, card, social post, etc.).</li>
+  <li>Add a Text element and type your text.</li>
+  <li>In the font search, type "handwriting" to filter handwriting fonts.</li>
+  <li>Choose a font like <strong>Amatic SC</strong>, <strong>Caveat</strong>, <strong>Dancing Script</strong>, or <strong>Pacifico</strong>.</li>
+  <li>Download as PNG or PDF.</li>
+</ol>
+
+<h2>Method 4: AI Handwriting from Your Own Handwriting (Calligraphr)</h2>
+
+<p>
+  For truly personalised handwriting that looks like <em>your</em> handwriting:
+</p>
+
+<ol>
+  <li>Go to <a href="https://www.calligraphr.com" rel="noopener noreferrer" target="_blank">Calligraphr.com</a> (free tier available).</li>
+  <li>Download the template sheet, fill in each letter in your handwriting, and scan/photograph it.</li>
+  <li>Upload the sheet and Calligraphr converts it into a font file (.ttf).</li>
+  <li>Install the font on your device and use it in any app.</li>
+</ol>
+
+<p>This creates a font based on your actual handwriting — when you type, it looks exactly like your own handwriting.</p>
+
+<h2>Need to Work with Text in Other Ways?</h2>
+
+<p>
+  TextWonder offers free browser-based text tools for cleaning, converting, and formatting text:
+</p>
+
+<a href="/tools" class="tool-cta">
+  <div class="cta-label">Free Tools</div>
+  <div class="cta-title">TextWonder — Free Text Tools →</div>
+  <div class="cta-desc">Word counter, case converter, text cleaner, line sorter, duplicate remover, and 50+ more free text tools. No signup, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

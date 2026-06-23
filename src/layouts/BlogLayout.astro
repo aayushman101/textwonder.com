@@ -119,11 +119,13 @@ const displayDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month
   article li { margin-bottom: 0.4rem; }
   article blockquote { border-left: 3px solid #7c3aed; padding-left: 1rem; color: #94a3b8; font-style: italic; margin: 1.5rem 0; }
   article code { color: #c4b5fd; background: var(--bg-surface, #1e293b); padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.875em; }
-  .tool-cta { display: block; background: linear-gradient(135deg, #4c1d95, #6d28d9); border: 1px solid #7c3aed40; border-radius: 1rem; padding: 1.5rem; margin: 2rem 0; text-decoration: none !important; transition: all 0.2s; }
-  .tool-cta:hover { border-color: #7c3aed80; box-shadow: 0 0 24px rgba(124,58,237,0.2); }
-  .tool-cta .cta-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #a78bfa; font-weight: 600; margin-bottom: 0.25rem; }
-  .tool-cta .cta-title { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; font-family: 'Space Grotesk', sans-serif; }
-  .tool-cta .cta-desc { font-size: 0.875rem; color: #94a3b8; }
-  .faq-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1e293b; }
-  .faq-section h2 { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; }
+  article pre { background: var(--bg-surface, #1e293b); border: 1px solid #1e293b; border-radius: 0.75rem; padding: 1rem 1.25rem; overflow-x: auto; margin: 1.25rem 0; }
+  article pre code { background: none; padding: 0; color: #e2e8f0; font-size: 0.875em; line-height: 1.7; }
+  :global(.tool-cta) { display: block; background: linear-gradient(135deg, #4c1d95, #6d28d9); border: 1px solid #7c3aed40; border-radius: 1rem; padding: 1.5rem; margin: 2rem 0; text-decoration: none !important; transition: all 0.2s; }
+  :global(.tool-cta:hover) { border-color: #7c3aed80; box-shadow: 0 0 24px rgba(124,58,237,0.2); }
+  :global(.tool-cta .cta-label) { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #a78bfa; font-weight: 600; margin-bottom: 0.25rem; }
+  :global(.tool-cta .cta-title) { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; font-family: 'Space Grotesk', sans-serif; }
+  :global(.tool-cta .cta-desc) { font-size: 0.875rem; color: #94a3b8; }
+  :global(.faq-section) { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #1e293b; }
+  :global(.faq-section h2) { font-size: 1.5rem; font-weight: 700; color: #fff; margin-bottom: 1rem; font-family: 'Space Grotesk', sans-serif; }
 </style>

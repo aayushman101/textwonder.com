@@ -1,18 +1,42 @@
 ---
 ---
 <div class="space-y-4">
-  <textarea id="ttp-input" rows="10" placeholder="Type or paste your text here. Each paragraph will be laid out automatically across pages…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-orange-500 text-sm leading-relaxed"></textarea>
+  <!-- Title field -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+    <div class="space-y-1 sm:col-span-2">
+      <label class="text-xs text-slate-500">Document title <span class="text-slate-600">(optional — shown at top in bold)</span></label>
+      <input id="ttp-title" type="text" placeholder="e.g. Meeting Notes — June 2025" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Title size (pt)</label>
+      <input id="ttp-title-size" type="number" value="18" min="10" max="36" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+  </div>
 
+  <textarea id="ttp-input" rows="10" placeholder="Type or paste your text here…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-orange-500 text-sm leading-relaxed"></textarea>
+
+  <!-- Options grid -->
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
     <div class="space-y-1">
       <label class="text-xs text-slate-500">Page size</label>
       <select id="ttp-size" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
         <option value="A4">A4</option>
         <option value="Letter">US Letter</option>
+        <option value="A5">A5</option>
+        <option value="Legal">Legal</option>
       </select>
     </div>
     <div class="space-y-1">
-      <label class="text-xs text-slate-500">Font size</label>
+      <label class="text-xs text-slate-500">Font</label>
+      <select id="ttp-font" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="Helvetica">Helvetica</option>
+        <option value="TimesRoman">Times Roman</option>
+        <option value="Courier">Courier</option>
+        <option value="HelveticaBold">Helvetica Bold</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Font size (pt)</label>
       <input id="ttp-fontsize" type="number" value="12" min="8" max="24" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
     </div>
     <div class="space-y-1">
@@ -26,6 +50,23 @@
     <div class="space-y-1">
       <label class="text-xs text-slate-500">Margins (pt)</label>
       <input id="ttp-margin" type="number" value="50" min="20" max="100" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Alignment</label>
+      <select id="ttp-align" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="left">Left</option>
+        <option value="center">Center</option>
+        <option value="right">Right</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Filename</label>
+      <input id="ttp-filename" type="text" value="document.pdf" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+    <div class="space-y-1 flex flex-col justify-end">
+      <label class="flex items-center gap-2 text-xs text-slate-400 cursor-pointer py-2">
+        <input id="ttp-pagenums" type="checkbox" class="accent-orange-500" /> Add page numbers
+      </label>
     </div>
   </div>
 
@@ -42,64 +83,125 @@
   const input = document.getElementById('ttp-input');
   const statusEl = document.getElementById('ttp-status');
 
+  const PAGE_SIZES = {
+    A4:     [595.28, 841.89],
+    Letter: [612, 792],
+    A5:     [419.53, 595.28],
+    Legal:  [612, 1008],
+  };
+
   document.getElementById('ttp-create').addEventListener('click', async () => {
     const text = input.value.trim();
-    if (!text) { showStatus('Enter some text first.', true); return; }
+    const title = document.getElementById('ttp-title').value.trim();
+    if (!text && !title) { showStatus('Enter some text first.', true); return; }
     showStatus('Loading pdf-lib…', false);
     await loadPdfLib();
     showStatus('Creating PDF…', false);
     try {
       const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
-      const sizeEl = document.getElementById('ttp-size').value;
-      const fontSize = parseInt(document.getElementById('ttp-fontsize').value) || 12;
+      const sizeKey = document.getElementById('ttp-size').value;
+      const fontKey = document.getElementById('ttp-font').value;
+      const fontSize = Math.max(8, Math.min(24, parseInt(document.getElementById('ttp-fontsize').value) || 12));
       const leading = parseFloat(document.getElementById('ttp-leading').value) || 1.5;
-      const margin = parseInt(document.getElementById('ttp-margin').value) || 50;
+      const margin = Math.max(20, parseInt(document.getElementById('ttp-margin').value) || 50);
+      const align = document.getElementById('ttp-align').value;
+      const addPageNums = document.getElementById('ttp-pagenums').checked;
+      const titleSize = Math.max(10, parseInt(document.getElementById('ttp-title-size').value) || 18);
+      const filename = document.getElementById('ttp-filename').value.trim() || 'document.pdf';
       const lineHeight = fontSize * leading;
-      const pageSize = sizeEl === 'A4' ? [595.28, 841.89] : [612, 792];
+      const pageSize = PAGE_SIZES[sizeKey] || PAGE_SIZES.A4;
       const [pageW, pageH] = pageSize;
       const usableW = pageW - margin * 2;
-      const maxY = pageH - margin;
 
       const doc = await PDFDocument.create();
-      const font = await doc.embedFont(StandardFonts.Helvetica);
+      const fontMap = {
+        Helvetica: StandardFonts.Helvetica,
+        TimesRoman: StandardFonts.TimesRoman,
+        Courier: StandardFonts.Courier,
+        HelveticaBold: StandardFonts.HelveticaBold,
+      };
+      const font = await doc.embedFont(fontMap[fontKey] || StandardFonts.Helvetica);
+      const boldFont = await doc.embedFont(StandardFonts.HelveticaBold);
+      const black = rgb(0, 0, 0);
+      const grey = rgb(0.5, 0.5, 0.5);
 
-      function wrapLine(line, maxWidth) {
+      function wrapText(line, f, size, maxW) {
         if (!line.trim()) return [''];
         const words = line.split(' ');
-        const lines = [];
-        let current = '';
+        const lines = []; let current = '';
         for (const w of words) {
           const test = current ? current + ' ' + w : w;
-          if (font.widthOfTextAtSize(test, fontSize) <= maxWidth) { current = test; }
+          if (f.widthOfTextAtSize(test, size) <= maxW) { current = test; }
           else { if (current) lines.push(current); current = w; }
         }
         if (current) lines.push(current);
         return lines.length ? lines : [''];
       }
 
-      const paragraphs = text.split('\n');
-      const allLines = [];
-      paragraphs.forEach(para => {
-        const wrapped = wrapLine(para, usableW);
-        wrapped.forEach(l => allLines.push(l));
-        allLines.push(''); // blank line between paragraphs
+      function xForLine(line, f, size, maxW) {
+        const w = f.widthOfTextAtSize(line, size);
+        if (align === 'center') return margin + (maxW - w) / 2;
+        if (align === 'right') return margin + maxW - w;
+        return margin;
+      }
+
+      // Build all lines
+      const allLines = []; // { text, font, size, isPageNum }
+
+      if (title) {
+        const titleLines = wrapText(title, boldFont, titleSize, usableW);
+        titleLines.forEach(l => allLines.push({ text: l, font: boldFont, size: titleSize }));
+        allLines.push({ text: '', font, size: fontSize }); // spacing after title
+        allLines.push({ text: '', font, size: fontSize });
+      }
+
+      text.split('\n').forEach(para => {
+        const wrapped = wrapText(para, font, fontSize, usableW);
+        wrapped.forEach(l => allLines.push({ text: l, font, size: fontSize }));
+        allLines.push({ text: '', font, size: fontSize });
       });
 
+      // Paginate
+      const pages = [];
       let page = doc.addPage(pageSize);
-      let y = maxY - fontSize;
+      pages.push(page);
+      let y = pageH - margin - fontSize;
+
       for (const line of allLines) {
-        if (y < margin) { page = doc.addPage(pageSize); y = maxY - fontSize; }
-        if (line) page.drawText(line, { x: margin, y, size: fontSize, font, color: rgb(0,0,0) });
-        y -= lineHeight;
+        const lh = line.size * leading;
+        if (y < margin + (addPageNums ? 20 : 0)) {
+          page = doc.addPage(pageSize);
+          pages.push(page);
+          y = pageH - margin - line.size;
+        }
+        if (line.text) {
+          const x = xForLine(line.text, line.font, line.size, usableW);
+          page.drawText(line.text, { x, y, size: line.size, font: line.font, color: black });
+        }
+        y -= lh;
+      }
+
+      // Page numbers
+      if (addPageNums) {
+        pages.forEach((pg, i) => {
+          const label = `${i + 1} / ${pages.length}`;
+          const lw = font.widthOfTextAtSize(label, 9);
+          pg.drawText(label, { x: pageW/2 - lw/2, y: margin/2, size: 9, font, color: grey });
+        });
       }
 
       const bytes = await doc.save();
-      downloadBytes(bytes, 'document.pdf');
-      showStatus(`✅ PDF created (${doc.getPageCount()} page${doc.getPageCount()!==1?'s':''})`, false);
+      const fn = filename.endsWith('.pdf') ? filename : filename + '.pdf';
+      downloadBytes(bytes, fn);
+      showStatus(`✅ PDF created — ${pages.length} page${pages.length!==1?'s':''} · ${(bytes.length/1024).toFixed(0)} KB`, false);
     } catch(e) { showStatus('Error: ' + e.message, true); }
   });
 
-  document.getElementById('ttp-clear').addEventListener('click', () => { input.value = ''; statusEl.classList.add('hidden'); });
+  document.getElementById('ttp-clear').addEventListener('click', () => {
+    input.value = '';
+    document.getElementById('ttp-title').value = '';
+    statusEl.classList.add('hidden');
+  });
 
   function showStatus(msg, isError) {
     statusEl.textContent = msg;

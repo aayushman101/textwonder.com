@@ -8,17 +8,46 @@
     <p class="text-slate-500 text-sm">Text-based PDFs only (not scanned images)</p>
   </div>
 
+  <div id="ptt-options" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-3">
+    <div class="flex items-center gap-3">
+      <span class="text-orange-400 text-2xl shrink-0">📄</span>
+      <div class="flex-1 min-w-0">
+        <p id="ptt-fname" class="text-slate-200 text-sm font-medium truncate"></p>
+        <p id="ptt-finfo" class="text-slate-500 text-xs"></p>
+      </div>
+      <button id="ptt-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg shrink-0">Change</button>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Page range <span class="text-slate-600">(blank = all)</span></label>
+        <input id="ptt-range" type="text" placeholder="e.g. 1-5, 8, 10-12" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Page separators</label>
+        <select id="ptt-sep" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="header">Show page headers</option>
+          <option value="line">Divider lines only</option>
+          <option value="none">No separators</option>
+        </select>
+      </div>
+    </div>
+    <button id="ptt-extract" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Extract Text</button>
+  </div>
+
   <div id="ptt-status" class="hidden text-sm py-2 text-slate-400"></div>
 
   <div id="ptt-result" class="hidden space-y-3">
-    <div class="flex items-center justify-between">
+    <div class="flex items-center gap-3 flex-wrap justify-between">
       <span id="ptt-stats" class="text-xs text-slate-500"></span>
-      <div class="flex gap-2">
-        <button id="ptt-copy" class="text-xs text-orange-400 hover:text-orange-300 transition-colors">Copy all</button>
-        <button id="ptt-clear" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">Clear</button>
+      <div class="flex gap-2 flex-wrap">
+        <input id="ptt-search" type="text" placeholder="Search in text…" class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 placeholder-slate-500 text-xs focus:outline-none focus:border-orange-500 w-40" />
+        <span id="ptt-search-count" class="text-xs text-slate-500 self-center"></span>
+        <button id="ptt-copy" class="text-xs text-orange-400 hover:text-orange-300 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors">Copy all</button>
+        <button id="ptt-download" class="text-xs text-orange-400 hover:text-orange-300 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors">Download .txt</button>
+        <button id="ptt-clear" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors">Clear</button>
       </div>
     </div>
-    <textarea id="ptt-output" rows="14" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-200 text-sm font-mono resize-y select-all leading-relaxed"></textarea>
+    <textarea id="ptt-output" rows="16" readonly class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-200 text-sm font-mono resize-y select-all leading-relaxed"></textarea>
   </div>
 </div>
 
@@ -26,46 +55,125 @@
 (function() {
   const drop = document.getElementById('ptt-drop');
   const fileInput = document.getElementById('ptt-file');
+  const optionsEl = document.getElementById('ptt-options');
   const statusEl = document.getElementById('ptt-status');
   const result = document.getElementById('ptt-result');
   const output = document.getElementById('ptt-output');
   const stats = document.getElementById('ptt-stats');
+  const searchEl = document.getElementById('ptt-search');
+  const searchCount = document.getElementById('ptt-search-count');
+  let currentFile = null, totalPages = 0, extractedText = '';
 
   drop.addEventListener('click', () => fileInput.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
-  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); extractText(e.dataTransfer.files[0]); });
-  fileInput.addEventListener('change', () => extractText(fileInput.files[0]));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
 
-  async function extractText(file) {
-    if (!file || file.type !== 'application/pdf') return;
-    showStatus('Loading PDF.js…', false);
+  async function loadFile(file) {
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
+    currentFile = file;
+    showStatus('Loading PDF…', false);
     await loadPdfJs();
-    showStatus('Extracting text…', false);
     try {
-      const pdfjsLib = window['pdfjs-dist/build/pdf'] || window.pdfjsLib;
+      const pdfjsLib = getPdfJs();
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-      const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-      let text = '';
-      for (let i = 1; i <= pdf.numPages; i++) {
-        const page = await pdf.getPage(i);
-        const content = await page.getTextContent();
-        const pageText = content.items.map(item => item.str).join(' ');
-        text += `--- Page ${i} ---\n${pageText}\n\n`;
-        showStatus(`Extracting page ${i} of ${pdf.numPages}…`, false);
-      }
-      output.value = text.trim();
-      const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
-      stats.textContent = `${pdf.numPages} pages · ${wordCount.toLocaleString()} words · ${text.length.toLocaleString()} characters`;
+      const pdf = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      totalPages = pdf.numPages;
+      document.getElementById('ptt-fname').textContent = file.name;
+      document.getElementById('ptt-finfo').textContent = `${totalPages} pages · ${(file.size/1024).toFixed(0)} KB`;
       drop.classList.add('hidden');
       statusEl.classList.add('hidden');
-      result.classList.remove('hidden');
-    } catch(e) { showStatus('Error: ' + e.message + ' (Is this a text-based PDF?)', true); }
+      optionsEl.classList.remove('hidden');
+    } catch(e) { showStatus('Error reading PDF: ' + e.message, true); }
   }
 
-  document.getElementById('ptt-copy').addEventListener('click', () => navigator.clipboard.writeText(output.value));
-  document.getElementById('ptt-clear').addEventListener('click', () => { output.value = ''; result.classList.add('hidden'); drop.classList.remove('hidden'); });
+  document.getElementById('ptt-change').addEventListener('click', () => {
+    currentFile = null; totalPages = 0; extractedText = '';
+    optionsEl.classList.add('hidden');
+    result.classList.add('hidden');
+    drop.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+    output.value = '';
+    searchEl.value = '';
+  });
+
+  document.getElementById('ptt-extract').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const rangeStr = document.getElementById('ptt-range').value.trim();
+    const sep = document.getElementById('ptt-sep').value;
+    showStatus('Extracting text…', false);
+    try {
+      const pdfjsLib = getPdfJs();
+      const pdf = await pdfjsLib.getDocument({ data: await currentFile.arrayBuffer() }).promise;
+      const pageNums = rangeStr ? parseRange(rangeStr, pdf.numPages) : Array.from({ length: pdf.numPages }, (_, i) => i + 1);
+      if (!pageNums.length) { showStatus('No valid pages in range.', true); return; }
+      let text = '';
+      for (const num of pageNums) {
+        const page = await pdf.getPage(num);
+        const content = await page.getTextContent();
+        const pageText = content.items.map(item => item.str).join(' ').trim();
+        if (sep === 'header') text += `--- Page ${num} ---\n${pageText}\n\n`;
+        else if (sep === 'line') text += `${pageText}\n${'─'.repeat(60)}\n\n`;
+        else text += pageText + '\n\n';
+        showStatus(`Extracting page ${num} of ${pageNums[pageNums.length-1]}…`, false);
+      }
+      extractedText = text.trim();
+      output.value = extractedText;
+      const words = extractedText.split(/\s+/).filter(Boolean).length;
+      stats.textContent = `${pageNums.length} page${pageNums.length!==1?'s':''} · ${words.toLocaleString()} words · ${extractedText.length.toLocaleString()} chars`;
+      statusEl.classList.add('hidden');
+      result.classList.remove('hidden');
+    } catch(e) { showStatus('Error: ' + e.message + ' (Text-based PDFs only)', true); }
+  });
+
+  // Search
+  searchEl.addEventListener('input', () => {
+    const q = searchEl.value.trim();
+    if (!q) { searchCount.textContent = ''; output.value = extractedText; return; }
+    const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const matches = [...extractedText.matchAll(re)];
+    searchCount.textContent = matches.length ? `${matches.length} match${matches.length!==1?'es':''}` : 'no matches';
+    // Highlight by jumping to first in textarea
+    if (matches.length) {
+      const idx = extractedText.search(re);
+      output.focus();
+      output.setSelectionRange(idx, idx + q.length);
+    }
+  });
+
+  document.getElementById('ptt-copy').addEventListener('click', () => navigator.clipboard.writeText(extractedText));
+
+  document.getElementById('ptt-download').addEventListener('click', () => {
+    if (!extractedText) return;
+    const blob = new Blob([extractedText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = (currentFile?.name.replace(/\.pdf$/i, '') || 'extracted') + '.txt';
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  });
+
+  document.getElementById('ptt-clear').addEventListener('click', () => {
+    extractedText = ''; output.value = '';
+    result.classList.add('hidden');
+    optionsEl.classList.remove('hidden');
+    searchEl.value = ''; searchCount.textContent = '';
+  });
+
+  function parseRange(str, max) {
+    const nums = new Set();
+    str.split(',').forEach(part => {
+      part = part.trim();
+      if (/^\d+$/.test(part)) { const n = parseInt(part); if (n >= 1 && n <= max) nums.add(n); }
+      else if (/^\d+-\d+$/.test(part)) {
+        const [a, b] = part.split('-').map(Number);
+        for (let i = Math.min(a,b); i <= Math.min(Math.max(a,b), max); i++) nums.add(i);
+      }
+    });
+    return [...nums].sort((a,b) => a-b);
+  }
 
   function showStatus(msg, isError) {
     statusEl.textContent = msg;
@@ -73,8 +181,10 @@
     statusEl.classList.remove('hidden');
   }
 
+  function getPdfJs() { return window['pdfjs-dist/build/pdf'] || window.pdfjsLib; }
+
   function loadPdfJs() {
-    if (window['pdfjs-dist/build/pdf'] || window.pdfjsLib) return Promise.resolve();
+    if (getPdfJs()) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const s = document.createElement('script');
       s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';

@@ -5,36 +5,67 @@
     <input type="file" id="prp-file" accept=".pdf" class="hidden" />
     <div class="text-4xl mb-2">🔄</div>
     <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Rotate all pages or specific pages</p>
+    <p class="text-slate-500 text-sm">Rotate all pages, specific pages, or each page independently</p>
   </div>
 
   <div id="prp-panel" class="hidden space-y-4">
     <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
-      <span class="text-orange-400 text-2xl">📄</span>
-      <div>
-        <p id="prp-name" class="text-slate-200 text-sm font-medium"></p>
+      <span class="text-orange-400 text-2xl shrink-0">📄</span>
+      <div class="flex-1 min-w-0">
+        <p id="prp-name" class="text-slate-200 text-sm font-medium truncate"></p>
         <p id="prp-info" class="text-slate-500 text-xs"></p>
       </div>
+      <button id="prp-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg shrink-0">Change</button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Pages to rotate</label>
-        <input id="prp-pages" type="text" placeholder="Leave blank for all pages, or e.g. 1,3,5-8" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
-      </div>
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Rotation angle</label>
-        <select id="prp-angle" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
-          <option value="90">90° clockwise</option>
-          <option value="180">180°</option>
-          <option value="270">270° clockwise (90° CCW)</option>
-        </select>
-      </div>
+    <!-- Mode tabs -->
+    <div class="flex gap-1 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-1">
+      <button data-rmode="batch" class="prp-mode-btn flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors bg-orange-600 text-white">Batch rotate</button>
+      <button data-rmode="perpage" class="prp-mode-btn flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-400 hover:text-slate-200">Per-page control</button>
     </div>
 
-    <div class="flex gap-2">
-      <button id="prp-rotate" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Rotate & Download</button>
-      <button id="prp-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    <!-- Batch mode -->
+    <div id="prp-mode-batch" class="space-y-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="space-y-2">
+          <label class="text-xs text-slate-400">Pages to rotate <span class="text-slate-600">(blank = all)</span></label>
+          <input id="prp-pages" type="text" placeholder="e.g. 1, 3, 5-8 — or leave blank" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+        </div>
+        <div class="space-y-2">
+          <label class="text-xs text-slate-400">Rotation angle</label>
+          <select id="prp-angle" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+            <option value="90">90° clockwise</option>
+            <option value="180">180° (flip)</option>
+            <option value="270">90° counter-clockwise</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div class="space-y-2">
+        <p class="text-xs text-slate-500">Quick select:</p>
+        <div class="flex flex-wrap gap-2">
+          <button data-quick="odd" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Odd pages only</button>
+          <button data-quick="even" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Even pages only</button>
+          <button data-quick="landscape" class="px-3 py-1.5 text-xs border border-orange-700/50 text-orange-400 hover:bg-orange-900/20 rounded-lg transition-colors">Auto: landscape → portrait</button>
+          <button data-quick="clear" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Clear selection</button>
+        </div>
+      </div>
+
+      <button id="prp-rotate-batch" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Rotate & Download</button>
+    </div>
+
+    <!-- Per-page mode -->
+    <div id="prp-mode-perpage" class="hidden space-y-3">
+      <p class="text-xs text-slate-500">Set a rotation angle for each page. Pages keeping their current rotation are left unchanged.</p>
+      <div id="prp-page-list" class="space-y-1.5 max-h-72 overflow-y-auto pr-1"></div>
+      <div class="flex gap-2 flex-wrap">
+        <button data-setall="90" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 rounded-lg">Set all 90° CW</button>
+        <button data-setall="180" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 rounded-lg">Set all 180°</button>
+        <button data-setall="270" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 rounded-lg">Set all 90° CCW</button>
+        <button data-setall="0" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 rounded-lg">Reset all</button>
+      </div>
+      <button id="prp-rotate-perpage" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Apply & Download</button>
     </div>
   </div>
 
@@ -47,49 +78,131 @@
   const fileInput = document.getElementById('prp-file');
   const panel = document.getElementById('prp-panel');
   const status = document.getElementById('prp-status');
-  let currentFile = null, pageCount = 0;
+  let currentFile = null, pageCount = 0, pageRotations = [], pdfBytes = null, currentMode = 'batch';
 
   drop.addEventListener('click', () => fileInput.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
   drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
-  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+  fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
+
+  // Mode tabs
+  document.querySelectorAll('.prp-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentMode = btn.dataset.rmode;
+      document.querySelectorAll('.prp-mode-btn').forEach(b => {
+        b.classList.toggle('bg-orange-600', b.dataset.rmode === currentMode);
+        b.classList.toggle('text-white', b.dataset.rmode === currentMode);
+        b.classList.toggle('text-slate-400', b.dataset.rmode !== currentMode);
+      });
+      document.getElementById('prp-mode-batch').classList.toggle('hidden', currentMode !== 'batch');
+      document.getElementById('prp-mode-perpage').classList.toggle('hidden', currentMode !== 'perpage');
+    });
+  });
 
   async function loadFile(file) {
-    if (!file || file.type !== 'application/pdf') return;
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
     showStatus('Loading…', 'info');
     await loadPdfLib();
     try {
       const { PDFDocument } = window.PDFLib;
-      const bytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pdfBytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       pageCount = pdf.getPageCount();
       currentFile = file;
+      // Store current rotations
+      pageRotations = Array.from({ length: pageCount }, (_, i) => {
+        return { add: 0, current: pdf.getPage(i).getRotation().angle };
+      });
       document.getElementById('prp-name').textContent = file.name;
       document.getElementById('prp-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
       panel.classList.remove('hidden');
       drop.classList.add('hidden');
       status.classList.add('hidden');
+      renderPageList();
     } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
   }
 
-  document.getElementById('prp-rotate').addEventListener('click', async () => {
+  function renderPageList() {
+    const list = document.getElementById('prp-page-list');
+    const { PDFDocument } = window.PDFLib;
+    list.innerHTML = pageRotations.map((pr, i) => {
+      const orientLabel = pr.current === 90 || pr.current === 270 ? 'landscape' : 'portrait';
+      return `
+        <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-lg px-3 py-2">
+          <span class="text-slate-500 text-xs w-16 shrink-0">Page ${i+1}</span>
+          <span class="text-xs text-slate-600 w-16 shrink-0">${orientLabel}</span>
+          <select data-page="${i}" class="prp-per-select flex-1 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-2 py-1.5 text-slate-100 text-xs focus:outline-none focus:border-orange-500">
+            <option value="0" ${pr.add === 0 ? 'selected' : ''}>No change</option>
+            <option value="90" ${pr.add === 90 ? 'selected' : ''}>+90° clockwise</option>
+            <option value="180" ${pr.add === 180 ? 'selected' : ''}>180° (flip)</option>
+            <option value="270" ${pr.add === 270 ? 'selected' : ''}>90° counter-clockwise</option>
+          </select>
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('.prp-per-select').forEach(sel => {
+      sel.addEventListener('change', () => {
+        pageRotations[+sel.dataset.page].add = parseInt(sel.value);
+      });
+    });
+  }
+
+  // Set all buttons
+  document.querySelectorAll('[data-setall]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = parseInt(btn.dataset.setall);
+      pageRotations.forEach(pr => pr.add = val);
+      renderPageList();
+    });
+  });
+
+  // Quick selectors (batch mode)
+  document.querySelectorAll('[data-quick]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.quick;
+      const pagesEl = document.getElementById('prp-pages');
+      if (action === 'odd') {
+        const odds = Array.from({ length: pageCount }, (_, i) => i + 1).filter(n => n % 2 !== 0);
+        pagesEl.value = odds.join(', ');
+      } else if (action === 'even') {
+        const evens = Array.from({ length: pageCount }, (_, i) => i + 1).filter(n => n % 2 === 0);
+        pagesEl.value = evens.join(', ');
+      } else if (action === 'landscape') {
+        // Find pages that are landscape (rotated 90 or 270, or width > height)
+        const landscapePages = pageRotations
+          .map((pr, i) => ({ idx: i, rot: pr.current }))
+          .filter(({ rot }) => rot === 90 || rot === 270)
+          .map(({ idx }) => idx + 1);
+        if (landscapePages.length) {
+          pagesEl.value = landscapePages.join(', ');
+          document.getElementById('prp-angle').value = '90';
+          showStatus(`${landscapePages.length} landscape page(s) selected — will rotate 90° to portrait`, 'info');
+        } else {
+          showStatus('No landscape pages detected (based on rotation metadata)', 'info');
+        }
+      } else {
+        pagesEl.value = '';
+      }
+    });
+  });
+
+  // Batch rotate
+  document.getElementById('prp-rotate-batch').addEventListener('click', async () => {
     if (!currentFile) return;
     const angle = parseInt(document.getElementById('prp-angle').value);
     const pagesStr = document.getElementById('prp-pages').value.trim();
-    const targetPages = pagesStr ? parseRange(pagesStr, pageCount) : Array.from({length: pageCount}, (_, i) => i + 1);
+    const targetPages = pagesStr ? parseRange(pagesStr, pageCount) : Array.from({ length: pageCount }, (_, i) => i + 1);
     if (!targetPages.length) { showStatus('Invalid page range.', 'error'); return; }
     showStatus('Rotating pages…', 'info');
     try {
       const { PDFDocument, degrees } = window.PDFLib;
-      const bytes = await currentFile.arrayBuffer();
-      const doc = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const pageSet = new Set(targetPages);
       for (let i = 1; i <= doc.getPageCount(); i++) {
         if (pageSet.has(i)) {
           const page = doc.getPage(i - 1);
-          const current = page.getRotation().angle;
-          page.setRotation(degrees((current + angle) % 360));
+          page.setRotation(degrees((page.getRotation().angle + angle) % 360));
         }
       }
       const out = await doc.save();
@@ -98,8 +211,30 @@
     } catch(e) { showStatus('Error: ' + e.message, 'error'); }
   });
 
-  document.getElementById('prp-clear').addEventListener('click', () => {
-    currentFile = null;
+  // Per-page rotate
+  document.getElementById('prp-rotate-perpage').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const anyChange = pageRotations.some(pr => pr.add !== 0);
+    if (!anyChange) { showStatus('No rotations set — use the dropdowns to choose rotation for each page.', 'error'); return; }
+    showStatus('Applying rotations…', 'info');
+    try {
+      const { PDFDocument, degrees } = window.PDFLib;
+      const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      pageRotations.forEach((pr, i) => {
+        if (pr.add !== 0) {
+          const page = doc.getPage(i);
+          page.setRotation(degrees((pr.current + pr.add) % 360));
+        }
+      });
+      const out = await doc.save();
+      downloadBytes(out, 'rotated.pdf');
+      const changed = pageRotations.filter(pr => pr.add !== 0).length;
+      showStatus(`✅ Rotated ${changed} page(s) successfully`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('prp-change').addEventListener('click', () => {
+    currentFile = null; pageCount = 0; pdfBytes = null; pageRotations = [];
     panel.classList.add('hidden');
     drop.classList.remove('hidden');
     status.classList.add('hidden');

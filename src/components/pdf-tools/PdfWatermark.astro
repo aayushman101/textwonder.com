@@ -5,46 +5,85 @@
     <input type="file" id="pwm-file" accept=".pdf" class="hidden" />
     <div class="text-4xl mb-2">💧</div>
     <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Add a text watermark to all pages</p>
+    <p class="text-slate-500 text-sm">Add a custom text watermark with position, angle, and colour control</p>
   </div>
 
   <div id="pwm-panel" class="hidden space-y-4">
     <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
-      <span class="text-orange-400 text-2xl">📄</span>
-      <div>
-        <p id="pwm-name" class="text-slate-200 text-sm font-medium"></p>
+      <span class="text-orange-400 text-2xl shrink-0">📄</span>
+      <div class="flex-1 min-w-0">
+        <p id="pwm-name" class="text-slate-200 text-sm font-medium truncate"></p>
         <p id="pwm-info" class="text-slate-500 text-xs"></p>
       </div>
+      <button id="pwm-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg shrink-0">Change</button>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Watermark text</label>
-        <input id="pwm-text" type="text" value="CONFIDENTIAL" placeholder="Your watermark text" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+    <!-- Watermark text -->
+    <div class="space-y-1">
+      <label class="text-xs text-slate-400">Watermark text</label>
+      <input id="pwm-text" type="text" value="CONFIDENTIAL" placeholder="e.g. DRAFT, SAMPLE, CONFIDENTIAL" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+
+    <!-- Row 1: size, font, opacity, angle -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Font size (pt)</label>
+        <input id="pwm-size" type="number" value="60" min="10" max="200" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
       </div>
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Font size</label>
-        <input id="pwm-size" type="number" value="48" min="12" max="120" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
-      </div>
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Opacity (0–100%)</label>
-        <input id="pwm-opacity" type="number" value="30" min="5" max="100" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
-      </div>
-      <div class="space-y-2">
-        <label class="text-xs text-slate-400">Color</label>
-        <select id="pwm-color" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
-          <option value="red">Red</option>
-          <option value="gray" selected>Gray</option>
-          <option value="blue">Blue</option>
-          <option value="black">Black</option>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Font</label>
+        <select id="pwm-font" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="HelveticaBold">Helvetica Bold</option>
+          <option value="Helvetica">Helvetica</option>
+          <option value="TimesRoman">Times Roman</option>
+          <option value="Courier">Courier</option>
         </select>
       </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Opacity <span id="pwm-opacity-val" class="text-slate-600">30%</span></label>
+        <input id="pwm-opacity" type="range" min="5" max="100" value="30" class="w-full accent-orange-500 mt-2" />
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Angle (°)</label>
+        <input id="pwm-angle" type="number" value="45" min="-180" max="180" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
     </div>
 
-    <div class="flex gap-2">
-      <button id="pwm-apply" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Apply Watermark</button>
-      <button id="pwm-clear" class="px-4 py-2 bg-[var(--bg-surface)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    <!-- Row 2: position, page range -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Position</label>
+        <select id="pwm-position" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+          <option value="center">Center (use angle control)</option>
+          <option value="center-h">Center horizontal</option>
+          <option value="top">Top center</option>
+          <option value="bottom">Bottom center</option>
+          <option value="tile">Tiled (repeat across page)</option>
+        </select>
+      </div>
+      <div class="space-y-1">
+        <label class="text-xs text-slate-400">Page range <span class="text-slate-600">(blank = all pages)</span></label>
+        <input id="pwm-pages" type="text" placeholder="e.g. 1-3, 5, 7-9" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+      </div>
     </div>
+
+    <!-- Colour -->
+    <div class="space-y-2">
+      <label class="text-xs text-slate-400">Colour</label>
+      <div class="flex flex-wrap gap-2 items-center">
+        <button data-wcolor="red" class="pwm-color-btn px-3 py-1.5 text-xs border border-red-700/60 text-red-400 bg-red-900/10 rounded-lg transition-colors hover:bg-red-900/30">Red</button>
+        <button data-wcolor="blue" class="pwm-color-btn px-3 py-1.5 text-xs border border-blue-700/60 text-blue-400 bg-blue-900/10 rounded-lg transition-colors hover:bg-blue-900/30">Blue</button>
+        <button data-wcolor="gray" class="pwm-color-btn ring-2 ring-orange-500 px-3 py-1.5 text-xs border border-slate-600 text-slate-300 bg-slate-800 rounded-lg transition-colors">Gray</button>
+        <button data-wcolor="black" class="pwm-color-btn px-3 py-1.5 text-xs border border-slate-700 text-slate-300 rounded-lg transition-colors hover:border-slate-500">Black</button>
+        <button data-wcolor="green" class="pwm-color-btn px-3 py-1.5 text-xs border border-green-700/60 text-green-400 bg-green-900/10 rounded-lg transition-colors hover:bg-green-900/30">Green</button>
+        <div class="flex items-center gap-1.5 ml-1">
+          <input id="pwm-custom-color" type="color" value="#808080" class="w-8 h-8 rounded cursor-pointer border-0 bg-transparent p-0" title="Custom colour" />
+          <span class="text-xs text-slate-500">Custom</span>
+        </div>
+      </div>
+    </div>
+
+    <button id="pwm-apply" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Add Watermark & Download</button>
   </div>
 
   <div id="pwm-status" class="hidden text-sm py-2"></div>
@@ -56,24 +95,64 @@
   const fileInput = document.getElementById('pwm-file');
   const panel = document.getElementById('pwm-panel');
   const status = document.getElementById('pwm-status');
-  let currentFile = null;
+  let currentFile = null, pageCount = 0, pdfBytes = null;
+  let selectedColor = { r: 0.5, g: 0.5, b: 0.5 };
+
+  const COLOR_MAP = {
+    red:   { r: 0.8, g: 0.1, b: 0.1 },
+    blue:  { r: 0.1, g: 0.2, b: 0.8 },
+    gray:  { r: 0.5, g: 0.5, b: 0.5 },
+    black: { r: 0,   g: 0,   b: 0   },
+    green: { r: 0.1, g: 0.6, b: 0.2 },
+  };
 
   drop.addEventListener('click', () => fileInput.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
   drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
-  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+  fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
+
+  document.getElementById('pwm-opacity').addEventListener('input', e => {
+    document.getElementById('pwm-opacity-val').textContent = e.target.value + '%';
+  });
+
+  document.getElementById('pwm-position').addEventListener('change', e => {
+    const angleEl = document.getElementById('pwm-angle');
+    const pos = e.target.value;
+    if (pos === 'center' || pos === 'tile') angleEl.value = 45;
+    else angleEl.value = 0;
+  });
+
+  document.querySelectorAll('.pwm-color-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectedColor = COLOR_MAP[btn.dataset.wcolor];
+      document.querySelectorAll('.pwm-color-btn').forEach(b => b.classList.remove('ring-2','ring-orange-500'));
+      btn.classList.add('ring-2','ring-orange-500');
+    });
+  });
+
+  document.getElementById('pwm-custom-color').addEventListener('input', e => {
+    const hex = e.target.value;
+    selectedColor = {
+      r: parseInt(hex.slice(1,3),16)/255,
+      g: parseInt(hex.slice(3,5),16)/255,
+      b: parseInt(hex.slice(5,7),16)/255,
+    };
+    document.querySelectorAll('.pwm-color-btn').forEach(b => b.classList.remove('ring-2','ring-orange-500'));
+  });
 
   async function loadFile(file) {
-    if (!file || file.type !== 'application/pdf') return;
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
+    showStatus('Loading…', 'info');
     await loadPdfLib();
     try {
       const { PDFDocument } = window.PDFLib;
-      const bytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
+      pdfBytes = await file.arrayBuffer();
+      const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      pageCount = pdf.getPageCount();
       currentFile = file;
       document.getElementById('pwm-name').textContent = file.name;
-      document.getElementById('pwm-info').textContent = `${pdf.getPageCount()} pages · ${(file.size/1024).toFixed(0)} KB`;
+      document.getElementById('pwm-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
       panel.classList.remove('hidden');
       drop.classList.add('hidden');
       status.classList.add('hidden');
@@ -81,45 +160,89 @@
   }
 
   document.getElementById('pwm-apply').addEventListener('click', async () => {
-    if (!currentFile) return;
     const text = document.getElementById('pwm-text').value.trim();
     if (!text) { showStatus('Enter watermark text.', 'error'); return; }
-    const fontSize = parseInt(document.getElementById('pwm-size').value) || 48;
-    const opacity = Math.min(1, Math.max(0, parseInt(document.getElementById('pwm-opacity').value) / 100));
-    const colorKey = document.getElementById('pwm-color').value;
-    const colorMap = { red: [1,0,0], gray: [0.5,0.5,0.5], blue: [0,0,0.8], black: [0,0,0] };
-    const [r, g, b] = colorMap[colorKey] || [0.5,0.5,0.5];
-    showStatus('Applying watermark…', 'info');
+    if (!currentFile) return;
+
+    const fontSize = Math.max(10, parseInt(document.getElementById('pwm-size').value) || 60);
+    const fontKey = document.getElementById('pwm-font').value;
+    const opacity = (parseInt(document.getElementById('pwm-opacity').value) || 30) / 100;
+    const angle = parseFloat(document.getElementById('pwm-angle').value) || 0;
+    const position = document.getElementById('pwm-position').value;
+    const pagesStr = document.getElementById('pwm-pages').value.trim();
+
+    showStatus('Adding watermark…', 'info');
     try {
       const { PDFDocument, StandardFonts, rgb, degrees } = window.PDFLib;
-      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
-      const font = await src.embedFont(StandardFonts.HelveticaBold);
-      for (let i = 0; i < src.getPageCount(); i++) {
-        const page = src.getPage(i);
+      const doc = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      const FONT_MAP = {
+        Helvetica: StandardFonts.Helvetica,
+        HelveticaBold: StandardFonts.HelveticaBold,
+        TimesRoman: StandardFonts.TimesRoman,
+        Courier: StandardFonts.Courier,
+      };
+      const font = await doc.embedFont(FONT_MAP[fontKey] || StandardFonts.HelveticaBold);
+      const color = rgb(selectedColor.r, selectedColor.g, selectedColor.b);
+      const textWidth = font.widthOfTextAtSize(text, fontSize);
+      const targetPages = pagesStr ? parseRange(pagesStr, doc.getPageCount()) : Array.from({ length: doc.getPageCount() }, (_, i) => i + 1);
+
+      for (const pageNum of targetPages) {
+        const page = doc.getPage(pageNum - 1);
         const { width, height } = page.getSize();
-        const textWidth = font.widthOfTextAtSize(text, fontSize);
-        page.drawText(text, {
-          x: (width - textWidth) / 2,
-          y: (height - fontSize) / 2,
-          size: fontSize,
-          font,
-          color: rgb(r, g, b),
-          opacity,
-          rotate: degrees(45),
-        });
+
+        if (position === 'tile') {
+          const hGap = textWidth + 80;
+          const vGap = fontSize + 80;
+          const cols = Math.ceil(width / hGap) + 2;
+          const rows = Math.ceil(height / vGap) + 2;
+          for (let row = 0; row < rows; row++) {
+            for (let col = 0; col < cols; col++) {
+              page.drawText(text, {
+                x: col * hGap - 40,
+                y: row * vGap - 40,
+                size: fontSize, font, color, opacity,
+                rotate: degrees(angle),
+              });
+            }
+          }
+        } else {
+          let x = (width - textWidth) / 2;
+          let y;
+          if (position === 'top') { y = height - fontSize - 40; }
+          else if (position === 'bottom') { y = 30; }
+          else { y = (height - fontSize) / 2; }
+
+          const rotateAngle = (position === 'center-h' || position === 'top' || position === 'bottom') ? 0 : angle;
+          page.drawText(text, { x, y, size: fontSize, font, color, opacity, rotate: degrees(rotateAngle) });
+        }
       }
-      const out = await src.save();
-      downloadBytes(out, 'watermarked.pdf');
-      showStatus(`✅ Watermark applied to ${src.getPageCount()} page(s)`, 'success');
+
+      const out = await doc.save();
+      const baseName = currentFile.name.replace(/\.pdf$/i, '');
+      downloadBytes(out, `${baseName}-watermarked.pdf`);
+      showStatus(`✅ Watermark applied to ${targetPages.length} page${targetPages.length!==1?'s':''}`, 'success');
     } catch(e) { showStatus('Error: ' + e.message, 'error'); }
   });
 
-  document.getElementById('pwm-clear').addEventListener('click', () => {
-    currentFile = null;
+  document.getElementById('pwm-change').addEventListener('click', () => {
+    currentFile = null; pageCount = 0; pdfBytes = null;
     panel.classList.add('hidden');
     drop.classList.remove('hidden');
     status.classList.add('hidden');
   });
+
+  function parseRange(str, max) {
+    const nums = new Set();
+    str.split(',').forEach(part => {
+      part = part.trim();
+      if (/^\d+$/.test(part)) { const n = parseInt(part); if (n >= 1 && n <= max) nums.add(n); }
+      else if (/^\d+-\d+$/.test(part)) {
+        const [a, b] = part.split('-').map(Number);
+        for (let i = Math.min(a,b); i <= Math.min(Math.max(a,b), max); i++) nums.add(i);
+      }
+    });
+    return [...nums].sort((a,b) => a-b);
+  }
 
   function showStatus(msg, type) {
     status.textContent = msg;

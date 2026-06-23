@@ -5,24 +5,54 @@
     <input type="file" id="ps-file" accept=".pdf" class="hidden" />
     <div class="text-4xl mb-2">✂️</div>
     <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Select the PDF you want to split</p>
+    <p class="text-slate-500 text-sm">Extract pages, split into chunks, or split every N pages</p>
   </div>
 
-  <div id="ps-info" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-3">
-    <div class="flex items-center gap-3">
+  <div id="ps-panel" class="hidden space-y-4">
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
       <span class="text-orange-400 text-2xl">📄</span>
-      <div>
-        <p id="ps-name" class="text-slate-200 text-sm font-medium"></p>
+      <div class="flex-1 min-w-0">
+        <p id="ps-name" class="text-slate-200 text-sm font-medium truncate"></p>
         <p id="ps-pages" class="text-slate-500 text-xs"></p>
       </div>
+      <button id="ps-clear" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors">Change file</button>
     </div>
-    <div class="space-y-2">
-      <label class="text-xs text-slate-400">Pages to extract (e.g. 1, 3, 5-8, 10)</label>
-      <input id="ps-range" type="text" placeholder="1-3, 5, 7-9" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+
+    <!-- Mode tabs -->
+    <div class="flex gap-1 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-1">
+      <button data-mode="extract" class="ps-mode-btn flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors bg-orange-600 text-white">Extract pages</button>
+      <button data-mode="every" class="ps-mode-btn flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-400 hover:text-slate-200">Split every N pages</button>
+      <button data-mode="individual" class="ps-mode-btn flex-1 py-1.5 rounded-lg text-xs font-medium transition-colors text-slate-400 hover:text-slate-200">All pages separately</button>
     </div>
-    <div class="flex gap-2">
-      <button id="ps-split" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Extract Pages</button>
-      <button id="ps-clear" class="px-4 py-2 bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+
+    <!-- Extract pages mode -->
+    <div id="ps-mode-extract" class="space-y-3">
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Pages to extract <span class="text-slate-600">(e.g. 1, 3, 5-8, 10)</span></label>
+        <input id="ps-range" type="text" placeholder="e.g. 1-3, 5, 7-9" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-orange-500" />
+        <p id="ps-range-hint" class="text-xs text-slate-500"></p>
+      </div>
+      <button id="ps-split-extract" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Extract Pages</button>
+    </div>
+
+    <!-- Every N pages mode -->
+    <div id="ps-mode-every" class="hidden space-y-3">
+      <div class="space-y-2">
+        <label class="text-xs text-slate-400">Split every</label>
+        <div class="flex items-center gap-2">
+          <input id="ps-every-n" type="number" value="1" min="1" class="w-24 bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+          <span class="text-slate-400 text-sm">pages</span>
+          <span id="ps-every-hint" class="text-xs text-slate-500 ml-2"></span>
+        </div>
+      </div>
+      <button id="ps-split-every" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Split & Download Parts</button>
+    </div>
+
+    <!-- Individual pages mode -->
+    <div id="ps-mode-individual" class="hidden space-y-3">
+      <p class="text-sm text-slate-400">Each page will be saved as a separate PDF file, downloaded one by one.</p>
+      <p id="ps-individual-hint" class="text-xs text-slate-500"></p>
+      <button id="ps-split-individual" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Download All Pages Separately</button>
     </div>
   </div>
 
@@ -33,24 +63,36 @@
 (function() {
   const drop = document.getElementById('ps-drop');
   const fileInput = document.getElementById('ps-file');
-  const info = document.getElementById('ps-info');
-  const nameEl = document.getElementById('ps-name');
-  const pagesEl = document.getElementById('ps-pages');
-  const rangeEl = document.getElementById('ps-range');
-  const splitBtn = document.getElementById('ps-split');
-  const clearBtn = document.getElementById('ps-clear');
+  const panel = document.getElementById('ps-panel');
   const status = document.getElementById('ps-status');
-  let currentFile = null, pageCount = 0;
+  let currentFile = null, pageCount = 0, currentMode = 'extract';
 
+  // Drop zone
   drop.addEventListener('click', () => fileInput.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
   drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
   fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
 
+  // Mode tabs
+  document.querySelectorAll('.ps-mode-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentMode = btn.dataset.mode;
+      document.querySelectorAll('.ps-mode-btn').forEach(b => {
+        b.classList.toggle('bg-orange-600', b.dataset.mode === currentMode);
+        b.classList.toggle('text-white', b.dataset.mode === currentMode);
+        b.classList.toggle('text-slate-400', b.dataset.mode !== currentMode);
+      });
+      ['extract','every','individual'].forEach(m => {
+        document.getElementById('ps-mode-' + m).classList.toggle('hidden', m !== currentMode);
+      });
+      updateHints();
+    });
+  });
+
   async function loadFile(file) {
-    if (!file || file.type !== 'application/pdf') return;
-    showStatus('Loading…', 'info');
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
+    showStatus('Loading PDF…', 'info');
     await loadPdfLib();
     try {
       const { PDFDocument } = window.PDFLib;
@@ -58,17 +100,40 @@
       const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
       pageCount = pdf.getPageCount();
       currentFile = file;
-      nameEl.textContent = file.name;
-      pagesEl.textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
-      info.classList.remove('hidden');
+      document.getElementById('ps-name').textContent = file.name;
+      document.getElementById('ps-pages').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      panel.classList.remove('hidden');
       drop.classList.add('hidden');
       status.classList.add('hidden');
+      updateHints();
     } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
   }
 
-  splitBtn.addEventListener('click', async () => {
+  function updateHints() {
+    const rangeEl = document.getElementById('ps-range');
+    if (rangeEl && rangeEl.value) updateRangeHint();
+    const everyN = parseInt(document.getElementById('ps-every-n')?.value) || 1;
+    const chunks = Math.ceil(pageCount / everyN);
+    const evHint = document.getElementById('ps-every-hint');
+    if (evHint) evHint.textContent = pageCount ? `→ ${chunks} part${chunks !== 1 ? 's' : ''}` : '';
+    const indHint = document.getElementById('ps-individual-hint');
+    if (indHint) indHint.textContent = pageCount ? `${pageCount} files will be downloaded` : '';
+  }
+
+  function updateRangeHint() {
+    const pages = parseRange(document.getElementById('ps-range').value, pageCount);
+    document.getElementById('ps-range-hint').textContent = pages.length
+      ? `${pages.length} page${pages.length !== 1 ? 's' : ''} selected`
+      : document.getElementById('ps-range').value ? 'No valid pages in range' : '';
+  }
+
+  document.getElementById('ps-range')?.addEventListener('input', updateRangeHint);
+  document.getElementById('ps-every-n')?.addEventListener('input', updateHints);
+
+  // Extract mode
+  document.getElementById('ps-split-extract').addEventListener('click', async () => {
     if (!currentFile) return;
-    const pages = parsePageRange(rangeEl.value, pageCount);
+    const pages = parseRange(document.getElementById('ps-range').value, pageCount);
     if (!pages.length) { showStatus('Enter valid page numbers (e.g. 1-3, 5).', 'error'); return; }
     showStatus('Extracting pages…', 'info');
     try {
@@ -78,14 +143,67 @@
       const copied = await out.copyPages(src, pages.map(p => p - 1));
       copied.forEach(p => out.addPage(p));
       const bytes = await out.save();
-      downloadBytes(bytes, `pages-${rangeEl.value.replace(/\s/g,'')}.pdf`);
+      downloadBytes(bytes, `pages-${document.getElementById('ps-range').value.replace(/\s/g,'')}.pdf`);
       showStatus(`✅ Extracted ${pages.length} page(s) successfully`, 'success');
     } catch(e) { showStatus('Error: ' + e.message, 'error'); }
   });
 
-  clearBtn.addEventListener('click', () => { currentFile = null; info.classList.add('hidden'); drop.classList.remove('hidden'); rangeEl.value = ''; status.classList.add('hidden'); });
+  // Every N pages mode
+  document.getElementById('ps-split-every').addEventListener('click', async () => {
+    if (!currentFile) return;
+    const n = Math.max(1, parseInt(document.getElementById('ps-every-n').value) || 1);
+    const chunks = Math.ceil(pageCount / n);
+    showStatus(`Splitting into ${chunks} parts…`, 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      for (let c = 0; c < chunks; c++) {
+        const start = c * n;
+        const end = Math.min(start + n, pageCount);
+        const out = await PDFDocument.create();
+        const indices = Array.from({ length: end - start }, (_, i) => start + i);
+        const copied = await out.copyPages(src, indices);
+        copied.forEach(p => out.addPage(p));
+        const bytes = await out.save();
+        downloadBytes(bytes, `part-${c+1}-pages-${start+1}-${end}.pdf`);
+        await sleep(200); // small delay between downloads
+      }
+      showStatus(`✅ Split into ${chunks} part${chunks!==1?'s':''} — check your downloads`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
 
-  function parsePageRange(str, max) {
+  // Individual pages mode
+  document.getElementById('ps-split-individual').addEventListener('click', async () => {
+    if (!currentFile) return;
+    if (pageCount > 30) {
+      if (!confirm(`This will download ${pageCount} files. Continue?`)) return;
+    }
+    showStatus(`Downloading ${pageCount} pages…`, 'info');
+    try {
+      const { PDFDocument } = window.PDFLib;
+      const src = await PDFDocument.load(await currentFile.arrayBuffer(), { ignoreEncryption: true });
+      for (let i = 0; i < pageCount; i++) {
+        const out = await PDFDocument.create();
+        const [copied] = await out.copyPages(src, [i]);
+        out.addPage(copied);
+        const bytes = await out.save();
+        downloadBytes(bytes, `page-${i+1}.pdf`);
+        showStatus(`Downloading page ${i+1} of ${pageCount}…`, 'info');
+        await sleep(300);
+      }
+      showStatus(`✅ Downloaded ${pageCount} pages`, 'success');
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
+
+  document.getElementById('ps-clear').addEventListener('click', () => {
+    currentFile = null; pageCount = 0;
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+    document.getElementById('ps-range').value = '';
+  });
+
+  function parseRange(str, max) {
     const nums = new Set();
     str.split(',').forEach(part => {
       part = part.trim();
@@ -98,6 +216,8 @@
     return [...nums].sort((a,b) => a-b);
   }
 
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
   function showStatus(msg, type) {
     status.textContent = msg;
     status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
@@ -108,7 +228,7 @@
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url; a.download = name; a.click();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
   }
 
   function loadPdfLib() {

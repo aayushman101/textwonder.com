@@ -36,6 +36,11 @@ const homepageFaqs = [
   { q: 'What categories of tools are available?', a: `TextWonder has ${totalTools} tools across 10 categories: Text tools, PDF tools, Dev tools, calculators, unit converters, health tools, student utilities, color tools, data formatters, and document generators.` },
   { q: 'Do the tools work on mobile?', a: 'Yes. Every tool is fully responsive and works on smartphones and tablets without losing any functionality.' },
   { q: 'Do I need to install anything?', a: 'No. Everything runs directly in your browser. No app download, no browser extension, no dependencies.' },
+  { q: 'Can I use TextWonder tools offline?', a: 'Most tools work offline once the page has loaded, because all processing happens in your browser using JavaScript. Tools that use external APIs — such as certain text-to-speech voices — require an internet connection.' },
+  { q: 'What is the best free word counter online?', a: "TextWonder's Word Counter shows live word count, character count, sentence count, paragraph count, and estimated reading time as you type. It is completely free, requires no signup, and runs entirely in your browser." },
+  { q: 'How do I convert JSON to CSV for free?', a: "Use TextWonder's JSON to CSV converter — paste your JSON array, click Convert, and download the CSV instantly. No upload, no account, no size limits." },
+  { q: 'What is the best free PDF merger online?', a: "TextWonder's PDF Merger lets you upload multiple PDF files, reorder them, and download a single merged PDF — all in your browser. No file is sent to any server." },
+  { q: 'How do I format or validate JSON online?', a: "Use TextWonder's JSON Formatter tool. Paste your JSON and it instantly validates the syntax, pretty-prints the output with colour-coded indentation, and highlights any errors." },
 ];
 
 const faqSchema = {
@@ -268,17 +273,48 @@ const faqSchema = {
           <a href="/student" class="text-blue-400 hover:underline">student tools</a>,
           <a href="/color" class="text-pink-400 hover:underline">color & design tools</a>,
           <a href="/data" class="text-amber-400 hover:underline">data format converters</a>, and
-          <a href="/categories/document-generators" class="text-teal-400 hover:underline">document generators</a>.
+          <a href="/tools/invoice-generator" class="text-teal-400 hover:underline">document generators</a>.
           Every single tool runs entirely in your browser — no server-side processing, no uploads, no account required.
         </p>
         <p>
           Whether you need to <a href="/tools/word-counter" class="text-violet-400 hover:underline">count words</a>,
           <a href="/pdfwonder/pdf-merger" class="text-orange-400 hover:underline">merge PDF files</a>,
-          <a href="/devwonder/json-formatter" class="text-cyan-400 hover:underline">format JSON</a>,
-          <a href="/calc/emi-calculator" class="text-emerald-400 hover:underline">calculate EMI</a>, or
+          <a href="/devwonder/json-formatter" class="text-cyan-400 hover:underline">format and validate JSON</a>,
+          <a href="/calc/emi-calculator" class="text-emerald-400 hover:underline">calculate EMI</a>,
+          <a href="/data/json-to-csv" class="text-amber-400 hover:underline">convert JSON to CSV</a>, or
           <a href="/color/contrast-checker" class="text-pink-400 hover:underline">check color contrast</a>,
           there's a dedicated, fast tool here built for exactly that task.
         </p>
+        <p>
+          For students and professionals, TextWonder includes specialised tools: a <a href="/student/cgpa-calculator" class="text-blue-400 hover:underline">CGPA calculator</a>, <a href="/student/attendance-calculator" class="text-blue-400 hover:underline">attendance tracker</a>, <a href="/health/bmi-calculator" class="text-green-400 hover:underline">BMI calculator</a>, and <a href="/health/calorie-calculator" class="text-green-400 hover:underline">calorie counter</a>. Data teams can convert between formats instantly — <a href="/data/xml-to-json" class="text-amber-400 hover:underline">XML to JSON</a>, <a href="/data/csv-to-json" class="text-amber-400 hover:underline">CSV to JSON</a>, <a href="/data/yaml-to-json" class="text-amber-400 hover:underline">YAML to JSON</a> — all without writing a single line of code.
+        </p>
+        <p>
+          Every tool loads in under a second. There are no file size limits, no watermarks, and no ads. TextWonder is and will always remain free.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── Latest Blog Posts ──────────────────────────────────── -->
+    <section class="max-w-4xl mx-auto px-4 pb-14">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl font-bold text-white" style="font-family:'Space Grotesk',sans-serif;">Latest Guides</h2>
+        <a href="/blog" class="text-sm text-violet-400 hover:underline font-medium">View all guides →</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[
+          { slug: 'how-to-convert-text-to-voice', title: 'How to Convert Text to Voice Online Free', desc: 'Convert any text to speech in your browser instantly — no signup, no software needed.', cat: 'Text Utilities', color: '#7c3aed' },
+          { slug: 'xml-to-json-converter', title: 'XML to JSON Converter — Free Online Tool', desc: 'Paste XML and get clean JSON output instantly. Browser-based, no upload required.', cat: 'Data Converters', color: '#d97706' },
+          { slug: 'how-to-convert-json-to-excel', title: 'How to Convert JSON to Excel', desc: 'Step-by-step guide to converting JSON data to an Excel-readable spreadsheet format.', cat: 'Data Converters', color: '#d97706' },
+          { slug: 'csv-to-json-converter', title: 'CSV to JSON Converter — Free Online Tool', desc: 'Convert CSV files or pasted CSV data to valid JSON with one click.', cat: 'Data Converters', color: '#d97706' },
+          { slug: 'yaml-to-json-converter', title: 'YAML to JSON Converter — Free Online Tool', desc: 'Instantly convert YAML configuration files to JSON format online.', cat: 'Data Converters', color: '#d97706' },
+          { slug: 'how-to-convert-text-to-handwriting', title: 'How to Convert Text to Handwriting Online', desc: 'Four free methods to make typed text look like handwriting — fonts, Canva, Word, and AI.', cat: 'Text Utilities', color: '#7c3aed' },
+        ].map(post => (
+          <a href={`/blog/${post.slug}`} class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-slate-700 hover:-translate-y-0.5 transition-all hover:shadow-lg">
+            <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-3" style={`background:${post.color}18; color:${post.color}`}>{post.cat}</span>
+            <h3 class="text-white font-bold text-sm leading-snug mb-2 group-hover:text-violet-300 transition-colors" style="font-family:'Space Grotesk',sans-serif;">{post.title}</h3>
+            <p class="text-slate-500 text-xs leading-relaxed">{post.desc}</p>
+          </a>
+        ))}
       </div>
     </section>
 

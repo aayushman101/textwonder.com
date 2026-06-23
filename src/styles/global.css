@@ -76,3 +76,14 @@
 [data-theme="light"] .bg-violet-600 { color: #ffffff; }
 [data-theme="light"] .bg-violet-500 { color: #ffffff; }
 [data-theme="light"] .bg-emerald-600 { color: #ffffff; }
+
+/* Feedback / Tool Request section */
+[data-theme="light"] .feedback-section-outer {
+  background: linear-gradient(to bottom right, #f5f3ff, #eef2ff);
+  border-color: #c4b5fd;
+}
+[data-theme="light"] .feedback-section-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #ede9fe;
+  box-shadow: 0 1px 3px rgba(109, 40, 217, 0.08);
+}

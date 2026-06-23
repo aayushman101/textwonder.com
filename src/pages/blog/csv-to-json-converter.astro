@@ -1,0 +1,97 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert CSV to JSON online?', a: 'Paste your CSV data into TextWonder\'s CSV to JSON Converter, choose your delimiter (comma, semicolon, or tab), and click Convert. The first row is used as JSON object keys.' },
+  { q: 'What format does the CSV to JSON converter output?', a: 'An array of JSON objects — each CSV row becomes one object, with the header row values as the keys. For example, a row "Alice,30" with headers "name,age" becomes { "name": "Alice", "age": "30" }.' },
+  { q: 'Does the CSV to JSON converter handle quoted fields?', a: 'Yes. Quoted fields like "Smith, John" (with a comma inside) are handled correctly — the comma inside quotes is not treated as a delimiter.' },
+  { q: 'What if my CSV uses semicolons or tabs instead of commas?', a: 'Select the correct delimiter from the options: comma, semicolon, tab (TSV), or pipe. The converter will parse the CSV correctly.' },
+  { q: 'Can I convert an Excel file to JSON?', a: 'Save the Excel file as CSV first: File → Save As → CSV. Then paste the CSV into the converter. Alternatively, use File → Export → CSV from Google Sheets.' },
+];
+---
+
+<BlogLayout
+  title="CSV to JSON Converter Online Free — Instant Convertor"
+  description="Convert CSV to JSON online for free. Paste CSV data and get a JSON array of objects instantly. Handles headers, quoted fields, and custom delimiters. No signup needed."
+  canonical="/blog/csv-to-json-converter"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  Converting CSV to JSON lets you use spreadsheet data in JavaScript apps, APIs, and modern databases. TextWonder's CSV to JSON converter works directly in your browser — paste your CSV and get a JSON array in one click.
+</p>
+
+<a href="/data/csv-to-json" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">CSV to JSON Converter →</div>
+  <div class="cta-desc">Paste CSV data and get a JSON array of objects instantly. Handles headers, quoted fields, and comma/semicolon/tab delimiters. Free, browser-based.</div>
+</a>
+
+<h2>How to Convert CSV to JSON</h2>
+
+<ol>
+  <li>Open <a href="/data/csv-to-json">TextWonder's CSV to JSON Converter</a>.</li>
+  <li>Paste your CSV data into the input area. The first row should be headers (column names).</li>
+  <li>Select the delimiter: Comma (default), Semicolon, Tab, or Pipe.</li>
+  <li>Click <strong>Convert</strong>.</li>
+  <li>The JSON array appears on the right — copy it or download as a .json file.</li>
+</ol>
+
+<h2>What Does the Output Look Like?</h2>
+
+<p>
+  Given this CSV input:
+</p>
+
+<pre><code>name,age,city
+Alice,30,London
+Bob,25,Paris</code></pre>
+
+<p>The converter outputs:</p>
+
+<pre><code>[
+  &#123; "name": "Alice", "age": "30", "city": "London" &#125;,
+  &#123; "name": "Bob",   "age": "25", "city": "Paris"  &#125;
+]</code></pre>
+
+<p>Each CSV row becomes a JSON object with the header row values as keys.</p>
+
+<h2>Common Use Cases</h2>
+
+<ul>
+  <li><strong>API testing:</strong> Convert exported CSV data to JSON for testing API endpoints.</li>
+  <li><strong>Database import:</strong> Transform CSV exports from Excel/Google Sheets into JSON for MongoDB or other NoSQL databases.</li>
+  <li><strong>JavaScript apps:</strong> Feed CSV data into JavaScript applications as JSON arrays.</li>
+  <li><strong>Data migration:</strong> Convert legacy CSV data files to JSON for modern systems.</li>
+</ul>
+
+<h2>Converting Excel to JSON</h2>
+
+<p>Excel does not export JSON directly, but you can convert via CSV:</p>
+
+<ol>
+  <li>Open your Excel file.</li>
+  <li>Go to <strong>File → Save As → CSV (Comma delimited)</strong>.</li>
+  <li>Paste the CSV contents into the <a href="/data/csv-to-json">CSV to JSON converter</a>.</li>
+  <li>Copy the JSON output.</li>
+</ol>
+
+<p>For the reverse operation (JSON to CSV), see our <a href="/data/json-to-csv">JSON to CSV Converter</a>.</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

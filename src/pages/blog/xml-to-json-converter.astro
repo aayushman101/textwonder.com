@@ -1,0 +1,83 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert XML to JSON online?', a: 'Paste your XML into TextWonder\'s XML to JSON Converter and click Convert. The tool parses the XML and outputs clean, formatted JSON instantly — no software or signup needed.' },
+  { q: 'What happens to XML attributes when converting to JSON?', a: 'Attributes are included in the JSON with an "@" prefix. For example, <item id="5"> becomes { "@id": "5", ... }. This preserves all attribute data in the JSON output.' },
+  { q: 'What happens if an XML element appears multiple times?', a: 'Repeated sibling elements with the same tag name are automatically grouped into a JSON array. This handles RSS feeds and other XML with repeated nodes correctly.' },
+  { q: 'Can I convert XML namespaces to JSON?', a: 'Yes. Namespaced elements are included with their full qualified name (e.g. "ns:element") and namespace declarations appear as "@xmlns" attributes in the JSON.' },
+  { q: 'What is the difference between XML convertor and XML converter?', a: '"Convertor" and "converter" mean the same thing — both spellings are used. TextWonder\'s XML to JSON tool converts (or "convertors") XML documents to JSON format.' },
+];
+---
+
+<BlogLayout
+  title="XML to JSON Converter Online Free — Instant Convertor"
+  description="Convert XML to JSON online for free. Paste any XML document and get formatted JSON instantly. Handles attributes, nested elements, and repeated nodes. No signup needed."
+  canonical="/blog/xml-to-json-converter"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  XML to JSON conversion is needed for processing RSS feeds, SOAP API responses, legacy XML data, and config files in modern JavaScript environments. TextWonder's XML to JSON converter handles it in one click — no software, no signup.
+</p>
+
+<a href="/data/xml-to-json" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">XML to JSON Converter →</div>
+  <div class="cta-desc">Paste any XML document and get clean, formatted JSON instantly. Handles attributes, nested elements, arrays, and namespaces. Free, browser-based, no data sent anywhere.</div>
+</a>
+
+<h2>How to Convert XML to JSON Online</h2>
+
+<ol>
+  <li>Open <a href="/data/xml-to-json">TextWonder's XML to JSON Converter</a>.</li>
+  <li>Paste your XML into the input panel on the left.</li>
+  <li>Click <strong>Convert</strong>. The JSON output appears on the right.</li>
+  <li>Click <strong>Copy</strong> to copy the JSON, or <strong>Download</strong> to save it as a .json file.</li>
+</ol>
+
+<h2>How XML Elements Map to JSON</h2>
+
+<p>Understanding how XML structure converts to JSON helps you interpret the output:</p>
+
+<ul>
+  <li><strong>XML elements</strong> → JSON object keys</li>
+  <li><strong>XML attributes</strong> → JSON keys with "@" prefix (e.g. <code>id="5"</code> → <code>"@id": "5"</code>)</li>
+  <li><strong>Text content</strong> → <code>"#text"</code> key (or the value directly if no attributes/children)</li>
+  <li><strong>Repeated elements</strong> → JSON array (e.g. multiple <code>&lt;item&gt;</code> tags → <code>"item": [...]</code>)</li>
+  <li><strong>Nested elements</strong> → Nested JSON objects</li>
+</ul>
+
+<h2>Common XML to JSON Use Cases</h2>
+
+<ul>
+  <li><strong>RSS/Atom feeds:</strong> Parse feed XML and convert to JSON for use in JavaScript apps.</li>
+  <li><strong>SOAP API responses:</strong> Convert SOAP envelope XML to JSON for easier data extraction.</li>
+  <li><strong>Config files:</strong> Convert XML configs (Maven pom.xml, Spring XML) to JSON for tooling.</li>
+  <li><strong>SVG data:</strong> Extract structured data from SVG XML files.</li>
+  <li><strong>Legacy systems:</strong> Transform XML database exports to JSON for modern APIs.</li>
+</ul>
+
+<h2>Does It Work with Large XML Files?</h2>
+
+<p>
+  The converter uses your browser's built-in DOMParser for XML parsing — it works for typical XML files and API responses. For very large XML files (tens of megabytes), performance depends on your device. For production-scale conversion, consider server-side tools like Python's <code>xmltodict</code> or Node.js's <code>fast-xml-parser</code>.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

@@ -1,0 +1,119 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert a string to JSON?', a: 'In JavaScript, use JSON.parse(yourString) to convert a JSON string to a JavaScript object. To do it online, paste the string into TextWonder\'s JSON Formatter — it parses the string and shows the formatted JSON object.' },
+  { q: 'What is a JSON string vs a JSON object?', a: 'A JSON string is text that looks like JSON but is stored as a string variable (e.g. \'{"name":"Alice"}\'). A JSON object is the parsed JavaScript value you can work with. JSON.parse() converts the string to the object.' },
+  { q: 'How do I convert a JavaScript object to JSON?', a: 'Use JSON.stringify(yourObject) in JavaScript. This converts a JavaScript object to a JSON string. For example, JSON.stringify({name:"Alice",age:30}) returns \'{"name":"Alice","age":30}\'.' },
+  { q: 'Why does JSON.parse() throw an error?', a: 'Common reasons: the string is not valid JSON (missing quotes around keys, trailing commas, single quotes instead of double quotes), or the string contains escaped characters that need unescaping first. Use TextWonder\'s JSON Formatter to spot the syntax error.' },
+  { q: 'How do I convert an object to JSON string in Python?', a: 'Use import json and json.dumps(your_dict) to convert a Python dict to a JSON string. Use json.loads(your_string) to parse a JSON string back to a dict.' },
+];
+---
+
+<BlogLayout
+  title="String to JSON Converter — Online JSON Parse & Format Tool"
+  description="Convert a JSON string to a formatted JSON object online free. Use JSON.parse() equivalent in your browser — validates, parses, and beautifies any JSON string instantly."
+  canonical="/blog/string-to-json-converter"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  "String to JSON" means parsing a text string that contains JSON syntax into an actual JSON object you can work with. Whether you need to parse a raw API response string, decode a minified JSON payload, or convert a JavaScript object back to JSON — here are the best free methods.
+</p>
+
+<h2>Method 1: Online JSON Formatter (No Code Needed)</h2>
+
+<p>
+  If you have a raw JSON string and want to see it as a formatted, readable object:
+</p>
+
+<ol>
+  <li>Open <a href="/devwonder/json-formatter">TextWonder's JSON Formatter</a>.</li>
+  <li>Paste your JSON string into the input box.</li>
+  <li>Click <strong>Format</strong>. The tool parses the string and outputs a beautifully indented JSON object.</li>
+  <li>If the string is invalid JSON, the tool highlights the syntax error.</li>
+</ol>
+
+<a href="/devwonder/json-formatter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">JSON Formatter & Parser →</div>
+  <div class="cta-desc">Paste any JSON string — minified, escaped, or raw API response — and get a cleanly formatted, readable JSON object. Validates syntax and highlights errors. Free, browser-based.</div>
+</a>
+
+<h2>Method 2: JSON.parse() in JavaScript</h2>
+
+<p>
+  In JavaScript, convert a JSON string to an object with:
+</p>
+
+<pre><code>const jsonString = '&#123;"name":"Alice","age":30&#125;';
+const obj = JSON.parse(jsonString);
+console.log(obj.name); // "Alice"</code></pre>
+
+<p>
+  Always wrap <code>JSON.parse()</code> in a try/catch to handle invalid strings:
+</p>
+
+<pre><code>try &#123;
+  const obj = JSON.parse(jsonString);
+  // use obj here
+&#125; catch (e) &#123;
+  console.error('Invalid JSON:', e.message);
+&#125;</code></pre>
+
+<h2>Method 3: Object to JSON String (JSON.stringify)</h2>
+
+<p>
+  To convert a JavaScript object <em>to</em> a JSON string:
+</p>
+
+<pre><code>const obj = &#123; name: "Alice", age: 30 &#125;;
+const jsonString = JSON.stringify(obj, null, 2);
+// Result: '&#123;\n  "name": "Alice",\n  "age": 30\n&#125;'</code></pre>
+
+<p>
+  <code>null, 2</code> adds 2-space indentation. Use <code>null, 0</code> (or just <code>JSON.stringify(obj)</code>) for compact/minified output.
+</p>
+
+<h2>Method 4: Python — json.loads() and json.dumps()</h2>
+
+<p>In Python:</p>
+
+<pre><code>import json
+
+# String → Python dict (equivalent to JSON object)
+data = json.loads('&#123;"name": "Alice", "age": 30&#125;')
+print(data["name"])  # Alice
+
+# Python dict → JSON string
+json_string = json.dumps(data, indent=2)
+print(json_string)</code></pre>
+
+<h2>Why Is My JSON String Invalid?</h2>
+
+<p>Common reasons <code>JSON.parse()</code> fails:</p>
+
+<ul>
+  <li><strong>Single quotes:</strong> JSON requires double quotes — <code>'name'</code> is invalid, <code>"name"</code> is correct.</li>
+  <li><strong>Trailing commas:</strong> <code>[1, 2, 3,]</code> is invalid JSON (trailing comma after last item).</li>
+  <li><strong>Unquoted keys:</strong> <code>&#123;name: "Alice"&#125;</code> is invalid — keys must be quoted: <code>&#123;"name": "Alice"&#125;</code>.</li>
+  <li><strong>Double-escaped backslashes:</strong> Strings received from APIs may be double-encoded. Use the <a href="/devwonder/json-formatter">JSON Formatter</a> to spot the issue.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

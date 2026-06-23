@@ -21,8 +21,8 @@ const toolsForSearch = getGlobalSearchIndex();
   <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
     <!-- Logo -->
     <a href="/" class="flex items-center gap-2 group shrink-0">
-      <span class="text-2xl font-bold text-white group-hover:text-violet-400 transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
-        Text<span class="text-violet-500">Wonder</span>
+      <span class="text-2xl font-bold text-white transition-opacity group-hover:opacity-85" style="font-family: 'Space Grotesk', sans-serif;">
+        Text<span style="background: linear-gradient(to right, #2563eb, #4f46e5, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Wonder</span>
       </span>
     </a>
 
@@ -42,8 +42,8 @@ const toolsForSearch = getGlobalSearchIndex();
             {SECTIONS.map(s => (
               <a href={s.path}
                 class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-slate-800 transition-all group">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105" 
-                  style={`background:rgba(${s.accentRgb},0.08); border: 1px solid rgba(${s.accentRgb},0.2)`}>
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105"
+                  style={`background:rgba(${s.accentRgb},0.15); border: 1px solid rgba(${s.accentRgb},0.35)`}>
                   {s.icon}
                 </div>
                 <div class="min-w-0">

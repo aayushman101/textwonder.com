@@ -126,8 +126,8 @@ const faqSchema = {
             style={`--brand-color:${s.color}; --tw-shadow-color:rgba(${s.accentRgb},0.15);`}>
             
             <div class="flex items-center justify-between w-full mb-3">
-              <div class="w-8 h-8 rounded-lg flex items-center justify-center text-lg transition-transform group-hover:scale-105 shrink-0" 
-                style={`background:rgba(${s.accentRgb},0.08); border:1px solid rgba(${s.accentRgb},0.18)`}>
+              <div class="w-8 h-8 rounded-lg flex items-center justify-center text-lg transition-transform group-hover:scale-105 shrink-0"
+                style={`background:rgba(${s.accentRgb},0.15); border:1px solid rgba(${s.accentRgb},0.35)`}>
                 {s.icon}
               </div>
               <span class="text-[10px] px-1.5 py-0.5 rounded-full font-bold shrink-0" 
@@ -198,7 +198,7 @@ const faqSchema = {
                   style={`--brand-color:${s.color};`}>
                   <div class="flex items-start justify-between mb-2">
                     <h4 class="text-white font-bold text-base transition-colors duration-200">{t.name}</h4>
-                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs opacity-60 shrink-0" style={`background:rgba(${s.accentRgb},0.08); color:${s.color}`}>
+                    <div class="w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0" style={`background:rgba(${s.accentRgb},0.15); color:${s.color}; border:1px solid rgba(${s.accentRgb},0.28)`}>
                       {s.icon}
                     </div>
                   </div>

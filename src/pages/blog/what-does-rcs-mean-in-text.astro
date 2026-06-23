@@ -1,0 +1,102 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does RCS mean in text messaging?', a: 'RCS stands for Rich Communication Services. It is the modern replacement for SMS that supports read receipts, typing indicators, high-quality media sharing, group chats, and reactions — similar to iMessage but working across all Android phones.' },
+  { q: 'What is the difference between SMS, RCS, and iMessage?', a: 'SMS is the old standard — text only, no read receipts, limited to 160 characters. RCS is the upgraded standard with modern features. iMessage is Apple\'s own messaging system that only works between Apple devices. RCS works across Android phones and now between Android and iPhone.' },
+  { q: 'Does RCS work on iPhone?', a: 'Yes, as of iOS 18 Apple added RCS support. iPhone users can now exchange RCS messages with Android users, getting features like read receipts and higher quality photo sharing in those conversations.' },
+  { q: 'How do I know if I am using RCS?', a: 'On Android (Google Messages): look for "Chat" features in a conversation — if you see read receipts and typing bubbles, you are on RCS. On iPhone (iOS 18+): green bubble conversations with an Android user may show RCS features if both sides support it.' },
+  { q: 'Does RCS cost extra?', a: 'No. RCS uses your internet connection (Wi-Fi or mobile data), not your SMS allowance. There is no extra charge beyond your normal data plan.' },
+  { q: 'Is RCS secure and encrypted?', a: 'Google Messages uses end-to-end encryption for RCS chats between two Google Messages users. However, RCS encryption support varies by carrier and app — it is not universally encrypted the way iMessage is.' },
+];
+---
+
+<BlogLayout
+  title="What Does RCS Mean in Text Messaging? — Explained Simply"
+  description="RCS (Rich Communication Services) is the modern upgrade to SMS — adding read receipts, typing indicators, high-res media, and reactions. Learn what RCS means and how it works."
+  canonical="/blog/what-does-rcs-mean-in-text"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Tech Explained"
+  faqs={faqs}
+>
+
+<p>
+  You have seen it mentioned in phone settings, messaging apps, or tech news: <strong>RCS</strong>. But what does it actually mean for your text messages? This guide explains RCS in plain English — what it is, what it adds, and how it differs from regular texting.
+</p>
+
+<h2>What is RCS?</h2>
+
+<p>
+  <strong>RCS stands for Rich Communication Services.</strong> It is an industry-standard messaging protocol designed to replace the decades-old SMS (Short Message Service) standard. Think of RCS as what SMS would look like if it were invented today — with all the features people expect from modern messaging apps.
+</p>
+
+<p>
+  Where SMS was designed for simple 160-character text messages sent over the phone network, RCS sends messages over the internet (Wi-Fi or mobile data), unlocking a much richer experience.
+</p>
+
+<h2>What Features Does RCS Add?</h2>
+
+<p>RCS messaging brings these features that SMS cannot offer:</p>
+<ul>
+  <li><strong>Read receipts</strong> — know when your message has been read</li>
+  <li><strong>Typing indicators</strong> — see when the other person is writing a reply</li>
+  <li><strong>High-quality photos and videos</strong> — no more compressed, blurry MMS images</li>
+  <li><strong>Reactions</strong> — react to messages with emoji (thumbs up, heart, etc.)</li>
+  <li><strong>Group chats</strong> — proper group messaging with names and admin controls</li>
+  <li><strong>Message replies</strong> — reply to a specific message in a thread</li>
+  <li><strong>File sharing</strong> — send documents and larger files</li>
+  <li><strong>No character limit</strong> — unlike SMS's 160-character cap</li>
+  <li><strong>Works over Wi-Fi</strong> — send messages even without a cellular signal</li>
+</ul>
+
+<h2>RCS vs SMS vs iMessage — What is the Difference?</h2>
+
+<ul>
+  <li><strong>SMS:</strong> The original text message standard. Works on every phone worldwide. Text only (or compressed MMS for media). No read receipts. Limited to 160 characters per message segment. Delivered via cellular network.</li>
+  <li><strong>iMessage:</strong> Apple's proprietary messaging system. Works only between Apple devices (iPhone, iPad, Mac). Blue bubbles. End-to-end encrypted. Has all modern features.</li>
+  <li><strong>RCS:</strong> The open standard upgrade to SMS. Works across Android phones and, since iOS 18, between Android and iPhone. Green/blue bubbles depending on the app. Features depend on carrier and app support.</li>
+</ul>
+
+<h2>Does RCS Work on iPhone?</h2>
+
+<p>
+  Yes — <strong>Apple added RCS support in iOS 18</strong> (released September 2024). Before this, iPhone only supported basic SMS for non-Apple users. Now, when an iPhone user messages an Android user who also has RCS enabled, features like read receipts and high-quality media sharing are available in that green-bubble conversation.
+</p>
+
+<h2>How to Enable RCS on Android</h2>
+
+<ol>
+  <li>Open <strong>Google Messages</strong> (the default messaging app on most Android phones).</li>
+  <li>Tap your profile picture → <strong>Messages Settings.</strong></li>
+  <li>Tap <strong>"Chat features"</strong> or <strong>"RCS chats."</strong></li>
+  <li>Toggle <strong>"Enable chat features"</strong> on.</li>
+  <li>Wait for verification — Google Messages will connect to RCS servers via your carrier.</li>
+</ol>
+
+<h2>Is RCS Safe?</h2>
+
+<p>
+  Google Messages encrypts RCS conversations end-to-end between two Google Messages users on Android. However, RCS encryption is not universally guaranteed — it depends on both parties using a compatible app. Carrier-native RCS implementations may not be encrypted. For maximum privacy, dedicated encrypted apps like Signal are more reliable.
+</p>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Word Counter & Character Counter →</div>
+  <div class="cta-desc">Count words, characters, and sentences in any text. Free, instant, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

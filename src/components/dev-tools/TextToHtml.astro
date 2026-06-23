@@ -1,0 +1,102 @@
+---
+---
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-3 items-end">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Wrap paragraphs with</label>
+      <select id="tth-tag" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-slate-200 text-sm focus:outline-none focus:border-cyan-500">
+        <option value="p">&lt;p&gt; tags</option>
+        <option value="div">&lt;div&gt; tags</option>
+        <option value="li">&lt;li&gt; + &lt;ul&gt;</option>
+      </select>
+    </div>
+    <div class="flex items-center gap-2 pb-2">
+      <input type="checkbox" id="tth-escape" class="w-4 h-4 rounded" />
+      <label for="tth-escape" class="text-sm text-slate-400">Escape special chars (&amp; &lt; &gt; &quot;)</label>
+    </div>
+    <div class="flex items-center gap-2 pb-2">
+      <input type="checkbox" id="tth-links" class="w-4 h-4 rounded" checked />
+      <label for="tth-links" class="text-sm text-slate-400">Auto-link URLs</label>
+    </div>
+    <button id="tth-convert" class="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg text-sm font-medium transition-colors">Convert</button>
+    <button id="tth-clear" class="px-4 py-2.5 bg-[var(--bg-surface-hover)] border border-slate-700 text-slate-400 rounded-lg text-sm transition-colors">Clear</button>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Plain text input</label>
+      <textarea id="tth-input" rows="14" placeholder="Paste plain text here. Each paragraph (separated by blank lines) becomes a separate HTML element..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 text-sm resize-y focus:outline-none focus:border-cyan-500 leading-relaxed"></textarea>
+    </div>
+    <div class="space-y-1">
+      <div class="flex items-center justify-between">
+        <label class="text-xs text-slate-500">HTML output</label>
+        <button id="tth-copy" class="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">Copy</button>
+      </div>
+      <textarea id="tth-output" rows="14" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-200 font-mono text-sm resize-y focus:outline-none leading-relaxed"></textarea>
+    </div>
+  </div>
+
+  <div id="tth-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function () {
+  const input = document.getElementById('tth-input');
+  const output = document.getElementById('tth-output');
+  const status = document.getElementById('tth-status');
+
+  function escapeHtml(text) {
+    return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function autoLink(text) {
+    return text.replace(/(https?:\/\/[^\s<>"']+)/g, '<a href="$1" rel="noopener noreferrer">$1</a>');
+  }
+
+  function showStatus(msg, isError) {
+    status.textContent = msg;
+    status.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-green-400');
+    status.classList.remove('hidden');
+  }
+
+  document.getElementById('tth-convert').addEventListener('click', () => {
+    const raw = input.value;
+    if (!raw.trim()) { showStatus('Enter some text first.', true); return; }
+
+    const tag = document.getElementById('tth-tag').value;
+    const escape = document.getElementById('tth-escape').checked;
+    const links = document.getElementById('tth-links').checked;
+
+    const paragraphs = raw.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+
+    let html;
+    if (tag === 'li') {
+      const items = paragraphs.map(p => {
+        let t = escape ? escapeHtml(p) : p;
+        if (links) t = autoLink(t);
+        return `  <li>${t}</li>`;
+      });
+      html = `<ul>\n${items.join('\n')}\n</ul>`;
+    } else {
+      const blocks = paragraphs.map(p => {
+        let t = escape ? escapeHtml(p) : p;
+        if (links) t = autoLink(t);
+        return `<${tag}>${t}</${tag}>`;
+      });
+      html = blocks.join('\n');
+    }
+
+    output.value = html;
+    showStatus(`✅ Converted ${paragraphs.length} paragraph${paragraphs.length !== 1 ? 's' : ''}.`, false);
+  });
+
+  document.getElementById('tth-copy').addEventListener('click', () => {
+    if (output.value) { navigator.clipboard.writeText(output.value); showStatus('Copied!', false); }
+  });
+
+  document.getElementById('tth-clear').addEventListener('click', () => {
+    input.value = ''; output.value = '';
+    status.classList.add('hidden');
+  });
+})();
+</script>

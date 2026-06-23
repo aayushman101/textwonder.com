@@ -1,0 +1,103 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert Markdown to PDF online for free?', a: 'Use a two-step approach on TextWonder: first paste your Markdown into the Markdown Previewer (DevWonder) to see the rendered HTML, then copy the rendered text and convert it to PDF using the Text to PDF tool.' },
+  { q: 'Is there a direct Markdown to PDF tool?', a: 'Most browser-based tools convert plain text to PDF. For Markdown with formatting preserved, VS Code with a PDF export extension, or Pandoc (command-line) give the best results.' },
+  { q: 'Does the Markdown Previewer support tables and code blocks?', a: 'Yes. DevWonder\'s Markdown Previewer supports full GitHub Flavored Markdown including tables, fenced code blocks, task lists, strikethrough, and auto-links.' },
+  { q: 'Can I convert a .md file to PDF?', a: 'Open the .md file in a text editor, copy the Markdown content, paste it into the Markdown Previewer to render it, then use your browser\'s print-to-PDF function on the preview.' },
+  { q: 'What is the best free tool to convert Markdown to PDF?', a: 'For preserving Markdown formatting in PDF: use Pandoc (free, command-line) or VS Code with the "Markdown PDF" extension. For quick conversions without software, use the browser print-to-PDF method on any Markdown previewer.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Markdown to PDF Online Free — 3 Methods"
+  description="Convert Markdown (.md) files to PDF online for free. Use browser print-to-PDF, a Markdown previewer, or Pandoc. Step-by-step guide with all methods explained."
+  canonical="/blog/how-to-convert-markdown-to-pdf-online-free"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Document Guide"
+  faqs={faqs}
+>
+
+<p>
+  Need to turn a Markdown file into a PDF? Whether it is README documentation, a formatted report written in Markdown, or notes from a note-taking app, converting Markdown to PDF preserves the formatting for sharing or printing. Here are the best free methods.
+</p>
+
+<h2>Method 1: Markdown Previewer + Browser Print to PDF (No Install)</h2>
+
+<p>
+  This method uses our free <a href="/devwonder/markdown-previewer">Markdown Previewer</a> and your browser's built-in print-to-PDF feature. No software needed.
+</p>
+
+<ol>
+  <li>Open the <a href="/devwonder/markdown-previewer">DevWonder Markdown Previewer</a>.</li>
+  <li>Paste your Markdown content into the left panel.</li>
+  <li>The right panel shows the rendered HTML output with proper headings, tables, code blocks, and lists.</li>
+  <li>Right-click the preview panel and choose <strong>Print</strong> (or press Ctrl+P / Cmd+P).</li>
+  <li>In the print dialog, set the <strong>Destination</strong> to <strong>"Save as PDF"</strong>.</li>
+  <li>Click <strong>Save</strong>. Your Markdown is now a PDF with formatting preserved.</li>
+</ol>
+
+<a href="/devwonder/markdown-previewer" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Markdown Previewer — Render Markdown Instantly →</div>
+  <div class="cta-desc">Paste Markdown and see the rendered preview. Supports GitHub Flavored Markdown — tables, code blocks, task lists. Free, browser-based.</div>
+</a>
+
+<h2>Method 2: VS Code + Markdown PDF Extension (Best Quality)</h2>
+
+<p>
+  If you want the highest quality PDF with perfect formatting, <strong>VS Code with the "Markdown PDF" extension</strong> is the best free option for regular use.
+</p>
+
+<ol>
+  <li>Install <a href="https://code.visualstudio.com" rel="noopener noreferrer" target="_blank">VS Code</a> (free).</li>
+  <li>Open VS Code → Extensions (Ctrl+Shift+X) → search <strong>"Markdown PDF"</strong> → Install.</li>
+  <li>Open your .md file in VS Code.</li>
+  <li>Press <strong>Ctrl+Shift+P</strong> to open the command palette.</li>
+  <li>Type <strong>"Markdown PDF: Export (pdf)"</strong> and press Enter.</li>
+  <li>The PDF is saved in the same folder as your .md file.</li>
+</ol>
+
+<h2>Method 3: Pandoc (Command Line — Best for Automation)</h2>
+
+<p>
+  <strong>Pandoc</strong> is the gold standard for document conversion and handles Markdown to PDF with precise control over styling. It is free and open source.
+</p>
+
+<ol>
+  <li>Install Pandoc from <a href="https://pandoc.org" rel="noopener noreferrer" target="_blank">pandoc.org</a> (also install a LaTeX distribution like MiKTeX for PDF output).</li>
+  <li>Open a terminal in the folder containing your .md file.</li>
+  <li>Run: <code>pandoc your-file.md -o output.pdf</code></li>
+  <li>The PDF is created in the same directory.</li>
+</ol>
+
+<p>You can customize the output with flags — for example, add margins with <code>-V geometry:margin=2cm</code> or use a custom CSS template.</p>
+
+<h2>Method 4: Plain Text to PDF (Simplest, No Formatting)</h2>
+
+<p>
+  If you just need the text content without Markdown formatting in the PDF, use our <a href="/pdfwonder/text-to-pdf">Text to PDF converter</a>. Paste your Markdown source text — the result will show the raw Markdown syntax but is the quickest approach for plain content.
+</p>
+
+<a href="/pdfwonder/text-to-pdf" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Text to PDF Converter →</div>
+  <div class="cta-desc">Convert any plain text to a PDF instantly. Choose font, size, and margins. No upload, no signup.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

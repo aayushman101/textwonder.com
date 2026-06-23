@@ -21,7 +21,7 @@
   <text x="600" y="240" font-family="system-ui,-apple-system,sans-serif" font-size="88" font-weight="700" text-anchor="middle" fill="#ffffff" letter-spacing="-2">Text<tspan fill="#7c3aed">Wonder</tspan></text>
 
   <!-- Tagline -->
-  <text x="600" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" text-anchor="middle" fill="#94a3b8">Free Browser-Based Text Tools — Private, No Signup</text>
+  <text x="600" y="310" font-family="system-ui,-apple-system,sans-serif" font-size="30" font-weight="400" text-anchor="middle" fill="#94a3b8">Free Browser-Based Tools — Text, PDF, Dev, Calculator &amp; More</text>
 
   <!-- Divider -->
   <rect x="480" y="348" width="240" height="2" fill="#1e293b" rx="1"/>

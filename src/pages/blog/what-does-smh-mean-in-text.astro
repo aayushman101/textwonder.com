@@ -1,0 +1,106 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does SMH mean in text?', a: 'SMH stands for "Shaking My Head." It expresses disbelief, disappointment, or disapproval — the digital equivalent of shaking your head at something.' },
+  { q: 'Is SMH positive or negative?', a: 'SMH is almost always negative or sarcastic. It signals that something is stupid, disappointing, embarrassing, or unbelievable.' },
+  { q: 'What does SMH mean on TikTok?', a: 'On TikTok, SMH is used in comments to react to something cringe-worthy, embarrassing, or disappointing. It means the same thing: "Shaking My Head."' },
+  { q: 'What is the difference between SMH and facepalm?', a: 'Both express the same feeling — disbelief or disappointment. SMH is text-based slang; facepalm (🤦) is the emoji equivalent. They are used interchangeably.' },
+  { q: 'Can SMH be used sarcastically?', a: 'Yes. "She actually remembered my birthday smh" can be sarcastic surprise (in a good way). Context determines tone.' },
+];
+---
+
+<BlogLayout
+  title="What Does SMH Mean in Text? — Definition & Examples"
+  description="SMH means 'Shaking My Head' in text — expressing disbelief, disappointment, or disapproval. See examples and learn how to use it correctly."
+  canonical="/blog/what-does-smh-mean-in-text"
+  date="2026-06-23"
+  readTime="3 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  You have probably seen <strong>SMH</strong> dozens of times in texts, comments, and social media posts. It is one of the oldest and most widely used pieces of internet slang. Here is exactly what it means and how to use it.
+</p>
+
+<h2>SMH Meaning: "Shaking My Head"</h2>
+
+<p>
+  SMH stands for <strong>"Shaking My Head."</strong> It is used to express disbelief, disappointment, embarrassment, or disapproval — essentially the text equivalent of physically shaking your head at something you cannot believe.
+</p>
+
+<p>Think of it as a sigh in text form. When something is so stupid, unfortunate, or face-palm-worthy that words are not enough, people type SMH.</p>
+
+<h2>How SMH Is Used — Real Examples</h2>
+
+<p><strong>Expressing disappointment:</strong></p>
+<ul>
+  <li>"He showed up two hours late with no apology. SMH."</li>
+  <li>"They cancelled the concert the day before. SMH at this organisation."</li>
+</ul>
+
+<p><strong>Reacting to something embarrassing:</strong></p>
+<ul>
+  <li>"Did you see him trip on stage in front of everyone? SMH"</li>
+  <li>"She texted her boss instead of her friend. SMH"</li>
+</ul>
+
+<p><strong>Disapproving of a decision:</strong></p>
+<ul>
+  <li>"They raised prices again. SMH these companies"</li>
+  <li>"He spent his rent money on sneakers. Smh bro"</li>
+</ul>
+
+<p><strong>Reacting to something unbelievable:</strong></p>
+<ul>
+  <li>"People still believe the earth is flat smh"</li>
+  <li>"She actually cheated on him. SMH I can't."</li>
+</ul>
+
+<h2>SMH Variations You'll See</h2>
+
+<ul>
+  <li><strong>smh</strong> — lowercase, casual, most common</li>
+  <li><strong>SMH</strong> — all caps, more emphatic</li>
+  <li><strong>smh my head</strong> — "Shaking My Head My Head" — a deliberate redundant joke that became popular online</li>
+  <li><strong>smfh</strong> — more intense version with a profanity added in the middle</li>
+</ul>
+
+<h2>SMH vs. Other Reaction Slang</h2>
+
+<ul>
+  <li><strong>SMH</strong> — disappointment / disbelief (Shaking My Head)</li>
+  <li><strong>NGL</strong> — being honest (Not Gonna Lie)</li>
+  <li><strong>PMO</strong> — frustration (Pisses Me Off) or "Put Me On"</li>
+  <li><strong>IKR</strong> — agreement with disbelief (I Know Right)</li>
+  <li><strong>WTF</strong> — shock or confusion</li>
+  <li><strong>🤦</strong> — facepalm emoji, same meaning as SMH</li>
+</ul>
+
+<h2>Where Did SMH Come From?</h2>
+
+<p>
+  SMH has been used in internet forums and early chat rooms since at least the early 2000s. It gained massive popularity with the rise of Twitter, where character limits made short abbreviations essential. Today it appears across every platform — from SMS to Instagram to TikTok comments.
+</p>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, sentences, and reading level. Free, instant, no signup.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

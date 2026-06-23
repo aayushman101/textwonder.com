@@ -1,0 +1,134 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert audio to text for free?', a: 'Use Google Docs Voice Typing (free, built-in), YouTube auto-captions, or free tiers of tools like Otter.ai or Whisper (open-source). For shorter audio, Google Docs Voice Typing is the fastest no-cost option.' },
+  { q: 'What is the most accurate free audio to text tool?', a: 'OpenAI Whisper is considered the most accurate free transcription model. It is open-source and runs locally. For a no-install option, Otter.ai offers a free tier with good accuracy.' },
+  { q: 'Can Google Docs convert audio to text?', a: 'Yes. Google Docs has a built-in Voice Typing feature (Tools → Voice Typing) that transcribes speech from your microphone in real time. It is free and reasonably accurate for clear speech.' },
+  { q: 'How do I transcribe a video or audio file to text?', a: 'Upload the file to YouTube as unlisted and use YouTube\'s auto-captions. Or use a free tool like Otter.ai (upload audio) or run OpenAI Whisper locally on your computer.' },
+  { q: 'Is there an offline audio to text tool?', a: 'Yes. OpenAI Whisper is a free, open-source transcription model that runs entirely offline on your computer. It supports 99 languages and works with audio and video files.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Audio to Text Free — 5 Best Methods"
+  description="Learn how to convert audio recordings, voice memos, or video files to text for free. Covers Google Docs Voice Typing, YouTube captions, Otter.ai, and OpenAI Whisper."
+  canonical="/blog/how-to-convert-audio-to-text"
+  date="2026-06-23"
+  readTime="6 min read"
+  category="Productivity Guide"
+  faqs={faqs}
+>
+
+<p>
+  Converting audio to text — also called transcription — is useful for meetings, interviews, podcasts, lectures, and voice memos. Whether you need it done in real time or by uploading a file, there are several free and low-cost ways to do it. Here are the best methods available today.
+</p>
+
+<h2>Method 1: Google Docs Voice Typing (Free, Real-Time)</h2>
+
+<p>
+  Google Docs has a built-in <strong>Voice Typing</strong> feature that transcribes speech from your microphone in real time. It is completely free and requires only a Google account.
+</p>
+
+<ol>
+  <li>Open <a href="https://docs.google.com" rel="noopener noreferrer" target="_blank">Google Docs</a> and create a new document.</li>
+  <li>Go to <strong>Tools → Voice Typing</strong> (or press Ctrl+Shift+S).</li>
+  <li>A microphone icon appears. Click it to start recording.</li>
+  <li>Speak or play your audio near the microphone — Google transcribes it in real time.</li>
+  <li>Click the microphone again to stop.</li>
+</ol>
+
+<p><strong>Best for:</strong> Short audio, live meetings, dictating notes. Not ideal for pre-recorded audio files.</p>
+
+<h2>Method 2: YouTube Auto-Captions (Free, Audio/Video Files)</h2>
+
+<p>
+  YouTube automatically transcribes any video you upload. You can use this to transcribe audio files too:
+</p>
+
+<ol>
+  <li>Upload your audio or video file to YouTube as <strong>Unlisted</strong> (so only you can see it).</li>
+  <li>Wait a few minutes — YouTube generates automatic captions.</li>
+  <li>Go to <strong>YouTube Studio → Subtitles → your video → Auto-generated captions.</strong></li>
+  <li>Click the three-dot menu and choose <strong>Download</strong> (.srt or .vtt format) — or open the transcript and copy the text.</li>
+</ol>
+
+<p><strong>Best for:</strong> Audio and video files up to 15 hours. Free and surprisingly accurate for clear speech.</p>
+
+<h2>Method 3: Otter.ai (Best Free Tier for Upload)</h2>
+
+<p>
+  <a href="https://otter.ai" rel="noopener noreferrer" target="_blank">Otter.ai</a> is a dedicated transcription service with a free tier that allows importing audio files:
+</p>
+<ul>
+  <li><strong>Free plan:</strong> 300 minutes of transcription per month, 3 audio imports per month.</li>
+  <li>Supports MP3, MP4, WAV, M4A formats.</li>
+  <li>Generates a searchable transcript with speaker labels.</li>
+  <li>Export as .txt or .docx.</li>
+</ul>
+
+<p><strong>Best for:</strong> Meeting recordings, interviews, and anything under 300 minutes per month where you want a clean, searchable transcript.</p>
+
+<h2>Method 4: OpenAI Whisper (Free, Offline, Most Accurate)</h2>
+
+<p>
+  <strong>Whisper</strong> is an open-source speech-to-text model released by OpenAI. It runs entirely on your computer (no internet required after download) and is widely considered the most accurate free transcription tool available.
+</p>
+
+<ul>
+  <li>Supports 99 languages.</li>
+  <li>Works with audio and video files (MP3, WAV, MP4, M4A, etc.).</li>
+  <li>Completely free and private — nothing leaves your device.</li>
+  <li>Requires Python and a terminal to run.</li>
+</ul>
+
+<p>Basic usage:</p>
+<ol>
+  <li>Install Python and run: <code>pip install openai-whisper</code></li>
+  <li>Run: <code>whisper your-audio-file.mp3 --language English</code></li>
+  <li>Whisper saves the transcript as .txt, .srt, and .vtt files in the same folder.</li>
+</ol>
+
+<p><strong>Best for:</strong> Anyone comfortable with the command line who needs accurate transcription of longer recordings.</p>
+
+<h2>Method 5: Microsoft Word Dictate (Free, Real-Time)</h2>
+
+<p>
+  Microsoft Word (Microsoft 365) has a built-in <strong>Dictate</strong> feature similar to Google Docs Voice Typing:
+</p>
+<ol>
+  <li>Open Word online or the desktop app.</li>
+  <li>Go to <strong>Home → Dictate.</strong></li>
+  <li>Click the microphone and speak or play audio near your microphone.</li>
+  <li>Word transcribes in real time.</li>
+</ol>
+
+<h2>Comparison: Which Tool to Choose?</h2>
+
+<ul>
+  <li><strong>Real-time, free:</strong> Google Docs Voice Typing or Microsoft Word Dictate</li>
+  <li><strong>Upload a file, free:</strong> YouTube auto-captions or Otter.ai (free tier)</li>
+  <li><strong>Best accuracy, fully offline:</strong> OpenAI Whisper</li>
+  <li><strong>Best paid option:</strong> Otter.ai Pro, Rev, or Descript for professional transcription</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">After transcribing, paste your text here to count words, characters, and reading time. Free, instant, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

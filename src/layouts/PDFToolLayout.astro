@@ -14,8 +14,28 @@ const schema = {
   operatingSystem: 'Web',
   description: tool.metaDescription,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  provider: { '@type': 'Organization', name: 'PDFWonder', url: 'https://textwonder.com/pdfwonder' },
+  provider: { '@type': 'Organization', name: 'TextWonder', url: 'https://textwonder.com' },
 };
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://textwonder.com' },
+    { '@type': 'ListItem', position: 2, name: 'PDFWonder', item: 'https://textwonder.com/pdfwonder' },
+    { '@type': 'ListItem', position: 3, name: tool.name, item: `https://textwonder.com/pdfwonder/${tool.slug}` },
+  ],
+};
+
+const faqSchema = (tool.faqs && tool.faqs.length > 0) ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: tool.faqs.map((f: { q: string; a: string }) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+} : null;
 ---
 
 <BaseLayout
@@ -25,6 +45,8 @@ const schema = {
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
   </Fragment>
 
   <PDFHeader />

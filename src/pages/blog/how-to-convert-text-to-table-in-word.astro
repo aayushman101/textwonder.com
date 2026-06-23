@@ -1,0 +1,117 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert text to a table in Word?', a: 'Select the text you want to convert, go to Insert → Table → Convert Text to Table, set the delimiter (Tab, Comma, or Paragraph), and click OK. Word splits the text at each delimiter and places it in table cells.' },
+  { q: 'What delimiter does Word use to split text into columns?', a: 'The most common delimiter is Tab. If your text uses commas as separators, choose Comma. You can also use any other character by choosing "Other" and typing your separator.' },
+  { q: 'Can I convert a comma-separated list to a Word table?', a: 'Yes. Type or paste your comma-separated text, select it, go to Insert → Table → Convert Text to Table, select "Commas" as the delimiter, and click OK.' },
+  { q: 'How do I set the number of columns when converting text to a table?', a: 'Word automatically counts columns based on the number of delimiters in the first row. You can also manually set the number of columns in the "Convert Text to Table" dialog.' },
+  { q: 'How do I convert a Word table back to text?', a: 'Select the table, go to Table Design (or Layout tab) → Convert to Text, choose your separator (Tab, Comma, or Paragraph), and click OK.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text to a Table in Word — Step-by-Step Guide"
+  description="Learn how to convert plain text, comma-separated data, or tab-separated text into a table in Microsoft Word. Step-by-step guide with all delimiter options explained."
+  canonical="/blog/how-to-convert-text-to-table-in-word"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Microsoft Word Guide"
+  faqs={faqs}
+>
+
+<p>
+  Microsoft Word has a built-in feature that converts plain text into a table automatically. Whether your data is tab-separated, comma-separated, or separated by any other character, Word can split it into rows and columns in seconds. Here is how to do it.
+</p>
+
+<h2>Step 1: Prepare Your Text</h2>
+
+<p>
+  Before converting, your text needs to be formatted with a consistent delimiter — a character that separates each piece of data that should go into its own column. The three most common formats are:
+</p>
+
+<ul>
+  <li><strong>Tab-separated:</strong> Each column is separated by a tab character (the default for most exports)</li>
+  <li><strong>Comma-separated:</strong> Each column is separated by a comma (CSV format)</li>
+  <li><strong>Paragraph-separated:</strong> Each paragraph becomes one table cell (useful for one-column tables)</li>
+</ul>
+
+<p><strong>Example (tab-separated):</strong></p>
+<pre><code>Name	Age	City
+Alice	30	London
+Bob	25	New York
+Carol	35	Sydney</code></pre>
+
+<h2>Step 2: Select the Text</h2>
+
+<p>
+  Click and drag to select all the text you want to convert into a table. Make sure you select complete rows — partial selections may create an uneven table.
+</p>
+
+<h2>Step 3: Use Convert Text to Table</h2>
+
+<ol>
+  <li>With your text selected, go to the <strong>Insert</strong> tab in the ribbon.</li>
+  <li>Click <strong>Table</strong> → <strong>Convert Text to Table</strong>.</li>
+  <li>The "Convert Text to Table" dialog opens.</li>
+  <li>Under <strong>Separate text at</strong>, choose the delimiter your text uses:
+    <ul>
+      <li><strong>Tabs</strong> — for tab-separated data</li>
+      <li><strong>Commas</strong> — for CSV-style data</li>
+      <li><strong>Paragraphs</strong> — for one item per line</li>
+      <li><strong>Other</strong> — type any character (e.g., a pipe <code>|</code> or semicolon <code>;</code>)</li>
+    </ul>
+  </li>
+  <li>Word automatically fills in the number of columns based on your data. You can adjust this if needed.</li>
+  <li>Click <strong>OK</strong>.</li>
+</ol>
+
+<p>Word instantly creates a table with your data split into the correct rows and columns.</p>
+
+<h2>Step 4: Format the Table (Optional)</h2>
+
+<p>After conversion, you can format the table:</p>
+<ul>
+  <li>Click inside the table → go to the <strong>Table Design</strong> tab to apply a built-in style.</li>
+  <li>Right-click a row or column to insert, delete, or resize.</li>
+  <li>Use <strong>Table Layout → AutoFit → AutoFit Contents</strong> to size columns to their content.</li>
+</ul>
+
+<h2>How to Convert a Table Back to Text</h2>
+
+<p>You can reverse the process at any time:</p>
+<ol>
+  <li>Click anywhere inside the table.</li>
+  <li>Go to the <strong>Layout</strong> tab (under Table Tools).</li>
+  <li>Click <strong>Convert to Text</strong>.</li>
+  <li>Choose your separator and click <strong>OK</strong>.</li>
+</ol>
+
+<h2>Tips for Clean Conversions</h2>
+
+<ul>
+  <li><strong>Inconsistent delimiters</strong> create uneven columns — check your data in a text editor first.</li>
+  <li><strong>Extra spaces</strong> around commas or tabs may appear inside cells. Use Find & Replace (Ctrl+H) to clean them up.</li>
+  <li><strong>Quoted fields with commas</strong> (like "Smith, John") are not parsed as quoted CSV — Word treats the comma as a column break regardless. Fix these manually or use Excel's Text Import Wizard instead.</li>
+</ul>
+
+<a href="/pdfwonder/text-to-word" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Text to Word Document Converter →</div>
+  <div class="cta-desc">Convert plain text to a downloadable Word (.doc) file instantly. No signup, no upload, fully browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

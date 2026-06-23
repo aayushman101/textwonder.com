@@ -1,0 +1,110 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does PMO mean in text?', a: 'PMO most commonly means "Put Me On" — asking someone to introduce you to something or someone. It can also mean "Pisses Me Off" when expressing frustration.' },
+  { q: 'Does PMO always mean "Put Me On"?', a: 'No. Context matters. Among friends talking about music, shows, or people, PMO = "Put Me On." In an argument or frustrating situation, PMO = "Pisses Me Off."' },
+  { q: 'How do I use PMO in a sentence?', a: 'Examples: "Bro PMO to that artist you listen to" (Put Me On). Or: "This traffic PMO so bad" (Pisses Me Off).' },
+  { q: 'Is PMO used on Instagram and TikTok?', a: 'Yes. PMO is widely used across Instagram DMs, TikTok comments, Snapchat, and Twitter/X, especially in younger audiences.' },
+  { q: 'What is the difference between PMO and HMU?', a: '"HMU" means "Hit Me Up" — contact me. "PMO" means "Put Me On" — introduce me. Both are request-style slang but serve different purposes.' },
+];
+---
+
+<BlogLayout
+  title="What Does PMO Mean in Text? (Both Meanings Explained)"
+  description="PMO in text means either 'Put Me On' (introduce me to something) or 'Pisses Me Off' (frustration). Learn which meaning to use, with examples."
+  canonical="/blog/what-does-pmo-mean-in-text"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  Seen <strong>PMO</strong> in a text or social media comment and not sure what it means? PMO has two common meanings depending on context — and getting them mixed up can lead to some awkward conversations. This guide explains both meanings clearly, with real examples.
+</p>
+
+<h2>PMO Meaning 1: "Put Me On"</h2>
+
+<p>
+  The most popular use of PMO in modern texting is <strong>"Put Me On"</strong> — meaning "introduce me to something new" or "let me know about it." When someone says PMO, they are asking you to share a recommendation, connect them with a person, or expose them to something they have not experienced yet.
+</p>
+
+<p><strong>Examples of PMO = "Put Me On":</strong></p>
+<ul>
+  <li>"You keep talking about that show, PMO already!"</li>
+  <li>"That artist sounds fire, PMO to their playlist"</li>
+  <li>"She's cute, PMO to her Instagram"</li>
+  <li>"My playlist is getting boring, PMO to some new music"</li>
+</ul>
+
+<p>
+  This usage is especially common on TikTok, Snapchat, and Instagram where people discover new music, creators, or trends through friends.
+</p>
+
+<h2>PMO Meaning 2: "Pisses Me Off"</h2>
+
+<p>
+  The second meaning of PMO is <strong>"Pisses Me Off"</strong> — expressing frustration, irritation, or anger about something. This usage appears when venting about an annoying situation or person.
+</p>
+
+<p><strong>Examples of PMO = "Pisses Me Off":</strong></p>
+<ul>
+  <li>"This slow Wi-Fi PMO every single day"</li>
+  <li>"People who don't use turn signals PMO"</li>
+  <li>"My coworker always takes credit for my work, that PMO so much"</li>
+  <li>"He said he'd be here at 7 and it's 8 now. PMO fr"</li>
+</ul>
+
+<h2>How to Tell Which Meaning Someone Is Using</h2>
+
+<p>Context is everything. Here is a quick guide:</p>
+<ul>
+  <li>If someone is talking about music, shows, people, or recommendations → PMO = <strong>Put Me On</strong></li>
+  <li>If someone is complaining or venting → PMO = <strong>Pisses Me Off</strong></li>
+  <li>If the message sounds like a request → PMO = <strong>Put Me On</strong></li>
+  <li>If the message sounds like an expression of frustration → PMO = <strong>Pisses Me Off</strong></li>
+</ul>
+
+<h2>Where PMO Is Most Used</h2>
+
+<p>PMO is used across all major platforms:</p>
+<ul>
+  <li><strong>Instagram:</strong> DMs and comments, especially around music and creators</li>
+  <li><strong>TikTok:</strong> Comments asking for recs ("PMO to more videos like this")</li>
+  <li><strong>Snapchat:</strong> Casual conversation between friends</li>
+  <li><strong>Twitter / X:</strong> Both meanings appear regularly</li>
+  <li><strong>Text messages:</strong> Either meaning, depending on the conversation</li>
+</ul>
+
+<h2>Similar Slang Terms to Know</h2>
+
+<ul>
+  <li><strong>HMU</strong> — "Hit Me Up" (contact me)</li>
+  <li><strong>SMH</strong> — "Shaking My Head" (disbelief or disappointment)</li>
+  <li><strong>GTS</strong> — "Go To Sleep" or "Good Times"</li>
+  <li><strong>ATP</strong> — "At This Point" or "Answer The Phone"</li>
+  <li><strong>FR</strong> — "For Real" (emphasis that you mean something)</li>
+  <li><strong>NGL</strong> — "Not Gonna Lie" (being honest)</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, sentences, and more. Free, instant, and browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

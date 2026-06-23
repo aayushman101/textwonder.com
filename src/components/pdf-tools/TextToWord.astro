@@ -1,0 +1,125 @@
+---
+---
+<div class="space-y-4">
+  <textarea id="ttw-input" rows="10" placeholder="Type or paste your text here. It will be converted to a Word document you can edit in Microsoft Word, LibreOffice, or Google Docs…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-orange-500 text-sm leading-relaxed"></textarea>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Font</label>
+      <select id="ttw-font" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="Calibri">Calibri</option>
+        <option value="Arial">Arial</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Courier New">Courier New</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Font size</label>
+      <input id="ttw-fontsize" type="number" value="11" min="8" max="36" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Line spacing</label>
+      <select id="ttw-spacing" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500">
+        <option value="1.2">Single</option>
+        <option value="1.5" selected>1.5×</option>
+        <option value="2">Double</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Filename</label>
+      <input id="ttw-filename" type="text" value="document" placeholder="document" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-orange-500" />
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <button id="ttw-create" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Download Word Doc</button>
+    <button id="ttw-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+
+  <div id="ttw-status" class="hidden text-sm py-1"></div>
+
+  <p class="text-slate-500 text-xs">Opens in Microsoft Word, LibreOffice Writer, Google Docs, and WPS Office. Your text never leaves your browser.</p>
+</div>
+
+<script is:inline>
+(function () {
+  const input = document.getElementById('ttw-input');
+  const statusEl = document.getElementById('ttw-status');
+
+  document.getElementById('ttw-create').addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) { showStatus('Enter some text first.', true); return; }
+
+    const font = document.getElementById('ttw-font').value;
+    const fontSize = parseInt(document.getElementById('ttw-fontsize').value) || 11;
+    const spacing = parseFloat(document.getElementById('ttw-spacing').value) || 1.5;
+    const rawName = document.getElementById('ttw-filename').value.trim() || 'document';
+    const filename = rawName.replace(/\.doc[x]?$/i, '') + '.doc';
+
+    // Build paragraphs: each line of the input becomes a <p>
+    const paragraphs = text
+      .split('\n')
+      .map(line => `<p>${escapeHtml(line) || '&nbsp;'}</p>`)
+      .join('\n');
+
+    const html = `<html xmlns:o='urn:schemas-microsoft-com:office:office'
+  xmlns:w='urn:schemas-microsoft-com:office:word'
+  xmlns='http://www.w3.org/TR/REC-html40'>
+<head>
+  <meta charset="utf-8" />
+  <title>${escapeHtml(rawName)}</title>
+  <!--[if gte mso 9]>
+  <xml>
+    <w:WordDocument>
+      <w:View>Normal</w:View>
+      <w:Zoom>100</w:Zoom>
+    </w:WordDocument>
+  </xml>
+  <![endif]-->
+  <style>
+    body {
+      font-family: '${font}', sans-serif;
+      font-size: ${fontSize}pt;
+      line-height: ${spacing};
+      margin: 2.54cm;
+      color: #000;
+    }
+    p { margin: 0 0 6pt 0; }
+  </style>
+</head>
+<body>
+${paragraphs}
+</body>
+</html>`;
+
+    const blob = new Blob(['﻿', html], { type: 'application/msword' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showStatus('✅ Word document downloaded!', false);
+  });
+
+  document.getElementById('ttw-clear').addEventListener('click', () => {
+    input.value = '';
+    statusEl.classList.add('hidden');
+  });
+
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function showStatus(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-green-400');
+    statusEl.classList.remove('hidden');
+  }
+})();
+</script>

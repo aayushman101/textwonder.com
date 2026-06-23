@@ -1,0 +1,104 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert my text resume to PDF for free?', a: 'Paste your resume text into PDFWonder\'s Text to PDF converter, choose your font and size, and click Generate PDF. Your resume downloads as a PDF instantly — no signup, no upload.' },
+  { q: 'Why should I convert my resume to PDF?', a: 'PDF preserves your formatting exactly — the layout, font, and spacing look the same on every device and OS. A .txt or .doc file can render differently depending on the recipient\'s software.' },
+  { q: 'Will my resume formatting be preserved in PDF?', a: 'The Text to PDF tool converts plain text. If your resume has bold text, columns, or special formatting, use Google Docs or Word and export to PDF to preserve those styles.' },
+  { q: 'What is the best format to send a resume — PDF or Word?', a: 'PDF is generally preferred for job applications because it looks identical on any device. Only use .docx if the employer specifically requests a Word format.' },
+  { q: 'Can I convert a resume from a .txt file to PDF?', a: 'Yes. Open the .txt file, copy all the text, paste it into the Text to PDF tool, and download the PDF.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a Text Resume to PDF Online Free"
+  description="Convert your resume from plain text to a PDF file online for free — no signup, no upload. Step-by-step guide to saving your resume as PDF using free tools."
+  canonical="/blog/how-to-convert-text-resume-to-pdf-online-free"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Sending your resume as a PDF is the professional standard — it ensures your formatting stays intact regardless of what device or software the employer uses. If you have your resume as a plain text file (.txt) or just need to quickly create a PDF version, here are the fastest free methods.
+</p>
+
+<h2>Method 1: Text to PDF Converter (Plain Text Resume)</h2>
+
+<p>
+  If your resume is in plain text format (no special formatting), the quickest method is our free <a href="/pdfwonder/text-to-pdf">Text to PDF converter</a>:
+</p>
+
+<ol>
+  <li>Open the <a href="/pdfwonder/text-to-pdf">Text to PDF tool</a>.</li>
+  <li>Paste your resume text into the input area.</li>
+  <li>Choose font (Helvetica works well for resumes), font size (10–12pt), and A4 or Letter page size.</li>
+  <li>Click <strong>Create PDF</strong>.</li>
+  <li>Your resume PDF downloads immediately — ready to attach to job applications.</li>
+</ol>
+
+<a href="/pdfwonder/text-to-pdf" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">Text to PDF Converter — Create Resume PDF →</div>
+  <div class="cta-desc">Paste your resume text and download a clean PDF in seconds. No upload, no account, no watermark.</div>
+</a>
+
+<h2>Method 2: Google Docs to PDF (Best for Formatted Resumes)</h2>
+
+<p>
+  If your resume has formatting (headings, bullet points, columns), Google Docs preserves these when exporting to PDF:
+</p>
+
+<ol>
+  <li>Open <a href="https://docs.google.com" rel="noopener noreferrer" target="_blank">Google Docs</a> and create or paste your resume.</li>
+  <li>Format it properly — use headings, bold for section titles, and bullet points for experience.</li>
+  <li>Go to <strong>File → Download → PDF Document (.pdf)</strong>.</li>
+  <li>The PDF saves with all formatting preserved exactly as it appears on screen.</li>
+</ol>
+
+<p>This is the recommended method if your resume has visual structure beyond plain text.</p>
+
+<h2>Method 3: Microsoft Word to PDF</h2>
+
+<p>If your resume is already in Word (.doc/.docx):</p>
+<ol>
+  <li>Open the file in Microsoft Word.</li>
+  <li>Go to <strong>File → Save As → PDF</strong> (on Windows) or <strong>File → Export → Create PDF/XPS</strong>.</li>
+  <li>Click <strong>Publish</strong> or <strong>Save</strong>.</li>
+</ol>
+<p>On Mac, go to <strong>File → Print → PDF → Save as PDF</strong>.</p>
+
+<h2>Tips for a Great Resume PDF</h2>
+
+<ul>
+  <li><strong>Use a standard font:</strong> Calibri, Arial, or Times New Roman are ATS (Applicant Tracking System) friendly.</li>
+  <li><strong>Keep it to one page</strong> if you have less than 10 years of experience.</li>
+  <li><strong>Check the PDF on a different device</strong> before sending to make sure it looks right.</li>
+  <li><strong>Name your file professionally:</strong> Use "FirstName-LastName-Resume.pdf" not "resume_final_v3.pdf."</li>
+  <li><strong>Do not password-protect your resume PDF</strong> — employers may not know how to open it.</li>
+</ul>
+
+<h2>Related Tools</h2>
+
+<p>Need to do more with your resume PDF?</p>
+<ul>
+  <li><a href="/pdfwonder/pdf-compress">PDF Compressor</a> — reduce the file size before emailing</li>
+  <li><a href="/pdfwonder/pdf-to-text">PDF to Text</a> — extract the text from an existing PDF resume</li>
+  <li><a href="/tools/word-counter">Word Counter</a> — check word and character count of your resume text</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

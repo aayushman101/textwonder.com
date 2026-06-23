@@ -1,0 +1,124 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert text to a date in Excel?', a: 'If the text is in a recognised date format, select the cells, go to Data → Text to Columns → Finish, then format the cells as Date. Alternatively use DATEVALUE() to convert a text string like "23 June 2026" into a serial date number, then format as Date.' },
+  { q: 'Why does Excel show numbers instead of dates after conversion?', a: 'Excel stores dates as serial numbers (days since 1 Jan 1900). After converting text to a date, format the cell as a Date: right-click → Format Cells → Date → choose your format.' },
+  { q: 'What is the DATEVALUE function in Excel?', a: 'DATEVALUE(text) converts a date stored as text into an Excel date serial number. Example: =DATEVALUE("2026-06-23") returns 46195. Format the result as a Date to see it as a readable date.' },
+  { q: 'Why does DATEVALUE return a #VALUE! error?', a: 'DATEVALUE cannot parse the format. Common causes: the date uses slashes in a locale that expects dashes, the month name is abbreviated differently, or there is a leading/trailing space. Try =DATEVALUE(TRIM(A1)) or reformat the text first.' },
+  { q: 'How do I convert text dates in bulk in Excel?', a: 'Use Text to Columns (Data → Text to Columns → Delimited → Finish) on the column — Excel re-parses all values. Or use a helper column with =DATEVALUE(A1) and copy/paste the results as values.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text to Date in Excel — 4 Methods"
+  description="Learn how to convert text strings to dates in Excel using DATEVALUE, Text to Columns, Find & Replace, and Power Query. Fix date formatting errors step by step."
+  canonical="/blog/how-to-convert-text-to-date-in-excel"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Excel Guide"
+  faqs={faqs}
+>
+
+<p>
+  Dates imported from CSV files, databases, or copied from websites often arrive in Excel as text — meaning you cannot sort, filter, or calculate with them as real dates. Here are the best methods to convert text to proper Excel dates.
+</p>
+
+<h2>Method 1: DATEVALUE Function (Most Flexible)</h2>
+
+<p>
+  The <code>DATEVALUE</code> function converts a date stored as text into an Excel date serial number. It works with most recognisable date formats.
+</p>
+
+<ol>
+  <li>In an empty cell next to your text date (e.g., A1 contains "23 June 2026"), enter:<br />
+    <code>=DATEVALUE(A1)</code></li>
+  <li>Press Enter — you get a number (e.g., 46195). This is Excel's date serial number.</li>
+  <li>With the cell selected, press <strong>Ctrl+1</strong> to open Format Cells.</li>
+  <li>Select <strong>Date</strong> and choose your preferred format. The cell now shows a proper date.</li>
+  <li>Copy the helper column, paste as <strong>Values Only</strong> (Ctrl+Shift+V → Values), then delete the original text column.</li>
+</ol>
+
+<p><strong>Common DATEVALUE formats it recognises:</strong> "23 June 2026", "June 23, 2026", "23-Jun-2026", "2026-06-23"</p>
+
+<h2>Method 2: Text to Columns (Fastest for Bulk Conversion)</h2>
+
+<p>
+  This method works when all your text dates are in a consistent format that Excel can recognise (like YYYY-MM-DD or MM/DD/YYYY).
+</p>
+
+<ol>
+  <li>Select the column of text dates.</li>
+  <li>Go to <strong>Data → Text to Columns</strong>.</li>
+  <li>Click <strong>Next</strong> twice (skip delimiters — we are not splitting columns).</li>
+  <li>In Step 3, under <strong>Column data format</strong>, select <strong>Date</strong> and choose the date order (MDY, DMY, or YMD) that matches your text.</li>
+  <li>Click <strong>Finish</strong>. Excel converts all the text in-place to real dates.</li>
+</ol>
+
+<p>Format the column as Date (Ctrl+1 → Date) if it still shows numbers.</p>
+
+<h2>Method 3: Find & Replace to Fix Separators</h2>
+
+<p>
+  If your dates use a separator Excel does not recognise in your locale (e.g., dashes where it expects slashes), a quick Find & Replace fixes them:
+</p>
+
+<ol>
+  <li>Select the column with text dates.</li>
+  <li>Press <strong>Ctrl+H</strong> to open Find & Replace.</li>
+  <li>In <strong>Find what</strong>, type the current separator (e.g., a dot <code>.</code> or dash <code>-</code>).</li>
+  <li>In <strong>Replace with</strong>, type the separator your locale uses (e.g., <code>/</code>).</li>
+  <li>Click <strong>Replace All</strong>. Excel should now recognise the dates automatically.</li>
+</ol>
+
+<h2>Method 4: DATE Function (For Split Date Parts)</h2>
+
+<p>
+  If the year, month, and day are in separate columns (e.g., A1=2026, B1=6, C1=23), use:
+</p>
+
+<pre><code>=DATE(A1, B1, C1)</code></pre>
+
+<p>This always returns a proper Excel date. Format the result as Date.</p>
+
+<h2>Method 5: Power Query (Best for Recurring Imports)</h2>
+
+<p>
+  For data that arrives regularly from an external source, Power Query is the most robust solution:
+</p>
+
+<ol>
+  <li>Select your data → go to <strong>Data → From Table/Range</strong>.</li>
+  <li>In Power Query, right-click the date column header → <strong>Change Type → Date</strong>.</li>
+  <li>If it fails, right-click → <strong>Change Type → Using Locale</strong> → select the locale that matches your date format.</li>
+  <li>Click <strong>Close & Load</strong>. Power Query converts dates every time you refresh.</li>
+</ol>
+
+<h2>Why Are My Dates Still Showing as Text?</h2>
+
+<ul>
+  <li><strong>Green triangle in cell corner:</strong> Excel suspects the value is a number stored as text. Click the warning icon → "Convert to Number."</li>
+  <li><strong>Left-aligned dates:</strong> Dates align right by default in Excel. If your date is left-aligned, it is still text.</li>
+  <li><strong>TRIM first:</strong> Leading or trailing spaces break DATEVALUE. Use <code>=DATEVALUE(TRIM(A1))</code>.</li>
+</ul>
+
+<a href="/blog/how-to-convert-text-to-number-in-excel" class="tool-cta">
+  <div class="cta-label">Related Guide</div>
+  <div class="cta-title">How to Convert Text to Number in Excel →</div>
+  <div class="cta-desc">Fix numbers stored as text in Excel using 5 different methods. Covers VALUE(), Text to Columns, and the green triangle warning.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

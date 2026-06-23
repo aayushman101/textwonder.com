@@ -451,6 +451,26 @@ export const PDF_TOOLS = [
     icon: '📐',
     iconBg: '#1e40af',
   },
+  {
+    slug: 'text-to-word',
+    name: 'Text to Word Document',
+    tagline: 'Convert plain text into a downloadable Word (.doc) file — free, no upload.',
+    metaTitle: 'Text to Word Document Converter — Free Online Tool | PDFWonder',
+    metaDescription: 'Convert plain text to a Word document (.doc) online for free. Type or paste your text and download it as a .doc file instantly. No signup, no upload, browser-based.',
+    h1: 'Text to Word Document Converter',
+    descriptionLong: 'Type or paste any plain text and convert it to a Word-compatible .doc file you can download instantly. The document opens in Microsoft Word, LibreOffice Writer, Google Docs, and any other word processor. Choose your font, size, and line spacing before generating the file.',
+    useCases: 'Converting plain text notes to a shareable Word document, creating a .doc file from clipboard text, turning raw text drafts into a Word-editable format, generating Word documents without installing Microsoft Office.',
+    howItWorks: 'Creates an HTML document with Word-compatible XML namespaces and styles, then packages it as a .doc file using the Blob API — all entirely in your browser. No file is ever sent to a server.',
+    faqs: [
+      { q: 'Can I open the .doc file in Google Docs?', a: 'Yes. Google Docs can open .doc files directly. Upload the downloaded file to Google Drive and open it with Docs.' },
+      { q: 'Does it support formatting like bold or headings?', a: 'Currently plain text only. The output is clean, readable plain text formatted in your chosen font and size.' },
+      { q: 'Is this different from Text to PDF?', a: 'Yes. The Word document (.doc) is fully editable — you can open it in Word or LibreOffice and change the content. A PDF is fixed and not easily editable.' },
+      { q: 'What word processors can open this file?', a: 'Microsoft Word, LibreOffice Writer, WPS Office, Google Docs (via upload), and Apple Pages can all open the generated .doc file.' },
+    ],
+    relatedTools: ['text-to-pdf', 'pdf-to-text', 'pdf-merger'],
+    icon: '📝',
+    iconBg: '#1d4ed8',
+  },
 ];
 
 export function getPdfToolBySlug(slug) {

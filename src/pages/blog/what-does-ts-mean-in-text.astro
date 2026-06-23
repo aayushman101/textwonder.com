@@ -1,0 +1,115 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does TS mean in text?', a: 'TS most often means "This/That" followed by an implicit word (usually something negative). It is also short for "Tough Sh*t" or can refer to a specific person or situation depending on the conversation.' },
+  { q: 'What does TS mean on Snapchat?', a: 'On Snapchat, TS usually means "This Sh*t" — expressing frustration with a situation. It can also just mean "this" informally.' },
+  { q: 'Is TS a rude term?', a: 'It can be. "Tough S**t" is dismissive and somewhat rude. "This Sh*t" is casual but uses profanity. Context and the relationship between the people texting determines how it comes across.' },
+  { q: 'Does TS have other meanings?', a: 'Yes. In some contexts TS stands for Taylor Swift, TypeScript (programming language), or time stamp. In texting slang, the profanity-related meanings are most common.' },
+  { q: 'How do I know which TS meaning is being used?', a: 'Look at the tone of the conversation. If venting: "This S**t." If dismissing a complaint: "Tough S**t." If talking about the singer: Taylor Swift. If in a developer context: TypeScript.' },
+];
+---
+
+<BlogLayout
+  title="What Does TS Mean in Text? — All Meanings Explained"
+  description="TS in text can mean 'This Sh*t,' 'Tough Sh*t,' Taylor Swift, or TypeScript depending on context. Learn each meaning with clear examples."
+  canonical="/blog/what-does-ts-mean-in-text"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  <strong>TS</strong> is a two-letter abbreviation that shows up in very different contexts — from venting about frustrations to discussing a programming language. Here is a breakdown of every common meaning.
+</p>
+
+<h2>TS Meaning 1: "This Sh*t" (Most Common in Slang)</h2>
+
+<p>
+  In casual texting and social media, <strong>TS most commonly stands for "This Sh*t"</strong> (or "That Sh*t"). It is used to express frustration, disbelief, or emphasis about whatever is being discussed.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"TS is so annoying, I can't deal"</li>
+  <li>"TS not gonna work, trust me"</li>
+  <li>"I'm tired of TS already"</li>
+  <li>"TS hit different at night" (using it positively — "this hits different")</li>
+</ul>
+
+<h2>TS Meaning 2: "Tough Sh*t"</h2>
+
+<p>
+  TS can also mean <strong>"Tough Sh*t"</strong> — a dismissive response to a complaint, meaning "too bad, deal with it." This usage is more direct and can come across as harsh.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"I don't want to go." / "TS, you're coming."</li>
+  <li>"That's TS for them if they missed the deadline"</li>
+</ul>
+
+<h2>TS Meaning 3: Taylor Swift</h2>
+
+<p>
+  Among Swifties (Taylor Swift fans), <strong>TS is a widely used abbreviation for Taylor Swift</strong>. You will see this in fan communities, forums, and social media discussions.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"The new TS album dropped and it's incredible"</li>
+  <li>"TS tickets sold out in 10 minutes, typical"</li>
+</ul>
+
+<h2>TS Meaning 4: TypeScript (Developer Context)</h2>
+
+<p>
+  In programming and developer conversations, <strong>TS stands for TypeScript</strong> — a typed superset of JavaScript. You will see this in coding communities, GitHub, and developer chats.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"Should I write this in JS or TS?"</li>
+  <li>"TS errors are driving me crazy today"</li>
+</ul>
+
+<h2>How to Tell Which TS Meaning Is Being Used</h2>
+
+<ul>
+  <li>Frustration or casual venting → <strong>This/That Sh*t</strong></li>
+  <li>Dismissing someone's complaint → <strong>Tough Sh*t</strong></li>
+  <li>In a fan or music context → <strong>Taylor Swift</strong></li>
+  <li>In a coding or tech context → <strong>TypeScript</strong></li>
+</ul>
+
+<h2>Related Slang</h2>
+
+<ul>
+  <li><strong>BS</strong> — "Bulls**t" (something false or unbelievable)</li>
+  <li><strong>SMH</strong> — "Shaking My Head" (disappointment)</li>
+  <li><strong>NGL</strong> — "Not Gonna Lie"</li>
+  <li><strong>IDC</strong> — "I Don't Care"</li>
+  <li><strong>GTS</strong> — "Go To Sleep" or "Good Times"</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, sentences and more. Free, instant, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

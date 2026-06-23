@@ -12,6 +12,8 @@ import CronParser from '../../components/dev-tools/CronParser.astro';
 import UrlParser from '../../components/dev-tools/UrlParser.astro';
 import HtmlFormatter from '../../components/dev-tools/HtmlFormatter.astro';
 import MarkdownPreviewer from '../../components/dev-tools/MarkdownPreviewer.astro';
+import TextToSpeech from '../../components/dev-tools/TextToSpeech.astro';
+import TextToHtml from '../../components/dev-tools/TextToHtml.astro';
 import { DEV_TOOLS } from '../../data/devtools.js';
 
 export function getStaticPaths() {
@@ -33,6 +35,8 @@ const componentMap: Record<string, any> = {
   'url-parser': UrlParser,
   'html-formatter': HtmlFormatter,
   'markdown-previewer': MarkdownPreviewer,
+  'text-to-speech': TextToSpeech,
+  'text-to-html': TextToHtml,
 };
 
 const ToolComponent = componentMap[tool.slug];

@@ -1,0 +1,107 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does GTS mean in text?', a: 'GTS most commonly means "Go To Sleep" — telling someone to stop texting and sleep. It can also mean "Good Times" when reminiscing or celebrating something positive.' },
+  { q: 'How do I know if GTS means Go To Sleep or Good Times?', a: 'Context is the key. Late at night when someone is texting non-stop → "Go To Sleep." In a group chat looking at old photos or finishing a fun event → "Good Times."' },
+  { q: 'What does GTS mean on Snapchat?', a: 'On Snapchat, GTS usually means "Go To Sleep" — commonly sent late at night to tell someone to stop snapping and get some rest.' },
+  { q: 'Is GTS rude?', a: 'Not necessarily. "GTS" as "Go To Sleep" is usually playful — like telling a friend to stop being silly and get rest. The tone depends on the relationship and context.' },
+  { q: 'What does GTS mean in the car world?', a: 'GTS is also a trim designation for sports cars (e.g., Porsche 911 GTS, Ferrari GTS). This meaning only applies in automotive contexts and has nothing to do with texting slang.' },
+];
+---
+
+<BlogLayout
+  title="GTS Meaning in Text — Go To Sleep or Good Times?"
+  description="GTS in text means 'Go To Sleep' (telling someone to rest) or 'Good Times' (celebrating a fun moment). Learn which meaning applies and see real examples."
+  canonical="/blog/gts-meaning-in-text"
+  date="2026-06-23"
+  readTime="3 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  <strong>GTS</strong> is a three-letter abbreviation used in texting and social media with two distinct meanings. The one being used depends almost entirely on the time of day and what is being discussed. Here is everything you need to know.
+</p>
+
+<h2>GTS Meaning 1: "Go To Sleep"</h2>
+
+<p>
+  The most common use of GTS, especially on Snapchat and in late-night text conversations, is <strong>"Go To Sleep."</strong> It is used playfully or affectionately to tell someone to stop messaging and get some rest.
+</p>
+
+<p><strong>Examples of GTS = "Go To Sleep":</strong></p>
+<ul>
+  <li>"It's 2am bro, GTS" (Go To Sleep)</li>
+  <li>"Stop texting me, GTS already"</li>
+  <li>"You have work in 4 hours. GTS."</li>
+  <li>"I love talking to you but GTS, you're exhausted"</li>
+</ul>
+
+<p>
+  This usage is most common between close friends or in romantic conversations when one person is staying up too late. It usually comes across as caring rather than dismissive.
+</p>
+
+<h2>GTS Meaning 2: "Good Times"</h2>
+
+<p>
+  The second meaning of GTS is <strong>"Good Times"</strong> — used to celebrate a positive experience, reminisce about something fun, or express that a moment was enjoyable.
+</p>
+
+<p><strong>Examples of GTS = "Good Times":</strong></p>
+<ul>
+  <li>"Remember that road trip we took? GTS fr" (Good Times for real)</li>
+  <li>"That concert last night was everything. GTS."</li>
+  <li>Posting an old photo with the caption: "GTS 🙌"</li>
+  <li>"Just finished the trip. GTS, can't wait to do it again"</li>
+</ul>
+
+<h2>Quick Reference: Which GTS Meaning?</h2>
+
+<ul>
+  <li><strong>Late at night, during a conversation</strong> → "Go To Sleep"</li>
+  <li><strong>After a fun event, with old photos, reminiscing</strong> → "Good Times"</li>
+  <li><strong>Telling someone they need rest</strong> → "Go To Sleep"</li>
+  <li><strong>Celebrating or reflecting on something positive</strong> → "Good Times"</li>
+</ul>
+
+<h2>Where GTS Is Used</h2>
+
+<ul>
+  <li><strong>Snapchat:</strong> Most often "Go To Sleep" — the app is heavily used at night</li>
+  <li><strong>Instagram captions:</strong> "Good Times" when posting throwback photos</li>
+  <li><strong>Text messages:</strong> Either, based on the time and conversation</li>
+  <li><strong>TikTok comments:</strong> Either, but "Good Times" appears more in nostalgia content</li>
+</ul>
+
+<h2>Related Text Slang</h2>
+
+<ul>
+  <li><strong>SMH</strong> — "Shaking My Head" (disappointment)</li>
+  <li><strong>NGL</strong> — "Not Gonna Lie"</li>
+  <li><strong>ATP</strong> — "At This Point"</li>
+  <li><strong>FR</strong> — "For Real"</li>
+  <li><strong>IYKYK</strong> — "If You Know You Know"</li>
+  <li><strong>TBT</strong> — "Throwback Thursday" (often paired with "Good Times" content)</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, and reading time in seconds. Free, browser-based, no signup required.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

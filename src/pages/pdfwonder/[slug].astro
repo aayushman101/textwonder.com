@@ -24,6 +24,7 @@ import PdfRemoveBlankPages from '../../components/pdf-tools/PdfRemoveBlankPages.
 import PdfHeaderFooter from '../../components/pdf-tools/PdfHeaderFooter.astro';
 import PdfCrop from '../../components/pdf-tools/PdfCrop.astro';
 import PdfResize from '../../components/pdf-tools/PdfResize.astro';
+import TextToWord from '../../components/pdf-tools/TextToWord.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
 
 export function getStaticPaths() {
@@ -57,6 +58,7 @@ const componentMap: Record<string, any> = {
   'pdf-header-footer': PdfHeaderFooter,
   'pdf-crop': PdfCrop,
   'pdf-resize': PdfResize,
+  'text-to-word': TextToWord,
 };
 
 const ToolComponent = componentMap[tool.slug];

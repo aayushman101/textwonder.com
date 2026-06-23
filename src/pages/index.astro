@@ -11,8 +11,9 @@ const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'TextWonder',
+  alternateName: 'textwonder',
   url: 'https://textwonder.com',
-  description: `${totalTools} free browser-based tools across 10 categories — text, PDF, developer, calculator, unit converter, health, student, color, and data tools.`,
+  description: `textwonder — ${totalTools} free browser-based tools across 10 categories — text, PDF, developer, calculator, unit converter, health, student, color, and data tools. No signup required.`,
   potentialAction: {
     '@type': 'SearchAction',
     target: 'https://textwonder.com/tools?q={search_term_string}',
@@ -24,6 +25,7 @@ const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'TextWonder',
+  alternateName: ['textwonder', 'textwonder.com'],
   url: 'https://textwonder.com',
   logo: 'https://textwonder.com/favicon.svg',
 };
@@ -48,8 +50,8 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="Free Online Tools — Text, PDF, Dev, Calc & More | TextWonder"
-  description={`${totalTools} free tools — text, PDF, developer, calculator, unit converter, health, student, color & data. Browser-based. No signup needed.`}
+  title="TextWonder — Free Online Tools: Text, PDF, Dev, Calculator & More"
+  description={`textwonder.com — ${totalTools} free browser-based tools for text, PDF, developer, calculator, unit converter, health, student, color & data tasks. No signup needed.`}
   canonical="/"
 >
   <Fragment slot="head">
@@ -63,8 +65,9 @@ const faqSchema = {
   <main>
     <!-- ── Hero with Interactive Search ──────────────────────── -->
     <section class="max-w-4xl mx-auto px-4 pt-16 pb-8 text-center relative">
-      <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4" style="font-family:'Space Grotesk',sans-serif;">
-        One platform,<br class="hidden sm:block" /> every tool you need
+      <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-none text-white mb-5">
+        One platform,<br />
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400">every tool you need</span>
       </h1>
       <p class="text-slate-400 text-base md:text-lg max-w-xl mx-auto mb-8">
         Free, browser-based utilities across 10 categories. No signup, no ads, no data sent anywhere.

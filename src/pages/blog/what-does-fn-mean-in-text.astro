@@ -1,0 +1,108 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does FN mean in text?', a: 'FN in text most commonly stands for "F***ing" — used as an intensifier or expletive. It can also mean "For Nothing" or refer to Fortnite depending on context.' },
+  { q: 'What does FN mean on TikTok?', a: 'On TikTok, FN almost always means "F***ing" as an intensifier — for example "fn hilarious" means "f***ing hilarious." It is used for strong emphasis.' },
+  { q: 'Does FN mean Fortnite?', a: 'Yes, in gaming contexts FN is a common abbreviation for Fortnite. If the conversation is about gaming, that is almost certainly what it means.' },
+  { q: 'Is FN the same as FYN?', a: 'No. FYN means "Fine" or "For Your Note." FN as an expletive is a separate abbreviation entirely.' },
+  { q: 'Is it appropriate to use FN in professional contexts?', a: 'No. FN as slang for a profanity should only be used in casual conversations between close friends. It is inappropriate in professional or formal communication.' },
+];
+---
+
+<BlogLayout
+  title="What Does FN Mean in Text? — Definition & Examples"
+  description="FN in text means 'F***ing' as an intensifier in most slang contexts. It can also mean Fortnite in gaming, or 'For Nothing.' Examples of all meanings explained."
+  canonical="/blog/what-does-fn-mean-in-text"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  Spotted <strong>FN</strong> in a text or comment and not sure what it stands for? Like many two-letter abbreviations, FN has more than one meaning. This guide covers all the common uses so you always know what someone means.
+</p>
+
+<h2>FN Meaning 1: "F***ing" (Most Common Slang)</h2>
+
+<p>
+  In casual texting and social media, <strong>FN most commonly stands for "F***ing"</strong> — used as an intensifier to emphasize how strongly something applies. It is placed before adjectives or verbs for strong emphasis.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"That was fn hilarious" (f***ing hilarious)</li>
+  <li>"I'm fn done with this week"</li>
+  <li>"She's fn brilliant at her job"</li>
+  <li>"This traffic is fn ridiculous"</li>
+  <li>"Bro I'm fn tired"</li>
+</ul>
+
+<p>
+  This is the most common use among younger people on TikTok, Snapchat, and in casual texting. It is essentially a profanity-softened shorthand.
+</p>
+
+<h2>FN Meaning 2: Fortnite (Gaming Context)</h2>
+
+<p>
+  In gaming conversations, <strong>FN is a well-known abbreviation for Fortnite</strong> — the popular battle royale game by Epic Games. If someone is talking about gaming, this is almost certainly the intended meaning.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"You playing FN tonight?"</li>
+  <li>"My FN account got banned"</li>
+  <li>"The new FN season looks crazy"</li>
+</ul>
+
+<h2>FN Meaning 3: "For Nothing"</h2>
+
+<p>
+  Less commonly, FN can mean <strong>"For Nothing"</strong> — expressing that something was a waste of time or effort.
+</p>
+
+<p><strong>Examples:</strong></p>
+<ul>
+  <li>"We drove all that way fn" (for nothing)</li>
+  <li>"Did all that work fn, they cancelled the project"</li>
+</ul>
+
+<h2>How to Tell Which Meaning Is Being Used</h2>
+
+<ul>
+  <li>If FN appears before an adjective or to express frustration → <strong>F***ing</strong></li>
+  <li>If the conversation is about video games → <strong>Fortnite</strong></li>
+  <li>If expressing that effort was wasted → <strong>For Nothing</strong></li>
+</ul>
+
+<h2>Similar Slang Intensifiers</h2>
+
+<ul>
+  <li><strong>AF</strong> — "As F***" (e.g., "tired af")</li>
+  <li><strong>ASL</strong> — "As Hell" (e.g., "tired asl")</li>
+  <li><strong>TF</strong> — "The F***" (e.g., "wtf" or "tf you doing")</li>
+  <li><strong>FR</strong> — "For Real" (emphasis that something is true)</li>
+  <li><strong>NGL</strong> — "Not Gonna Lie"</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, and reading level instantly. Free, browser-based, no signup.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

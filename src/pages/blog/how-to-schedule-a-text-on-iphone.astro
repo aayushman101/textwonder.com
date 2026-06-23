@@ -1,0 +1,118 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Can I schedule a text message on iPhone?', a: 'Yes. With iOS 18, iPhone has a built-in "Send Later" feature in the Messages app. On older iOS versions, you can use Shortcuts automation or third-party apps like Scheduled.' },
+  { q: 'How do I send a scheduled text on iOS 18?', a: 'Open Messages, start composing a message, tap and hold the Send button, then choose "Send Later." Pick your date and time, and the message will send automatically.' },
+  { q: 'Does the Send Later feature work for SMS or only iMessage?', a: 'The built-in Send Later feature in iOS 18 works for both iMessage (blue bubble) and SMS (green bubble) messages.' },
+  { q: 'Will the text send automatically even if my iPhone is off?', a: 'Your iPhone must be on and connected (Wi-Fi or cellular) at the scheduled time. If the phone is off or in Airplane Mode, the message will send when it reconnects.' },
+  { q: 'Does scheduling a text work on older iPhones?', a: 'The built-in Send Later requires iOS 18 (iPhone XS or later). On older iOS, use the Shortcuts app automation method or a third-party app.' },
+];
+---
+
+<BlogLayout
+  title="How to Schedule a Text on iPhone — iOS 18 & Older Versions"
+  description="Learn how to schedule a text message on iPhone using the built-in Send Later feature (iOS 18), the Shortcuts app, or third-party apps. Step-by-step guide for all iOS versions."
+  canonical="/blog/how-to-schedule-a-text-on-iphone"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="iPhone Guide"
+  faqs={faqs}
+>
+
+<p>
+  Scheduling a text message on iPhone lets you write a message now and have it delivered at the perfect time — whether that is a birthday greeting at midnight, a reminder to a colleague during work hours, or a message to someone in a different time zone. Here is every method that works, depending on your iOS version.
+</p>
+
+<h2>Method 1: Built-in "Send Later" Feature (iOS 18+)</h2>
+
+<p>
+  Apple added a native <strong>Send Later</strong> feature to the Messages app in iOS 18. If your iPhone runs iOS 18 or later (available on iPhone XS and newer), this is the easiest method.
+</p>
+
+<ol>
+  <li>Open the <strong>Messages</strong> app and start or open a conversation.</li>
+  <li>Type your message as normal.</li>
+  <li>Instead of tapping the blue Send button, <strong>tap and hold</strong> it for a moment.</li>
+  <li>A menu appears — tap <strong>"Send Later."</strong></li>
+  <li>A date and time picker appears. Set when you want the message to send.</li>
+  <li>Tap <strong>Schedule</strong> to confirm.</li>
+</ol>
+
+<p>
+  The message appears in your conversation with a clock icon showing it is scheduled. You can tap it to edit or cancel before it sends. This works for both iMessage (blue) and SMS (green) conversations.
+</p>
+
+<h2>How to Check Your iOS Version</h2>
+
+<p>
+  Go to <strong>Settings → General → About → iOS Version</strong>. If it shows 18.0 or higher, the Send Later method above works for you.
+</p>
+
+<h2>Method 2: Shortcuts App Automation (iOS 13–17)</h2>
+
+<p>
+  On iOS 13 through 17, you can use the free <strong>Shortcuts</strong> app (pre-installed on all iPhones) to send a message at a specific time.
+</p>
+
+<ol>
+  <li>Open the <strong>Shortcuts</strong> app.</li>
+  <li>Tap the <strong>Automation</strong> tab at the bottom.</li>
+  <li>Tap the <strong>+</strong> button to create a new automation.</li>
+  <li>Tap <strong>"New Automation"</strong> → <strong>"Time of Day."</strong></li>
+  <li>Set the time you want the message to send.</li>
+  <li>Set it to run <strong>once</strong> (not daily).</li>
+  <li>Tap <strong>Next</strong>, then tap <strong>"Add Action."</strong></li>
+  <li>Search for <strong>"Send Message"</strong> and select it.</li>
+  <li>Enter your message text and choose the recipient.</li>
+  <li>Tap <strong>Next</strong>, then turn off <strong>"Ask Before Running"</strong> so it sends automatically.</li>
+  <li>Tap <strong>Done.</strong></li>
+</ol>
+
+<p>
+  At the set time, your iPhone will automatically send the message. Note: the phone must be unlocked or the screen must turn on for the automation to trigger in some iOS versions.
+</p>
+
+<h2>Method 3: Third-Party Apps</h2>
+
+<p>
+  If the built-in options do not suit your needs, several apps specialise in scheduled messaging:
+</p>
+<ul>
+  <li><strong>Scheduled</strong> — A dedicated app for scheduling texts and reminders. Free tier available.</li>
+  <li><strong>Mango</strong> — Simple interface for scheduling SMS and iMessages.</li>
+  <li><strong>Future</strong> — Focused on scheduling texts for specific occasions.</li>
+</ul>
+<p>
+  These apps typically require notification permission and may need your phone to be on at send time, similar to Shortcuts.
+</p>
+
+<h2>Tips for Scheduled Texts</h2>
+
+<ul>
+  <li><strong>Keep your phone charged:</strong> A dead battery at send time means the message won't go out.</li>
+  <li><strong>Check Do Not Disturb:</strong> Scheduled messages will still send even with Focus modes on.</li>
+  <li><strong>Time zones:</strong> Scheduling uses your iPhone's local time — useful for sending to people overseas at their morning time.</li>
+  <li><strong>Review before sending:</strong> Always re-read the message before confirming the schedule — autocorrect can change words silently.</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Word Counter — Count Words & Characters →</div>
+  <div class="cta-desc">Check the word and character count of any text before sending. Free, instant, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

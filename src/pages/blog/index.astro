@@ -4,236 +4,115 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { DYNAMIC_BLOG_POSTS } from '../../data/blogposts.js';
 
-const posts = [
-  {
-    slug: 'what-is-a-pdf',
-    title: 'What Is a PDF File? Everything You Need to Know (2026 Guide)',
-    description: 'Learn exactly what a PDF file is, why it was invented, how it works, and how to create, edit, compress, and convert PDFs for free online.',
-    date: '2026-06-01',
-    readTime: '7 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'what-does-pdf-stand-for',
-    title: 'What Does PDF Stand For? Full Meaning & History Explained',
-    description: 'PDF stands for Portable Document Format. Learn the full meaning, who invented it, why it\'s called "portable", and what PDF/A and PDF/X stand for.',
-    date: '2026-06-02',
-    readTime: '4 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-merge-pdf-files-free',
-    title: 'How to Merge PDF Files for Free Online (Without Losing Quality)',
-    description: 'Learn how to combine multiple PDF files into one document for free — no cloud upload, no quality loss, no software to install.',
-    date: '2026-06-03',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-compress-a-pdf',
-    title: 'How to Compress a PDF Without Losing Quality (Free, Online)',
-    description: 'Reduce PDF file size for free without losing quality — using browser tools, Adobe Acrobat, Mac Preview, and Google Drive.',
-    date: '2026-06-04',
-    readTime: '6 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-convert-pdf-to-jpg',
-    title: 'How to Convert PDF to JPG Online for Free (Step-by-Step)',
-    description: 'Convert PDF pages to JPG images for free. Browser-based with no upload, plus methods for Windows, Mac, and mobile devices.',
-    date: '2026-06-05',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-add-page-numbers-to-pdf',
-    title: 'How to Add Page Numbers to a PDF for Free Online',
-    description: 'Add page numbers to any PDF for free — using a browser tool, Adobe Acrobat, Microsoft Word, and Mac Preview. No software needed.',
-    date: '2026-06-06',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-password-protect-pdf',
-    title: 'How to Password Protect a PDF for Free Online (AES-128)',
-    description: 'Add a password to your PDF file for free using browser-based AES-128 encryption. Also covers Adobe Acrobat, Word, and Mac methods.',
-    date: '2026-06-07',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-sign-a-pdf-free',
-    title: 'How to Sign a PDF Online for Free Without Printing (2026)',
-    description: 'Sign a PDF without printing, scanning, or paying for software. Guide for browser tools, Adobe Acrobat Reader, iPhone, Android, Mac, and Windows.',
-    date: '2026-06-08',
-    readTime: '6 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-split-a-pdf',
-    title: 'How to Split a PDF Into Multiple Files or Individual Pages (Free)',
-    description: 'Extract specific pages, split by range, or separate into individual pages. Free browser tool, no upload, plus Mac Preview and Acrobat methods.',
-    date: '2026-06-09',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-extract-text-from-pdf',
-    title: 'How to Extract Text From a PDF Free Online (Any Device)',
-    description: 'Copy, extract, and export text content from a PDF file for free — using browser tools, Google Docs OCR, Adobe Acrobat, and built-in OS features.',
-    date: '2026-06-10',
-    readTime: '6 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-unlock-a-pdf',
-    title: 'How to Unlock a PDF and Remove Password Protection (Free, Online)',
-    description: 'Remove password protection from a PDF file for free — no software needed. Enter the PDF password once and download an unlocked version you can open anytime.',
-    date: '2026-06-11',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-convert-pdf-to-dark-mode',
-    title: 'How to Convert a PDF to Dark Mode Free Online (Invert PDF Colours)',
-    description: 'Convert any PDF to dark mode for comfortable night reading — white backgrounds become dark and text becomes light. Free browser tool, no upload.',
-    date: '2026-06-12',
-    readTime: '4 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-convert-pdf-to-png',
-    title: 'How to Convert PDF to PNG Online Free (High Quality, No Upload)',
-    description: 'Convert PDF pages to high-quality PNG images for free in your browser. Each page becomes a lossless PNG — no upload, no software, instant download.',
-    date: '2026-06-13',
-    readTime: '4 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-remove-blank-pages-from-pdf',
-    title: 'How to Remove Blank Pages from a PDF Free Online (Automatic)',
-    description: 'Automatically detect and delete blank pages from a PDF file for free — one click, no upload, browser-based. Adjustable blank-page threshold.',
-    date: '2026-06-14',
-    readTime: '4 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-add-header-and-footer-to-pdf',
-    title: 'How to Add a Header and Footer to a PDF Free Online',
-    description: 'Add custom header and footer text to every page of a PDF for free — company name, page title, URL, or any text. Browser-based, no upload needed.',
-    date: '2026-06-15',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-crop-a-pdf',
-    title: 'How to Crop a PDF Online Free — Remove White Margins & Borders',
-    description: 'Crop PDF margins to remove white space, scanner borders, or trim pages for e-readers. Free browser-based tool — no upload, no software.',
-    date: '2026-06-16',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-resize-pdf-pages',
-    title: 'How to Resize PDF Pages to A4, Letter, or Custom Size Free Online',
-    description: 'Resize PDF pages to A4, US Letter, A3, A5, or a custom size online for free. Content is scaled to fit. Browser-based, no upload, instant download.',
-    date: '2026-06-17',
-    readTime: '5 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-convert-pdf-to-grayscale',
-    title: 'How to Convert a PDF to Grayscale (Black & White) Free Online',
-    description: 'Convert any colour PDF to grayscale for free — ideal for printing, reducing ink costs, or archiving. Browser-based, no upload, instant download.',
-    date: '2026-06-18',
-    readTime: '4 min read',
-    category: 'PDF Guide',
-  },
-  {
-    slug: 'how-to-count-words-online',
-    title: 'How to Count Words Online: The Complete Free Guide',
-    description: 'Learn how to count words online for free. Discover why word count matters for SEO, essays, social media, and publishing.',
-    date: '2025-06-15',
-    readTime: '5 min read',
-    category: 'Writing Tips',
-  },
-  {
-    slug: 'title-case-guide',
-    title: 'What Is Title Case? Rules, Examples & When to Use It',
-    description: 'Master title case capitalization rules. Learn which words to capitalize and when to use title case vs sentence case.',
-    date: '2025-06-12',
-    readTime: '6 min read',
-    category: 'Writing Tips',
-  },
-  {
-    slug: 'word-count-vs-character-count',
-    title: 'Word Count vs Character Count: Key Differences & When Each Matters',
-    description: 'Word count and character count measure different things. Learn when to use each for social media, SMS, essays, and SEO.',
-    date: '2025-06-08',
-    readTime: '5 min read',
-    category: 'Text Analysis',
-  },
-  {
-    slug: 'remove-duplicate-lines-guide',
-    title: 'How to Remove Duplicate Lines from Text: 3 Fast Methods',
-    description: 'Remove duplicate lines from text files, lists, and CSV files. Covers online tools, Excel, Google Sheets, and terminal commands.',
-    date: '2025-06-10',
-    readTime: '4 min read',
-    category: 'Text Cleaning',
-  },
-  {
-    slug: 'text-case-converter-guide',
-    title: 'How to Convert Text Case: Uppercase, Lowercase, Title Case & More',
-    description: 'Learn how to convert text to any case type: uppercase, lowercase, title case, camelCase, snake_case, and kebab-case.',
-    date: '2025-06-05',
-    readTime: '5 min read',
-    category: 'Text Conversion',
-  },
-  {
-    slug: 'what-is-base64-encoding',
-    title: 'What Is Base64 Encoding? A Plain-English Guide',
-    description: 'Base64 explained simply. Learn what it is, why it exists, when it\'s used, and how to encode and decode Base64 online.',
-    date: '2025-06-02',
-    readTime: '6 min read',
-    category: 'Developer Tools',
-  },
-  {
-    slug: 'free-online-text-tools-for-writers',
-    title: '10 Free Online Text Tools Every Writer Should Know',
-    description: '10 essential free online text tools for writers and bloggers. Save hours every week with these browser-based utilities.',
-    date: '2025-05-28',
-    readTime: '7 min read',
-    category: 'Productivity',
-  },
-  {
-    slug: 'readability-score-guide',
-    title: 'How to Check Your Writing\'s Readability Score',
-    description: 'Learn how readability scores work, what Flesch-Kincaid grade level means, and how to improve your writing for wider audiences.',
-    date: '2025-05-22',
-    readTime: '6 min read',
-    category: 'Writing Tips',
-  },
-  {
-    slug: 'how-to-sort-text-lines',
-    title: 'How to Sort Lines of Text Alphabetically: 4 Methods',
-    description: 'Sort lines alphabetically, numerically, or randomly using free online tools, Excel, Google Sheets, and the command line.',
-    date: '2025-05-18',
-    readTime: '4 min read',
-    category: 'Text Formatting',
-  },
-  ...DYNAMIC_BLOG_POSTS
+const manualPosts = [
+  // ── Text Slang ──
+  { slug: 'what-does-pmo-mean-in-text', title: 'What Does PMO Mean in Text? (Both Meanings Explained)', description: "PMO in text means either 'Put Me On' (introduce me to something) or 'Pisses Me Off' (frustration). Learn which meaning to use, with examples.", date: '2026-06-23', readTime: '4 min read', category: 'Text Slang' },
+  { slug: 'what-does-smh-mean-in-text', title: 'What Does SMH Mean in Text? — Definition & Examples', description: "SMH means 'Shaking My Head' in text — expressing disbelief, disappointment, or disapproval. See examples and learn how to use it correctly.", date: '2026-06-23', readTime: '3 min read', category: 'Text Slang' },
+  { slug: 'what-does-atp-mean-in-text', title: 'What Does ATP Mean in Text? (At This Point vs Answer The Phone)', description: "ATP can mean 'At This Point' or 'Answer The Phone' depending on context. Learn how to tell them apart with real examples.", date: '2026-06-23', readTime: '4 min read', category: 'Text Slang' },
+  { slug: 'what-does-asl-mean-in-text', title: 'What Does ASL Mean in Text? (Age/Sex/Location vs As Hell)', description: "ASL means 'Age/Sex/Location' in classic internet chat, but in modern texting and TikTok it means 'As Hell' — used for emphasis. Examples of both meanings explained.", date: '2026-06-23', readTime: '4 min read', category: 'Text Slang' },
+  { slug: 'what-does-ts-mean-in-text', title: 'What Does TS Mean in Text? — All Meanings Explained', description: 'TS in text can mean This Sh*t, Tough Sh*t, Taylor Swift, or TypeScript depending on context. Full guide with examples.', date: '2026-06-23', readTime: '4 min read', category: 'Text Slang' },
+  { slug: 'what-does-fn-mean-in-text', title: 'What Does FN Mean in Text? — Definition & Examples', description: "FN in text slang means F***ing (intensifier), Fortnite, or For Nothing. Learn which meaning applies in different conversations.", date: '2026-06-23', readTime: '4 min read', category: 'Text Slang' },
+  { slug: 'gts-meaning-in-text', title: 'GTS Meaning in Text — Go To Sleep or Good Times?', description: "GTS in text means 'Go To Sleep' (telling someone to rest) or 'Good Times' (celebrating a fun moment). Learn which meaning applies and see real examples.", date: '2026-06-23', readTime: '3 min read', category: 'Text Slang' },
+  // ── Tech Explained ──
+  { slug: 'what-does-rcs-mean-in-text', title: 'What Does RCS Mean in Text Messaging? — Explained Simply', description: 'RCS (Rich Communication Services) is the modern upgrade to SMS — adding read receipts, typing indicators, high-res media, and reactions. Learn what RCS means and how it works.', date: '2026-06-23', readTime: '5 min read', category: 'Tech Explained' },
+  // ── iPhone Guide ──
+  { slug: 'how-to-schedule-a-text-on-iphone', title: 'How to Schedule a Text on iPhone — iOS 18 & Older Versions', description: 'Learn how to schedule a text message on iPhone using the built-in Send Later feature (iOS 18), the Shortcuts app, or third-party apps. Step-by-step guide for all iOS versions.', date: '2026-06-23', readTime: '5 min read', category: 'iPhone Guide' },
+  // ── PDF Guide ──
+  { slug: 'what-is-a-pdf', title: 'What Is a PDF File? Everything You Need to Know (2026 Guide)', description: 'Learn exactly what a PDF file is, why it was invented, how it works, and how to create, edit, compress, and convert PDFs for free online.', date: '2026-06-01', readTime: '7 min read', category: 'PDF Guide' },
+  { slug: 'what-does-pdf-stand-for', title: "What Does PDF Stand For? Full Meaning & History Explained", description: "PDF stands for Portable Document Format. Learn the full meaning, who invented it, why it's called 'portable', and what PDF/A and PDF/X stand for.", date: '2026-06-02', readTime: '4 min read', category: 'PDF Guide' },
+  { slug: 'how-to-merge-pdf-files-free', title: 'How to Merge PDF Files for Free Online (Without Losing Quality)', description: 'Learn how to combine multiple PDF files into one document for free — no cloud upload, no quality loss, no software to install.', date: '2026-06-03', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-compress-a-pdf', title: 'How to Compress a PDF Without Losing Quality (Free, Online)', description: 'Reduce PDF file size for free without losing quality — using browser tools, Adobe Acrobat, Mac Preview, and Google Drive.', date: '2026-06-04', readTime: '6 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-pdf-to-jpg', title: 'How to Convert PDF to JPG Online for Free (Step-by-Step)', description: 'Convert PDF pages to JPG images for free. Browser-based with no upload, plus methods for Windows, Mac, and mobile devices.', date: '2026-06-05', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-add-page-numbers-to-pdf', title: 'How to Add Page Numbers to a PDF for Free Online', description: 'Add page numbers to any PDF for free — using a browser tool, Adobe Acrobat, Microsoft Word, and Mac Preview. No software needed.', date: '2026-06-06', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-password-protect-pdf', title: 'How to Password Protect a PDF for Free Online (AES-128)', description: 'Add a password to your PDF file for free using browser-based AES-128 encryption. Also covers Adobe Acrobat, Word, and Mac methods.', date: '2026-06-07', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-sign-a-pdf-free', title: 'How to Sign a PDF Online for Free Without Printing (2026)', description: 'Sign a PDF without printing, scanning, or paying for software. Guide for browser tools, Adobe Acrobat Reader, iPhone, Android, Mac, and Windows.', date: '2026-06-08', readTime: '6 min read', category: 'PDF Guide' },
+  { slug: 'how-to-split-a-pdf', title: 'How to Split a PDF Into Multiple Files or Individual Pages (Free)', description: 'Extract specific pages, split by range, or separate into individual pages. Free browser tool, no upload, plus Mac Preview and Acrobat methods.', date: '2026-06-09', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-extract-text-from-pdf', title: 'How to Extract Text From a PDF Free Online (Any Device)', description: 'Copy, extract, and export text content from a PDF file for free — using browser tools, Google Docs OCR, Adobe Acrobat, and built-in OS features.', date: '2026-06-10', readTime: '6 min read', category: 'PDF Guide' },
+  { slug: 'how-to-unlock-a-pdf', title: 'How to Unlock a PDF and Remove Password Protection (Free, Online)', description: 'Remove password protection from a PDF file for free — no software needed. Enter the PDF password once and download an unlocked version you can open anytime.', date: '2026-06-11', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-pdf-to-dark-mode', title: 'How to Convert a PDF to Dark Mode Free Online (Invert PDF Colours)', description: 'Convert any PDF to dark mode for comfortable night reading — white backgrounds become dark and text becomes light. Free browser tool, no upload.', date: '2026-06-12', readTime: '4 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-pdf-to-png', title: 'How to Convert PDF to PNG Online Free (High Quality, No Upload)', description: 'Convert PDF pages to high-quality PNG images for free in your browser. Each page becomes a lossless PNG — no upload, no software, instant download.', date: '2026-06-13', readTime: '4 min read', category: 'PDF Guide' },
+  { slug: 'how-to-remove-blank-pages-from-pdf', title: 'How to Remove Blank Pages from a PDF Free Online (Automatic)', description: 'Automatically detect and delete blank pages from a PDF file for free — one click, no upload, browser-based. Adjustable blank-page threshold.', date: '2026-06-14', readTime: '4 min read', category: 'PDF Guide' },
+  { slug: 'how-to-add-header-and-footer-to-pdf', title: 'How to Add a Header and Footer to a PDF Free Online', description: 'Add custom header and footer text to every page of a PDF for free — company name, page title, URL, or any text. Browser-based, no upload needed.', date: '2026-06-15', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-crop-a-pdf', title: 'How to Crop a PDF Online Free — Remove White Margins & Borders', description: 'Crop PDF margins to remove white space, scanner borders, or trim pages for e-readers. Free browser-based tool — no upload, no software.', date: '2026-06-16', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-resize-pdf-pages', title: 'How to Resize PDF Pages to A4, Letter, or Custom Size Free Online', description: 'Resize PDF pages to A4, US Letter, A3, A5, or a custom size online for free. Content is scaled to fit. Browser-based, no upload, instant download.', date: '2026-06-17', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-pdf-to-grayscale', title: 'How to Convert a PDF to Grayscale (Black & White) Free Online', description: 'Convert any colour PDF to grayscale for free — ideal for printing, reducing ink costs, or archiving. Browser-based, no upload, instant download.', date: '2026-06-18', readTime: '4 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-text-to-pdf-online-free', title: 'How to Convert Text to PDF Online Free (No Signup, No Upload)', description: 'Convert plain text to a PDF file online for free — no signup, no file upload, no software needed. Step-by-step guide using a browser-based text to PDF tool.', date: '2026-06-23', readTime: '5 min read', category: 'PDF Guide' },
+  { slug: 'how-to-convert-text-resume-to-pdf-online-free', title: 'How to Convert a Text Resume to PDF Online Free', description: 'Convert your resume from plain text to a PDF file online for free — no signup, no upload. Step-by-step guide to saving your resume as PDF using free tools.', date: '2026-06-23', readTime: '4 min read', category: 'PDF Guide' },
+  // ── Document Guide ──
+  { slug: 'how-to-convert-text-to-word-document-online', title: 'How to Convert Text to Word Document Online Free (No Signup)', description: 'Convert plain text to a Word document (.doc) online for free — no signup, no upload, no software needed. Paste your text and download a fully editable Word file instantly.', date: '2026-06-23', readTime: '4 min read', category: 'Document Guide' },
+  { slug: 'how-to-convert-markdown-to-pdf-online-free', title: 'How to Convert Markdown to PDF Online Free — 3 Methods', description: 'Convert Markdown (.md) files to PDF online for free. Use browser print-to-PDF, a Markdown previewer, or Pandoc. Step-by-step guide with all methods explained.', date: '2026-06-23', readTime: '5 min read', category: 'Document Guide' },
+  // ── Excel Guide ──
+  { slug: 'how-to-convert-text-to-number-in-excel', title: 'How to Convert Text to Number in Excel — 5 Easy Methods', description: "Numbers stored as text in Excel won't calculate correctly. Learn 5 quick methods to convert text to number in Excel, including the green triangle fix, VALUE formula, and Paste Special.", date: '2026-06-23', readTime: '6 min read', category: 'Excel Guide' },
+  { slug: 'how-to-convert-text-file-to-excel', title: 'How to Convert a Text File to Excel — Step-by-Step Guide', description: 'Learn how to convert a .txt or .csv text file to Excel. Step-by-step guide covering the Excel import wizard, delimiter settings, and online alternatives.', date: '2026-06-23', readTime: '5 min read', category: 'Excel Guide' },
+  { slug: 'how-to-convert-text-to-date-in-excel', title: 'How to Convert Text to Date in Excel — 4 Methods', description: 'Learn how to convert text strings to dates in Excel using DATEVALUE, Text to Columns, Find & Replace, and Power Query. Fix date formatting errors step by step.', date: '2026-06-23', readTime: '5 min read', category: 'Excel Guide' },
+  { slug: 'how-to-convert-text-to-column-in-excel', title: 'How to Convert Text to Columns in Excel — Step-by-Step Guide', description: 'Learn how to split text into multiple columns in Excel using Text to Columns, TEXTSPLIT, and formulas. Works with comma, space, tab, or any delimiter.', date: '2026-06-23', readTime: '5 min read', category: 'Excel Guide' },
+  // ── Microsoft Word Guide ──
+  { slug: 'how-to-convert-text-to-table-in-word', title: 'How to Convert Text to a Table in Word — Step-by-Step Guide', description: 'Learn how to convert plain text, comma-separated data, or tab-separated text into a table in Microsoft Word. Step-by-step guide with all delimiter options explained.', date: '2026-06-23', readTime: '4 min read', category: 'Microsoft Word Guide' },
+  // ── Productivity Guide ──
+  { slug: 'how-to-convert-audio-to-text', title: 'How to Convert Audio to Text Free — 5 Best Methods', description: 'Learn how to convert audio recordings, voice memos, or video files to text for free. Covers Google Docs Voice Typing, YouTube captions, Otter.ai, and OpenAI Whisper.', date: '2026-06-23', readTime: '6 min read', category: 'Productivity Guide' },
+  // ── Writing Tips ──
+  { slug: 'how-to-count-words-online', title: 'How to Count Words Online: The Complete Free Guide', description: 'Learn how to count words online for free. Discover why word count matters for SEO, essays, social media, and publishing.', date: '2025-06-15', readTime: '5 min read', category: 'Writing Tips' },
+  { slug: 'title-case-guide', title: 'What Is Title Case? Rules, Examples & When to Use It', description: 'Master title case capitalization rules. Learn which words to capitalize and when to use title case vs sentence case.', date: '2025-06-12', readTime: '6 min read', category: 'Writing Tips' },
+  { slug: 'readability-score-guide', title: "How to Check Your Writing's Readability Score", description: 'Learn how readability scores work, what Flesch-Kincaid grade level means, and how to improve your writing for wider audiences.', date: '2025-05-22', readTime: '6 min read', category: 'Writing Tips' },
+  // ── Text Analysis ──
+  { slug: 'word-count-vs-character-count', title: 'Word Count vs Character Count: Key Differences & When Each Matters', description: 'Word count and character count measure different things. Learn when to use each for social media, SMS, essays, and SEO.', date: '2025-06-08', readTime: '5 min read', category: 'Text Analysis' },
+  // ── Text Cleaning ──
+  { slug: 'remove-duplicate-lines-guide', title: 'How to Remove Duplicate Lines from Text: 3 Fast Methods', description: 'Remove duplicate lines from text files, lists, and CSV files. Covers online tools, Excel, Google Sheets, and terminal commands.', date: '2025-06-10', readTime: '4 min read', category: 'Text Cleaning' },
+  // ── Text Conversion ──
+  { slug: 'text-case-converter-guide', title: 'How to Convert Text Case: Uppercase, Lowercase, Title Case & More', description: 'Learn how to convert text to any case type: uppercase, lowercase, title case, camelCase, snake_case, and kebab-case.', date: '2025-06-05', readTime: '5 min read', category: 'Text Conversion' },
+  // ── Developer Tools ──
+  { slug: 'what-is-base64-encoding', title: "What Is Base64 Encoding? A Plain-English Guide", description: "Base64 explained simply. Learn what it is, why it exists, when it's used, and how to encode and decode Base64 online.", date: '2025-06-02', readTime: '6 min read', category: 'Developer Tools' },
+  // ── Productivity ──
+  { slug: 'free-online-text-tools-for-writers', title: '10 Free Online Text Tools Every Writer Should Know', description: '10 essential free online text tools for writers and bloggers. Save hours every week with these browser-based utilities.', date: '2025-05-28', readTime: '7 min read', category: 'Productivity' },
+  // ── Text Formatting ──
+  { slug: 'how-to-sort-text-lines', title: 'How to Sort Lines of Text Alphabetically: 4 Methods', description: 'Sort lines alphabetically, numerically, or randomly using free online tools, Excel, Google Sheets, and the command line.', date: '2025-05-18', readTime: '4 min read', category: 'Text Formatting' },
 ];
 
 const categoryColors: Record<string, string> = {
-  'Writing Tips': '#7c3aed',
+  'Text Slang': '#7c3aed',
+  'Tech Explained': '#0e7490',
+  'iPhone Guide': '#15803d',
+  'PDF Guide': '#ea580c',
+  'Document Guide': '#b45309',
+  'Excel Guide': '#0891b2',
+  'Microsoft Word Guide': '#1d4ed8',
+  'Productivity Guide': '#6d28d9',
+  'Writing Tips': '#9333ea',
   'Text Analysis': '#0891b2',
   'Text Cleaning': '#15803d',
   'Text Conversion': '#c2410c',
   'Developer Tools': '#0e7490',
   'Productivity': '#b45309',
   'Text Formatting': '#4338ca',
-  'PDF Guide': '#ea580c',
 };
+
+// Category order for display
+const categoryOrder = [
+  'Text Slang',
+  'PDF Guide',
+  'Excel Guide',
+  'Microsoft Word Guide',
+  'Document Guide',
+  'Productivity Guide',
+  'Tech Explained',
+  'iPhone Guide',
+  'Writing Tips',
+  'Text Analysis',
+  'Text Conversion',
+  'Text Cleaning',
+  'Text Formatting',
+  'Developer Tools',
+  'Productivity',
+];
+
+// Group manual posts by category
+const grouped: Record<string, typeof manualPosts> = {};
+for (const post of manualPosts) {
+  if (!grouped[post.category]) grouped[post.category] = [];
+  grouped[post.category].push(post);
+}
+
+const allCategories = categoryOrder.filter(c => grouped[c]);
 
 function formatDate(d: string) {
   return new Date(d).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -250,8 +129,8 @@ const blogSchema = {
 ---
 
 <BaseLayout
-  title="Blog — Writing Tips, Text Tool Guides & Productivity | TextWonder"
-  description="Writing tips, text tool guides, and productivity articles. Learn word counting, readability, text case conversion, Base64, and more — all free."
+  title="Blog — Writing Tips, Text Guides, Excel, PDF & More | TextWonder"
+  description="Practical guides on text slang, PDF tools, Excel, Word, iPhone tips, and writing. All free, no signup. Updated regularly with high-quality how-tos."
   canonical="/blog"
 >
   <Fragment slot="head">
@@ -261,50 +140,77 @@ const blogSchema = {
   <Header />
 
   <main class="max-w-4xl mx-auto px-4 py-12">
-    <header class="mb-12">
+    <header class="mb-10">
       <div class="inline-flex items-center gap-2 bg-violet-900/30 border border-violet-800/40 rounded-full px-4 py-1.5 text-violet-300 text-sm font-medium mb-4">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
         The TextWonder Blog
       </div>
       <h1 class="text-3xl md:text-4xl font-bold text-white mb-3" style="font-family: 'Space Grotesk', sans-serif;">
-        Writing Tips & Text Tool Guides
+        Guides, How-Tos & Text Explained
       </h1>
       <p class="text-slate-400 text-lg max-w-2xl">
-        Practical guides on word counting, readability, text formatting, case conversion, and developer tools. All articles are free and written for writers, developers, and anyone who works with text.
+        Practical articles on text slang, PDF tools, Excel & Word guides, iPhone tips, and writing. Browse by category below.
       </p>
     </header>
 
-    <!-- Article grid -->
-    <div class="space-y-5">
-      {posts.map((post, i) => (
-        <a href={`/blog/${post.slug}`} class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-6 hover:border-violet-500/40 hover:bg-[var(--bg-surface-hover)] transition-all">
-          <div class="flex items-start justify-between gap-4">
-            <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-2 flex-wrap">
-                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border"
-                  style={`color: ${categoryColors[post.category] || '#7c3aed'}; background: ${categoryColors[post.category] || '#7c3aed'}15; border-color: ${categoryColors[post.category] || '#7c3aed'}30`}>
-                  {post.category}
-                </span>
-                <span class="text-slate-600 text-xs">·</span>
-                <span class="text-slate-500 text-xs">{post.readTime}</span>
-                <span class="text-slate-600 text-xs">·</span>
-                <time class="text-slate-500 text-xs" datetime={post.date}>{formatDate(post.date)}</time>
-              </div>
-              <h2 class="text-white font-semibold text-lg mb-1.5 group-hover:text-violet-300 transition-colors leading-snug">{post.title}</h2>
-              <p class="text-slate-400 text-sm leading-relaxed line-clamp-2">{post.description}</p>
-            </div>
-            <svg class="w-5 h-5 text-slate-600 group-hover:text-violet-400 transition-colors shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-            </svg>
+    <!-- Category filter tabs -->
+    <div class="flex flex-wrap gap-2 mb-10" id="cat-tabs">
+      <button
+        data-cat="all"
+        class="cat-btn active px-4 py-1.5 rounded-full text-sm font-medium border transition-all"
+        style="background: #7c3aed20; color: #a78bfa; border-color: #7c3aed40;"
+      >All Posts</button>
+      {allCategories.map(cat => (
+        <button
+          data-cat={cat}
+          class="cat-btn px-4 py-1.5 rounded-full text-sm font-medium border transition-all"
+          style={`background: ${categoryColors[cat]}15; color: ${categoryColors[cat]}; border-color: ${categoryColors[cat]}30;`}
+        >{cat}</button>
+      ))}
+    </div>
+
+    <!-- Posts grouped by category -->
+    <div id="blog-content" class="space-y-12">
+      {allCategories.map(cat => (
+        <section data-section={cat}>
+          <div class="flex items-center gap-3 mb-5">
+            <h2 class="text-lg font-bold text-white" style="font-family: 'Space Grotesk', sans-serif;">{cat}</h2>
+            <span class="text-xs px-2.5 py-0.5 rounded-full font-medium border"
+              style={`color: ${categoryColors[cat]}; background: ${categoryColors[cat]}15; border-color: ${categoryColors[cat]}30;`}>
+              {grouped[cat].length} article{grouped[cat].length !== 1 ? 's' : ''}
+            </span>
           </div>
-        </a>
+          <div class="space-y-3">
+            {grouped[cat].map(post => (
+              <a href={`/blog/${post.slug}`} class="group flex items-start gap-4 bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-violet-500/40 hover:bg-[var(--bg-surface-hover)] transition-all">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border"
+                      style={`color: ${categoryColors[post.category] || '#7c3aed'}; background: ${categoryColors[post.category] || '#7c3aed'}15; border-color: ${categoryColors[post.category] || '#7c3aed'}30`}>
+                      {post.category}
+                    </span>
+                    <span class="text-slate-600 text-xs">·</span>
+                    <span class="text-slate-500 text-xs">{post.readTime}</span>
+                    <span class="text-slate-600 text-xs">·</span>
+                    <time class="text-slate-500 text-xs" datetime={post.date}>{formatDate(post.date)}</time>
+                  </div>
+                  <h3 class="text-white font-semibold text-base mb-1 group-hover:text-violet-300 transition-colors leading-snug">{post.title}</h3>
+                  <p class="text-slate-400 text-sm leading-relaxed line-clamp-2">{post.description}</p>
+                </div>
+                <svg class="w-4 h-4 text-slate-600 group-hover:text-violet-400 transition-colors shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                </svg>
+              </a>
+            ))}
+          </div>
+        </section>
       ))}
     </div>
 
     <!-- Bottom CTA -->
     <div class="mt-16 bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-8 text-center">
       <h2 class="text-xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Ready to use the tools?</h2>
-      <p class="text-slate-400 text-sm mb-5">61+ free browser-based text tools. No signup, no ads, works on all devices.</p>
+      <p class="text-slate-400 text-sm mb-5">70+ free browser-based tools. No signup, no ads, works on all devices.</p>
       <a href="/tools" class="inline-flex items-center gap-2 bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">
         Browse All Text Tools
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -314,3 +220,35 @@ const blogSchema = {
 
   <Footer />
 </BaseLayout>
+
+<script is:inline>
+(function () {
+  const tabs = document.querySelectorAll('.cat-btn');
+  const sections = document.querySelectorAll('[data-section]');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const cat = tab.getAttribute('data-cat');
+
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      sections.forEach(sec => {
+        if (cat === 'all' || sec.getAttribute('data-section') === cat) {
+          sec.style.display = '';
+        } else {
+          sec.style.display = 'none';
+        }
+      });
+    });
+  });
+})();
+</script>
+
+<style>
+.cat-btn.active {
+  background: #7c3aed !important;
+  color: #fff !important;
+  border-color: #7c3aed !important;
+}
+</style>

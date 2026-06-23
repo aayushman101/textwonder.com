@@ -1,0 +1,108 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What does ASL mean in text?', a: 'ASL has two meanings: the classic "Age/Sex/Location" (asking about someone\'s basic info in chat) and the newer slang "As Hell" (used for emphasis, like "tired asl").' },
+  { q: 'What does "asl" mean on TikTok?', a: 'On TikTok, "asl" almost always means "As Hell" — used for emphasis. For example: "that song is good asl" means "that song is really good."' },
+  { q: 'Is ASL still used as Age/Sex/Location?', a: 'Rarely in modern texting. The "Age/Sex/Location" usage peaked in the early 2000s in chat rooms. Today, most people under 25 use "asl" to mean "As Hell."' },
+  { q: 'How do you use "asl" for emphasis?', a: 'Place it after an adjective: "tired asl," "funny asl," "loud asl." It works like adding "as hell" at the end of a sentence.' },
+  { q: 'What does "asl" mean in American Sign Language?', a: 'ASL also stands for American Sign Language — the primary sign language used by Deaf communities in the United States and Canada. This is an entirely separate context from texting slang.' },
+];
+---
+
+<BlogLayout
+  title="What Does ASL Mean in Text? (Age/Sex/Location vs As Hell)"
+  description="ASL means 'Age/Sex/Location' in classic internet chat, but in modern texting and TikTok it means 'As Hell' — used for emphasis. Examples of both meanings explained."
+  canonical="/blog/what-does-asl-mean-in-text"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Text Slang"
+  faqs={faqs}
+>
+
+<p>
+  <strong>ASL</strong> is one of those abbreviations whose meaning changed dramatically over the years. It had one well-known meaning in the early days of the internet, and an entirely different meaning in modern slang. This guide covers both.
+</p>
+
+<h2>ASL Meaning 1 (Modern): "As Hell"</h2>
+
+<p>
+  In today's texting and social media, <strong>ASL most commonly means "As Hell"</strong> — used to intensify a description. It is placed after an adjective to emphasize how strongly something applies.
+</p>
+
+<p><strong>Examples of ASL = "As Hell":</strong></p>
+<ul>
+  <li>"I'm tired asl after that workout"</li>
+  <li>"That movie was scary asl"</li>
+  <li>"She's funny asl, I was crying laughing"</li>
+  <li>"Bro it's hot asl outside"</li>
+  <li>"This show is good asl, you have to watch it"</li>
+</ul>
+
+<p>
+  Notice the pattern: adjective + "asl" = adjective + "as hell." It is an intensifier. The more casual and lowercase the message, the more likely "asl" is being used this way.
+</p>
+
+<h2>ASL Meaning 2 (Classic): "Age/Sex/Location"</h2>
+
+<p>
+  The original meaning of ASL was <strong>"Age/Sex/Location"</strong> — a question asked in early internet chat rooms (AOL, MSN Messenger, IRC) to find out basic information about who you were talking to. It was the equivalent of an intro question.
+</p>
+
+<p><strong>Examples of ASL = "Age/Sex/Location":</strong></p>
+<ul>
+  <li>"Hey, ASL?" — asking someone to introduce themselves with their age, gender, and location</li>
+  <li>A typical reply would be: "17/M/California" or "22/F/London"</li>
+</ul>
+
+<p>
+  This usage is now largely outdated. While you may still occasionally see it used this way among older internet users or in retro memes, most people under 25 will not recognize this meaning.
+</p>
+
+<h2>How to Tell Which Meaning Is Being Used</h2>
+
+<ul>
+  <li>If "asl" appears after an adjective in a casual sentence → <strong>As Hell</strong></li>
+  <li>If someone just typed "ASL?" as a standalone question, especially in an old-school context → <strong>Age/Sex/Location</strong></li>
+  <li>On TikTok, Instagram, or Snapchat in 2024+ → almost certainly <strong>As Hell</strong></li>
+</ul>
+
+<h2>ASL on Different Platforms</h2>
+
+<ul>
+  <li><strong>TikTok comments/captions:</strong> "As Hell" — nearly always</li>
+  <li><strong>Instagram DMs:</strong> "As Hell" in modern usage</li>
+  <li><strong>Older chat apps / dating sites:</strong> May still see "Age/Sex/Location"</li>
+  <li><strong>Twitter/X:</strong> "As Hell" for emphasis</li>
+</ul>
+
+<h2>Related Slang Terms</h2>
+
+<ul>
+  <li><strong>AF</strong> — "As F***" (same use, stronger version of ASL as an intensifier)</li>
+  <li><strong>SMH</strong> — "Shaking My Head"</li>
+  <li><strong>NGL</strong> — "Not Gonna Lie"</li>
+  <li><strong>TBH</strong> — "To Be Honest"</li>
+  <li><strong>FR</strong> — "For Real"</li>
+</ul>
+
+<a href="/tools/word-counter" class="tool-cta">
+  <div class="cta-label">Free Text Tool</div>
+  <div class="cta-title">Word Counter & Text Analyzer →</div>
+  <div class="cta-desc">Count words, characters, and reading level instantly. Free, browser-based, no signup.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

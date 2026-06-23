@@ -1,0 +1,136 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert text to columns in Excel?', a: 'Select the cell or column with the text, go to Data → Text to Columns, choose Delimited (for comma/tab/space separators) or Fixed Width, then follow the wizard to split the text into separate columns.' },
+  { q: 'What is the Text to Columns feature in Excel?', a: 'Text to Columns is an Excel data tool that splits text from one column into multiple columns based on a delimiter (like a comma, space, or tab) or at fixed character widths. Found under the Data tab.' },
+  { q: 'Can I split text into columns using a comma?', a: 'Yes. Select the column → Data → Text to Columns → Delimited → check "Comma" as the delimiter → Finish. Each comma-separated value goes into its own column.' },
+  { q: 'How do I split first name and last name into separate columns?', a: 'Select the name column → Data → Text to Columns → Delimited → check "Space" → Finish. First names go to column A and last names to column B. If some names have middle names, you may get a third column.' },
+  { q: 'Can I use a formula to split text into columns?', a: 'Yes. Use =LEFT(), =RIGHT(), =MID(), and =FIND() for simple splits. In Excel 365 and Excel 2019+, the TEXTSPLIT() function splits text by any delimiter into an array across columns. Example: =TEXTSPLIT(A1, ",")" splits comma-separated text across columns.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text to Columns in Excel — Step-by-Step Guide"
+  description="Learn how to split text into multiple columns in Excel using Text to Columns, TEXTSPLIT, and formulas. Works with comma, space, tab, or any delimiter."
+  canonical="/blog/how-to-convert-text-to-column-in-excel"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Excel Guide"
+  faqs={faqs}
+>
+
+<p>
+  When data arrives in a single column — names, addresses, CSV values — Excel's <strong>Text to Columns</strong> feature splits it across multiple columns in seconds. Here is a complete guide to every method.
+</p>
+
+<h2>Method 1: Text to Columns Wizard (Works in All Excel Versions)</h2>
+
+<p>
+  This is the standard, reliable way to split text into columns in any version of Excel.
+</p>
+
+<ol>
+  <li>Select the column (or just the cells) you want to split. <strong>Important:</strong> make sure adjacent columns to the right are empty — the split data will overwrite them.</li>
+  <li>Go to the <strong>Data</strong> tab in the ribbon.</li>
+  <li>Click <strong>Text to Columns</strong>. The Convert Text to Columns Wizard opens.</li>
+  <li>Choose the file type:
+    <ul>
+      <li><strong>Delimited</strong> — your text is separated by a character like a comma, space, or tab. Choose this for most cases.</li>
+      <li><strong>Fixed Width</strong> — your text has columns at fixed character positions (e.g., old bank statements or mainframe exports).</li>
+    </ul>
+  </li>
+  <li>Click <strong>Next</strong>.</li>
+  <li>For <strong>Delimited</strong>: check the delimiter(s) your data uses. Common options:
+    <ul>
+      <li><strong>Tab</strong> — for .tsv or paste from a spreadsheet</li>
+      <li><strong>Comma</strong> — for CSV data</li>
+      <li><strong>Space</strong> — for names, addresses, or word-separated values</li>
+      <li><strong>Other</strong> — type any character (e.g., pipe <code>|</code> or semicolon <code>;</code>)</li>
+    </ul>
+  </li>
+  <li>Check the <strong>Data preview</strong> at the bottom — vertical lines show where columns will split.</li>
+  <li>Click <strong>Next</strong> → set data format per column if needed → click <strong>Finish</strong>.</li>
+</ol>
+
+<p>Excel splits the text in-place, placing each piece in adjacent columns to the right.</p>
+
+<h2>Example: Split "First Name, Last Name" into Two Columns</h2>
+
+<ol>
+  <li>Your data in column A: "Alice Smith", "Bob Jones", "Carol White"</li>
+  <li>Select column A → Data → Text to Columns → Delimited → Next</li>
+  <li>Check <strong>Space</strong> as delimiter → Next → Finish</li>
+  <li>Column A now has first names; column B has last names.</li>
+</ol>
+
+<h2>Method 2: TEXTSPLIT Function (Excel 365 / Excel 2021+)</h2>
+
+<p>
+  The newer <code>TEXTSPLIT</code> function splits text into an array without using the wizard, and it is dynamic — it updates when the source text changes.
+</p>
+
+<pre><code>=TEXTSPLIT(A1, ",")</code></pre>
+
+<p>This splits the text in A1 at every comma and spills the results across adjacent columns automatically.</p>
+
+<p><strong>Split into rows instead of columns:</strong></p>
+<pre><code>=TEXTSPLIT(A1,, ",")</code></pre>
+<p>(Pass the delimiter as the third argument to split into rows.)</p>
+
+<p><strong>Multiple delimiters:</strong></p>
+<pre><code>=TEXTSPLIT(A1, {",", ";"})</code></pre>
+
+<h2>Method 3: Formulas for Simple Splits (All Excel Versions)</h2>
+
+<p>To split "First Last" into two cells using formulas:</p>
+
+<ul>
+  <li><strong>First name:</strong> <code>=LEFT(A1, FIND(" ", A1) - 1)</code></li>
+  <li><strong>Last name:</strong> <code>=MID(A1, FIND(" ", A1) + 1, LEN(A1))</code></li>
+</ul>
+
+<p>These formulas find the space character and extract text before/after it.</p>
+
+<h2>Method 4: Flash Fill (Excel 2013+)</h2>
+
+<p>
+  Flash Fill can automatically detect the pattern you are splitting on:
+</p>
+
+<ol>
+  <li>In the column next to your data, type the first split result manually (e.g., the first name).</li>
+  <li>Start typing the second row — Excel will suggest the rest of the column.</li>
+  <li>Press <strong>Enter</strong> to accept the suggestion, or go to <strong>Data → Flash Fill</strong> (Ctrl+E).</li>
+</ol>
+
+<p>Flash Fill is excellent for tricky patterns that are hard to write as formulas.</p>
+
+<h2>Common Issues</h2>
+
+<ul>
+  <li><strong>Data will be overwritten:</strong> Text to Columns writes into adjacent columns — always insert blank columns first if there is existing data to the right.</li>
+  <li><strong>Inconsistent spacing:</strong> Use TRIM() to remove extra spaces before splitting — <code>=TRIM(A1)</code>.</li>
+  <li><strong>Quoted CSV fields:</strong> Text to Columns handles quoted fields (e.g., <code>"Smith, John"</code>) — check the "Text qualifier" option and set it to a double quote.</li>
+</ul>
+
+<a href="/blog/how-to-convert-text-file-to-excel" class="tool-cta">
+  <div class="cta-label">Related Guide</div>
+  <div class="cta-title">How to Convert a Text File to Excel →</div>
+  <div class="cta-desc">Import .txt and .csv files into Excel with the right delimiter settings. Step-by-step guide for all Excel versions.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

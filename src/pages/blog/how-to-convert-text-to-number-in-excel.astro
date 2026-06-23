@@ -1,0 +1,119 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Why does Excel store numbers as text?', a: 'Excel treats data as text when it is imported from CSV files, copied from websites, or entered with leading apostrophes. It also treats numbers with text formatting applied as text. The telltale sign is a green triangle in the cell corner.' },
+  { q: 'How do I quickly convert text to numbers in Excel?', a: 'The fastest method: select the cells with green triangles → click the yellow warning icon → choose "Convert to Number." Alternatively, multiply all cells by 1 using Paste Special.' },
+  { q: 'What does the green triangle in an Excel cell mean?', a: 'The green triangle (error indicator) in the top-left of a cell means Excel has detected a potential issue — most commonly that a number is stored as text.' },
+  { q: 'Can I use VALUE() to convert text to number in Excel?', a: 'Yes. The VALUE() formula converts a text string that looks like a number into an actual number. For example, =VALUE(A1) converts the text "123" in A1 to the number 123.' },
+  { q: 'What if the green triangle method does not appear?', a: 'If no warning icon appears, try: select the cells → go to Data tab → Text to Columns → click Finish immediately. This forces Excel to re-evaluate the cell data type.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Text to Number in Excel — 5 Easy Methods"
+  description="Numbers stored as text in Excel won't calculate correctly. Learn 5 quick methods to convert text to number in Excel, including the green triangle fix, VALUE formula, and Paste Special."
+  canonical="/blog/how-to-convert-text-to-number-in-excel"
+  date="2026-06-23"
+  readTime="6 min read"
+  category="Productivity Guide"
+  faqs={faqs}
+>
+
+<p>
+  One of the most frustrating Excel problems is when numbers are stored as text. Your SUM formula returns 0. Your VLOOKUP fails to match. Sorting does not work correctly. This guide covers every reliable method to convert text to number in Excel, from the fastest one-click fix to formulas that work for bulk conversions.
+</p>
+
+<h2>How to Tell If Numbers Are Stored as Text</h2>
+
+<p>Look for these signs:</p>
+<ul>
+  <li>A <strong>green triangle</strong> in the top-left corner of the cell</li>
+  <li>Numbers are <strong>left-aligned</strong> in the cell (numbers are right-aligned by default)</li>
+  <li>SUM or AVERAGE formulas return <strong>0</strong> instead of the expected total</li>
+  <li>The cell's format shows <strong>"Text"</strong> in the Home → Number Format dropdown</li>
+</ul>
+
+<h2>Method 1: The Green Triangle Fix (Fastest)</h2>
+
+<p>This works when Excel detects the problem itself and shows the green triangle indicator:</p>
+<ol>
+  <li>Select the cells with the green triangle.</li>
+  <li>A small yellow <strong>warning icon</strong> (⚠️) appears to the left of the selection.</li>
+  <li>Click the warning icon.</li>
+  <li>Choose <strong>"Convert to Number"</strong> from the dropdown menu.</li>
+</ol>
+<p>Done. The numbers are now real numbers and formulas will calculate correctly.</p>
+
+<h2>Method 2: Multiply by 1 Using Paste Special</h2>
+
+<p>This is a reliable method when the green triangle does not appear:</p>
+<ol>
+  <li>Type <strong>1</strong> in any empty cell and copy it (Ctrl+C).</li>
+  <li>Select all the text-formatted number cells you want to convert.</li>
+  <li>Right-click → <strong>Paste Special</strong> (or press Ctrl+Alt+V).</li>
+  <li>Select <strong>Values</strong> under Paste, and <strong>Multiply</strong> under Operation.</li>
+  <li>Click <strong>OK</strong>.</li>
+</ol>
+<p>Multiplying by 1 forces Excel to interpret the cell contents as numbers.</p>
+
+<h2>Method 3: The VALUE() Formula</h2>
+
+<p>Use this when you want to keep the original data and get converted numbers in a separate column:</p>
+<ul>
+  <li>In a new cell, type: <code>=VALUE(A1)</code> where A1 contains the text-formatted number.</li>
+  <li>Press Enter. The result is a real number.</li>
+  <li>Copy the formula down for all rows.</li>
+  <li>If you want to replace the originals: copy the new column → Paste Special → Values only → paste over the original column.</li>
+</ul>
+
+<h2>Method 4: Text to Columns (No Formula Needed)</h2>
+
+<p>This method forces Excel to re-parse the cell data:</p>
+<ol>
+  <li>Select the column of text-formatted numbers.</li>
+  <li>Go to the <strong>Data</strong> tab → click <strong>Text to Columns</strong>.</li>
+  <li>Leave all settings as default (Delimited, comma, etc.).</li>
+  <li>Click <strong>Finish</strong> immediately without changing anything.</li>
+</ol>
+<p>Excel re-processes the column and recognises the numbers correctly.</p>
+
+<h2>Method 5: Change the Cell Format First</h2>
+
+<p>This works best for freshly entered data:</p>
+<ol>
+  <li>Select the cells.</li>
+  <li>In the <strong>Home</strong> tab, change the format dropdown from "Text" to "Number" or "General."</li>
+  <li>Press <strong>F2</strong> then <strong>Enter</strong> in each cell to reconfirm the value.</li>
+</ol>
+<p>Note: For large datasets, this is tedious. Use Methods 2 or 4 instead.</p>
+
+<h2>Why This Happens: Common Causes</h2>
+
+<ul>
+  <li><strong>Imported CSV data</strong> — many data exports format number columns as text</li>
+  <li><strong>Copied from websites or PDFs</strong> — browsers and PDF text extractors often format numbers with invisible characters</li>
+  <li><strong>Leading apostrophe</strong> — typing <code>'123</code> in Excel forces text formatting</li>
+  <li><strong>Cells pre-formatted as Text</strong> before numbers were entered</li>
+</ul>
+
+<a href="/data/number-formatter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Number Formatter — Format Numbers Online →</div>
+  <div class="cta-desc">Format numbers with commas, decimal places, and currency symbols. Indian or international format. Free, browser-based.</div>
+</a>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

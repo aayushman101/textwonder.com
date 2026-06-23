@@ -1,0 +1,105 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert a text file to Excel?', a: 'Open Excel, go to Data → From Text/CSV, select your .txt file, and use the Import Wizard to choose the delimiter (tab, comma, semicolon). Click Load and Excel imports the data into a spreadsheet.' },
+  { q: 'Can I open a .txt file directly in Excel?', a: 'Yes. In Excel, go to File → Open → browse for your .txt file and open it. Excel automatically launches the Text Import Wizard to guide you through the delimiter settings.' },
+  { q: 'What is the best delimiter for text files imported into Excel?', a: 'It depends on your file. Tab-delimited (.tsv) files are the most common for Excel. Comma-separated (.csv) is also widely used. Check your file in a text editor first to see what separator is used.' },
+  { q: 'Can I convert a text file to Excel online without software?', a: 'If your text file is CSV format, use TextWonder\'s CSV to JSON converter or paste it into Google Sheets. Google Sheets can import .csv files directly via File → Import.' },
+  { q: 'Why do some numbers show as text after importing a .txt file into Excel?', a: 'This happens when the column is not recognised as numeric during import. In the Import Wizard, set the column data type to "General" or "Number." After import, you can also fix this by selecting the cells and using the "Convert to Number" warning icon.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a Text File to Excel — Step-by-Step Guide"
+  description="Learn how to convert a .txt or .csv text file to Excel. Step-by-step guide covering the Excel import wizard, delimiter settings, and online alternatives."
+  canonical="/blog/how-to-convert-text-file-to-excel"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Productivity Guide"
+  faqs={faqs}
+>
+
+<p>
+  Converting a text file (.txt or .csv) to Excel is a common task for anyone working with exported data, reports, or database dumps. Excel has a built-in import tool that handles this, but knowing the right settings makes the difference between clean data and a mess of text in one column. Here is the complete guide.
+</p>
+
+<h2>Method 1: Excel Text Import Wizard (Windows)</h2>
+
+<p>This is the most reliable method for any .txt or .csv file:</p>
+
+<ol>
+  <li>Open <strong>Microsoft Excel</strong> and create a new blank workbook.</li>
+  <li>Go to the <strong>Data</strong> tab → click <strong>"From Text/CSV"</strong> (or "Get Data → From File → From Text/CSV" in newer Excel versions).</li>
+  <li>Browse to your .txt file and click <strong>Import</strong>.</li>
+  <li>Excel shows a preview. In the <strong>Delimiter</strong> dropdown, select the separator your file uses:
+    <ul>
+      <li><strong>Tab</strong> — for standard .txt exports and .tsv files</li>
+      <li><strong>Comma</strong> — for .csv files</li>
+      <li><strong>Semicolon</strong> — common in European locale exports</li>
+    </ul>
+  </li>
+  <li>Check the preview — each column should be separated correctly.</li>
+  <li>Click <strong>Load</strong> to import the data into a new sheet.</li>
+</ol>
+
+<h2>Method 2: Open the .txt File Directly in Excel</h2>
+
+<p>A quicker alternative that triggers the same Import Wizard:</p>
+<ol>
+  <li>Open Excel.</li>
+  <li>Go to <strong>File → Open → Browse</strong>.</li>
+  <li>In the file type dropdown (bottom right of the dialog), change from "Excel Files" to <strong>"All Files"</strong>.</li>
+  <li>Navigate to your .txt file and click <strong>Open</strong>.</li>
+  <li>The Text Import Wizard launches — follow the same steps as Method 1.</li>
+</ol>
+
+<h2>Method 3: Open in Google Sheets (No Software Needed)</h2>
+
+<p>If you do not have Excel, Google Sheets is a free alternative:</p>
+<ol>
+  <li>Open <a href="https://sheets.google.com" rel="noopener noreferrer" target="_blank">Google Sheets</a> and create a new spreadsheet.</li>
+  <li>Go to <strong>File → Import</strong>.</li>
+  <li>Upload your .txt or .csv file.</li>
+  <li>Choose the separator type (detect automatically, comma, or custom).</li>
+  <li>Click <strong>Import Data</strong>.</li>
+  <li>Export as .xlsx via <strong>File → Download → Microsoft Excel (.xlsx)</strong> if you need an Excel file.</li>
+</ol>
+
+<h2>Method 4: Convert CSV Data Online</h2>
+
+<p>If your text file is CSV-formatted, you can process it in your browser first:</p>
+<ul>
+  <li><a href="/data/csv-to-json">CSV to JSON Converter</a> — convert the CSV data to JSON for use in apps or APIs</li>
+  <li><a href="/data/csv-to-table">CSV to HTML Table</a> — visualise the data as a table in your browser before importing</li>
+</ul>
+
+<a href="/data/csv-to-json" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">CSV to JSON Converter →</div>
+  <div class="cta-desc">Paste CSV data and convert it to JSON instantly. Free, browser-based, no signup required.</div>
+</a>
+
+<h2>Fixing Common Issues After Import</h2>
+
+<ul>
+  <li><strong>All data in one column:</strong> You chose the wrong delimiter. Re-import and select the correct separator.</li>
+  <li><strong>Numbers stored as text:</strong> Select the column → click the warning icon → choose "Convert to Number." (See our <a href="/blog/how-to-convert-text-to-number-in-excel">full guide on fixing text numbers in Excel</a>.)</li>
+  <li><strong>Dates showing as numbers:</strong> Select the date column → Format Cells → Date → choose your date format.</li>
+  <li><strong>Extra blank rows:</strong> Use Data → Filter to find and delete blank rows, or press Ctrl+G → Special → Blanks → Delete rows.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

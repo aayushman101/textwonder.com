@@ -66,6 +66,12 @@ const manualPosts = [
   { slug: 'free-online-text-tools-for-writers', title: '10 Free Online Text Tools Every Writer Should Know', description: '10 essential free online text tools for writers and bloggers. Save hours every week with these browser-based utilities.', date: '2025-05-28', readTime: '7 min read', category: 'Productivity' },
   // ── Text Formatting ──
   { slug: 'how-to-sort-text-lines', title: 'How to Sort Lines of Text Alphabetically: 4 Methods', description: 'Sort lines alphabetically, numerically, or randomly using free online tools, Excel, Google Sheets, and the command line.', date: '2025-05-18', readTime: '4 min read', category: 'Text Formatting' },
+  // ── Data Converters ──
+  { slug: 'how-to-convert-json-to-excel', title: 'How to Convert JSON to Excel — 3 Free Methods', description: 'Convert JSON data to Excel online for free. Use JSON to CSV conversion, Excel Power Query, or Google Sheets. Step-by-step guide with all methods explained.', date: '2026-06-23', readTime: '5 min read', category: 'Data Converters' },
+  { slug: 'how-to-convert-json-to-pdf', title: 'How to Convert JSON to PDF Free Online — 3 Methods', description: 'Convert a JSON file to PDF online for free. Use browser print-to-PDF on a JSON formatter, or convert JSON to CSV and export to PDF. Step-by-step guide.', date: '2026-06-23', readTime: '4 min read', category: 'Data Converters' },
+  { slug: 'how-to-convert-json-file-to-csv', title: 'How to Convert a JSON File to CSV — Free Online (No Software)', description: 'Convert any JSON file to CSV format online for free — no software needed. Paste your JSON, download the CSV, and open it in Excel or Google Sheets instantly.', date: '2026-06-23', readTime: '4 min read', category: 'Data Converters' },
+  { slug: 'how-to-convert-json-to-image', title: 'How to Convert JSON to Image (JPG/PNG) — Free Methods', description: 'Convert JSON data to a JPG or PNG image for free. Use the JSON Formatter with browser screenshot, or convert JSON to PDF and save as image. Step-by-step guide.', date: '2026-06-23', readTime: '4 min read', category: 'Data Converters' },
+  { slug: 'how-to-convert-json-to-html', title: 'How to Convert JSON to HTML — Table, Tree & Code Display', description: 'Convert JSON to HTML online for free. Turn JSON arrays into HTML tables, display JSON as formatted code blocks, or render as a tree. Step-by-step guide with examples.', date: '2026-06-23', readTime: '5 min read', category: 'Data Converters' },
 ];
 
 const categoryColors: Record<string, string> = {
@@ -84,6 +90,13 @@ const categoryColors: Record<string, string> = {
   'Developer Tools': '#0e7490',
   'Productivity': '#b45309',
   'Text Formatting': '#4338ca',
+  'Calculators': '#d97706',
+  'Color Design': '#db2777',
+  'Data Converters': '#2563eb',
+  'Health & Fitness': '#16a34a',
+  'Student Tools': '#7c3aed',
+  'Text Utilities': '#0891b2',
+  'Unit Converters': '#9333ea',
 };
 
 // Category order for display
@@ -103,11 +116,27 @@ const categoryOrder = [
   'Text Formatting',
   'Developer Tools',
   'Productivity',
+  'Calculators',
+  'Color Design',
+  'Data Converters',
+  'Health & Fitness',
+  'Student Tools',
+  'Text Utilities',
+  'Unit Converters',
 ];
 
-// Group manual posts by category
-const grouped: Record<string, typeof manualPosts> = {};
-for (const post of manualPosts) {
+// Combine manual posts + dynamic posts (normalize "PDF Guides" → "PDF Guide")
+const allPosts = [
+  ...manualPosts,
+  ...DYNAMIC_BLOG_POSTS.map((p: any) => ({
+    ...p,
+    category: p.category === 'PDF Guides' ? 'PDF Guide' : p.category,
+  })),
+];
+
+// Group all posts by category
+const grouped: Record<string, typeof allPosts> = {};
+for (const post of allPosts) {
   if (!grouped[post.category]) grouped[post.category] = [];
   grouped[post.category].push(post);
 }

@@ -1,0 +1,100 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert JSON to Excel?', a: 'The easiest way is to convert JSON to CSV first using a free tool like TextWonder\'s JSON to CSV converter, then open the CSV file in Excel. CSV opens natively in Excel with all data in columns.' },
+  { q: 'Can Excel open a JSON file directly?', a: 'Excel 2016 and later can import JSON via Power Query: go to Data → Get Data → From File → From JSON. Older Excel versions cannot open JSON directly — convert to CSV first.' },
+  { q: 'How do I convert JSON to CSV and then open in Excel?', a: 'Paste your JSON into a JSON to CSV converter, download the CSV file, then double-click it to open in Excel. The columns are automatically detected from the JSON keys.' },
+  { q: 'What JSON format works best for Excel conversion?', a: 'A flat array of objects works best — for example [{"name":"Alice","age":30},{"name":"Bob","age":25}]. Each object becomes one row; keys become column headers. Nested JSON needs flattening first.' },
+  { q: 'How do I flatten nested JSON before converting to Excel?', a: 'Use a JSON formatter to view the structure, then manually flatten it, or use a tool like jq (command line) or a JSON flattener online. Once flat, paste into the JSON to CSV converter.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert JSON to Excel — 3 Free Methods"
+  description="Convert JSON data to Excel online for free. Use JSON to CSV conversion, Excel Power Query, or Google Sheets. Step-by-step guide with all methods explained."
+  canonical="/blog/how-to-convert-json-to-excel"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  JSON is the standard format for APIs and web data, but Excel cannot open JSON files natively in most versions. The easiest workaround is converting JSON to CSV first — which Excel opens perfectly — or using Excel's built-in Power Query for JSON. Here are the three best free methods.
+</p>
+
+<h2>Method 1: JSON to CSV → Open in Excel (Fastest, All Versions)</h2>
+
+<p>
+  This is the quickest method and works in all Excel versions — Excel 2007 and later.
+</p>
+
+<ol>
+  <li>Open <a href="/data/json-to-csv">TextWonder's JSON to CSV Converter</a>.</li>
+  <li>Paste your JSON array into the input box. It should be an array of objects like:<br />
+    <code>[&#123;"name":"Alice","age":30&#125;,&#123;"name":"Bob","age":25&#125;]</code></li>
+  <li>Click <strong>Convert</strong>. The tool extracts the keys as column headers and each object as a row.</li>
+  <li>Click <strong>Download CSV</strong>.</li>
+  <li>Open the downloaded .csv file in Excel — it opens automatically with data in columns.</li>
+  <li>Save as .xlsx via <strong>File → Save As → Excel Workbook (.xlsx)</strong>.</li>
+</ol>
+
+<a href="/data/json-to-csv" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">JSON to CSV Converter →</div>
+  <div class="cta-desc">Paste any JSON array and download a CSV file instantly. Opens directly in Excel. Free, browser-based, no data sent anywhere.</div>
+</a>
+
+<h2>Method 2: Excel Power Query — Import JSON Directly (Excel 2016+)</h2>
+
+<p>
+  Excel 2016 and Microsoft 365 include Power Query, which can import JSON files directly:
+</p>
+
+<ol>
+  <li>Save your JSON data as a <code>.json</code> file (open Notepad, paste the JSON, save as <code>data.json</code>).</li>
+  <li>Open Excel and go to the <strong>Data</strong> tab.</li>
+  <li>Click <strong>Get Data → From File → From JSON</strong>.</li>
+  <li>Browse to your <code>.json</code> file and click <strong>Import</strong>.</li>
+  <li>Power Query opens. Click <strong>Into Table</strong> to convert the list to a table.</li>
+  <li>Expand any nested columns using the expand icon (⇔) next to column headers.</li>
+  <li>Click <strong>Close & Load</strong> to import the data into a worksheet.</li>
+</ol>
+
+<p><strong>Best for:</strong> Complex or nested JSON that needs transformation. Power Query lets you filter, rename, and reshape before loading into Excel.</p>
+
+<h2>Method 3: Google Sheets (No Excel Needed)</h2>
+
+<p>
+  If you do not have Excel, Google Sheets can handle JSON via a helper formula or by importing CSV:
+</p>
+
+<ol>
+  <li>Convert JSON to CSV using <a href="/data/json-to-csv">the JSON to CSV tool</a>.</li>
+  <li>Open <a href="https://sheets.google.com" rel="noopener noreferrer" target="_blank">Google Sheets</a> → <strong>File → Import → Upload</strong> your CSV file.</li>
+  <li>The data loads into a spreadsheet. Export as Excel via <strong>File → Download → Microsoft Excel (.xlsx)</strong>.</li>
+</ol>
+
+<h2>Tips for Clean JSON to Excel Conversion</h2>
+
+<ul>
+  <li><strong>Flatten nested JSON first:</strong> Objects inside objects (e.g. <code>"address":&#123;"city":"London"&#125;</code>) need to be flattened before converting. Use a JSON formatter to identify nested fields.</li>
+  <li><strong>Arrays inside objects:</strong> If a field contains an array (e.g. tags: ["a","b"]), it will appear as a string in CSV. Consider joining the array values before conversion.</li>
+  <li><strong>Large JSON files:</strong> For very large JSON (10,000+ records), Power Query handles it more efficiently than copy-pasting.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

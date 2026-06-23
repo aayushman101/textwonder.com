@@ -1,0 +1,99 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert a JSON file to PDF?', a: 'The easiest method: paste your JSON into a JSON Formatter to get a beautified, readable version, then use your browser\'s Print → Save as PDF to create a clean PDF of the formatted JSON.' },
+  { q: 'Is there a free JSON to PDF converter online?', a: 'Yes. Use TextWonder\'s JSON Formatter to beautify the JSON, then print it to PDF using Ctrl+P → Save as PDF. Alternatively, paste the JSON into a text editor and use a Text to PDF tool.' },
+  { q: 'How do I convert JSON to PDF with formatting preserved?', a: 'Beautify the JSON first using a JSON Formatter (which adds indentation and colour), then use the browser\'s print function. Choose landscape orientation if the JSON has wide lines.' },
+  { q: 'Can I convert a JSON file to PDF without any software?', a: 'Yes — everything runs in your browser. Use the JSON Formatter to view the formatted JSON, then press Ctrl+P and select "Save as PDF" as the destination. No software installation needed.' },
+  { q: 'How do I convert JSON data to a readable PDF report?', a: 'For a report-style PDF: convert JSON to CSV first, open in Excel or Google Sheets, format it as a table, then export to PDF via File → Download → PDF.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert JSON to PDF Free Online — 3 Methods"
+  description="Convert a JSON file to PDF online for free. Use browser print-to-PDF on a JSON formatter, or convert JSON to CSV and export to PDF. Step-by-step guide."
+  canonical="/blog/how-to-convert-json-to-pdf"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  There is no direct "JSON to PDF" button in most tools, but converting JSON to a clean, readable PDF is easy using your browser's built-in print-to-PDF feature. Here are the three best free methods.
+</p>
+
+<h2>Method 1: JSON Formatter + Browser Print to PDF (Fastest)</h2>
+
+<p>
+  This gives you a nicely formatted, indented PDF of your JSON — ideal for documentation or sharing.
+</p>
+
+<ol>
+  <li>Open <a href="/devwonder/json-formatter">TextWonder's JSON Formatter</a>.</li>
+  <li>Paste your JSON into the input box and click <strong>Format</strong>.</li>
+  <li>The right panel shows your JSON beautifully indented with proper structure.</li>
+  <li>Press <strong>Ctrl+P</strong> (Windows) or <strong>Cmd+P</strong> (Mac) to open the print dialog.</li>
+  <li>Set <strong>Destination</strong> to <strong>"Save as PDF"</strong>.</li>
+  <li>Click <strong>Save</strong>. Your formatted JSON is now a PDF.</li>
+</ol>
+
+<p><strong>Tip:</strong> In the print dialog, choose <strong>Landscape</strong> orientation if your JSON has long lines that would otherwise be cut off.</p>
+
+<a href="/devwonder/json-formatter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">JSON Formatter & Validator →</div>
+  <div class="cta-desc">Beautify and validate JSON instantly. Paste minified JSON and get a cleanly indented, readable result. Free, browser-based.</div>
+</a>
+
+<h2>Method 2: JSON → Plain Text → PDF</h2>
+
+<p>
+  If you want a simpler PDF without JSON syntax (just the values as plain text), use this approach:
+</p>
+
+<ol>
+  <li>Paste your JSON into <a href="/devwonder/json-formatter">the JSON Formatter</a> and beautify it.</li>
+  <li>Copy the formatted output.</li>
+  <li>Open <a href="/pdfwonder/text-to-pdf">TextWonder's Text to PDF converter</a>.</li>
+  <li>Paste the JSON text into the input area.</li>
+  <li>Choose a monospace-friendly font (Courier), font size 10–11pt.</li>
+  <li>Click <strong>Create PDF</strong> and download.</li>
+</ol>
+
+<a href="/pdfwonder/text-to-pdf" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Text to PDF Converter →</div>
+  <div class="cta-desc">Convert any plain text to a PDF instantly. Choose font, size, and margins. No upload, no signup.</div>
+</a>
+
+<h2>Method 3: JSON → CSV → PDF (Table Format)</h2>
+
+<p>
+  For a clean table-style PDF (ideal for JSON that represents tabular data):
+</p>
+
+<ol>
+  <li>Convert your JSON to CSV using <a href="/data/json-to-csv">the JSON to CSV tool</a>.</li>
+  <li>Open the CSV in Google Sheets (<strong>File → Import</strong>).</li>
+  <li>Format the table as needed (bold headers, borders).</li>
+  <li>Export as PDF via <strong>File → Download → PDF Document</strong>.</li>
+</ol>
+
+<p>This gives you a professional table-layout PDF instead of raw code.</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

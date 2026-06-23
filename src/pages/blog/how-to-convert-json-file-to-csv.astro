@@ -1,0 +1,98 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert a JSON file to CSV?', a: 'Open the JSON file in a text editor, copy the contents, paste into TextWonder\'s JSON to CSV converter, and click Convert. Download the CSV file — it opens in Excel, Google Sheets, or any spreadsheet app.' },
+  { q: 'Can I convert JSON to CSV without any software?', a: 'Yes. Use an online JSON to CSV converter like TextWonder\'s — it runs entirely in your browser, no software or account needed.' },
+  { q: 'What JSON format is needed to convert to CSV?', a: 'The JSON must be an array of objects at the top level: [{...}, {...}, ...]. Each object should have the same keys. Nested objects need to be flattened before conversion.' },
+  { q: 'How do I convert nested JSON to CSV?', a: 'Nested JSON (objects within objects) does not map cleanly to flat CSV rows. Flatten it first: either manually restructure it, or use jq (command line) with the --flat-keys option, then convert to CSV.' },
+  { q: 'Why does my JSON to CSV conversion produce only one column?', a: 'This usually means the JSON is not a flat array of objects. It might be a single object, a nested structure, or an array of arrays. Restructure the JSON to be a flat array of key-value objects first.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a JSON File to CSV — Free Online (No Software)"
+  description="Convert any JSON file to CSV format online for free — no software needed. Paste your JSON, download the CSV, and open it in Excel or Google Sheets instantly."
+  canonical="/blog/how-to-convert-json-file-to-csv"
+  date="2026-06-23"
+  readTime="4 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  Converting a JSON file to CSV lets you open the data in Excel, Google Sheets, or any database tool. It is also the easiest way to convert JSON to Excel. Here is the fastest free method.
+</p>
+
+<h2>Step-by-Step: Convert JSON to CSV Online Free</h2>
+
+<ol>
+  <li>Open your JSON file in Notepad (Windows) or TextEdit (Mac), or use VS Code.</li>
+  <li>Press <strong>Ctrl+A</strong> to select all, then <strong>Ctrl+C</strong> to copy.</li>
+  <li>Go to <a href="/data/json-to-csv">TextWonder's JSON to CSV Converter</a>.</li>
+  <li>Paste your JSON into the input box.</li>
+  <li>Click <strong>Convert</strong>. The tool auto-detects the keys and builds the CSV header row.</li>
+  <li>Click <strong>Download CSV</strong> to save the file.</li>
+  <li>Open the CSV in Excel or Google Sheets — your data is now in clean columns.</li>
+</ol>
+
+<a href="/data/json-to-csv" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">JSON to CSV Converter →</div>
+  <div class="cta-desc">Paste any JSON array and convert to CSV instantly. Download as .csv, open in Excel or Google Sheets. Free, browser-based, no data sent anywhere.</div>
+</a>
+
+<h2>What JSON Format Works for CSV Conversion?</h2>
+
+<p>The JSON must be a <strong>flat array of objects</strong> at the top level:</p>
+
+<pre><code>[
+  &#123; "name": "Alice", "age": 30, "city": "London" &#125;,
+  &#123; "name": "Bob",   "age": 25, "city": "Paris"  &#125;
+]</code></pre>
+
+<p>This converts to:</p>
+<pre><code>name,age,city
+Alice,30,London
+Bob,25,Paris</code></pre>
+
+<h2>What If My JSON Is Nested?</h2>
+
+<p>
+  Nested JSON (objects inside objects) does not map directly to flat CSV rows. For example:
+</p>
+
+<pre><code>&#123; "user": &#123; "name": "Alice", "address": &#123; "city": "London" &#125; &#125; &#125;</code></pre>
+
+<p>You need to flatten it first. Options:</p>
+<ul>
+  <li><strong>Manually restructure</strong> the JSON so all fields are at the top level.</li>
+  <li><strong>Use jq</strong> (command line): <code>jq '[.[] | &#123;name: .user.name, city: .user.address.city&#125;]'</code></li>
+  <li><strong>Use the JSON Formatter</strong> to inspect the structure and identify which fields to extract.</li>
+</ul>
+
+<h2>Opening the CSV in Excel</h2>
+
+<p>
+  After downloading the .csv file:
+</p>
+<ul>
+  <li><strong>Windows:</strong> Double-click the .csv file — Excel opens it automatically.</li>
+  <li><strong>Mac:</strong> Double-click → Numbers opens it by default. To use Excel, right-click → Open with → Excel.</li>
+  <li><strong>If data appears in one column:</strong> Go to <strong>Data → Text to Columns</strong> and set the delimiter to Comma.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

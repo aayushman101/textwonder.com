@@ -1,0 +1,117 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I convert JSON to HTML?', a: 'The most common approach is converting JSON data to an HTML table. Use TextWonder\'s CSV to HTML Table tool: first convert JSON to CSV, then convert the CSV to an HTML table. You get a complete <table> element ready to paste into any webpage.' },
+  { q: 'How do I display JSON data as an HTML table?', a: 'Convert the JSON to CSV using the JSON to CSV tool, then paste the CSV into the CSV to HTML Table converter. It generates a properly formatted HTML table with <thead> headers and <tbody> rows.' },
+  { q: 'Can I convert JSON to HTML with JavaScript?', a: 'Yes. Use JSON.parse() to parse the JSON, then build HTML strings with template literals or use the DOM API. For a table: iterate over the array, create <tr> and <td> elements for each object and its values.' },
+  { q: 'How do I pretty-print JSON in an HTML page?', a: 'Wrap the JSON in a <pre><code> block and use JSON.stringify(data, null, 2) to format it with 2-space indentation. For syntax highlighting, use a library like Prism.js or highlight.js.' },
+  { q: 'What is the best way to render JSON data on a webpage?', a: 'For tabular JSON (arrays of objects): render as an HTML table. For hierarchical/nested JSON: render as a collapsible tree using a library like json-viewer. For raw display: use <pre><code> with JSON.stringify formatting.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert JSON to HTML — Table, Tree & Code Display"
+  description="Convert JSON to HTML online for free. Turn JSON arrays into HTML tables, display JSON as formatted code blocks, or render as a tree. Step-by-step guide with examples."
+  canonical="/blog/how-to-convert-json-to-html"
+  date="2026-06-23"
+  readTime="5 min read"
+  category="Data Converters"
+  faqs={faqs}
+>
+
+<p>
+  "Convert JSON to HTML" can mean different things depending on your goal: displaying data as a table, embedding formatted JSON as a code block, or rendering a tree view. Here are the best free methods for each use case.
+</p>
+
+<h2>Method 1: JSON → HTML Table (Most Common)</h2>
+
+<p>
+  If your JSON is an array of objects (like API response data), converting it to an HTML table is the most useful output.
+</p>
+
+<ol>
+  <li>Convert the JSON to CSV first using <a href="/data/json-to-csv">the JSON to CSV tool</a>.</li>
+  <li>Copy the CSV output.</li>
+  <li>Open <a href="/data/csv-to-table">the CSV to HTML Table converter</a>.</li>
+  <li>Paste the CSV data and click Convert.</li>
+  <li>Copy the generated HTML table code — it includes <code>&lt;thead&gt;</code> with headers and <code>&lt;tbody&gt;</code> rows.</li>
+  <li>Paste into your HTML file.</li>
+</ol>
+
+<a href="/data/csv-to-table" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">CSV to HTML Table Converter →</div>
+  <div class="cta-desc">Paste CSV data and get a fully formatted HTML table with headers and rows. Copy the code and paste it into any webpage. Free, browser-based.</div>
+</a>
+
+<h2>Method 2: JSON as a Formatted Code Block in HTML</h2>
+
+<p>
+  To display JSON as readable code on a webpage (for documentation or debugging):
+</p>
+
+<pre><code>&lt;pre&gt;&lt;code id="json-display"&gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;script&gt;
+  const data = &#123;"name": "Alice", "age": 30&#125;;
+  document.getElementById('json-display').textContent =
+    JSON.stringify(data, null, 2);
+&lt;/script&gt;</code></pre>
+
+<p>
+  <code>JSON.stringify(data, null, 2)</code> formats the JSON with 2-space indentation. The <code>&lt;pre&gt;</code> tag preserves whitespace. Add a CSS class for syntax highlighting using <a href="https://prismjs.com" rel="noopener noreferrer" target="_blank">Prism.js</a>.
+</p>
+
+<h2>Method 3: JSON as an HTML Table with JavaScript</h2>
+
+<p>
+  If you are building a webpage dynamically:
+</p>
+
+<pre><code>function jsonToTable(data) &#123;
+  if (!data.length) return '&lt;p&gt;No data&lt;/p&gt;';
+  const headers = Object.keys(data[0]);
+  const headerRow = headers.map(h =&gt; `&lt;th&gt;&#36;&#123;h&#125;&lt;/th&gt;`).join('');
+  const rows = data.map(row =&gt;
+    '&lt;tr&gt;' + headers.map(h =&gt; `&lt;td&gt;&#36;&#123;row[h] ?? ''&#125;&lt;/td&gt;`).join('') + '&lt;/tr&gt;'
+  ).join('');
+  return `&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&#36;&#123;headerRow&#125;&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;&#36;&#123;rows&#125;&lt;/tbody&gt;&lt;/table&gt;`;
+&#125;</code></pre>
+
+<p>Call it with: <code>document.body.innerHTML = jsonToTable(yourJsonArray);</code></p>
+
+<h2>Method 4: JSON Tree View in HTML</h2>
+
+<p>
+  For nested/hierarchical JSON, a collapsible tree view is more readable than a table. Use a lightweight library:
+</p>
+
+<ul>
+  <li><strong>json-viewer</strong> (<code>&lt;json-viewer&gt;</code> web component) — add via CDN, pass JSON as a property.</li>
+  <li><strong>JSONEditor</strong> — open-source library with tree, code, and table views.</li>
+  <li><strong>react-json-view</strong> — if you are using React.</li>
+</ul>
+
+<h2>Which Method to Use?</h2>
+
+<ul>
+  <li><strong>Tabular JSON (array of objects):</strong> → HTML table (Method 1 or 3)</li>
+  <li><strong>Display JSON code on a page:</strong> → <code>&lt;pre&gt;&lt;code&gt;</code> block (Method 2)</li>
+  <li><strong>Nested/complex JSON:</strong> → tree view library (Method 4)</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

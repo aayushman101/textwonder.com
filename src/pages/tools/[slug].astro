@@ -66,6 +66,7 @@ import ExperienceLetterGenerator from '../../components/tools/ExperienceLetterGe
 import RelievingLetterGenerator from '../../components/tools/RelievingLetterGenerator.astro';
 import SalarySlipGenerator from '../../components/tools/SalarySlipGenerator.astro';
 import ProformaInvoiceGenerator from '../../components/tools/ProformaInvoiceGenerator.astro';
+import TextToVoice from '../../components/tools/TextToVoice.astro';
 import { TOOLS } from '../../data/tools.js';
 
 export function getStaticPaths() {
@@ -141,6 +142,7 @@ const componentMap: Record<string, any> = {
   'relieving-letter-generator': RelievingLetterGenerator,
   'salary-slip-generator': SalarySlipGenerator,
   'proforma-invoice-generator': ProformaInvoiceGenerator,
+  'text-to-voice': TextToVoice,
 };
 
 const ToolComponent = componentMap[tool.slug];

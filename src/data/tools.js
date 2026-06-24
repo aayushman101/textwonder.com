@@ -747,6 +747,30 @@ export const TOOLS = [
 
   // ── MISC ANALYSIS ─────────────────────────────────────────────
   {
+    slug: 'text-to-voice',
+    name: 'Text to Voice',
+    category: 'text-conversion',
+    tagline: 'Convert any text to spoken audio instantly — free, no signup.',
+    metaTitle: 'Text to Voice Converter — Free Online TTS Tool | TextWonder',
+    metaDescription: 'Convert text to voice online free. Choose from 50+ neural voices, adjust speed and pitch, use presets, and listen instantly. No signup, no limits, 100% browser-based.',
+    h1: 'Text to Voice Converter — Free Online TTS',
+    descriptionLong: 'TextWonder\'s Text to Voice tool converts any written text into natural-sounding spoken audio directly in your browser. Choose from all voices installed on your device and browser — including high-quality neural voices in Chrome — adjust speaking speed and pitch, use one-click presets for different styles (energetic, storytelling, news), and preview any voice before committing. Supports unlimited text length with no word limits.',
+    useCases: 'Proofreading by ear, accessibility for visually impaired users, creating voice demos, language learning and pronunciation practice, audiobook previewing, and listening to articles hands-free while multitasking.',
+    howItWorks: 'Uses the browser\'s built-in Web Speech API (SpeechSynthesis) which accesses voices installed on your operating system and browser. Chrome adds Google\'s neural voices. Everything runs locally — no text is sent to any server.',
+    faqs: [
+      { q: 'Which voices are available?', a: 'All voices installed on your operating system and browser. Chrome on Windows or Mac adds high-quality Google neural voices. You can add more voices in your OS accessibility or speech settings.' },
+      { q: 'How do I get more/better voices?', a: 'Windows: Settings → Time & Language → Speech → Add voices. Mac: System Settings → Accessibility → Spoken Content → Manage Voices. Chrome also auto-adds Google voices on supported platforms.' },
+      { q: 'Is there a word or character limit?', a: 'No limit. Long texts are handled seamlessly. The tool speaks the full text from start to finish.' },
+      { q: 'Can I download the audio as MP3?', a: 'The Web Speech API plays audio directly through your speakers without exposing a downloadable file. To save it, use your device\'s built-in screen/audio recorder (Win+G on Windows, QuickTime on Mac) while the tool speaks.' },
+      { q: 'Does it work offline?', a: 'Most voices work offline once loaded. Some browser-added neural voices require an internet connection for the first use.' },
+    ],
+    relatedTools: ['word-counter', 'reading-time-calculator', 'speaking-time-calculator', 'character-counter'],
+    longTailKeywords: ['text to voice converter online free', 'text to speech online no signup', 'convert text to audio browser', 'free tts tool online'],
+    searchVolume: 'high',
+    competition: 'high',
+    buildPriority: 1,
+  },
+  {
     slug: 'palindrome-checker',
     name: 'Palindrome Checker',
     category: 'text-analysis',

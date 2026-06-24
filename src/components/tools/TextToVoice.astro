@@ -1,0 +1,491 @@
+---
+---
+
+<div class="space-y-4" id="ttv-root">
+
+  <!-- Voice bar -->
+  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-2xl px-4 py-3">
+    <div class="flex items-center gap-2 flex-1 min-w-0">
+      <span class="text-slate-400 text-xs font-medium whitespace-nowrap">Voice:</span>
+      <strong id="ttv-selected-label" class="text-white text-sm truncate">Loading…</strong>
+    </div>
+    <div class="flex items-center gap-2 shrink-0">
+      <button id="ttv-preview-btn" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-slate-600 transition-all">
+        <span id="ttv-preview-icon">▶</span> Preview
+      </button>
+      <button id="ttv-browse-btn" class="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-violet-600/20 border border-violet-700/50 text-violet-300 hover:bg-violet-600/30 transition-all">
+        🎭 Browse Voices
+      </button>
+    </div>
+  </div>
+
+  <!-- Workspace -->
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4">
+
+    <!-- Text panel -->
+    <div class="flex flex-col bg-[var(--bg-surface)] border border-slate-800 rounded-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-4 py-2.5 border-b border-slate-800">
+        <h3 class="text-white font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Your Text</h3>
+        <div class="flex items-center gap-3 text-xs text-slate-500">
+          <span><strong id="ttv-word-count" class="text-violet-400">0</strong> words</span>
+          <span><strong id="ttv-char-count" class="text-slate-400">0</strong> chars</span>
+        </div>
+      </div>
+      <textarea
+        id="ttv-input"
+        rows="12"
+        placeholder="Type or paste your text here…&#10;&#10;No word limit — speak any length of text."
+        class="flex-1 w-full bg-transparent text-slate-300 placeholder-slate-600 text-sm leading-relaxed p-4 outline-none resize-none min-h-[240px]"
+        spellcheck="false"
+      ></textarea>
+      <div class="flex items-center gap-2 px-4 py-2.5 border-t border-slate-800">
+        <button id="ttv-clear-btn" class="text-xs text-slate-500 hover:text-white transition-colors px-2.5 py-1 rounded-md hover:bg-[var(--bg-base)]">Clear</button>
+        <button id="ttv-paste-btn" class="text-xs text-slate-500 hover:text-white transition-colors px-2.5 py-1 rounded-md hover:bg-[var(--bg-base)]">Paste</button>
+      </div>
+    </div>
+
+    <!-- Settings panel -->
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-4 space-y-5">
+      <h3 class="text-white font-bold text-sm" style="font-family:'Space Grotesk',sans-serif;">Voice Settings</h3>
+
+      <!-- Voice select -->
+      <div>
+        <label class="block text-xs text-slate-400 font-medium mb-1.5">Voice</label>
+        <select id="ttv-voice-select" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl text-white text-xs px-3 py-2 outline-none focus:border-violet-500 transition-colors">
+          <option value="">Loading voices…</option>
+        </select>
+      </div>
+
+      <!-- Speed -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs text-slate-400 font-medium">Speed</label>
+          <span id="ttv-rate-val" class="text-xs font-bold text-violet-400 bg-violet-900/30 px-2 py-0.5 rounded-md">1.0×</span>
+        </div>
+        <input type="range" id="ttv-rate" min="0.5" max="2" step="0.05" value="1"
+          class="w-full accent-violet-500 cursor-pointer" />
+        <div class="flex justify-between text-[10px] text-slate-600 mt-0.5"><span>Slower</span><span>Faster</span></div>
+      </div>
+
+      <!-- Pitch -->
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <label class="text-xs text-slate-400 font-medium">Pitch</label>
+          <span id="ttv-pitch-val" class="text-xs font-bold text-slate-400 bg-[var(--bg-base)] px-2 py-0.5 rounded-md">1.0</span>
+        </div>
+        <input type="range" id="ttv-pitch" min="0" max="2" step="0.05" value="1"
+          class="w-full accent-violet-500 cursor-pointer" />
+        <div class="flex justify-between text-[10px] text-slate-600 mt-0.5"><span>Lower</span><span>Higher</span></div>
+      </div>
+
+      <!-- Presets -->
+      <div>
+        <p class="text-xs text-slate-400 font-medium mb-2">Quick Presets</p>
+        <div class="grid grid-cols-2 gap-1.5">
+          {['Tutorial','Energetic','Storytelling','News'].map(p => (
+            <button class="ttv-preset text-[11px] font-semibold px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-white hover:border-violet-600 hover:bg-violet-600/10 transition-all" data-preset={p.toLowerCase()}>{p}</button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Tip -->
+      <div class="bg-[var(--bg-base)] rounded-xl p-3 border border-slate-800/60">
+        <p class="text-[11px] text-slate-500 leading-relaxed">
+          <strong class="text-slate-400">Tip:</strong> Chrome on desktop includes high-quality Google Neural voices (en-US-Neural). Install more voices in your OS Speech settings.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error -->
+  <div id="ttv-error" class="hidden bg-red-900/20 border border-red-800/50 rounded-xl px-4 py-3 text-red-400 text-sm"></div>
+
+  <!-- Controls -->
+  <div class="flex flex-col sm:flex-row items-center gap-3">
+    <button id="ttv-speak-btn"
+      class="flex items-center justify-center gap-2 w-full sm:w-auto bg-violet-600 hover:bg-violet-500 text-white font-bold px-8 py-3.5 rounded-xl transition-all hover:shadow-lg hover:shadow-violet-500/20 active:scale-95 text-sm">
+      <span id="ttv-speak-icon">🎙</span>
+      <span id="ttv-speak-label">Speak Text</span>
+    </button>
+    <button id="ttv-pause-btn" disabled
+      class="flex items-center gap-2 bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white font-semibold px-5 py-3.5 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+      ⏸ Pause
+    </button>
+    <button id="ttv-stop-btn" disabled
+      class="flex items-center gap-2 bg-[var(--bg-surface)] border border-slate-700 text-slate-400 hover:text-white font-semibold px-5 py-3.5 rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed text-sm">
+      ⏹ Stop
+    </button>
+    <div id="ttv-progress" class="hidden flex-1 h-1.5 bg-slate-800 rounded-full overflow-hidden sm:block">
+      <div id="ttv-progress-fill" class="h-full bg-violet-500 w-0 transition-all duration-300 indeterminate-bar"></div>
+    </div>
+  </div>
+
+  <!-- Download tip -->
+  <div class="bg-amber-900/10 border border-amber-800/30 rounded-xl px-4 py-3 text-amber-400/80 text-xs leading-relaxed">
+    <strong class="text-amber-400">To save as audio:</strong> Use your device's audio recorder while the tool speaks —
+    <strong>Win+G</strong> on Windows · <strong>QuickTime → New Audio Recording</strong> on Mac. Set input to your speakers/loopback device.
+  </div>
+
+</div>
+
+<!-- Voice Browser Modal -->
+<div id="ttv-modal" class="fixed inset-0 z-50 hidden" role="dialog">
+  <div class="absolute inset-0 bg-black/70 backdrop-blur-sm" id="ttv-modal-backdrop"></div>
+  <div class="relative max-w-lg w-full mx-auto mt-16 px-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden max-h-[75vh] flex flex-col">
+      <div class="flex items-start justify-between px-5 py-4 border-b border-slate-700 shrink-0">
+        <div>
+          <h3 class="text-white font-bold text-base" style="font-family:'Space Grotesk',sans-serif;">Voice Browser</h3>
+          <p class="text-slate-500 text-xs mt-0.5">▶ to preview · Use to select</p>
+        </div>
+        <button id="ttv-modal-close" class="text-slate-400 hover:text-white text-lg leading-none">✕</button>
+      </div>
+      <div class="px-4 py-3 border-b border-slate-800 shrink-0">
+        <input type="text" id="ttv-voice-search" placeholder="Search by name or language…"
+          class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl text-white text-sm px-3 py-2 outline-none focus:border-violet-500 placeholder-slate-500" />
+      </div>
+      <div id="ttv-voice-list" class="overflow-y-auto py-2 flex-1 min-h-0">
+        <p class="text-slate-500 text-sm text-center py-6">Loading voices…</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes indeterminate {
+    0%   { transform: translateX(-100%) scaleX(0.4); }
+    50%  { transform: translateX(50%)  scaleX(0.6); }
+    100% { transform: translateX(250%) scaleX(0.4); }
+  }
+  .indeterminate-bar { animation: indeterminate 1.4s ease infinite; }
+  .indeterminate-bar.paused { animation-play-state: paused; }
+</style>
+
+<script>
+(function () {
+  const PRESETS = {
+    tutorial:     { rate: 1.0,  pitch: 1.0 },
+    energetic:    { rate: 1.25, pitch: 1.15 },
+    storytelling: { rate: 0.85, pitch: 0.9 },
+    news:         { rate: 1.1,  pitch: 1.0 },
+  };
+
+  const PREVIEW_TEXT = "Hey everyone, welcome to TextWonder. Today's guide is going to be really helpful, so let's dive right in.";
+
+  const $ = (id) => document.getElementById(id);
+
+  const input         = $('ttv-input');
+  const voiceSelect   = $('ttv-voice-select');
+  const rateSlider    = $('ttv-rate');
+  const pitchSlider   = $('ttv-pitch');
+  const rateVal       = $('ttv-rate-val');
+  const pitchVal      = $('ttv-pitch-val');
+  const speakBtn      = $('ttv-speak-btn');
+  const pauseBtn      = $('ttv-pause-btn');
+  const stopBtn       = $('ttv-stop-btn');
+  const speakIcon     = $('ttv-speak-icon');
+  const speakLabel    = $('ttv-speak-label');
+  const wordCount     = $('ttv-word-count');
+  const charCount     = $('ttv-char-count');
+  const selectedLabel = $('ttv-selected-label');
+  const previewBtn    = $('ttv-preview-btn');
+  const previewIcon   = $('ttv-preview-icon');
+  const browseBtn     = $('ttv-browse-btn');
+  const modal         = $('ttv-modal');
+  const modalClose    = $('ttv-modal-close');
+  const modalBackdrop = $('ttv-modal-backdrop');
+  const voiceSearch   = $('ttv-voice-search');
+  const voiceList     = $('ttv-voice-list');
+  const progress      = $('ttv-progress');
+  const progressFill  = $('ttv-progress-fill');
+  const errorBox      = $('ttv-error');
+  const clearBtn      = $('ttv-clear-btn');
+  const pasteBtn      = $('ttv-paste-btn');
+
+  let voices = [];
+  let isSpeaking = false;
+  let isPaused   = false;
+  let previewUtter = null;
+  let isPreviewPlaying = false;
+
+  // ── Voices ──────────────────────────────────────────────────────
+  function loadVoices() {
+    const raw = speechSynthesis.getVoices();
+    if (!raw.length) return;
+    voices = raw.sort((a, b) => {
+      const aEn = a.lang.startsWith('en') ? 0 : 1;
+      const bEn = b.lang.startsWith('en') ? 0 : 1;
+      if (aEn !== bEn) return aEn - bEn;
+      return a.name.localeCompare(b.name);
+    });
+    populateSelect(voices);
+  }
+
+  function populateSelect(list) {
+    voiceSelect.innerHTML = '';
+    const groups = {};
+    list.forEach(v => { (groups[v.lang] = groups[v.lang] || []).push(v); });
+    const sortedLangs = Object.keys(groups).sort((a, b) => {
+      const aEn = a.startsWith('en') ? 0 : 1;
+      const bEn = b.startsWith('en') ? 0 : 1;
+      return aEn !== bEn ? aEn - bEn : a.localeCompare(b);
+    });
+    sortedLangs.forEach(lang => {
+      const og = document.createElement('optgroup');
+      og.label = lang;
+      groups[lang].forEach(v => {
+        const opt = document.createElement('option');
+        opt.value = v.name;
+        opt.textContent = cleanName(v.name);
+        og.appendChild(opt);
+      });
+      voiceSelect.appendChild(og);
+    });
+    updateSelectedLabel();
+  }
+
+  function cleanName(name) {
+    return name
+      .replace('Microsoft ', '')
+      .replace('Google ', '')
+      .replace(/ \(.*?\)/g, '')
+      .trim();
+  }
+
+  function getVoice(name) {
+    return voices.find(v => v.name === name) || voices[0] || null;
+  }
+
+  function updateSelectedLabel() {
+    const v = getVoice(voiceSelect.value);
+    selectedLabel.textContent = v ? cleanName(v.name) : 'None';
+  }
+
+  speechSynthesis.addEventListener('voiceschanged', loadVoices);
+  loadVoices();
+
+  // ── Counters ────────────────────────────────────────────────────
+  function updateCounters() {
+    const t = input.value;
+    const w = t.trim() ? t.trim().split(/\s+/).length : 0;
+    wordCount.textContent = w.toLocaleString();
+    charCount.textContent = t.length.toLocaleString();
+  }
+  input.addEventListener('input', updateCounters);
+
+  // ── Sliders ─────────────────────────────────────────────────────
+  rateSlider.addEventListener('input', () => {
+    rateVal.textContent = parseFloat(rateSlider.value).toFixed(2).replace(/\.?0+$/, '') + '×';
+  });
+  pitchSlider.addEventListener('input', () => {
+    pitchVal.textContent = parseFloat(pitchSlider.value).toFixed(2).replace(/\.?0+$/, '');
+  });
+
+  // ── Presets ─────────────────────────────────────────────────────
+  document.querySelectorAll('.ttv-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const p = PRESETS[btn.dataset.preset];
+      if (!p) return;
+      rateSlider.value  = p.rate;
+      pitchSlider.value = p.pitch;
+      rateVal.textContent  = p.rate.toFixed(2).replace(/\.?0+$/, '') + '×';
+      pitchVal.textContent = p.pitch.toFixed(2).replace(/\.?0+$/, '');
+      document.querySelectorAll('.ttv-preset').forEach(b => {
+        b.classList.toggle('border-violet-600', b === btn);
+        b.classList.toggle('text-violet-300',   b === btn);
+        b.classList.toggle('bg-violet-600/10',  b === btn);
+      });
+    });
+  });
+
+  // ── Speak ────────────────────────────────────────────────────────
+  function showError(msg) { errorBox.textContent = msg; errorBox.classList.remove('hidden'); }
+  function hideError()    { errorBox.classList.add('hidden'); }
+
+  function setSpeaking(on) {
+    isSpeaking = on;
+    speakBtn.disabled  = on;
+    pauseBtn.disabled  = !on;
+    stopBtn.disabled   = !on;
+    speakIcon.textContent  = on ? '🔊' : '🎙';
+    speakLabel.textContent = on ? 'Speaking…' : 'Speak Text';
+    progress.classList.toggle('hidden', !on);
+    if (!on) { progressFill.style.width = '0'; }
+  }
+
+  speakBtn.addEventListener('click', () => {
+    const text = input.value.trim();
+    if (!text) { showError('Please enter some text first.'); return; }
+    hideError();
+    speechSynthesis.cancel();
+    stopPreview();
+
+    const utter = new SpeechSynthesisUtterance(text);
+    const v = getVoice(voiceSelect.value);
+    if (v) utter.voice = v;
+    utter.rate  = parseFloat(rateSlider.value);
+    utter.pitch = parseFloat(pitchSlider.value);
+
+    utter.onstart  = () => setSpeaking(true);
+    utter.onend    = () => { setSpeaking(false); isPaused = false; pauseBtn.textContent = '⏸ Pause'; };
+    utter.onerror  = (e) => { setSpeaking(false); if (e.error !== 'interrupted') showError('Speech error: ' + e.error); };
+
+    speechSynthesis.speak(utter);
+    isPaused = false;
+  });
+
+  pauseBtn.addEventListener('click', () => {
+    if (!isSpeaking) return;
+    if (!isPaused) {
+      speechSynthesis.pause();
+      isPaused = true;
+      pauseBtn.textContent = '▶ Resume';
+      progressFill.classList.add('paused');
+    } else {
+      speechSynthesis.resume();
+      isPaused = false;
+      pauseBtn.textContent = '⏸ Pause';
+      progressFill.classList.remove('paused');
+    }
+  });
+
+  stopBtn.addEventListener('click', () => {
+    speechSynthesis.cancel();
+    setSpeaking(false);
+    isPaused = false;
+    pauseBtn.textContent = '⏸ Pause';
+    progressFill.classList.remove('paused');
+  });
+
+  // ── Preview ──────────────────────────────────────────────────────
+  function stopPreview() {
+    if (isPreviewPlaying) {
+      speechSynthesis.cancel();
+      isPreviewPlaying = false;
+      previewIcon.textContent = '▶';
+      previewBtn.querySelector('span') && (previewBtn.querySelectorAll('span')[0].textContent = '▶');
+    }
+  }
+
+  previewBtn.addEventListener('click', () => {
+    hideError();
+    if (isPreviewPlaying) { stopPreview(); return; }
+    speechSynthesis.cancel();
+    previewUtter = new SpeechSynthesisUtterance(PREVIEW_TEXT);
+    const v = getVoice(voiceSelect.value);
+    if (v) previewUtter.voice = v;
+    previewUtter.rate  = parseFloat(rateSlider.value);
+    previewUtter.pitch = parseFloat(pitchSlider.value);
+    previewUtter.onstart = () => {
+      isPreviewPlaying = true;
+      previewIcon.textContent = '⏹';
+    };
+    previewUtter.onend = previewUtter.onerror = () => {
+      isPreviewPlaying = false;
+      previewIcon.textContent = '▶';
+    };
+    speechSynthesis.speak(previewUtter);
+  });
+
+  voiceSelect.addEventListener('change', () => {
+    updateSelectedLabel();
+    stopPreview();
+  });
+
+  // ── Clear / Paste ────────────────────────────────────────────────
+  clearBtn.addEventListener('click', () => { input.value = ''; updateCounters(); input.focus(); });
+  pasteBtn.addEventListener('click', async () => {
+    try { input.value = await navigator.clipboard.readText(); updateCounters(); } catch {}
+    input.focus();
+  });
+
+  // ── Voice Browser Modal ──────────────────────────────────────────
+  function buildVoiceList(filter) {
+    const f = filter.toLowerCase();
+    const filtered = f ? voices.filter(v =>
+      v.name.toLowerCase().includes(f) || v.lang.toLowerCase().includes(f)
+    ) : voices;
+
+    if (!filtered.length) {
+      voiceList.innerHTML = '<p class="text-slate-500 text-sm text-center py-6">No voices match.</p>';
+      return;
+    }
+
+    const groups = {};
+    filtered.forEach(v => { (groups[v.lang] = groups[v.lang] || []).push(v); });
+    const sortedLangs = Object.keys(groups).sort((a, b) => {
+      return (a.startsWith('en') ? 0 : 1) - (b.startsWith('en') ? 0 : 1) || a.localeCompare(b);
+    });
+
+    const selectedName = voiceSelect.value;
+    voiceList.innerHTML = '';
+
+    sortedLangs.forEach(lang => {
+      const grpEl = document.createElement('div');
+      grpEl.className = 'mb-1';
+
+      const langLabel = document.createElement('div');
+      langLabel.className = 'px-4 py-1 text-[10px] font-bold text-slate-500 uppercase tracking-wider';
+      langLabel.textContent = lang;
+      grpEl.appendChild(langLabel);
+
+      groups[lang].forEach(v => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-base)] transition-colors cursor-default ' + (v.name === selectedName ? 'bg-violet-900/10' : '');
+
+        const playBtn = document.createElement('button');
+        playBtn.className = 'w-7 h-7 rounded-lg flex items-center justify-center text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-400 hover:text-white hover:border-violet-600 transition-all shrink-0';
+        playBtn.textContent = '▶';
+        playBtn.title = 'Preview';
+        playBtn.addEventListener('click', () => {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(PREVIEW_TEXT);
+          u.voice = v;
+          u.rate  = parseFloat(rateSlider.value);
+          u.pitch = parseFloat(pitchSlider.value);
+          playBtn.textContent = '⏹';
+          u.onend = u.onerror = () => { playBtn.textContent = '▶'; };
+          speechSynthesis.speak(u);
+        });
+
+        const info = document.createElement('div');
+        info.className = 'flex-1 min-w-0';
+        info.innerHTML = `<span class="text-white text-sm font-medium">${cleanName(v.name)}</span>`;
+
+        const useBtn = document.createElement('button');
+        useBtn.className = 'text-[11px] font-bold px-3 py-1 rounded-lg shrink-0 transition-all ' + (v.name === selectedName ? 'bg-violet-600 text-white' : 'border border-slate-700 text-slate-400 hover:text-white hover:border-violet-600');
+        useBtn.textContent = v.name === selectedName ? '✓ Selected' : 'Use';
+        useBtn.addEventListener('click', () => {
+          voiceSelect.value = v.name;
+          updateSelectedLabel();
+          stopPreview();
+          voiceList.querySelectorAll('button[data-use]').forEach(b => {
+            b.className = b.dataset.voiceName === v.name
+              ? 'text-[11px] font-bold px-3 py-1 rounded-lg shrink-0 bg-violet-600 text-white'
+              : 'text-[11px] font-bold px-3 py-1 rounded-lg shrink-0 border border-slate-700 text-slate-400 hover:text-white hover:border-violet-600';
+            b.textContent = b.dataset.voiceName === v.name ? '✓ Selected' : 'Use';
+          });
+        });
+        useBtn.dataset.use = '1';
+        useBtn.dataset.voiceName = v.name;
+
+        row.append(playBtn, info, useBtn);
+        grpEl.appendChild(row);
+      });
+
+      voiceList.appendChild(grpEl);
+    });
+  }
+
+  browseBtn.addEventListener('click', () => {
+    buildVoiceList(voiceSearch.value);
+    modal.classList.remove('hidden');
+  });
+  modalClose.addEventListener('click', () => modal.classList.add('hidden'));
+  modalBackdrop.addEventListener('click', () => modal.classList.add('hidden'));
+  voiceSearch.addEventListener('input', () => buildVoiceList(voiceSearch.value));
+
+  // Init
+  updateCounters();
+})();
+</script>

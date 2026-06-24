@@ -1,0 +1,109 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Which voices are available in the Text to Voice tool?', a: "All voices installed on your operating system and browser. Chrome on Windows or Mac automatically adds high-quality Google Neural voices. You can browse and preview every available voice using the voice browser before selecting one." },
+  { q: 'How do I get more voices for text to speech?', a: "Windows: Settings → Time & Language → Speech → Add voices. Mac: System Settings → Accessibility → Spoken Content → Manage Voices → download button. Chrome also adds Google TTS voices automatically on supported platforms." },
+  { q: 'Can I download the audio as an MP3?', a: "The browser's Web Speech API plays audio through your speakers without exposing a downloadable file. To save it: use Win+G (Xbox Game Bar) on Windows, or QuickTime Player → New Audio Recording on Mac, and record while the tool speaks." },
+  { q: 'Is there a word or character limit?', a: 'No limit at all. The tool handles any length of text — articles, scripts, essays, or full documents — without splitting or truncating.' },
+  { q: 'What are the voice presets?', a: 'Four presets are included: Tutorial (normal speed, neutral pitch), Energetic (faster, higher pitch — good for YouTube intros), Storytelling (slower, warmer — good for narration), and News (slightly faster, neutral — good for informational content).' },
+  { q: 'Does the tool work offline?', a: 'Most OS-installed voices work offline once loaded. Google Neural voices added by Chrome may require an internet connection on first use but are cached afterwards.' },
+];
+---
+
+<BlogLayout
+  title="Free Text to Voice Converter — 50+ Voices, Presets & Voice Browser"
+  description="Convert text to speech online free. 50+ neural voices, speed and pitch controls, voice browser with preview, and four speaking presets. No signup, no limits, browser-based."
+  canonical="/blog/text-to-voice-converter"
+  date="2026-06-24"
+  readTime="4 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+
+<p>
+  TextWonder's free Text to Voice converter turns any written text into natural-sounding spoken audio directly in your browser — no account, no software, no word limits.
+</p>
+
+<a href="/tools/text-to-voice" class="tool-cta">
+  <div class="cta-label">Free Tool — No Signup</div>
+  <div class="cta-title">Text to Voice Converter →</div>
+  <div class="cta-desc">50+ voices · Speed &amp; pitch controls · Voice browser with preview · Presets for YouTube, podcasts, and narration. 100% browser-based.</div>
+</a>
+
+<h2>What the Tool Does</h2>
+
+<p>
+  The Text to Voice tool uses your browser's built-in Web Speech API — the same engine that powers screen readers, smart assistants, and accessibility features across all modern browsers. It gives you:
+</p>
+
+<ul>
+  <li><strong>50+ voices</strong> — all voices installed on your device, including Google Neural voices in Chrome</li>
+  <li><strong>Voice browser</strong> — search, preview, and select any voice before converting</li>
+  <li><strong>Speed control</strong> — 0.5× to 2× speaking rate</li>
+  <li><strong>Pitch control</strong> — lower or raise the voice pitch</li>
+  <li><strong>Presets</strong> — Tutorial, Energetic, Storytelling, News — one click to configure the right style</li>
+  <li><strong>Pause / Resume / Stop</strong> — full playback controls</li>
+  <li><strong>No word limit</strong> — paste an entire article or script</li>
+</ul>
+
+<h2>How to Use the Text to Voice Tool</h2>
+
+<ol>
+  <li>Open the <a href="/tools/text-to-voice">Text to Voice converter</a>.</li>
+  <li>Type or paste your text into the input area. The word and character count updates live.</li>
+  <li>Click <strong>Browse Voices</strong> to open the voice browser. Search by name or language, preview voices with the ▶ button, then click <strong>Use</strong> to select.</li>
+  <li>Adjust <strong>Speed</strong> and <strong>Pitch</strong> using the sliders, or click one of the four <strong>Presets</strong>.</li>
+  <li>Click <strong>Speak Text</strong>. Use Pause/Resume or Stop to control playback.</li>
+</ol>
+
+<h2>Which Voices Are Available?</h2>
+
+<p>
+  The tool uses all voices available on your device and browser — typically 20–80+ voices depending on your setup:
+</p>
+
+<ul>
+  <li><strong>Windows</strong> — includes Microsoft David, Zira, Hazel, and other installed voices. Add more via <strong>Settings → Time &amp; Language → Speech → Add voices</strong>.</li>
+  <li><strong>Mac</strong> — includes system voices like Samantha, Alex, and language packs. Add via <strong>System Settings → Accessibility → Spoken Content → Manage Voices</strong>.</li>
+  <li><strong>Chrome (any OS)</strong> — automatically includes Google Neural voices (e.g. Google US English, Google UK English) which sound noticeably more natural than basic OS voices.</li>
+  <li><strong>Mobile (Android/iOS)</strong> — includes device TTS voices. Quality varies by device.</li>
+</ul>
+
+<h2>Presets Explained</h2>
+
+<p>The four presets set speed and pitch to match different speaking contexts:</p>
+
+<ul>
+  <li><strong>Tutorial</strong> — Normal speed, neutral pitch. Clear and easy to follow for instructional content.</li>
+  <li><strong>Energetic</strong> — Faster rate, higher pitch. Great for YouTube intros, promotional scripts, or upbeat content.</li>
+  <li><strong>Storytelling</strong> — Slower pace, slightly lower pitch. Warm and engaging for narration, fiction, or long-form content.</li>
+  <li><strong>News</strong> — Slightly faster, neutral pitch. Professional and direct, suited for informational or factual scripts.</li>
+</ul>
+
+<h2>How to Save the Audio (Download TTS as MP3)</h2>
+
+<p>
+  The Web Speech API plays audio directly through your speakers without providing a downloadable file. To save the audio:
+</p>
+
+<ul>
+  <li><strong>Windows:</strong> Press <strong>Win+G</strong> to open Xbox Game Bar → click the audio icon → record while the tool is speaking. Or use <strong>Audacity</strong> with "WASAPI loopback" input to capture system audio.</li>
+  <li><strong>Mac:</strong> Open <strong>QuickTime Player → New Audio Recording</strong> → click the dropdown arrow next to the record button → select your speakers or "Soundflower" as the source. Record while the tool speaks.</li>
+  <li><strong>Online option:</strong> Paste the text into <strong>Google Translate</strong> and use the speaker icon — right-click the audio player → Save audio. This works for short texts under a few hundred characters.</li>
+</ul>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

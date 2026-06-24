@@ -209,6 +209,9 @@
   let isPreviewPlaying = false;
 
   // ── Voices ──────────────────────────────────────────────────────
+  // Preferred voices in order — Andrew first (Microsoft Edge Neural on Windows)
+  const PREFERRED = ['Andrew', 'Guy', 'Christopher', 'Aria', 'Jenny', 'Emma'];
+
   function loadVoices() {
     const raw = speechSynthesis.getVoices();
     if (!raw.length) return;
@@ -216,9 +219,23 @@
       const aEn = a.lang.startsWith('en') ? 0 : 1;
       const bEn = b.lang.startsWith('en') ? 0 : 1;
       if (aEn !== bEn) return aEn - bEn;
+      // Within English: Microsoft Online (Neural) voices first
+      const aMsOnline = a.name.includes('Online') ? 0 : 1;
+      const bMsOnline = b.name.includes('Online') ? 0 : 1;
+      if (aMsOnline !== bMsOnline) return aMsOnline - bMsOnline;
       return a.name.localeCompare(b.name);
     });
     populateSelect(voices);
+    setDefaultVoice();
+  }
+
+  function setDefaultVoice() {
+    // Try preferred voices in order (Andrew first)
+    for (const pref of PREFERRED) {
+      const match = voices.find(v => v.name.includes(pref) && v.lang.startsWith('en'));
+      if (match) { voiceSelect.value = match.name; break; }
+    }
+    updateSelectedLabel();
   }
 
   function populateSelect(list) {
@@ -241,14 +258,19 @@
       });
       voiceSelect.appendChild(og);
     });
-    updateSelectedLabel();
   }
 
   function cleanName(name) {
     return name
-      .replace('Microsoft ', '')
-      .replace('Google ', '')
-      .replace(/ \(.*?\)/g, '')
+      .replace(/^Microsoft\s+/i, '')          // "Microsoft Andrew Online..." → "Andrew Online..."
+      .replace(/^Google\s+/i, '')             // "Google US English" → "US English"
+      .replace(/\s+Online\s*/gi, ' ')         // " Online " → " "
+      .replace(/\s*\([^)]*Natural[^)]*\)/gi, '') // "(Natural)" → ""
+      .replace(/\s*\([^)]*Enhanced[^)]*\)/gi, '')
+      .replace(/\s*\([^)]*Compact[^)]*\)/gi, '')
+      .replace(/\s*-\s*English\s*\(.*?\)\s*$/i, '') // " - English (United States)" → ""
+      .replace(/\s*-\s*[A-Za-z ]+\s*\(.*?\)\s*$/i, '') // any trailing " - Language (Region)" → ""
+      .replace(/\s{2,}/g, ' ')               // collapse double spaces
       .trim();
   }
 

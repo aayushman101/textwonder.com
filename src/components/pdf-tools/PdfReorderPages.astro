@@ -5,7 +5,17 @@
     <input type="file" id="pop-file" accept=".pdf" class="hidden" />
     <div class="text-4xl mb-2">🔀</div>
     <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Drag and drop rows to reorder pages, then download</p>
+    <p class="text-slate-500 text-sm">Page thumbnails will load so you can see each page before reordering</p>
+  </div>
+
+  <!-- Thumbnail loading progress -->
+  <div id="pop-loading" class="hidden">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-5 text-center">
+      <p class="text-slate-400 text-sm mb-3" id="pop-loading-msg">Generating page previews…</p>
+      <div class="w-full bg-slate-800 rounded-full h-1.5">
+        <div id="pop-loading-bar" class="bg-orange-500 h-1.5 rounded-full transition-all duration-200" style="width:0%"></div>
+      </div>
+    </div>
   </div>
 
   <div id="pop-panel" class="hidden space-y-4">
@@ -26,10 +36,10 @@
       <button id="pop-reset" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Reset to original</button>
     </div>
 
-    <!-- Draggable page list -->
+    <!-- Draggable page list with thumbnails -->
     <div>
       <p class="text-xs text-slate-500 mb-2">Drag rows to reorder <span class="text-slate-600">(⠿ handle on left)</span>:</p>
-      <div id="pop-list" class="space-y-1.5 max-h-80 overflow-y-auto pr-1"></div>
+      <div id="pop-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-1"></div>
     </div>
 
     <!-- Order summary -->
@@ -45,21 +55,31 @@
   .pop-row { transition: opacity 0.15s; }
   .pop-row.dragging { opacity: 0.4; }
   .pop-row.drag-over { border-color: rgb(249 115 22 / 0.7) !important; background: rgb(249 115 22 / 0.06) !important; }
-  .pop-handle { cursor: grab; }
+  .pop-handle { cursor: grab; touch-action: none; }
   .pop-handle:active { cursor: grabbing; }
+  .pop-thumb { background: white; }
 </style>
 
 <script is:inline>
 (function() {
+  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFLIB_CDN = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+
   const drop = document.getElementById('pop-drop');
   const fileInput = document.getElementById('pop-file');
   const panel = document.getElementById('pop-panel');
+  const loading = document.getElementById('pop-loading');
+  const loadingMsg = document.getElementById('pop-loading-msg');
+  const loadingBar = document.getElementById('pop-loading-bar');
   const status = document.getElementById('pop-status');
   const list = document.getElementById('pop-list');
+
   let currentFile = null, pageCount = 0, pdfBytes = null;
-  let order = []; // each element is original 0-based page index
+  let order = []; // current order: array of 0-based original page indices
+  let thumbs = []; // thumbs[origIdx] = data URL
   let dragSrcPos = null;
 
+  // ── file input ──
   drop.addEventListener('click', () => fileInput.click());
   drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
@@ -68,43 +88,90 @@
 
   async function loadFile(file) {
     if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
-    showStatus('Loading…', 'info');
-    await loadPdfLib();
+
+    // show loading state
+    drop.classList.add('hidden');
+    loading.classList.remove('hidden');
+    loadingMsg.textContent = 'Reading PDF…';
+    loadingBar.style.width = '0%';
+    status.classList.add('hidden');
+
     try {
-      const { PDFDocument } = window.PDFLib;
       pdfBytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
-      pageCount = pdf.getPageCount();
       currentFile = file;
+
+      // load PDF.js for thumbnails
+      await loadScript(PDFJS_CDN);
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      pageCount = pdfDoc.numPages;
       order = Array.from({ length: pageCount }, (_, i) => i);
+      thumbs = [];
+
+      // render thumbnails
+      loadingMsg.textContent = `Generating previews (0 / ${pageCount})…`;
+      for (let i = 1; i <= pageCount; i++) {
+        const page = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 0.22 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        thumbs.push(canvas.toDataURL('image/jpeg', 0.75));
+        loadingBar.style.width = `${Math.round((i / pageCount) * 100)}%`;
+        loadingMsg.textContent = `Generating previews (${i} / ${pageCount})…`;
+      }
+
+      // show panel
       document.getElementById('pop-name').textContent = file.name;
-      document.getElementById('pop-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      document.getElementById('pop-info').textContent = `${pageCount} pages · ${(file.size / 1024).toFixed(0)} KB`;
+      loading.classList.add('hidden');
       panel.classList.remove('hidden');
-      drop.classList.add('hidden');
-      status.classList.add('hidden');
       renderList();
-    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+    } catch(e) {
+      loading.classList.add('hidden');
+      drop.classList.remove('hidden');
+      showStatus('Could not read PDF: ' + e.message, 'error');
+    }
   }
 
   function renderList() {
-    const orig = Array.from({ length: pageCount }, (_, i) => i);
     list.innerHTML = order.map((origIdx, pos) => {
       const moved = origIdx !== pos;
+      const thumb = thumbs[origIdx] || '';
       return `
-        <div class="pop-row flex items-center gap-2 bg-[var(--bg-surface)] border border-slate-800 rounded-lg px-3 py-2.5"
+        <div class="pop-row flex items-center gap-3 bg-[var(--bg-surface)] border ${moved ? 'border-orange-700/40' : 'border-slate-800'} rounded-xl px-3 py-2.5 select-none"
              draggable="true" data-pos="${pos}">
-          <span class="pop-handle text-slate-600 hover:text-slate-400 select-none pr-1 text-base" title="Drag to reorder">⠿</span>
-          <span class="w-9 h-9 rounded-md bg-[var(--bg-base)] border ${moved ? 'border-orange-700/50' : 'border-slate-700'} text-xs font-mono flex items-center justify-center shrink-0 ${moved ? 'text-orange-400' : 'text-slate-400'}">${origIdx + 1}</span>
-          <span class="text-slate-400 text-sm flex-1">Page ${origIdx + 1}</span>
-          ${moved ? `<span class="text-xs text-orange-400/60 shrink-0">pos ${pos+1}</span>` : ''}
+          <span class="pop-handle text-slate-600 hover:text-slate-400 pr-1 text-lg flex-shrink-0" title="Drag to reorder">⠿</span>
+          <div class="flex-shrink-0 w-14 flex items-center justify-center">
+            ${thumb
+              ? `<img src="${thumb}" class="pop-thumb max-w-full max-h-20 rounded border border-slate-700 shadow-sm object-contain" alt="Page ${origIdx + 1}" />`
+              : `<div class="w-12 h-16 bg-slate-800 rounded border border-slate-700 flex items-center justify-center text-slate-600 text-xs">?</div>`
+            }
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="${moved ? 'text-orange-300' : 'text-slate-200'} font-medium text-sm">Page ${origIdx + 1}</p>
+            ${moved ? `<p class="text-xs text-orange-400/70 mt-0.5">moved to position ${pos + 1}</p>` : `<p class="text-xs text-slate-600 mt-0.5">position ${pos + 1}</p>`}
+          </div>
+          <span class="flex-shrink-0 w-8 h-8 rounded-lg ${moved ? 'bg-orange-900/30 text-orange-400' : 'bg-slate-800 text-slate-500'} text-xs font-mono flex items-center justify-center">${pos + 1}</span>
         </div>
       `;
     }).join('');
 
+    attachDragListeners();
+    updateSummary();
+  }
+
+  function attachDragListeners() {
     list.querySelectorAll('.pop-row').forEach(row => {
       row.addEventListener('dragstart', e => {
         dragSrcPos = +row.dataset.pos;
-        row.classList.add('dragging');
+        setTimeout(() => row.classList.add('dragging'), 0);
         e.dataTransfer.effectAllowed = 'move';
       });
       row.addEventListener('dragend', () => {
@@ -127,7 +194,6 @@
         renderList();
       });
     });
-    updateSummary();
   }
 
   function updateSummary() {
@@ -135,7 +201,7 @@
     const changed = order.some((v, i) => v !== orig[i]);
     const el = document.getElementById('pop-summary');
     el.textContent = changed
-      ? `New order: ${order.map(i => i+1).join(' → ')}`
+      ? `New order: ${order.map(i => i + 1).join(' → ')}`
       : 'Order unchanged — drag rows above to reorder.';
   }
 
@@ -161,6 +227,7 @@
     }
     showStatus('Reordering pages…', 'info');
     try {
+      await loadScript(PDFLIB_CDN);
       const { PDFDocument } = window.PDFLib;
       const src = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const out = await PDFDocument.create();
@@ -174,7 +241,7 @@
   });
 
   document.getElementById('pop-change').addEventListener('click', () => {
-    currentFile = null; pageCount = 0; pdfBytes = null; order = [];
+    currentFile = null; pageCount = 0; pdfBytes = null; order = []; thumbs = [];
     panel.classList.add('hidden');
     drop.classList.remove('hidden');
     status.classList.add('hidden');
@@ -194,12 +261,11 @@
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function loadPdfLib() {
-    if (window.PDFLib) return Promise.resolve();
+  function loadScript(src) {
     return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
       const s = document.createElement('script');
-      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
-      s.onload = resolve; s.onerror = reject;
+      s.src = src; s.onload = resolve; s.onerror = reject;
       document.head.appendChild(s);
     });
   }

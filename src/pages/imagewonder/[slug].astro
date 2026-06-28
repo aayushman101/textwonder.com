@@ -1,0 +1,41 @@
+---
+import ImageToolLayout from '../../layouts/ImageToolLayout.astro';
+import ImageResizer from '../../components/image-tools/ImageResizer.astro';
+import ImageCompressor from '../../components/image-tools/ImageCompressor.astro';
+import ImageConverter from '../../components/image-tools/ImageConverter.astro';
+import ImageCropper from '../../components/image-tools/ImageCropper.astro';
+import ImageToBase64 from '../../components/image-tools/ImageToBase64.astro';
+import Base64ToImage from '../../components/image-tools/Base64ToImage.astro';
+import ImageColorPicker from '../../components/image-tools/ImageColorPicker.astro';
+import ImageRotateFlip from '../../components/image-tools/ImageRotateFlip.astro';
+import ImageWatermark from '../../components/image-tools/ImageWatermark.astro';
+import ImageMetadata from '../../components/image-tools/ImageMetadata.astro';
+import ImageScanner from '../../components/image-tools/ImageScanner.astro';
+import { IMAGE_TOOLS } from '../../data/imagetools.js';
+
+export function getStaticPaths() {
+  return IMAGE_TOOLS.map(tool => ({ params: { slug: tool.slug }, props: { tool } }));
+}
+
+const { tool } = Astro.props;
+
+const componentMap: Record<string, any> = {
+  'image-resizer': ImageResizer,
+  'image-compressor': ImageCompressor,
+  'image-converter': ImageConverter,
+  'image-cropper': ImageCropper,
+  'image-to-base64': ImageToBase64,
+  'base64-to-image': Base64ToImage,
+  'image-color-picker': ImageColorPicker,
+  'image-rotate-flip': ImageRotateFlip,
+  'image-watermark': ImageWatermark,
+  'image-metadata': ImageMetadata,
+  'image-scanner': ImageScanner,
+};
+
+const ToolComponent = componentMap[tool.slug];
+---
+
+<ImageToolLayout tool={tool}>
+  {ToolComponent ? <ToolComponent /> : <p class="text-slate-400">Tool coming soon.</p>}
+</ImageToolLayout>

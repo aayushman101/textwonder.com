@@ -1,0 +1,129 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Will it remove shadows from the photo?', a: 'The auto-levels step significantly reduces uneven lighting and shadows by stretching the tonal histogram. Extreme corner shadows may not disappear entirely — for best results, photograph the document under even, diffuse light.' },
+  { q: 'Does the output look like a real scanner?', a: 'Yes for most use cases. The tool applies the same basic operations a flatbed scanner software does: grayscale conversion, background whitening, contrast enhancement, and sharpening. The result is a clean B&W document suitable for sharing, printing, or uploading to PDF tools.' },
+  { q: 'What is the Photocopy preset?', a: 'The Photocopy preset applies aggressive contrast and clipping — similar to an old photocopier — producing very bold black text and a pure white background. Some fine detail is lost. Use Document Clean for a more faithful scan.' },
+  { q: 'Does it fix perspective or skew?', a: 'No. This tool only applies tonal adjustments. For best results, photograph the document as flat-on as possible, directly above the page, with the camera parallel to the surface.' },
+  { q: 'Can I convert a colour document?', a: 'Yes, but the output will be grayscale — colour information is removed as part of the scan simulation. This is standard for document scanning. If you need a colour scan, use the Image Compressor or Converter tools to prepare the photo instead.' },
+  { q: 'Is there a file size limit?', a: 'No limit. All processing runs in your browser using the HTML5 Canvas API. Very large photos (20 MB+) may take a second or two depending on your device.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert a Photo to a Scanned Document Online Free"
+  description="Turn any phone photo of a document into a clean scanned image for free. Grayscale, auto-levels, contrast boost — browser-based, no upload, no app needed."
+  canonical="/blog/how-to-convert-photo-to-scanned-document-online"
+  date="2026-06-28"
+  readTime="5 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  You snapped a photo of your answer sheet, a handwritten note, a receipt, or a book page —
+  but it looks washed out, shadowy, or yellowish. You need it to look like it came out of a flatbed scanner.
+  This guide shows you how to do that for free, in seconds, without installing anything.
+</p>
+
+<h2>What Makes a Photo Look "Scanned"?</h2>
+
+<p>A real scanner produces a document that has three key characteristics:</p>
+
+<ul>
+  <li><strong>Grayscale</strong> — no colour noise or warm-light cast from lamps</li>
+  <li><strong>White background</strong> — the paper appears clean white, not grey or cream</li>
+  <li><strong>High-contrast text</strong> — letters are dark black with crisp, sharp edges</li>
+</ul>
+
+<p>
+  A phone photo lacks all three: it's colour, the background is uneven, and the text can look soft
+  because of focus or motion blur. The Photo to Scan Converter fixes all three using pixel-level adjustments.
+</p>
+
+<h2>How to Convert a Photo to a Scanned Look (Free, No App)</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-scanner">Photo to Scan Converter</a>.</li>
+  <li>Drop your photo in, or click to browse.</li>
+  <li>The tool shows a <strong>Before / After slider</strong> — drag the divider left and right to compare the original and the scanned result side by side.</li>
+  <li>Choose a preset: <strong>Document Clean</strong> (default), <strong>Soft Scan</strong>, or <strong>Photocopy</strong>.</li>
+  <li>Fine-tune with the <em>Brightness</em>, <em>Contrast</em>, and <em>Background Clip</em> sliders if needed.</li>
+  <li>Click <strong>Download Scanned Image</strong> to save as JPEG.</li>
+</ol>
+
+<a href="/imagewonder/image-scanner" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Photo to Scan Converter — Make Any Photo Look Scanned →</div>
+  <div class="cta-desc">Drag-to-compare before/after. Three presets. Adjustable brightness, contrast, and background clip. No upload, no signup.</div>
+</a>
+
+<h2>Understanding the Three Presets</h2>
+
+<h3>Document Clean (recommended)</h3>
+<p>
+  Applies 2% histogram clipping (removes the darkest 2% and lightest 2% of pixels before stretching),
+  moderate contrast (+60), and edge sharpening. Best for typed text, printed documents, answer sheets,
+  and books. Produces a result indistinguishable from a mid-range flatbed scanner.
+</p>
+
+<h3>Soft Scan</h3>
+<p>
+  A gentler version — 1% clipping, lower contrast (+28), no sharpening. Best for handwritten notes
+  or pencil drawings where you want to preserve fine detail and mid-tones. The output is cleaner
+  than the original photo but retains a softer look.
+</p>
+
+<h3>Photocopy</h3>
+<p>
+  Aggressive 3.5% clipping and very high contrast (+120). Text becomes bold black and the background
+  becomes pure white. Some fine details are lost. Good for documents that will be printed on a
+  photocopier or faxed — where high contrast matters more than detail.
+</p>
+
+<h2>How the Scan Effect Works (Technical)</h2>
+
+<p>The tool applies four steps using the HTML5 Canvas API:</p>
+
+<ol>
+  <li>
+    <strong>Grayscale conversion</strong> — each pixel is converted using the standard luminance formula:
+    <em>gray = 0.299 × R + 0.587 × G + 0.114 × B</em>.
+    This removes colour cast without washing out detail.
+  </li>
+  <li>
+    <strong>Auto-levels</strong> — the tool builds a histogram of all pixel values and identifies the
+    black point and white point by clipping the top and bottom N% of the histogram.
+    The remaining range is stretched to fill 0–255, making the background clean white and shadows very dark.
+  </li>
+  <li>
+    <strong>Brightness and contrast adjustment</strong> — a contrast factor formula sharpens the
+    tonal separation between text and paper.
+  </li>
+  <li>
+    <strong>Unsharp mask</strong> (optional) — a 3×3 box blur creates a smoothed version of the image;
+    the difference between the original and the blur is amplified and added back, making edges crisper.
+  </li>
+</ol>
+
+<h2>Tips for a Better Result</h2>
+
+<ul>
+  <li><strong>Use diffuse light:</strong> Stand near a window with indirect sunlight, or use a ceiling light. Avoid harsh directional lamps that create shadows.</li>
+  <li><strong>Shoot directly above:</strong> Hold your phone parallel to the page — even a slight angle creates perspective distortion and uneven focus.</li>
+  <li><strong>Use a plain background:</strong> Place the document on a dark or contrasting surface so the edges are visible.</li>
+  <li><strong>Avoid flash:</strong> Camera flash creates a bright centre spot and dark corners. Flash-off with ambient light gives much better results.</li>
+  <li><strong>Try Background Clip 3–5%</strong> for photos taken under warm or artificial light — this aggressively whitens the background.</li>
+</ul>
+
+<h2>After Scanning: Convert to PDF</h2>
+
+<p>
+  Once you have a clean scanned image, you can convert it to a PDF using the
+  <a href="/pdfwonder/jpg-to-pdf">JPG to PDF tool</a>. Upload multiple scanned pages to combine
+  them into a single PDF document — useful for submitting handwritten answer sheets, sending signed
+  forms, or archiving paper documents digitally.
+</p>
+
+</BlogLayout>

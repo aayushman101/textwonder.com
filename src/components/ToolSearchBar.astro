@@ -1,0 +1,77 @@
+---
+interface Props {
+  accentColor: string;
+  placeholder?: string;
+}
+const { accentColor, placeholder = 'Search tools…' } = Astro.props;
+---
+
+<div class="max-w-xl mx-auto mb-6" id="tsb-wrap" data-accent={accentColor}>
+  <div class="relative">
+    <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+    </svg>
+    <input
+      id="tsb-input"
+      type="search"
+      placeholder={placeholder}
+      autocomplete="off"
+      spellcheck="false"
+      class="w-full pl-11 pr-10 py-3 bg-[var(--bg-surface)] border border-slate-700 rounded-xl text-slate-200 placeholder-slate-500 text-sm outline-none transition-colors"
+    />
+    <button
+      id="tsb-clear"
+      class="hidden absolute right-3 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center rounded-full bg-slate-700 hover:bg-slate-600 text-slate-400 hover:text-slate-200 transition-colors text-base leading-none"
+      aria-label="Clear search"
+    >×</button>
+  </div>
+
+  <!-- No-results message, shown when grid is empty -->
+  <div id="tsb-empty" class="hidden text-center py-10">
+    <div class="text-3xl mb-2">🔍</div>
+    <p id="tsb-empty-msg" class="text-slate-500 text-sm"></p>
+    <button id="tsb-reset" class="mt-2 text-xs hover:underline" style={`color:${accentColor}`}>Clear search</button>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  const wrap   = document.getElementById('tsb-wrap');
+  const input  = document.getElementById('tsb-input');
+  const clear  = document.getElementById('tsb-clear');
+  const empty  = document.getElementById('tsb-empty');
+  const emsg   = document.getElementById('tsb-empty-msg');
+  const reset  = document.getElementById('tsb-reset');
+  const accent = wrap ? wrap.dataset.accent : '#7c3aed';
+
+  if (!input) return;
+
+  // Focus ring colour
+  input.addEventListener('focus', () => { input.style.borderColor = accent + '99'; });
+  input.addEventListener('blur',  () => { input.style.borderColor = ''; });
+
+  function run() {
+    const q = input.value.toLowerCase().trim();
+    const cards = document.querySelectorAll('[data-tool-card]');
+    let shown = 0;
+    cards.forEach(c => {
+      const hit = !q
+        || (c.dataset.name    || '').toLowerCase().includes(q)
+        || (c.dataset.tagline || '').toLowerCase().includes(q);
+      c.style.display = hit ? '' : 'none';
+      if (hit) shown++;
+    });
+    clear.classList.toggle('hidden', !q);
+    if (q && shown === 0) {
+      emsg.textContent = 'No tools match "' + input.value + '"';
+      empty.classList.remove('hidden');
+    } else {
+      empty.classList.add('hidden');
+    }
+  }
+
+  input.addEventListener('input', run);
+  clear.addEventListener('click', () => { input.value = ''; run(); input.focus(); });
+  if (reset) reset.addEventListener('click', () => { input.value = ''; run(); });
+})();
+</script>

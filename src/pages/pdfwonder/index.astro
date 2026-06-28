@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import PDFHeader from '../../components/PDFHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
+import ToolSearchBar from '../../components/ToolSearchBar.astro';
 ---
 
 <BaseLayout
@@ -36,10 +37,14 @@ import { PDF_TOOLS } from '../../data/pdftools.js';
 
     <!-- Tools Grid -->
     <section class="max-w-6xl mx-auto px-4 pb-16">
+      <ToolSearchBar accentColor="#f97316" placeholder="Search PDF tools…" />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {PDF_TOOLS.map(tool => (
           <a
             href={`/pdfwonder/${tool.slug}`}
+            data-tool-card
+            data-name={tool.name}
+            data-tagline={tool.tagline}
             class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-orange-500/50 hover:bg-[var(--bg-surface-hover)] transition-all"
           >
             <div class="flex items-start gap-4 mb-3">

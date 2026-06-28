@@ -3,11 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import DevHeader from '../../components/DevHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { DEV_TOOLS } from '../../data/devtools.js';
+import { TOOLS } from '../../data/tools.js';
+import { PDF_TOOLS } from '../../data/pdftools.js';
+import ToolSearchBar from '../../components/ToolSearchBar.astro';
 ---
 
 <BaseLayout
   title="Free Developer Tools Online — JSON, Regex, Hash, UUID & More | DevWonder"
-  description="DevWonder offers 12 free browser-based developer tools. JSON formatter, JWT decoder, regex tester, hash generator, UUID, color converter and more. No signup needed."
+  description="DevWonder offers 14 free browser-based developer tools. JSON formatter, JWT decoder, regex tester, hash generator, UUID, color converter and more. No signup needed."
   canonical="/devwonder"
 >
   <DevHeader />
@@ -28,7 +31,7 @@ import { DEV_TOOLS } from '../../data/devtools.js';
         Free, instant developer utilities. Format JSON, decode JWTs, test regex, generate hashes, convert colors — all in your browser.
       </p>
       <div class="inline-flex flex-wrap justify-center gap-x-4 gap-y-1 text-sm text-slate-500">
-        <span><strong class="text-cyan-400 font-semibold">12</strong> dev tools</span>
+        <span><strong class="text-cyan-400 font-semibold">{DEV_TOOLS.length}</strong> dev tools</span>
         <span class="hidden sm:inline text-slate-700">·</span>
         <span><strong class="text-cyan-400 font-semibold">100%</strong> browser-based</span>
         <span class="hidden sm:inline text-slate-700">·</span>
@@ -38,10 +41,14 @@ import { DEV_TOOLS } from '../../data/devtools.js';
 
     <!-- Tools Grid -->
     <section class="max-w-6xl mx-auto px-4 pb-16">
+      <ToolSearchBar accentColor="#06b6d4" placeholder="Search dev tools…" />
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {DEV_TOOLS.map(tool => (
           <a
             href={`/devwonder/${tool.slug}`}
+            data-tool-card
+            data-name={tool.name}
+            data-tagline={tool.tagline}
             class="group block bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-5 hover:border-cyan-500/50 hover:bg-[var(--bg-surface-hover)] transition-all"
           >
             <div class="flex items-start gap-4 mb-3">
@@ -79,14 +86,14 @@ import { DEV_TOOLS } from '../../data/devtools.js';
       <div class="flex items-center justify-between bg-[var(--bg-surface)] border border-violet-800/30 rounded-2xl p-5">
         <div>
           <p class="text-sm text-slate-400">Need text tools?</p>
-          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">Text<span class="text-violet-400">Wonder</span> — 61 utilities</p>
+          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">Text<span class="text-violet-400">Wonder</span> — {TOOLS.length} utilities</p>
         </div>
         <a href="/" class="shrink-0 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
       </div>
       <div class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-2xl p-5">
         <div>
           <p class="text-sm text-slate-400">Need PDF tools?</p>
-          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">PDF<span class="text-orange-400">Wonder</span> — 10 tools</p>
+          <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">PDF<span class="text-orange-400">Wonder</span> — {PDF_TOOLS.length} tools</p>
         </div>
         <a href="/pdfwonder" class="shrink-0 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
       </div>

@@ -1,166 +1,180 @@
 ---
 ---
 <div class="space-y-5">
-  <div id="pop-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+  <!-- Drop zone -->
+  <div id="pop-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-10 text-center cursor-pointer transition-colors">
     <input type="file" id="pop-file" accept=".pdf" class="hidden" />
-    <div class="text-4xl mb-2">🔀</div>
-    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Page thumbnails will load so you can see each page before reordering</p>
+    <div class="text-5xl mb-3">🔀</div>
+    <p class="text-slate-200 font-semibold text-lg mb-1">Drop your PDF here</p>
+    <p class="text-slate-500 text-sm mb-4">or click to browse — page previews load automatically</p>
+    <span class="inline-block px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer">Choose PDF</span>
   </div>
 
-  <!-- Thumbnail loading progress -->
+  <!-- Loading progress -->
   <div id="pop-loading" class="hidden">
-    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-5 text-center">
-      <p class="text-slate-400 text-sm mb-3" id="pop-loading-msg">Generating page previews…</p>
-      <div class="w-full bg-slate-800 rounded-full h-1.5">
-        <div id="pop-loading-bar" class="bg-orange-500 h-1.5 rounded-full transition-all duration-200" style="width:0%"></div>
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-6 text-center">
+      <div class="text-3xl mb-3">⏳</div>
+      <p class="text-slate-300 font-medium mb-1" id="pop-loading-msg">Generating page previews…</p>
+      <p class="text-slate-500 text-xs mb-4">Rendering each page so you can see exactly what's on it</p>
+      <div class="w-full bg-slate-800 rounded-full h-2 max-w-sm mx-auto">
+        <div id="pop-loading-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-200" style="width:0%"></div>
       </div>
     </div>
   </div>
 
+  <!-- Main panel -->
   <div id="pop-panel" class="hidden space-y-4">
+    <!-- File info bar -->
     <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
       <span class="text-orange-400 text-2xl shrink-0">📄</span>
       <div class="flex-1 min-w-0">
-        <p id="pop-name" class="text-slate-200 text-sm font-medium truncate"></p>
-        <p id="pop-info" class="text-slate-500 text-xs"></p>
+        <p id="pop-name" class="text-slate-200 text-sm font-semibold truncate"></p>
+        <p id="pop-info" class="text-slate-500 text-xs mt-0.5"></p>
       </div>
-      <button id="pop-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg shrink-0">Change</button>
+      <button id="pop-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg shrink-0 transition-colors">Change file</button>
     </div>
 
     <!-- Quick actions -->
     <div class="flex flex-wrap gap-2 items-center">
-      <span class="text-xs text-slate-500">Quick:</span>
-      <button id="pop-reverse" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Reverse order</button>
-      <button id="pop-shuffle" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Shuffle randomly</button>
-      <button id="pop-reset" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Reset to original</button>
+      <span class="text-xs text-slate-500 mr-1">Quick:</span>
+      <button id="pop-reverse" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">↕ Reverse order</button>
+      <button id="pop-shuffle" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">🔀 Shuffle randomly</button>
+      <button id="pop-reset" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">↺ Reset</button>
     </div>
 
-    <!-- Draggable page list with thumbnails -->
-    <div>
-      <p class="text-xs text-slate-500 mb-2">Drag rows to reorder <span class="text-slate-600">(⠿ handle on left)</span>:</p>
-      <div id="pop-list" class="space-y-2 max-h-[600px] overflow-y-auto pr-1"></div>
-    </div>
+    <!-- Instruction -->
+    <p class="text-xs text-slate-500">Drag pages to reorder them, then click <strong class="text-slate-400">Apply & Download</strong>.</p>
 
-    <!-- Order summary -->
-    <div id="pop-summary" class="text-xs text-slate-600 font-mono leading-relaxed"></div>
+    <!-- Thumbnail grid -->
+    <div id="pop-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
 
-    <button id="pop-apply" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Apply Order & Download</button>
+    <!-- Summary -->
+    <div id="pop-summary" class="text-xs text-slate-600 font-mono bg-[var(--bg-surface)] border border-slate-800/60 rounded-lg px-3 py-2 leading-relaxed"></div>
+
+    <!-- Download button -->
+    <button id="pop-apply" class="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-sm font-semibold transition-colors">
+      Apply Order & Download PDF
+    </button>
   </div>
 
   <div id="pop-status" class="hidden text-sm py-2"></div>
 </div>
 
 <style>
-  .pop-row { transition: opacity 0.15s; }
-  .pop-row.dragging { opacity: 0.4; }
-  .pop-row.drag-over { border-color: rgb(249 115 22 / 0.7) !important; background: rgb(249 115 22 / 0.06) !important; }
-  .pop-handle { cursor: grab; touch-action: none; }
-  .pop-handle:active { cursor: grabbing; }
-  .pop-thumb { background: white; }
+  .pop-card { transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s; }
+  .pop-card:active { cursor: grabbing; }
+  .pop-card.dragging { opacity: 0.35; transform: scale(0.96); }
+  .pop-card.drag-over {
+    border-color: rgb(249 115 22) !important;
+    box-shadow: 0 0 0 3px rgb(249 115 22 / 0.25);
+    transform: scale(1.02);
+  }
+  .pop-thumb-wrap { background: #fff; }
 </style>
 
 <script is:inline>
 (function() {
-  const PDFJS_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
-  const PDFLIB_CDN = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+  const PDFJS_CDN   = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFLIB_CDN  = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
 
-  const drop = document.getElementById('pop-drop');
-  const fileInput = document.getElementById('pop-file');
-  const panel = document.getElementById('pop-panel');
-  const loading = document.getElementById('pop-loading');
+  const dropZone   = document.getElementById('pop-drop');
+  const fileInput  = document.getElementById('pop-file');
+  const panel      = document.getElementById('pop-panel');
+  const loading    = document.getElementById('pop-loading');
   const loadingMsg = document.getElementById('pop-loading-msg');
   const loadingBar = document.getElementById('pop-loading-bar');
-  const status = document.getElementById('pop-status');
-  const list = document.getElementById('pop-list');
+  const status     = document.getElementById('pop-status');
+  const grid       = document.getElementById('pop-grid');
 
   let currentFile = null, pageCount = 0, pdfBytes = null;
-  let order = []; // current order: array of 0-based original page indices
-  let thumbs = []; // thumbs[origIdx] = data URL
+  let order = [];   // order[pos] = original 0-based page index
+  let thumbs = [];  // thumbs[origIdx] = data URL
   let dragSrcPos = null;
 
-  // ── file input ──
-  drop.addEventListener('click', () => fileInput.click());
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
-  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  // ── file input ──────────────────────────────────
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-orange-500/80'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-orange-500/80'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('border-orange-500/80'); loadFile(e.dataTransfer.files[0]); });
   fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
 
   async function loadFile(file) {
     if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
 
-    // show loading state
-    drop.classList.add('hidden');
+    dropZone.classList.add('hidden');
     loading.classList.remove('hidden');
-    loadingMsg.textContent = 'Reading PDF…';
-    loadingBar.style.width = '0%';
     status.classList.add('hidden');
+    loadingBar.style.width = '0%';
+    loadingMsg.textContent = 'Reading PDF…';
 
     try {
       pdfBytes = await file.arrayBuffer();
       currentFile = file;
 
-      // load PDF.js for thumbnails
       await loadScript(PDFJS_CDN);
       const pdfjsLib = window['pdfjs-dist/build/pdf'];
       pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
       const pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
       pageCount = pdfDoc.numPages;
-      order = Array.from({ length: pageCount }, (_, i) => i);
+      order  = Array.from({ length: pageCount }, (_, i) => i);
       thumbs = [];
 
-      // render thumbnails
-      loadingMsg.textContent = `Generating previews (0 / ${pageCount})…`;
+      // render thumbnails at scale 0.3 (~184px for standard A4)
       for (let i = 1; i <= pageCount; i++) {
-        const page = await pdfDoc.getPage(i);
-        const viewport = page.getViewport({ scale: 0.22 });
-        const canvas = document.createElement('canvas');
-        canvas.width = Math.round(viewport.width);
-        canvas.height = Math.round(viewport.height);
+        loadingMsg.textContent = `Generating previews… ${i} / ${pageCount}`;
+        loadingBar.style.width = `${Math.round((i / pageCount) * 100)}%`;
+
+        const page     = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 0.3 });
+        const canvas   = document.createElement('canvas');
+        canvas.width   = Math.round(viewport.width);
+        canvas.height  = Math.round(viewport.height);
         const ctx = canvas.getContext('2d');
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         await page.render({ canvasContext: ctx, viewport }).promise;
-        thumbs.push(canvas.toDataURL('image/jpeg', 0.75));
-        loadingBar.style.width = `${Math.round((i / pageCount) * 100)}%`;
-        loadingMsg.textContent = `Generating previews (${i} / ${pageCount})…`;
+        thumbs.push(canvas.toDataURL('image/jpeg', 0.82));
       }
 
-      // show panel
       document.getElementById('pop-name').textContent = file.name;
       document.getElementById('pop-info').textContent = `${pageCount} pages · ${(file.size / 1024).toFixed(0)} KB`;
       loading.classList.add('hidden');
       panel.classList.remove('hidden');
-      renderList();
+      renderGrid();
     } catch(e) {
       loading.classList.add('hidden');
-      drop.classList.remove('hidden');
+      dropZone.classList.remove('hidden');
       showStatus('Could not read PDF: ' + e.message, 'error');
     }
   }
 
-  function renderList() {
-    list.innerHTML = order.map((origIdx, pos) => {
+  // ── grid render ──────────────────────────────────
+  function renderGrid() {
+    grid.innerHTML = order.map((origIdx, pos) => {
       const moved = origIdx !== pos;
       const thumb = thumbs[origIdx] || '';
       return `
-        <div class="pop-row flex items-center gap-3 bg-[var(--bg-surface)] border ${moved ? 'border-orange-700/40' : 'border-slate-800'} rounded-xl px-3 py-2.5 select-none"
+        <div class="pop-card group relative cursor-grab select-none rounded-2xl border-2 ${moved ? 'border-orange-500/60' : 'border-slate-700/60'} hover:border-orange-400/70 bg-[var(--bg-surface)] overflow-hidden"
              draggable="true" data-pos="${pos}">
-          <span class="pop-handle text-slate-600 hover:text-slate-400 pr-1 text-lg flex-shrink-0" title="Drag to reorder">⠿</span>
-          <div class="flex-shrink-0 w-14 flex items-center justify-center">
+          <!-- thumbnail -->
+          <div class="pop-thumb-wrap w-full flex items-center justify-center overflow-hidden">
             ${thumb
-              ? `<img src="${thumb}" class="pop-thumb max-w-full max-h-20 rounded border border-slate-700 shadow-sm object-contain" alt="Page ${origIdx + 1}" />`
-              : `<div class="w-12 h-16 bg-slate-800 rounded border border-slate-700 flex items-center justify-center text-slate-600 text-xs">?</div>`
+              ? `<img src="${thumb}" class="w-full h-auto block" alt="Page ${origIdx + 1}" draggable="false" />`
+              : `<div class="w-full flex items-center justify-center py-12 text-slate-500 text-xs">Page ${origIdx + 1}</div>`
             }
           </div>
-          <div class="flex-1 min-w-0">
-            <p class="${moved ? 'text-orange-300' : 'text-slate-200'} font-medium text-sm">Page ${origIdx + 1}</p>
-            ${moved ? `<p class="text-xs text-orange-400/70 mt-0.5">moved to position ${pos + 1}</p>` : `<p class="text-xs text-slate-600 mt-0.5">position ${pos + 1}</p>`}
+          <!-- label row -->
+          <div class="flex items-center justify-between px-3 py-2 border-t border-slate-800">
+            <span class="text-sm font-semibold ${moved ? 'text-orange-300' : 'text-slate-300'}">Page ${origIdx + 1}</span>
+            <span class="text-xs font-mono ${moved ? 'text-orange-400/80 bg-orange-900/30' : 'text-slate-600 bg-slate-800'} px-1.5 py-0.5 rounded">#${pos + 1}</span>
           </div>
-          <span class="flex-shrink-0 w-8 h-8 rounded-lg ${moved ? 'bg-orange-900/30 text-orange-400' : 'bg-slate-800 text-slate-500'} text-xs font-mono flex items-center justify-center">${pos + 1}</span>
-        </div>
-      `;
+          <!-- drag hint on hover -->
+          <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <span class="text-lg text-white/60 bg-black/40 rounded-lg px-1">⠿</span>
+          </div>
+          ${moved ? `<div class="absolute top-2 right-2 pointer-events-none"><span class="text-xs bg-orange-600 text-white rounded-full px-1.5 py-0.5 font-medium">moved</span></div>` : ''}
+        </div>`;
     }).join('');
 
     attachDragListeners();
@@ -168,86 +182,89 @@
   }
 
   function attachDragListeners() {
-    list.querySelectorAll('.pop-row').forEach(row => {
-      row.addEventListener('dragstart', e => {
-        dragSrcPos = +row.dataset.pos;
-        setTimeout(() => row.classList.add('dragging'), 0);
+    grid.querySelectorAll('.pop-card').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        dragSrcPos = +card.dataset.pos;
         e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => card.classList.add('dragging'), 0);
       });
-      row.addEventListener('dragend', () => {
-        row.classList.remove('dragging');
-        list.querySelectorAll('.pop-row').forEach(r => r.classList.remove('drag-over'));
+      card.addEventListener('dragend', () => {
+        card.classList.remove('dragging');
+        grid.querySelectorAll('.pop-card').forEach(c => c.classList.remove('drag-over'));
       });
-      row.addEventListener('dragover', e => {
+      card.addEventListener('dragover', e => {
         e.preventDefault();
         e.dataTransfer.dropEffect = 'move';
-        list.querySelectorAll('.pop-row').forEach(r => r.classList.remove('drag-over'));
-        row.classList.add('drag-over');
+        grid.querySelectorAll('.pop-card').forEach(c => c.classList.remove('drag-over'));
+        if (+card.dataset.pos !== dragSrcPos) card.classList.add('drag-over');
       });
-      row.addEventListener('drop', e => {
+      card.addEventListener('drop', e => {
         e.preventDefault();
-        const targetPos = +row.dataset.pos;
+        const targetPos = +card.dataset.pos;
         if (dragSrcPos === null || dragSrcPos === targetPos) return;
         const [moved] = order.splice(dragSrcPos, 1);
         order.splice(targetPos, 0, moved);
         dragSrcPos = null;
-        renderList();
+        renderGrid();
       });
     });
   }
 
   function updateSummary() {
-    const orig = Array.from({ length: pageCount }, (_, i) => i);
+    const orig    = Array.from({ length: pageCount }, (_, i) => i);
     const changed = order.some((v, i) => v !== orig[i]);
-    const el = document.getElementById('pop-summary');
+    const el      = document.getElementById('pop-summary');
     el.textContent = changed
-      ? `New order: ${order.map(i => i + 1).join(' → ')}`
-      : 'Order unchanged — drag rows above to reorder.';
+      ? 'New order: ' + order.map(i => i + 1).join(' → ')
+      : 'Order unchanged — drag pages above to reorder.';
   }
 
-  document.getElementById('pop-reverse').addEventListener('click', () => { order.reverse(); renderList(); });
+  // ── quick actions ──────────────────────────────────
+  document.getElementById('pop-reverse').addEventListener('click', () => { order.reverse(); renderGrid(); });
   document.getElementById('pop-shuffle').addEventListener('click', () => {
     for (let i = order.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [order[i], order[j]] = [order[j], order[i]];
     }
-    renderList();
+    renderGrid();
   });
   document.getElementById('pop-reset').addEventListener('click', () => {
     order = Array.from({ length: pageCount }, (_, i) => i);
-    renderList();
+    renderGrid();
   });
 
+  document.getElementById('pop-change').addEventListener('click', () => {
+    currentFile = null; pageCount = 0; pdfBytes = null; order = []; thumbs = [];
+    panel.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+    status.classList.add('hidden');
+    grid.innerHTML = '';
+  });
+
+  // ── download ──────────────────────────────────
   document.getElementById('pop-apply').addEventListener('click', async () => {
     if (!currentFile) return;
     const orig = Array.from({ length: pageCount }, (_, i) => i);
     if (order.every((v, i) => v === orig[i])) {
-      showStatus('Order is unchanged — drag rows above to reorder first.', 'error');
+      showStatus('Order is unchanged — drag pages to reorder first.', 'error');
       return;
     }
     showStatus('Reordering pages…', 'info');
     try {
       await loadScript(PDFLIB_CDN);
       const { PDFDocument } = window.PDFLib;
-      const src = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
-      const out = await PDFDocument.create();
+      const src    = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      const out    = await PDFDocument.create();
       const copied = await out.copyPages(src, order);
       copied.forEach(p => out.addPage(p));
-      const bytes = await out.save();
+      const bytes    = await out.save();
       const baseName = currentFile.name.replace(/\.pdf$/i, '');
       downloadBytes(bytes, `${baseName}-reordered.pdf`);
-      showStatus('✅ Pages reordered and downloaded', 'success');
+      showStatus('✅ Pages reordered and downloaded!', 'success');
     } catch(e) { showStatus('Error: ' + e.message, 'error'); }
   });
 
-  document.getElementById('pop-change').addEventListener('click', () => {
-    currentFile = null; pageCount = 0; pdfBytes = null; order = []; thumbs = [];
-    panel.classList.add('hidden');
-    drop.classList.remove('hidden');
-    status.classList.add('hidden');
-    list.innerHTML = '';
-  });
-
+  // ── helpers ──────────────────────────────────
   function showStatus(msg, type) {
     status.textContent = msg;
     status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
@@ -256,16 +273,19 @@
 
   function downloadBytes(bytes, name) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = name; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
   function loadScript(src) {
     return new Promise((resolve, reject) => {
       if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
-      const s = document.createElement('script');
-      s.src = src; s.onload = resolve; s.onerror = reject;
+      const s  = document.createElement('script');
+      s.src    = src;
+      s.onload = resolve;
+      s.onerror = reject;
       document.head.appendChild(s);
     });
   }

@@ -1,0 +1,439 @@
+---
+---
+<div class="space-y-5">
+
+  <!-- Drop zone -->
+  <div id="pse-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-10 text-center cursor-pointer transition-colors">
+    <input type="file" id="pse-file" accept=".pdf" class="hidden" />
+    <div class="text-5xl mb-3">🖨️</div>
+    <p class="text-slate-200 font-semibold text-lg mb-1">Drop your scanned PDF here</p>
+    <p class="text-slate-500 text-sm mb-4">Every page is cleaned automatically — white background, dark text, sharp edges</p>
+    <span class="inline-block px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium cursor-pointer transition-colors">Choose PDF</span>
+  </div>
+
+  <!-- Preview loading -->
+  <div id="pse-preview-loading" class="hidden">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-5 text-center">
+      <p class="text-slate-400 text-sm">Loading preview…</p>
+    </div>
+  </div>
+
+  <!-- Main panel -->
+  <div id="pse-panel" class="hidden space-y-4">
+
+    <!-- File info -->
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-orange-400 text-2xl shrink-0">📄</span>
+      <div class="flex-1 min-w-0">
+        <p id="pse-name" class="text-slate-200 text-sm font-semibold truncate"></p>
+        <p id="pse-info" class="text-slate-500 text-xs mt-0.5"></p>
+      </div>
+      <button id="pse-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg shrink-0 transition-colors">Change file</button>
+    </div>
+
+    <!-- Page 1 preview: before / after toggle -->
+    <div>
+      <div class="flex gap-1 mb-2">
+        <button id="pse-tab-before" class="flex-1 py-1.5 text-xs font-medium rounded-lg border border-slate-700 text-slate-400 bg-slate-800/60">Original</button>
+        <button id="pse-tab-after"  class="flex-1 py-1.5 text-xs font-medium rounded-lg border border-orange-600/60 text-orange-300 bg-orange-900/20">Enhanced (Page 1 preview)</button>
+      </div>
+      <div class="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-900">
+        <canvas id="pse-preview-before" class="w-full block"></canvas>
+        <canvas id="pse-preview-after"  class="w-full block hidden"></canvas>
+      </div>
+    </div>
+
+    <!-- Presets -->
+    <div class="flex flex-wrap gap-2 items-center">
+      <span class="text-xs text-slate-500">Preset:</span>
+      <button class="pse-preset px-3 py-1.5 text-xs rounded-lg border transition-colors border-orange-600/60 bg-orange-900/20 text-orange-300" data-preset="document">📄 Document Clean</button>
+      <button class="pse-preset px-3 py-1.5 text-xs rounded-lg border transition-colors border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500" data-preset="soft">📃 Soft Scan</button>
+      <button class="pse-preset px-3 py-1.5 text-xs rounded-lg border transition-colors border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500" data-preset="photocopy">🖨️ Photocopy</button>
+    </div>
+
+    <!-- Sliders -->
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
+      <div>
+        <div class="flex justify-between text-xs mb-1.5">
+          <span class="text-slate-400">Brightness</span>
+          <span id="pse-brightness-val" class="text-orange-400 font-mono w-8 text-right">+10</span>
+        </div>
+        <input type="range" id="pse-brightness" min="-50" max="80" value="10" class="w-full accent-orange-500 cursor-pointer" />
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1.5">
+          <span class="text-slate-400">Contrast</span>
+          <span id="pse-contrast-val" class="text-orange-400 font-mono w-8 text-right">60</span>
+        </div>
+        <input type="range" id="pse-contrast" min="0" max="150" value="60" class="w-full accent-orange-500 cursor-pointer" />
+      </div>
+      <div>
+        <div class="flex justify-between text-xs mb-1.5">
+          <span class="text-slate-400">Background Clip</span>
+          <span id="pse-clip-val" class="text-orange-400 font-mono w-8 text-right">2%</span>
+        </div>
+        <input type="range" id="pse-clip" min="0" max="8" value="2" step="0.5" class="w-full accent-orange-500 cursor-pointer" />
+        <p class="text-slate-600 text-xs mt-1">Higher = more aggressive background whitening</p>
+      </div>
+      <label class="flex items-center gap-2.5 cursor-pointer">
+        <input type="checkbox" id="pse-sharpen" checked class="accent-orange-500 w-3.5 h-3.5" />
+        <span class="text-xs text-slate-400">Sharpen edges (makes text crisper)</span>
+      </label>
+    </div>
+
+    <!-- Apply button -->
+    <button id="pse-apply" class="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-sm font-semibold transition-colors">
+      Apply to All Pages &amp; Download PDF
+    </button>
+
+    <!-- Processing progress -->
+    <div id="pse-progress" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-2">
+      <div class="flex justify-between text-xs text-slate-400">
+        <span id="pse-progress-msg">Processing…</span>
+        <span id="pse-progress-pct" class="font-mono">0%</span>
+      </div>
+      <div class="w-full bg-slate-800 rounded-full h-2">
+        <div id="pse-progress-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-200" style="width:0%"></div>
+      </div>
+    </div>
+
+    <p id="pse-status" class="hidden text-sm py-1"></p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const PDFJS_CDN  = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFJS_WORKER = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  const PDFLIB_CDN = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+
+  const dropZone      = document.getElementById('pse-drop');
+  const fileInput     = document.getElementById('pse-file');
+  const previewLoading = document.getElementById('pse-preview-loading');
+  const panel         = document.getElementById('pse-panel');
+  const previewBefore = document.getElementById('pse-preview-before');
+  const previewAfter  = document.getElementById('pse-preview-after');
+  const tabBefore     = document.getElementById('pse-tab-before');
+  const tabAfter      = document.getElementById('pse-tab-after');
+  const applyBtn      = document.getElementById('pse-apply');
+  const progressBox   = document.getElementById('pse-progress');
+  const statusEl      = document.getElementById('pse-status');
+
+  const brightnessSlider = document.getElementById('pse-brightness');
+  const contrastSlider   = document.getElementById('pse-contrast');
+  const clipSlider       = document.getElementById('pse-clip');
+  const sharpenCheck     = document.getElementById('pse-sharpen');
+
+  let currentFile = null, pdfBytes = null, numPages = 0;
+  let previewRenderScheduled = false;
+
+  // ── File input ──────────────────────────────
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('border-orange-500/80'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('border-orange-500/80'));
+  dropZone.addEventListener('drop', e => { e.preventDefault(); dropZone.classList.remove('border-orange-500/80'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
+
+  async function loadFile(file) {
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
+    currentFile = file;
+    dropZone.classList.add('hidden');
+    previewLoading.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+    try {
+      pdfBytes = await file.arrayBuffer();
+      await loadScript(PDFJS_CDN);
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      const pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      numPages = pdfDoc.numPages;
+      document.getElementById('pse-name').textContent = file.name;
+      document.getElementById('pse-info').textContent = `${numPages} pages · ${(file.size / 1024).toFixed(0)} KB`;
+      await renderPreview(pdfDoc);
+      previewLoading.classList.add('hidden');
+      panel.classList.remove('hidden');
+    } catch(e) {
+      previewLoading.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+      showStatus('Could not read PDF: ' + e.message, 'error');
+    }
+  }
+
+  async function renderPreview(pdfDoc) {
+    const page = await pdfDoc.getPage(1);
+    const viewport = page.getViewport({ scale: 0.6 });
+    previewBefore.width  = Math.round(viewport.width);
+    previewBefore.height = Math.round(viewport.height);
+    previewAfter.width   = Math.round(viewport.width);
+    previewAfter.height  = Math.round(viewport.height);
+
+    const ctx = previewBefore.getContext('2d');
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, previewBefore.width, previewBefore.height);
+    await page.render({ canvasContext: ctx, viewport }).promise;
+
+    applyToCanvas(previewBefore, previewAfter);
+  }
+
+  function applyToCanvas(src, dst) {
+    const w = src.width, h = src.height;
+    const srcCtx = src.getContext('2d');
+    const imgData = srcCtx.getImageData(0, 0, w, h);
+    const result  = applyScan(imgData, getSettings());
+    dst.getContext('2d').putImageData(result, 0, 0);
+  }
+
+  function schedulePreviewUpdate() {
+    if (previewRenderScheduled) return;
+    previewRenderScheduled = true;
+    requestAnimationFrame(() => {
+      previewRenderScheduled = false;
+      if (previewBefore.width > 0) applyToCanvas(previewBefore, previewAfter);
+    });
+  }
+
+  // ── Before/After tabs ──────────────────────────────
+  tabBefore.addEventListener('click', () => {
+    previewBefore.classList.remove('hidden');
+    previewAfter.classList.add('hidden');
+    tabBefore.className = 'flex-1 py-1.5 text-xs font-medium rounded-lg border border-orange-600/60 text-orange-300 bg-orange-900/20';
+    tabAfter.className  = 'flex-1 py-1.5 text-xs font-medium rounded-lg border border-slate-700 text-slate-400 bg-slate-800/60';
+  });
+  tabAfter.addEventListener('click', () => {
+    previewAfter.classList.remove('hidden');
+    previewBefore.classList.add('hidden');
+    tabAfter.className  = 'flex-1 py-1.5 text-xs font-medium rounded-lg border border-orange-600/60 text-orange-300 bg-orange-900/20';
+    tabBefore.className = 'flex-1 py-1.5 text-xs font-medium rounded-lg border border-slate-700 text-slate-400 bg-slate-800/60';
+  });
+
+  // ── Sliders ──────────────────────────────
+  brightnessSlider.addEventListener('input', () => {
+    document.getElementById('pse-brightness-val').textContent =
+      (parseInt(brightnessSlider.value, 10) >= 0 ? '+' : '') + brightnessSlider.value;
+    schedulePreviewUpdate();
+  });
+  contrastSlider.addEventListener('input', () => {
+    document.getElementById('pse-contrast-val').textContent = contrastSlider.value;
+    schedulePreviewUpdate();
+  });
+  clipSlider.addEventListener('input', () => {
+    document.getElementById('pse-clip-val').textContent = clipSlider.value + '%';
+    schedulePreviewUpdate();
+  });
+  sharpenCheck.addEventListener('change', schedulePreviewUpdate);
+
+  // ── Presets ──────────────────────────────
+  const PRESETS = {
+    document:  { brightness: 10,  contrast: 60,  clip: 2,   sharpen: true  },
+    soft:      { brightness: 5,   contrast: 28,  clip: 1,   sharpen: false },
+    photocopy: { brightness: 20,  contrast: 120, clip: 3.5, sharpen: true  },
+  };
+  document.querySelectorAll('.pse-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pse-preset').forEach(b => {
+        b.className = 'pse-preset px-3 py-1.5 text-xs rounded-lg border transition-colors border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500';
+      });
+      btn.className = 'pse-preset px-3 py-1.5 text-xs rounded-lg border transition-colors border-orange-600/60 bg-orange-900/20 text-orange-300';
+      const p = PRESETS[btn.dataset.preset];
+      brightnessSlider.value = p.brightness;
+      contrastSlider.value   = p.contrast;
+      clipSlider.value       = p.clip;
+      sharpenCheck.checked   = p.sharpen;
+      document.getElementById('pse-brightness-val').textContent = (p.brightness >= 0 ? '+' : '') + p.brightness;
+      document.getElementById('pse-contrast-val').textContent   = p.contrast;
+      document.getElementById('pse-clip-val').textContent       = p.clip + '%';
+      schedulePreviewUpdate();
+    });
+  });
+
+  // ── Change file ──────────────────────────────
+  document.getElementById('pse-change').addEventListener('click', () => {
+    currentFile = null; pdfBytes = null; numPages = 0;
+    panel.classList.add('hidden');
+    progressBox.classList.add('hidden');
+    dropZone.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+  });
+
+  // ── Apply all pages & download ──────────────────────────────
+  applyBtn.addEventListener('click', async () => {
+    if (!currentFile || !pdfBytes) return;
+    applyBtn.disabled = true;
+    progressBox.classList.remove('hidden');
+    statusEl.classList.add('hidden');
+
+    try {
+      await loadScript(PDFJS_CDN);
+      await loadScript(PDFLIB_CDN);
+
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+      const pdfJsDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+
+      const { PDFDocument } = window.PDFLib;
+      const outPdf = await PDFDocument.create();
+      const settings = getSettings();
+      const RENDER_SCALE = 2.0;
+
+      for (let i = 1; i <= numPages; i++) {
+        setProgress(i, numPages, `Processing page ${i} of ${numPages}…`);
+
+        const page    = await pdfJsDoc.getPage(i);
+        const origVP  = page.getViewport({ scale: 1 });       // original dimensions in points
+        const renderVP = page.getViewport({ scale: RENDER_SCALE });
+
+        const canvas  = document.createElement('canvas');
+        canvas.width  = Math.round(renderVP.width);
+        canvas.height = Math.round(renderVP.height);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport: renderVP }).promise;
+
+        // Apply scan effect
+        const imgData  = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const processed = applyScan(imgData, settings);
+        ctx.putImageData(processed, 0, 0);
+
+        // Convert canvas to JPEG bytes
+        const dataUrl   = canvas.toDataURL('image/jpeg', 0.90);
+        const jpegBytes = dataUrlToBytes(dataUrl);
+
+        // Embed JPEG into output PDF at original point dimensions
+        const embedded  = await outPdf.embedJpg(jpegBytes);
+        const outPage   = outPdf.addPage([origVP.width, origVP.height]);
+        outPage.drawImage(embedded, { x: 0, y: 0, width: origVP.width, height: origVP.height });
+      }
+
+      setProgress(numPages, numPages, 'Saving PDF…');
+      const outBytes = await outPdf.save();
+      const baseName = currentFile.name.replace(/\.pdf$/i, '');
+      downloadBytes(outBytes, `${baseName}-enhanced.pdf`);
+      showStatus('✅ Enhanced PDF downloaded!', 'success');
+    } catch(e) {
+      showStatus('Error: ' + e.message, 'error');
+    } finally {
+      applyBtn.disabled = false;
+      progressBox.classList.add('hidden');
+    }
+  });
+
+  // ── Scan effect algorithm ──────────────────────────────
+  function getSettings() {
+    return {
+      brightness: parseInt(brightnessSlider.value, 10),
+      contrast:   parseInt(contrastSlider.value, 10),
+      clipFrac:   parseFloat(clipSlider.value) / 100,
+      sharpen:    sharpenCheck.checked,
+    };
+  }
+
+  function applyScan(imageData, { brightness, contrast, clipFrac, sharpen }) {
+    const data = imageData.data;
+    const W = imageData.width, H = imageData.height;
+
+    // Grayscale
+    const gray = new Uint8Array(W * H);
+    for (let i = 0, p = 0; i < gray.length; i++, p += 4) {
+      gray[i] = Math.round(0.299 * data[p] + 0.587 * data[p + 1] + 0.114 * data[p + 2]);
+    }
+
+    // Auto-levels via histogram clipping
+    const hist = new Uint32Array(256);
+    for (let i = 0; i < gray.length; i++) hist[gray[i]]++;
+    const total = gray.length;
+    let blackPt = 0, whitePt = 255, count = 0;
+    for (let j = 0; j < 256; j++) { count += hist[j]; if (count > total * clipFrac) { blackPt = j; break; } }
+    count = 0;
+    for (let j = 255; j >= 0; j--) { count += hist[j]; if (count > total * clipFrac) { whitePt = j; break; } }
+    const range   = Math.max(1, whitePt - blackPt);
+    const cfactor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+    // Build LUT for speed
+    const lut = new Uint8ClampedArray(256);
+    for (let i = 0; i < 256; i++) {
+      let v = (i - blackPt) * 255 / range;
+      v = v + brightness;
+      v = cfactor * (v - 128) + 128;
+      lut[i] = Math.max(0, Math.min(255, Math.round(v)));
+    }
+
+    // Apply LUT
+    const out = new Uint8ClampedArray(W * H * 4);
+    for (let i = 0; i < gray.length; i++) {
+      const v = lut[gray[i]], p = i * 4;
+      out[p] = out[p + 1] = out[p + 2] = v;
+      out[p + 3] = 255;
+    }
+
+    // Unsharp mask (2-pass box blur)
+    if (sharpen) {
+      const blurred = boxBlur(out, W, H);
+      for (let p = 0; p < out.length; p += 4) {
+        const v = Math.max(0, Math.min(255, out[p] + 0.65 * (out[p] - blurred[p])));
+        out[p] = out[p + 1] = out[p + 2] = v;
+      }
+    }
+
+    return new ImageData(out, W, H);
+  }
+
+  function boxBlur(data, w, h) {
+    const tmp = new Uint8ClampedArray(data.length);
+    const out = new Uint8ClampedArray(data.length);
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const x0 = Math.max(0, x - 1), x2 = Math.min(w - 1, x + 1);
+        tmp[(y * w + x) * 4] = Math.round((data[(y * w + x0) * 4] + data[(y * w + x) * 4] + data[(y * w + x2) * 4]) / 3);
+      }
+    }
+    for (let y = 0; y < h; y++) {
+      for (let x = 0; x < w; x++) {
+        const y0 = Math.max(0, y - 1), y2 = Math.min(h - 1, y + 1);
+        const v = Math.round((tmp[(y0 * w + x) * 4] + tmp[(y * w + x) * 4] + tmp[(y2 * w + x) * 4]) / 3);
+        const p = (y * w + x) * 4;
+        out[p] = out[p + 1] = out[p + 2] = v;
+        out[p + 3] = 255;
+      }
+    }
+    return out;
+  }
+
+  // ── Helpers ──────────────────────────────
+  function setProgress(current, total, msg) {
+    const pct = Math.round((current / total) * 100);
+    document.getElementById('pse-progress-msg').textContent = msg;
+    document.getElementById('pse-progress-pct').textContent = pct + '%';
+    document.getElementById('pse-progress-bar').style.width = pct + '%';
+  }
+
+  function showStatus(msg, type) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function dataUrlToBytes(dataUrl) {
+    const b64    = dataUrl.split(',')[1];
+    const binStr = atob(b64);
+    const bytes  = new Uint8Array(binStr.length);
+    for (let i = 0; i < binStr.length; i++) bytes[i] = binStr.charCodeAt(i);
+    return bytes;
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
+      const s = document.createElement('script'); s.src = src; s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

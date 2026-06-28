@@ -25,6 +25,7 @@ import PdfHeaderFooter from '../../components/pdf-tools/PdfHeaderFooter.astro';
 import PdfCrop from '../../components/pdf-tools/PdfCrop.astro';
 import PdfResize from '../../components/pdf-tools/PdfResize.astro';
 import TextToWord from '../../components/pdf-tools/TextToWord.astro';
+import PdfScanEnhance from '../../components/pdf-tools/PdfScanEnhance.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
 
 export function getStaticPaths() {
@@ -59,6 +60,7 @@ const componentMap: Record<string, any> = {
   'pdf-crop': PdfCrop,
   'pdf-resize': PdfResize,
   'text-to-word': TextToWord,
+  'pdf-scan-enhance': PdfScanEnhance,
 };
 
 const ToolComponent = componentMap[tool.slug];

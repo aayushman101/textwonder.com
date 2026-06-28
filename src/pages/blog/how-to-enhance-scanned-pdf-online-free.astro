@@ -1,0 +1,135 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Will this work on a PDF made from phone photos?', a: 'Yes — that is the primary use case. The auto-levels step removes uneven lighting and shadows, producing clean white backgrounds and dark text even from phone camera shots.' },
+  { q: 'Does the output PDF stay editable/searchable?', a: 'No. Each page is rasterised to a JPEG and embedded as an image. The text is no longer selectable. This is the same result as a real scanner without OCR. The output is ideal for sharing, printing, or archiving — not for copy-pasting text.' },
+  { q: 'How long does processing take?', a: 'Each page takes about 1–2 seconds on a modern device. A 25-page PDF completes in roughly 25–50 seconds. A progress bar shows the current page.' },
+  { q: 'Will the output file be larger or smaller?', a: 'Photo-heavy PDFs usually become smaller — phone photos are large but JPEG at 144 DPI is efficient. PDFs with text layers may become larger since text is replaced with raster images.' },
+  { q: 'Can I adjust the effect before processing all pages?', a: 'Yes. Upload the PDF, adjust presets and sliders, and see a live before/after preview of page 1 before clicking Apply. The settings you see on page 1 are applied identically to all pages.' },
+  { q: 'What is the difference between the presets?', a: 'Document Clean is the default — moderate contrast, 2% background clipping, and sharpening. Soft Scan is gentler and preserves more mid-tones. Photocopy is the most aggressive: very high contrast with bold black text and pure white background.' },
+];
+---
+
+<BlogLayout
+  title="How to Enhance a Scanned PDF Online Free (Clean Background, Sharpen Text)"
+  description="Automatically clean up every page of a scanned PDF online — whiten background, boost contrast, sharpen text. Free, browser-based, no upload to any server."
+  canonical="/blog/how-to-enhance-scanned-pdf-online-free"
+  date="2026-06-28"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  PDFs created from phone photos or low-quality scanners often look washed out — grey backgrounds,
+  soft text, uneven lighting. You need them to look like they came from a proper flatbed scanner.
+  This guide shows you how to clean up every page automatically, for free, without any software.
+</p>
+
+<h2>The Problem with Phone-Photo PDFs</h2>
+
+<p>When you photograph a document with your phone and convert it to a PDF, you get:</p>
+
+<ul>
+  <li>Uneven background — shadows in corners, yellow/warm cast from room light</li>
+  <li>Soft or blurry text from camera focus or motion</li>
+  <li>Grey paper instead of white — hard to read and visually cluttered</li>
+  <li>Low contrast — dark text and dark background blend together</li>
+</ul>
+
+<p>
+  A proper scan fixes all of these. The <a href="/pdfwonder/pdf-scan-enhance">PDF Scan Enhancer</a>
+  replicates what scanner software does: grayscale conversion, automatic level adjustment,
+  contrast boost, and edge sharpening — applied to every page in one click.
+</p>
+
+<h2>How to Enhance a Scanned PDF (Step by Step)</h2>
+
+<ol>
+  <li>Open the <a href="/pdfwonder/pdf-scan-enhance">PDF Scan Enhancer</a>.</li>
+  <li>Drop your PDF in or click to browse.</li>
+  <li>A preview of page 1 loads — click <strong>Enhanced (Page 1 preview)</strong> tab to see the effect.</li>
+  <li>Choose a preset: <strong>Document Clean</strong> (recommended), <strong>Soft Scan</strong>, or <strong>Photocopy</strong>.</li>
+  <li>Adjust sliders if needed (Brightness, Contrast, Background Clip, Sharpen).</li>
+  <li>Click <strong>Apply to All Pages & Download PDF</strong>.</li>
+  <li>A progress bar shows each page being processed. The enhanced PDF downloads automatically when done.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-scan-enhance" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF Scan Enhancer — Clean Every Page Automatically →</div>
+  <div class="cta-desc">Upload a PDF, preview the effect on page 1, then apply to all pages. White background, dark text, sharp edges. No upload to servers.</div>
+</a>
+
+<h2>Understanding the Three Presets</h2>
+
+<h3>Document Clean (default)</h3>
+<p>
+  Applies 2% histogram clipping, moderate contrast, and edge sharpening.
+  Best for typed text, printed documents, answer sheets, and books photographed under normal indoor light.
+  The most common choice for PDFs made from phone photos.
+</p>
+
+<h3>Soft Scan</h3>
+<p>
+  Lower contrast and no sharpening. Preserves fine pencil marks, handwriting, and mid-tones.
+  Use this for handwritten notes, pencil sketches, or lightly printed text where the aggressive
+  Document Clean preset makes fine strokes disappear.
+</p>
+
+<h3>Photocopy</h3>
+<p>
+  Maximum contrast — bold black text, pure white background.
+  Some fine detail is lost. Best for documents that will be printed or faxed,
+  or PDFs where the text contrast needs to be as high as possible for OCR software.
+</p>
+
+<h2>How the Enhancement Works</h2>
+
+<p>Each page goes through four steps:</p>
+
+<ol>
+  <li>
+    <strong>Render at 144 DPI</strong> — PDF.js renders each page at 2× the base PDF resolution
+    (72 pt/inch × 2 = 144 DPI), producing a crisp raster image of each page.
+  </li>
+  <li>
+    <strong>Grayscale conversion</strong> — colour information is discarded using
+    the standard luminance formula, removing colour cast from warm light or tinted paper.
+  </li>
+  <li>
+    <strong>Auto-levels</strong> — the tool analyses the pixel histogram and
+    clips the darkest and brightest N% of pixels before stretching the remaining range to fill 0–255.
+    This is what removes shadows and makes the background white even under uneven lighting.
+  </li>
+  <li>
+    <strong>Contrast boost and optional sharpening</strong> — a contrast factor formula
+    increases tonal separation between text and paper, and an unsharp mask
+    (2-pass box blur) makes text edges crisp.
+  </li>
+</ol>
+
+<p>
+  The enhanced pages are embedded as JPEG images into a new PDF using pdf-lib.
+  The output file dimensions match the original PDF exactly.
+</p>
+
+<h2>Tips for Best Results</h2>
+
+<ul>
+  <li><strong>Shoot in good light:</strong> Even with auto-levels, extreme shadows from a single lamp are harder to remove. Photograph near a window or under ceiling lights.</li>
+  <li><strong>Increase Background Clip to 3–5%</strong> for PDFs taken under warm artificial light — this more aggressively whitens the background at the cost of slightly clipping very light text.</li>
+  <li><strong>Use Soft Scan for handwriting</strong> — high contrast can cause thin pencil strokes to disappear.</li>
+  <li><strong>Check page 1 carefully</strong> before clicking Apply — if shadows are still visible, increase the clip slider until the background looks clean in the preview.</li>
+</ul>
+
+<h2>After Enhancing: Next Steps</h2>
+
+<ul>
+  <li><strong>Compress:</strong> The enhanced PDF contains JPEG images — use the <a href="/pdfwonder/pdf-compress">PDF Compressor</a> to reduce file size further.</li>
+  <li><strong>Add page numbers:</strong> Use the <a href="/pdfwonder/pdf-page-numbers">PDF Page Numbers</a> tool to stamp page numbers on the clean output.</li>
+  <li><strong>Merge multiple enhanced PDFs:</strong> The <a href="/pdfwonder/pdf-merger">PDF Merger</a> combines several enhanced files into one document.</li>
+</ul>
+
+</BlogLayout>

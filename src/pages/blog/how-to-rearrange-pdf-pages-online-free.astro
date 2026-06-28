@@ -1,0 +1,121 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Can I rearrange PDF pages without software?', a: 'Yes. The PDF Page Reorder tool runs entirely in your browser — no software, no app, and no file upload needed. Your PDF never leaves your device.' },
+  { q: 'How do I move a single page to a different position?', a: 'Upload your PDF, then drag the row for that page to its new position in the list. The row highlight confirms the new order before you download.' },
+  { q: 'Can I reverse the entire page order?', a: 'Yes. Click the "Reverse order" quick-action button to instantly flip all pages from last to first.' },
+  { q: 'Will reordering change the PDF quality?', a: 'No. The tool copies pages from the original PDF into a new document — fonts, images, and vector graphics are preserved exactly. There is no re-rendering.' },
+  { q: 'Can I also delete pages while reordering?', a: 'Yes. Simply leave out the page you want to remove when viewing the list — or use the related Remove Pages tool for a dedicated deletion workflow.' },
+  { q: 'What is the maximum file size?', a: 'There is no enforced limit — processing is done in your browser memory. Very large PDFs (100+ MB) may be slow depending on your device RAM.' },
+];
+---
+
+<BlogLayout
+  title="How to Rearrange PDF Pages Online Free (Drag & Drop, No Upload)"
+  description="Reorder the pages of any PDF for free — drag rows to rearrange, use quick reverse or shuffle, then download. Browser-based, no upload, no signup."
+  canonical="/blog/how-to-rearrange-pdf-pages-online-free"
+  date="2026-06-28"
+  readTime="5 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Merged PDFs often come out in the wrong order. A scanned document might be back-to-front.
+  A presentation deck needs a different flow for a specific audience. Whatever the reason,
+  rearranging PDF pages manually used to require expensive desktop software. Now you can do it
+  in seconds, for free, without uploading anything.
+</p>
+
+<h2>The Fastest Way: Drag-and-Drop PDF Page Reorder</h2>
+
+<p>
+  The <a href="/pdfwonder/pdf-reorder-pages">PDF Page Reorder tool</a> lets you drag rows in a visual
+  list to set the exact order you want, then download the rearranged PDF instantly.
+</p>
+
+<ol>
+  <li>Open the <a href="/pdfwonder/pdf-reorder-pages">PDF Page Reorder tool</a>.</li>
+  <li>Drop your PDF file into the upload zone (or click to browse).</li>
+  <li>A numbered list of pages appears — each row represents one page.</li>
+  <li>Drag a row by its <strong>⠿ handle</strong> on the left side to move it to a new position.</li>
+  <li>Repeat for any pages that need to move.</li>
+  <li>Check the "New order" summary at the bottom — it shows the full sequence.</li>
+  <li>Click <strong>Apply Order & Download</strong> to save the rearranged PDF.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-reorder-pages" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">PDF Page Reorder — Drag & Drop to Rearrange Pages →</div>
+  <div class="cta-desc">Drag rows to set a new page order, use quick Reverse or Shuffle, then download. No upload. Works on any PDF.</div>
+</a>
+
+<h2>Quick Actions: Reverse and Shuffle</h2>
+
+<p>Beyond manual dragging, the tool has two one-click shortcuts:</p>
+
+<ul>
+  <li><strong>Reverse order</strong> — flips all pages from last to first. Useful for back-to-front scans.</li>
+  <li><strong>Shuffle randomly</strong> — randomises the page order. Useful for quiz or flashcard PDFs where you want a fresh sequence.</li>
+  <li><strong>Reset to original</strong> — reverts back to the original page sequence if you want to start over.</li>
+</ul>
+
+<h2>What Happens to the PDF Quality?</h2>
+
+<p>
+  Nothing changes except the order. The tool uses <a href="https://pdf-lib.js.org/" rel="noopener noreferrer">pdf-lib</a>
+  to copy pages from the source document into a new PDF in your specified sequence.
+  Fonts, vector graphics, embedded images, and hyperlinks are all transferred without modification.
+  There is no rendering step, so there is zero quality loss.
+</p>
+
+<h2>Rearranging Pages with pdf-lib (JavaScript)</h2>
+
+<p>If you need to automate page reordering in a Node.js project:</p>
+
+<pre><code>import &#123; PDFDocument &#125; from 'pdf-lib';
+import fs from 'fs';
+
+const srcBytes = fs.readFileSync('input.pdf');
+const srcPdf = await PDFDocument.load(srcBytes);
+
+const newOrder = [2, 0, 1]; // 0-based page indices
+const outPdf = await PDFDocument.create();
+const pages = await outPdf.copyPages(srcPdf, newOrder);
+pages.forEach(p =&gt; outPdf.addPage(p));
+
+const outBytes = await outPdf.save();
+fs.writeFileSync('reordered.pdf', outBytes);</code></pre>
+
+<h2>Rearranging PDF Pages on Different Devices</h2>
+
+<h3>Mac — Preview</h3>
+<ol>
+  <li>Open the PDF in Preview.</li>
+  <li>Show the thumbnail sidebar: <strong>View → Thumbnails</strong>.</li>
+  <li>Drag thumbnails into the order you want.</li>
+  <li>Save with <strong>File → Export as PDF</strong>.</li>
+</ol>
+
+<h3>Windows — Microsoft Edge</h3>
+<p>
+  Edge's built-in PDF viewer does not support reordering. Use the browser-based tool above — it works in any browser including Edge with no extension required.
+</p>
+
+<h3>iPhone / Android</h3>
+<p>
+  Open the PDF Page Reorder tool in your mobile browser. The drag interface works with touch — press and hold the ⠿ handle, then drag the row to its new position.
+</p>
+
+<h2>Use Cases for Reordering PDF Pages</h2>
+
+<ul>
+  <li><strong>Scanned documents:</strong> Pages scanned in the wrong order — flip them back in seconds.</li>
+  <li><strong>Merged PDFs:</strong> After combining several PDFs you may need to interleave specific sections.</li>
+  <li><strong>Presentation decks:</strong> Move slides for different audience versions without editing the original source file.</li>
+  <li><strong>Legal or contract documents:</strong> Reorder exhibits, annexures, or schedules to match a final agreed structure.</li>
+  <li><strong>Study materials:</strong> Organise chapters or topic sections for your own reading order.</li>
+</ul>
+
+</BlogLayout>

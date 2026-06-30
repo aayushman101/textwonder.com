@@ -1,0 +1,50 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What types of content can a QR code encode?', a: 'Any text up to ~2900 characters: URLs, plain text, email addresses (mailto:), phone numbers (tel:+91...), SMS (sms:), vCard contact info, and Wi-Fi credentials (WIFI:S:name;T:WPA;P:password;;).' },
+  { q: 'What resolution is the PNG download?', a: 'You can choose 256px, 512px, or 1024px. The 512px option is sufficient for most uses. Use 1024px for large-format printing like banners or posters.' },
+  { q: 'What is error correction level?', a: 'Error correction allows a partially damaged or covered QR code to still be scanned. Level M (15%) is the best balance for most uses. Level H (30%) is needed if you plan to overlay a logo on the QR code.' },
+  { q: 'Does the QR code expire?', a: 'The QR code itself never expires — it is just an image encoding your content. If you encoded a URL, make sure that URL stays active as long as you use the QR code.' },
+];
+---
+
+<BlogLayout
+  title="How to Generate a QR Code Online for Free"
+  description="Generate a QR code for any URL, text, email, phone number, or Wi-Fi credentials online for free. Download as PNG. No upload, browser-based, instant."
+  canonical="/blog/how-to-generate-qr-code-online-free"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Developer Tools"
+  faqs={faqs}
+>
+  <p>QR codes are everywhere — on menus, business cards, product packaging, event tickets. Creating one used to require a paid tool or an account. The QR Code Generator on DevWonder is free, instant, and runs entirely in your browser.</p>
+
+  <h2>How to Create a QR Code</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/devwonder/qr-code-generator">textwonder.com/devwonder/qr-code-generator</a></li>
+    <li>Type or paste the content to encode — a URL, text, phone number, etc.</li>
+    <li>Use a quick template button for common formats: URL, Email, Phone, Wi-Fi, SMS.</li>
+    <li>Set the size (256px, 512px, or 1024px) and error correction level.</li>
+    <li>Click <strong>Generate QR Code</strong>.</li>
+    <li>Click <strong>Download PNG</strong> to save the QR code image.</li>
+  </ol>
+
+  <h2>QR Code Formats for Common Uses</h2>
+  <ul>
+    <li><strong>Website URL</strong> — Enter the full URL: <code>https://yourwebsite.com</code></li>
+    <li><strong>Email</strong> — Use <code>mailto:you@example.com</code></li>
+    <li><strong>Phone call</strong> — Use <code>tel:+919876543210</code></li>
+    <li><strong>Wi-Fi login</strong> — Use <code>WIFI:S:NetworkName;T:WPA;P:YourPassword;;</code></li>
+    <li><strong>SMS</strong> — Use <code>sms:+919876543210</code></li>
+    <li><strong>Plain text</strong> — Enter any text directly</li>
+  </ul>
+
+  <h2>Tips for Printing QR Codes</h2>
+  <p>Use the 1024px size for anything printed larger than a business card. Set error correction to H (30%) if you plan to overlay a logo on the QR code centre. Always test-scan the QR code before printing in large quantities.</p>
+
+  <div class="my-8 p-5 bg-cyan-950/30 border border-cyan-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Generate a QR Code Free</p>
+    <a href="https://textwonder.com/devwonder/qr-code-generator" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#06b6d4">Open QR Code Generator →</a>
+  </div>
+</BlogLayout>

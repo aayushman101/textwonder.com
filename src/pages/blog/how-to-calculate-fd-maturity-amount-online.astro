@@ -1,0 +1,48 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the formula for FD maturity amount?', a: 'A = P × (1 + r/n)^(n×t), where P is principal, r is annual interest rate, n is compounding frequency per year, and t is tenure in years.' },
+  { q: 'Does quarterly compounding give better returns than yearly?', a: 'Yes, slightly. More frequent compounding means interest is added to the principal more often, earning more interest on interest. The difference is small but noticeable over long tenures.' },
+  { q: 'Is FD interest taxable?', a: 'Yes. FD interest is added to your total income and taxed at your income tax slab rate. TDS of 10% is deducted if annual interest exceeds ₹40,000 (₹50,000 for senior citizens).' },
+  { q: 'Can I calculate FD for days or months?', a: 'Yes. The FD Calculator supports tenure in years, months, and days.' },
+];
+---
+
+<BlogLayout
+  title="How to Calculate FD Maturity Amount Online for Free"
+  description="Calculate Fixed Deposit maturity amount, total interest earned, and effective yield online for free. Supports quarterly, monthly, and yearly compounding."
+  canonical="/blog/how-to-calculate-fd-maturity-amount-online"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Calculators"
+  faqs={faqs}
+>
+  <p>Fixed Deposits are one of the most popular savings instruments in India. Before investing, it helps to know exactly how much your FD will be worth at maturity — especially when comparing offers from different banks offering different compounding frequencies.</p>
+
+  <h2>How to Calculate FD Maturity Amount</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/calc/fd-calculator">textwonder.com/calc/fd-calculator</a></li>
+    <li>Enter the <strong>Principal Amount</strong> (the amount you are depositing).</li>
+    <li>Enter the <strong>Annual Interest Rate</strong> (shown on the bank's FD rate card).</li>
+    <li>Enter the <strong>Tenure</strong> in years, months, or days.</li>
+    <li>Select the <strong>Compounding Frequency</strong>: Quarterly (most Indian banks), Monthly, Half-yearly, or Yearly.</li>
+    <li>Click <strong>Calculate</strong>. See Principal, Interest Earned, Maturity Amount, and Effective Annual Yield.</li>
+  </ol>
+
+  <h2>Current FD Rates in India (Approximate)</h2>
+  <ul>
+    <li>SBI: 6.5–7.0% for 1–5 years</li>
+    <li>HDFC Bank: 7.0–7.25% for 1–3 years</li>
+    <li>Small Finance Banks: Up to 9.0% for specific tenures</li>
+    <li>Senior Citizen FDs: 0.25–0.5% additional on most banks</li>
+  </ul>
+
+  <h2>FD vs SIP: Which is Better?</h2>
+  <p>FDs offer guaranteed returns with no market risk. SIPs in equity mutual funds have higher potential returns over the long term but carry market risk. For money you cannot afford to lose (emergency fund, short-term goals), FD is safer. For long-term wealth creation (10+ years), SIPs historically outperform.</p>
+
+  <div class="my-8 p-5 bg-emerald-950/30 border border-emerald-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Calculate Your FD Returns Free</p>
+    <a href="https://textwonder.com/calc/fd-calculator" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#10b981">Open FD Calculator →</a>
+  </div>
+</BlogLayout>

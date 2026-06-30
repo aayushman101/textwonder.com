@@ -14,6 +14,9 @@ import HtmlFormatter from '../../components/dev-tools/HtmlFormatter.astro';
 import MarkdownPreviewer from '../../components/dev-tools/MarkdownPreviewer.astro';
 import TextToSpeech from '../../components/dev-tools/TextToSpeech.astro';
 import TextToHtml from '../../components/dev-tools/TextToHtml.astro';
+import PasswordGenerator from '../../components/dev-tools/PasswordGenerator.astro';
+import QrCodeGenerator from '../../components/dev-tools/QrCodeGenerator.astro';
+import Base64Encoder from '../../components/dev-tools/Base64Encoder.astro';
 import { DEV_TOOLS } from '../../data/devtools.js';
 
 export function getStaticPaths() {
@@ -37,6 +40,9 @@ const componentMap: Record<string, any> = {
   'markdown-previewer': MarkdownPreviewer,
   'text-to-speech': TextToSpeech,
   'text-to-html': TextToHtml,
+  'password-generator': PasswordGenerator,
+  'qr-code-generator': QrCodeGenerator,
+  'base64-encoder': Base64Encoder,
 };
 
 const ToolComponent = componentMap[tool.slug];

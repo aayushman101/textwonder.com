@@ -1,0 +1,86 @@
+---
+---
+<div class="max-w-xl mx-auto space-y-5">
+  <div class="bg-slate-800/50 rounded-xl p-5 space-y-4 border border-slate-700">
+    <div>
+      <label class="text-slate-400 text-xs mb-1 block">Bill Amount (₹)</label>
+      <input id="tip-bill" type="number" value="1000" min="1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+    </div>
+
+    <div>
+      <label class="text-slate-400 text-xs mb-2 block">Tip Percentage</label>
+      <div class="flex flex-wrap gap-2 mb-2">
+        {[5, 10, 15, 18, 20, 25].map(p => (
+          <button class="tip-preset px-3 py-1.5 rounded-lg border border-slate-600 text-sm text-slate-300 hover:border-emerald-500 hover:text-white transition-colors" data-pct={p}>{p}%</button>
+        ))}
+      </div>
+      <div class="flex items-center gap-2">
+        <input id="tip-pct" type="number" value="10" min="0" max="100" class="w-24 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+        <span class="text-slate-400 text-sm">% custom</span>
+      </div>
+    </div>
+
+    <div>
+      <label class="text-slate-400 text-xs mb-1 block">Number of People</label>
+      <input id="tip-people" type="number" value="2" min="1" max="50" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+    </div>
+
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input id="tip-round" type="checkbox" class="w-4 h-4 accent-emerald-500" />
+      <span class="text-slate-300 text-sm">Round up per-person amount</span>
+    </label>
+  </div>
+
+  <!-- Results — live -->
+  <div class="grid grid-cols-2 gap-3">
+    <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+      <p class="text-slate-400 text-xs mb-1">Tip Amount</p>
+      <p id="tip-r-tip" class="text-white font-bold text-xl">₹0</p>
+    </div>
+    <div class="bg-slate-800 rounded-xl p-4 border border-slate-700">
+      <p class="text-slate-400 text-xs mb-1">Total Bill</p>
+      <p id="tip-r-total" class="text-white font-bold text-xl">₹0</p>
+    </div>
+    <div class="col-span-2 rounded-xl p-4 border border-emerald-600/40" style="background:rgba(16,185,129,0.1)">
+      <p class="text-slate-400 text-xs mb-1">Per Person</p>
+      <p id="tip-r-person" class="font-bold text-2xl" style="color:#10b981">₹0</p>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  function fmt(n) { return '₹' + n.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+  function calculate() {
+    const bill = +document.getElementById('tip-bill').value || 0;
+    const pct = +document.getElementById('tip-pct').value || 0;
+    const people = Math.max(1, +document.getElementById('tip-people').value || 1);
+    const round = document.getElementById('tip-round').checked;
+
+    const tip = bill * pct / 100;
+    const total = bill + tip;
+    let perPerson = total / people;
+    if (round) perPerson = Math.ceil(perPerson);
+
+    document.getElementById('tip-r-tip').textContent = fmt(tip);
+    document.getElementById('tip-r-total').textContent = fmt(total);
+    document.getElementById('tip-r-person').textContent = fmt(perPerson);
+  }
+
+  ['tip-bill','tip-pct','tip-people','tip-round'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  document.querySelectorAll('.tip-preset').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('tip-pct').value = btn.dataset.pct;
+      document.querySelectorAll('.tip-preset').forEach(b => b.style.borderColor = '');
+      btn.style.borderColor = '#10b981'; btn.style.color = 'white';
+      calculate();
+    });
+  });
+
+  calculate();
+})();
+</script>

@@ -1,0 +1,54 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the current PPF interest rate?', a: 'The current PPF interest rate is 7.1% per annum, compounded annually. The rate is reviewed quarterly by the government.' },
+  { q: 'What is the PPF investment limit?', a: 'Minimum ₹500 per year, maximum ₹1,50,000 per year. You can invest in a lump sum or up to 12 instalments per year.' },
+  { q: 'Is PPF maturity amount tax-free?', a: 'Yes. PPF is EEE (Exempt-Exempt-Exempt): contributions qualify for Section 80C deduction, interest earned is tax-free, and the maturity amount is fully tax-free.' },
+  { q: 'Can I extend PPF beyond 15 years?', a: 'Yes. After the 15-year lock-in period, you can extend in blocks of 5 years with or without further contributions.' },
+];
+---
+
+<BlogLayout
+  title="How to Calculate PPF Maturity Amount Online for Free"
+  description="Calculate Public Provident Fund maturity amount and year-wise growth online for free. See total invested, interest earned, and 15-year PPF balance table."
+  canonical="/blog/how-to-calculate-ppf-maturity-amount-online"
+  date="2026-06-30"
+  readTime="5 min read"
+  category="Calculators"
+  faqs={faqs}
+>
+  <p>The Public Provident Fund (PPF) is one of India's safest long-term investment options — tax-free returns, government-backed, and EEE status. Understanding how much your PPF account will grow over 15 years helps you plan how much to invest each year.</p>
+
+  <h2>How to Calculate PPF Maturity Amount</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/calc/ppf-calculator">textwonder.com/calc/ppf-calculator</a></li>
+    <li>Enter your <strong>Yearly Investment</strong> (between ₹500 and ₹1,50,000).</li>
+    <li>The Interest Rate defaults to 7.1% — change it if the rate changes.</li>
+    <li>Click <strong>Calculate</strong>. You will see:
+      <ul>
+        <li>Total amount invested over 15 years</li>
+        <li>Total interest earned (tax-free)</li>
+        <li>Final maturity amount</li>
+        <li>A year-by-year table showing annual interest and closing balance</li>
+      </ul>
+    </li>
+  </ol>
+
+  <h2>PPF Investment Example</h2>
+  <p>If you invest ₹1,50,000 per year (the maximum) at 7.1% for 15 years:</p>
+  <ul>
+    <li>Total invested: ₹22,50,000</li>
+    <li>Interest earned (tax-free): approximately ₹18,18,209</li>
+    <li>Maturity amount: approximately ₹40,68,209</li>
+  </ul>
+  <p>That is an 81% gain on your investment — fully tax-free.</p>
+
+  <h2>PPF vs FD vs SIP</h2>
+  <p>PPF offers ~7.1% tax-free, making its effective pre-tax yield ~10% for the 30% tax bracket. FDs offer 7–7.5% but are fully taxable. Equity SIPs offer higher potential returns but with market risk. PPF is the best guaranteed tax-free option for a 15-year horizon.</p>
+
+  <div class="my-8 p-5 bg-emerald-950/30 border border-emerald-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Calculate PPF Returns Free</p>
+    <a href="https://textwonder.com/calc/ppf-calculator" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#10b981">Open PPF Calculator →</a>
+  </div>
+</BlogLayout>

@@ -1,0 +1,119 @@
+---
+---
+<div class="max-w-2xl mx-auto space-y-5">
+  <!-- Input -->
+  <div class="space-y-2">
+    <label class="text-slate-300 text-sm font-medium">Content to encode</label>
+    <textarea id="qr-input" rows="3" placeholder="Enter URL, text, email, phone number…" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-cyan-500 transition-colors resize-none"></textarea>
+  </div>
+
+  <!-- Options -->
+  <div class="grid grid-cols-2 gap-4">
+    <div>
+      <label class="text-slate-400 text-xs mb-1 block">Size</label>
+      <select id="qr-size" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none">
+        <option value="256">256×256px</option>
+        <option value="512" selected>512×512px</option>
+        <option value="1024">1024×1024px</option>
+      </select>
+    </div>
+    <div>
+      <label class="text-slate-400 text-xs mb-1 block">Error Correction</label>
+      <select id="qr-ecl" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none">
+        <option value="L">L — Low (7%)</option>
+        <option value="M" selected>M — Medium (15%)</option>
+        <option value="Q">Q — Quartile (25%)</option>
+        <option value="H">H — High (30%)</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Quick templates -->
+  <div class="flex flex-wrap gap-2">
+    <span class="text-slate-500 text-xs self-center">Quick:</span>
+    <button class="qr-tpl text-xs px-2.5 py-1 rounded-full border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors" data-val="https://">URL</button>
+    <button class="qr-tpl text-xs px-2.5 py-1 rounded-full border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors" data-val="mailto:">Email</button>
+    <button class="qr-tpl text-xs px-2.5 py-1 rounded-full border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors" data-val="tel:+91">Phone</button>
+    <button class="qr-tpl text-xs px-2.5 py-1 rounded-full border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors" data-val="WIFI:S:NetworkName;T:WPA;P:password;;">Wi-Fi</button>
+    <button class="qr-tpl text-xs px-2.5 py-1 rounded-full border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors" data-val="sms:+91">SMS</button>
+  </div>
+
+  <!-- Generate -->
+  <button id="qr-gen" class="w-full py-3 rounded-xl font-semibold text-white transition-colors" style="background:#06b6d4">Generate QR Code</button>
+
+  <!-- Output -->
+  <div id="qr-output" class="hidden text-center space-y-4">
+    <div class="flex justify-center">
+      <div class="bg-white p-4 rounded-xl inline-block">
+        <canvas id="qr-canvas"></canvas>
+      </div>
+    </div>
+    <div class="flex gap-3 justify-center">
+      <button id="qr-dl-png" class="px-5 py-2.5 rounded-xl font-semibold text-white transition-colors" style="background:#06b6d4">Download PNG</button>
+      <button id="qr-copy-img" class="px-5 py-2.5 rounded-xl border border-slate-600 text-slate-300 hover:border-cyan-500 transition-colors">Copy Image</button>
+    </div>
+    <p id="qr-chars" class="text-slate-500 text-xs"></p>
+  </div>
+  <div id="qr-error" class="hidden text-red-400 text-sm text-center"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const QR_CDN = 'https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js';
+  let qrLoaded = false;
+
+  async function loadQr() {
+    if (qrLoaded || window.QRCode) { qrLoaded = true; return; }
+    await new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = QR_CDN;
+      s.onload = () => { qrLoaded = true; res(); }; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+
+  document.querySelectorAll('.qr-tpl').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.getElementById('qr-input').value = btn.dataset.val;
+      document.getElementById('qr-input').focus();
+    });
+  });
+
+  document.getElementById('qr-gen').addEventListener('click', async () => {
+    const text = document.getElementById('qr-input').value.trim();
+    const errEl = document.getElementById('qr-error');
+    const output = document.getElementById('qr-output');
+    errEl.classList.add('hidden'); output.classList.add('hidden');
+    if (!text) { errEl.textContent = 'Please enter some content.'; errEl.classList.remove('hidden'); return; }
+
+    try {
+      await loadQr();
+      const size = +document.getElementById('qr-size').value;
+      const ecl = document.getElementById('qr-ecl').value;
+      const canvas = document.getElementById('qr-canvas');
+      await QRCode.toCanvas(canvas, text, { width: size, errorCorrectionLevel: ecl, color: { dark: '#000000', light: '#ffffff' } });
+      document.getElementById('qr-chars').textContent = `${text.length} characters encoded`;
+      output.classList.remove('hidden');
+    } catch(e) {
+      errEl.textContent = 'Error: ' + (e.message || 'Could not generate QR code. Try shorter text or higher error correction.');
+      errEl.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('qr-dl-png').addEventListener('click', () => {
+    const canvas = document.getElementById('qr-canvas');
+    const a = document.createElement('a'); a.href = canvas.toDataURL('image/png');
+    a.download = 'qrcode.png'; a.click();
+  });
+
+  document.getElementById('qr-copy-img').addEventListener('click', async () => {
+    const canvas = document.getElementById('qr-canvas');
+    canvas.toBlob(async blob => {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+        const btn = document.getElementById('qr-copy-img');
+        btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy Image', 2000);
+      } catch { alert('Copy failed — use Download PNG instead.'); }
+    });
+  });
+})();
+</script>

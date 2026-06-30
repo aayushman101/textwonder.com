@@ -1,0 +1,47 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How many images can I convert to PDF?', a: 'There is no hard limit. The tool processes all images locally in your browser. Very large batches (50+ images at high resolution) may be slow depending on your device.' },
+  { q: 'Does image quality change when converted to PDF?', a: 'JPEG images are embedded at high quality (95%). PNG images are converted to JPEG at 95% quality before embedding, which is visually lossless for most purposes.' },
+  { q: 'Can I set a specific page size like A4?', a: 'Yes. Choose A4, US Letter, or "Fit to image" which sizes each PDF page exactly to the image dimensions.' },
+  { q: 'Does the tool work offline?', a: 'Once the page is loaded, the pdf-lib library is cached and the tool works without an internet connection.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Images to PDF Online for Free — No Upload"
+  description="Convert JPG, PNG, or WebP images to a PDF file online for free. Add multiple images, choose page size, and download instantly. No upload, browser-based."
+  canonical="/blog/how-to-convert-images-to-pdf-online-free"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+  <p>Whether you need to send multiple screenshots as one document, combine scanned pages into a PDF, or turn a folder of photos into a shareable PDF — the Image to PDF converter on ImageWonder does it for free, directly in your browser.</p>
+
+  <h2>How to Convert Images to PDF</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/imagewonder/image-to-pdf">textwonder.com/imagewonder/image-to-pdf</a></li>
+    <li>Drop your images onto the upload area or click to select multiple files. JPG, PNG, WebP, and BMP are all supported.</li>
+    <li>Your images appear as thumbnails. Remove any unwanted ones by clicking the ✕ button on each.</li>
+    <li>Choose page size: <strong>A4</strong>, <strong>US Letter</strong>, or <strong>Fit to image</strong> (each page sized exactly to the image).</li>
+    <li>Click <strong>Convert to PDF</strong>. A progress bar shows each image being embedded.</li>
+    <li>The PDF downloads automatically when complete.</li>
+  </ol>
+
+  <h2>Page Size Options Explained</h2>
+  <ul>
+    <li><strong>A4</strong> — Standard international document size (210×297mm). Best for documents that will be printed or shared formally.</li>
+    <li><strong>US Letter</strong> — Standard in the US and Canada (216×279mm). Use for audiences in North America.</li>
+    <li><strong>Fit to image</strong> — Each page is sized exactly to its image. Best for photos or screenshots where you want the PDF to match the original dimensions precisely.</li>
+  </ul>
+
+  <h2>All Processing Happens in Your Browser</h2>
+  <p>The tool uses <strong>pdf-lib</strong>, a JavaScript library that runs entirely in your browser. Your images are never uploaded to any server. This is important for sensitive documents like scanned ID cards, receipts, or confidential photos.</p>
+
+  <div class="my-8 p-5 bg-rose-950/30 border border-rose-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Convert Images to PDF Free</p>
+    <a href="https://textwonder.com/imagewonder/image-to-pdf" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#f43f5e">Open Image to PDF →</a>
+  </div>
+</BlogLayout>

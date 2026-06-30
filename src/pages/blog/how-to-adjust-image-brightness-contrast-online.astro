@@ -1,0 +1,50 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Will adjusting brightness affect image resolution?', a: 'No. The tool applies brightness and contrast adjustments at the pixel level without changing the image dimensions.' },
+  { q: 'What does saturation do?', a: 'Saturation controls colour intensity. At 0% the image is grayscale; at 100% it is the original; above 100% colours become more vivid.' },
+  { q: 'Can I undo changes?', a: 'Click "Reset All" to return all sliders to default (brightness 100%, contrast 100%, saturation 100%, sharpness 0).' },
+  { q: 'Does the tool support PNG transparency?', a: 'The JPEG download merges transparency with a white background. Use the PNG download option to preserve any transparent areas.' },
+];
+---
+
+<BlogLayout
+  title="How to Adjust Image Brightness and Contrast Online for Free"
+  description="Brighten dark photos, fix washed-out images, and boost colour saturation online for free. Adjust brightness, contrast, saturation, and sharpness with live preview."
+  canonical="/blog/how-to-adjust-image-brightness-contrast-online"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+  <p>Phone photos taken indoors are often too dark. Outdoor shots can be overexposed and washed out. The Image Brightness &amp; Contrast editor on ImageWonder lets you fix these issues in seconds — with a live preview as you drag the sliders.</p>
+
+  <h2>How to Adjust Brightness and Contrast</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/imagewonder/image-brightness">textwonder.com/imagewonder/image-brightness</a></li>
+    <li>Drop your image onto the upload area or click to select a file.</li>
+    <li>Use the sliders to adjust:
+      <ul>
+        <li><strong>Brightness</strong> — 0% is black, 100% is original, 200%+ is overexposed</li>
+        <li><strong>Contrast</strong> — Higher values make darks darker and lights lighter</li>
+        <li><strong>Saturation</strong> — 0% = grayscale, 200% = very vivid colours</li>
+        <li><strong>Sharpness</strong> — Applies an unsharp mask to enhance edge detail</li>
+      </ul>
+    </li>
+    <li>Click <strong>Download JPG</strong> or <strong>PNG</strong> to save the adjusted image.</li>
+  </ol>
+
+  <h2>Common Fixes</h2>
+  <ul>
+    <li><strong>Dark indoor photo</strong> — Increase brightness to 140–160%</li>
+    <li><strong>Washed-out outdoor shot</strong> — Reduce brightness to 80%, increase contrast to 120%</li>
+    <li><strong>Dull colours</strong> — Increase saturation to 130–150%</li>
+    <li><strong>Slightly blurry image</strong> — Set sharpness to 2–3</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-rose-950/30 border border-rose-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Fix Image Brightness for Free</p>
+    <a href="https://textwonder.com/imagewonder/image-brightness" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#f43f5e">Open Brightness Editor →</a>
+  </div>
+</BlogLayout>

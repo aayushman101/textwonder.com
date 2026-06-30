@@ -1,0 +1,81 @@
+---
+---
+<div class="max-w-xl mx-auto space-y-5">
+  <div class="bg-slate-800/50 rounded-xl p-5 space-y-4 border border-slate-700">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Principal Amount (₹)</label>
+        <input id="fd-principal" type="number" value="100000" min="1000" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Annual Interest Rate (%)</label>
+        <input id="fd-rate" type="number" value="7.0" min="0.1" max="20" step="0.1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Tenure</label>
+        <div class="flex gap-2">
+          <input id="fd-tenure" type="number" value="2" min="1" class="w-20 bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+          <select id="fd-tenure-unit" class="flex-1 bg-slate-800 border border-slate-700 rounded-lg px-2 py-2 text-white text-sm outline-none">
+            <option value="years">Years</option>
+            <option value="months">Months</option>
+            <option value="days">Days</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Compounding</label>
+        <select id="fd-compound" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none">
+          <option value="4" selected>Quarterly</option>
+          <option value="12">Monthly</option>
+          <option value="2">Half-yearly</option>
+          <option value="1">Yearly</option>
+        </select>
+      </div>
+    </div>
+    <button id="fd-calc" class="w-full py-3 rounded-xl font-semibold text-white transition-colors" style="background:#10b981">Calculate</button>
+  </div>
+
+  <!-- Results -->
+  <div id="fd-results" class="hidden space-y-3">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-slate-800 rounded-xl p-4 text-center border border-slate-700">
+        <p class="text-slate-400 text-xs mb-1">Principal</p>
+        <p id="fd-r-principal" class="text-white font-bold text-lg"></p>
+      </div>
+      <div class="bg-slate-800 rounded-xl p-4 text-center border border-slate-700">
+        <p class="text-slate-400 text-xs mb-1">Interest Earned</p>
+        <p id="fd-r-interest" class="font-bold text-lg" style="color:#10b981"></p>
+      </div>
+      <div class="bg-slate-800 rounded-xl p-4 text-center border border-emerald-600/40" style="background:rgba(16,185,129,0.1)">
+        <p class="text-slate-400 text-xs mb-1">Maturity Amount</p>
+        <p id="fd-r-maturity" class="font-bold text-xl" style="color:#10b981"></p>
+      </div>
+    </div>
+    <p id="fd-r-yield" class="text-center text-slate-400 text-sm"></p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  document.getElementById('fd-calc').addEventListener('click', () => {
+    const P = +document.getElementById('fd-principal').value;
+    const r = +document.getElementById('fd-rate').value / 100;
+    const tenureVal = +document.getElementById('fd-tenure').value;
+    const unit = document.getElementById('fd-tenure-unit').value;
+    const n = +document.getElementById('fd-compound').value;
+
+    let t = unit === 'years' ? tenureVal : unit === 'months' ? tenureVal/12 : tenureVal/365;
+    const A = P * Math.pow(1 + r/n, n*t);
+    const interest = A - P;
+    const effectiveYield = (Math.pow(1 + r/n, n) - 1) * 100;
+
+    document.getElementById('fd-r-principal').textContent = fmt(P);
+    document.getElementById('fd-r-interest').textContent = fmt(interest);
+    document.getElementById('fd-r-maturity').textContent = fmt(A);
+    document.getElementById('fd-r-yield').textContent = `Effective Annual Yield: ${effectiveYield.toFixed(2)}%`;
+    document.getElementById('fd-results').classList.remove('hidden');
+  });
+})();
+</script>

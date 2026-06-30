@@ -1,0 +1,52 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Does Base64 encoding make data secure?', a: 'No. Base64 is encoding, not encryption. It is easily reversible without any key. Do not use it to hide sensitive data — use it only for data format compatibility.' },
+  { q: 'What is URL-safe Base64?', a: 'Standard Base64 uses + and / which have special meanings in URLs. URL-safe Base64 replaces + with - and / with _ so the string can be used in query parameters without percent-encoding.' },
+  { q: 'Does it support Unicode and non-ASCII characters?', a: 'Yes. The tool uses TextEncoder to convert Unicode to UTF-8 bytes before encoding, and TextDecoder to reverse it — unlike the raw btoa() function which breaks on non-ASCII input.' },
+  { q: 'What is the size overhead of Base64 encoding?', a: 'Base64 increases data size by approximately 33%. A 100 KB file becomes about 133 KB when encoded.' },
+];
+---
+
+<BlogLayout
+  title="How to Encode and Decode Base64 Text Online for Free"
+  description="Encode any text to Base64 or decode a Base64 string back to text online for free. Supports URL-safe Base64 and Unicode. No upload, browser-based."
+  canonical="/blog/how-to-encode-decode-base64-online-free"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Developer Tools"
+  faqs={faqs}
+>
+  <p>Base64 is a standard way to represent binary data as ASCII text. It is used everywhere in web development: HTTP Basic Auth headers, JWT tokens, data URIs, JSON API payloads, and email attachments. The Base64 Encoder/Decoder on DevWonder handles both directions instantly.</p>
+
+  <h2>How to Encode Text to Base64</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/devwonder/base64-encoder">textwonder.com/devwonder/base64-encoder</a></li>
+    <li>Make sure the <strong>Encode → Base64</strong> tab is selected.</li>
+    <li>Paste or type your text in the input box.</li>
+    <li>Optionally check <strong>URL-safe Base64</strong> if the result will be used in a URL.</li>
+    <li>Click <strong>Encode</strong>. The Base64 string appears in the output box.</li>
+    <li>Click <strong>Copy</strong> to copy it.</li>
+  </ol>
+
+  <h2>How to Decode Base64 to Text</h2>
+  <ol>
+    <li>Click the <strong>Decode ← Base64</strong> tab.</li>
+    <li>Paste the Base64 string in the input box.</li>
+    <li>Click <strong>Decode</strong>. The original text appears in the output.</li>
+  </ol>
+
+  <h2>When to Use Base64</h2>
+  <ul>
+    <li><strong>HTTP Basic Auth</strong> — Credentials are Base64-encoded in the Authorization header: <code>Basic base64(username:password)</code></li>
+    <li><strong>JWT tokens</strong> — JWT header and payload sections are Base64url-encoded</li>
+    <li><strong>Data URIs</strong> — Embed small images in HTML/CSS as <code>data:image/png;base64,...</code></li>
+    <li><strong>API payloads</strong> — Send binary data in JSON by encoding it as Base64</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-cyan-950/30 border border-cyan-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Encode / Decode Base64 Free</p>
+    <a href="https://textwonder.com/devwonder/base64-encoder" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#06b6d4">Open Base64 Tool →</a>
+  </div>
+</BlogLayout>

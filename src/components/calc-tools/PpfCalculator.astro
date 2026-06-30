@@ -1,0 +1,92 @@
+---
+---
+<div class="max-w-xl mx-auto space-y-5">
+  <div class="bg-slate-800/50 rounded-xl p-5 space-y-4 border border-slate-700">
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Yearly Investment (₹)</label>
+        <input id="ppf-amount" type="number" value="150000" min="500" max="150000" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+        <p class="text-slate-500 text-xs mt-1">Min ₹500 — Max ₹1,50,000/yr</p>
+      </div>
+      <div>
+        <label class="text-slate-400 text-xs mb-1 block">Interest Rate (%)</label>
+        <input id="ppf-rate" type="number" value="7.1" min="1" max="15" step="0.1" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-emerald-500" />
+        <p class="text-slate-500 text-xs mt-1">Current rate: 7.1% p.a.</p>
+      </div>
+    </div>
+    <button id="ppf-calc" class="w-full py-3 rounded-xl font-semibold text-white" style="background:#10b981">Calculate</button>
+  </div>
+
+  <!-- Results -->
+  <div id="ppf-results" class="hidden space-y-4">
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-slate-800 rounded-xl p-4 text-center border border-slate-700">
+        <p class="text-slate-400 text-xs mb-1">Total Invested</p>
+        <p id="ppf-r-invested" class="text-white font-bold text-lg"></p>
+      </div>
+      <div class="bg-slate-800 rounded-xl p-4 text-center border border-slate-700">
+        <p class="text-slate-400 text-xs mb-1">Interest Earned</p>
+        <p id="ppf-r-interest" class="font-bold text-lg" style="color:#10b981"></p>
+      </div>
+      <div class="rounded-xl p-4 text-center border border-emerald-600/40" style="background:rgba(16,185,129,0.1)">
+        <p class="text-slate-400 text-xs mb-1">Maturity (15 yrs)</p>
+        <p id="ppf-r-maturity" class="font-bold text-xl" style="color:#10b981"></p>
+      </div>
+    </div>
+    <p class="text-center text-slate-500 text-xs">Tax-free under Section 80C + EEE status</p>
+
+    <!-- Year-wise table -->
+    <div class="overflow-x-auto rounded-xl border border-slate-700">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-800">
+          <tr>
+            <th class="px-3 py-2 text-left text-slate-400 font-medium">Year</th>
+            <th class="px-3 py-2 text-right text-slate-400 font-medium">Investment</th>
+            <th class="px-3 py-2 text-right text-slate-400 font-medium">Interest</th>
+            <th class="px-3 py-2 text-right text-slate-400 font-medium">Balance</th>
+          </tr>
+        </thead>
+        <tbody id="ppf-table" class="divide-y divide-slate-800"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  function fmt(n) { return '₹' + Math.round(n).toLocaleString('en-IN'); }
+
+  document.getElementById('ppf-calc').addEventListener('click', () => {
+    const annual = +document.getElementById('ppf-amount').value;
+    const rate = +document.getElementById('ppf-rate').value / 100;
+    const YEARS = 15;
+
+    let balance = 0, totalInvested = 0, totalInterest = 0;
+    const tbody = document.getElementById('ppf-table');
+    tbody.innerHTML = '';
+
+    for (let y = 1; y <= YEARS; y++) {
+      balance += annual;
+      totalInvested += annual;
+      const interest = balance * rate;
+      totalInterest += interest;
+      balance += interest;
+
+      const tr = document.createElement('tr');
+      tr.className = y % 2 === 0 ? 'bg-slate-900/50' : '';
+      tr.innerHTML = `
+        <td class="px-3 py-2 text-slate-300">${y}</td>
+        <td class="px-3 py-2 text-right text-slate-300">${fmt(annual)}</td>
+        <td class="px-3 py-2 text-right" style="color:#10b981">${fmt(interest)}</td>
+        <td class="px-3 py-2 text-right text-white font-medium">${fmt(balance)}</td>
+      `;
+      tbody.appendChild(tr);
+    }
+
+    document.getElementById('ppf-r-invested').textContent = fmt(totalInvested);
+    document.getElementById('ppf-r-interest').textContent = fmt(totalInterest);
+    document.getElementById('ppf-r-maturity').textContent = fmt(balance);
+    document.getElementById('ppf-results').classList.remove('hidden');
+  });
+})();
+</script>

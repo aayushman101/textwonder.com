@@ -1,0 +1,52 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is a standard tip percentage in India?', a: '10% is common in Indian restaurants. 15–20% is appropriate for excellent service. For hotel staff and delivery services, 5–10% is typical.' },
+  { q: 'How does the round-up option work?', a: 'It applies Math.ceil() to the per-person amount so everyone pays a round number, making cash payment easier.' },
+  { q: 'Can I calculate tip for an unequal split?', a: 'The calculator assumes equal splitting. For unequal splits, calculate the total with tip first, then divide manually based on what each person ordered.' },
+  { q: 'Is tip calculated on pre-GST or post-GST amount?', a: 'Tip is conventionally calculated on the total bill including GST/service charge. Enter the full final bill amount.' },
+];
+---
+
+<BlogLayout
+  title="How to Calculate Tip and Split a Restaurant Bill Online"
+  description="Calculate the tip amount and split a restaurant bill between any number of people online for free. Set custom tip %, see per-person share, round up option."
+  canonical="/blog/how-to-calculate-tip-and-split-bill-online"
+  date="2026-06-30"
+  readTime="3 min read"
+  category="Calculators"
+  faqs={faqs}
+>
+  <p>Dining with a group always involves the same end-of-meal math: what's the tip, and how much does each person owe? The Tip Calculator on CalcWonder handles this instantly.</p>
+
+  <h2>How to Calculate Tip and Split the Bill</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/calc/tip-calculator">textwonder.com/calc/tip-calculator</a></li>
+    <li>Enter the <strong>Bill Amount</strong> (the total before tip).</li>
+    <li>Click a preset tip percentage (5%, 10%, 15%, 18%, 20%, 25%) or enter a custom amount.</li>
+    <li>Enter the <strong>Number of People</strong> splitting the bill.</li>
+    <li>Optionally check <strong>Round up per-person amount</strong> for cleaner cash payments.</li>
+    <li>The results update live — no button needed.</li>
+  </ol>
+
+  <h2>Results Shown</h2>
+  <ul>
+    <li><strong>Tip Amount</strong> — How much tip you're adding in total</li>
+    <li><strong>Total Bill</strong> — Bill + tip</li>
+    <li><strong>Per Person</strong> — What each person pays</li>
+  </ul>
+
+  <h2>Tip Percentage Guide</h2>
+  <ul>
+    <li><strong>5%</strong> — Adequate service at a casual restaurant</li>
+    <li><strong>10%</strong> — Standard in India for good service</li>
+    <li><strong>15–18%</strong> — Good service at a mid-range restaurant</li>
+    <li><strong>20–25%</strong> — Exceptional service, fine dining</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-emerald-950/30 border border-emerald-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Calculate Tip and Split Bill Free</p>
+    <a href="https://textwonder.com/calc/tip-calculator" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#10b981">Open Tip Calculator →</a>
+  </div>
+</BlogLayout>

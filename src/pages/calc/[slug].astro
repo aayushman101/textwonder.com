@@ -8,6 +8,9 @@ import CompoundInterestCalculator from '../../components/calc-tools/CompoundInte
 import SimpleInterestCalculator from '../../components/calc-tools/SimpleInterestCalculator.astro';
 import GstCalculator from '../../components/calc-tools/GstCalculator.astro';
 import DiscountCalculator from '../../components/calc-tools/DiscountCalculator.astro';
+import FdCalculator from '../../components/calc-tools/FdCalculator.astro';
+import PpfCalculator from '../../components/calc-tools/PpfCalculator.astro';
+import TipCalculator from '../../components/calc-tools/TipCalculator.astro';
 import { CALC_TOOLS } from '../../data/calctools.js';
 
 export function getStaticPaths() {
@@ -27,6 +30,9 @@ const componentMap: Record<string, any> = {
   'simple-interest-calculator': SimpleInterestCalculator,
   'gst-calculator': GstCalculator,
   'discount-calculator': DiscountCalculator,
+  'fd-calculator': FdCalculator,
+  'ppf-calculator': PpfCalculator,
+  'tip-calculator': TipCalculator,
 };
 
 const ToolComponent = componentMap[tool.slug];

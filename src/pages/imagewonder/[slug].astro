@@ -11,6 +11,9 @@ import ImageRotateFlip from '../../components/image-tools/ImageRotateFlip.astro'
 import ImageWatermark from '../../components/image-tools/ImageWatermark.astro';
 import ImageMetadata from '../../components/image-tools/ImageMetadata.astro';
 import ImageScanner from '../../components/image-tools/ImageScanner.astro';
+import ImageToPdf from '../../components/image-tools/ImageToPdf.astro';
+import ImageBrightness from '../../components/image-tools/ImageBrightness.astro';
+import ImageEffects from '../../components/image-tools/ImageEffects.astro';
 import { IMAGE_TOOLS } from '../../data/imagetools.js';
 
 export function getStaticPaths() {
@@ -31,6 +34,9 @@ const componentMap: Record<string, any> = {
   'image-watermark': ImageWatermark,
   'image-metadata': ImageMetadata,
   'image-scanner': ImageScanner,
+  'image-to-pdf': ImageToPdf,
+  'image-brightness': ImageBrightness,
+  'image-effects': ImageEffects,
 };
 
 const ToolComponent = componentMap[tool.slug];

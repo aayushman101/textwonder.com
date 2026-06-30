@@ -1,0 +1,176 @@
+---
+---
+<div class="max-w-2xl mx-auto space-y-5">
+  <!-- NOC Type -->
+  <div>
+    <label class="text-slate-400 text-xs mb-2 block">NOC Type</label>
+    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-violet-500 text-white font-medium" style="background:#7c3aed" data-type="employment">Employment NOC</button>
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-slate-600 text-slate-400" data-type="vehicle">Vehicle NOC</button>
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-slate-600 text-slate-400" data-type="property">Property NOC</button>
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-slate-600 text-slate-400" data-type="bank">Bank / Loan NOC</button>
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-slate-600 text-slate-400" data-type="college">College NOC</button>
+      <button class="noc-type-btn py-2 px-3 rounded-lg text-sm border transition-colors border-slate-600 text-slate-400" data-type="custom">Custom</button>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <div class="bg-slate-800/50 rounded-xl p-5 border border-slate-700 space-y-3">
+    <div class="grid grid-cols-2 gap-3" id="noc-fields">
+      <!-- Fields injected by JS -->
+    </div>
+    <button id="noc-generate" class="w-full py-3 rounded-xl font-semibold text-white" style="background:#7c3aed">Generate NOC</button>
+  </div>
+
+  <!-- Output -->
+  <div id="noc-output" class="hidden">
+    <div class="flex justify-between items-center mb-2">
+      <span class="text-slate-300 text-sm font-medium">Preview (editable)</span>
+      <button id="noc-print" class="text-sm px-4 py-1.5 rounded-lg text-white font-semibold" style="background:#7c3aed">Print / Save as PDF</button>
+    </div>
+    <div id="noc-preview" contenteditable="true" class="bg-white text-slate-900 rounded-xl p-6 text-sm leading-relaxed outline-none focus:ring-2 focus:ring-violet-500 min-h-48 font-serif whitespace-pre-wrap"></div>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  let nocType = 'employment';
+
+  const FIELD_DEFS = {
+    employment: [
+      { id: 'noc-issuer', label: 'Issuing Company / Employer', placeholder: 'ABC Pvt Ltd' },
+      { id: 'noc-person', label: 'Employee Name', placeholder: 'Rahul Sharma' },
+      { id: 'noc-desig', label: 'Designation', placeholder: 'Software Engineer' },
+      { id: 'noc-purpose', label: 'Purpose / New Employer', placeholder: 'To join XYZ Technologies' },
+    ],
+    vehicle: [
+      { id: 'noc-issuer', label: 'Issuing Authority (RTO / Financier)', placeholder: 'HDFC Bank Auto Loans' },
+      { id: 'noc-person', label: 'Vehicle Owner Name', placeholder: 'Rahul Sharma' },
+      { id: 'noc-vehicle', label: 'Vehicle Number', placeholder: 'DL01AB1234' },
+      { id: 'noc-purpose', label: 'Purpose', placeholder: 'Transfer of vehicle to another state' },
+    ],
+    property: [
+      { id: 'noc-issuer', label: 'Issuing Authority (Society / Builder)', placeholder: 'Green Valley Housing Society' },
+      { id: 'noc-person', label: 'Owner / Applicant Name', placeholder: 'Rahul Sharma' },
+      { id: 'noc-property', label: 'Property / Flat Details', placeholder: 'Flat No. 301, Block A' },
+      { id: 'noc-purpose', label: 'Purpose', placeholder: 'Sale / Mortgage / Renovation' },
+    ],
+    bank: [
+      { id: 'noc-issuer', label: 'Bank Name', placeholder: 'State Bank of India' },
+      { id: 'noc-person', label: 'Account / Loan Holder Name', placeholder: 'Rahul Sharma' },
+      { id: 'noc-loan', label: 'Loan / Account Number', placeholder: 'LN001234567890' },
+      { id: 'noc-purpose', label: 'Purpose', placeholder: 'Loan fully repaid — NOC for property registration' },
+    ],
+    college: [
+      { id: 'noc-issuer', label: 'College Name', placeholder: 'ABC Engineering College' },
+      { id: 'noc-person', label: 'Student Name', placeholder: 'Rahul Sharma' },
+      { id: 'noc-course', label: 'Course / Branch', placeholder: 'B.Tech Computer Science' },
+      { id: 'noc-purpose', label: 'Purpose', placeholder: 'Transfer to another institution / Internship / Event' },
+    ],
+    custom: [
+      { id: 'noc-issuer', label: 'Issuing Authority', placeholder: 'Organisation Name' },
+      { id: 'noc-person', label: 'Person / Applicant Name', placeholder: 'Full Name' },
+      { id: 'noc-ref', label: 'Reference / ID (optional)', placeholder: 'Employee / Account / Roll No.' },
+      { id: 'noc-purpose', label: 'Purpose of NOC', placeholder: 'Describe the purpose' },
+    ],
+  };
+
+  function inp(id) { return (document.getElementById(id) || {}).value || '___'; }
+
+  const TEMPLATES = {
+    employment: () => `This is to certify that ${inp('noc-person')}, ${inp('noc-desig')}, has been employed with ${inp('noc-issuer')} and is in good standing.
+
+We have no objection to ${inp('noc-person')} pursuing other employment opportunities. The purpose stated is: ${inp('noc-purpose')}.
+
+This NOC is issued at the request of the above-named employee and for no other purpose.`,
+
+    vehicle: () => `This is to certify that we have no objection to the transfer/re-registration of vehicle bearing registration number ${inp('noc-vehicle')}, owned by ${inp('noc-person')}.
+
+All dues pertaining to the above vehicle have been cleared as of the date of this certificate.
+
+Purpose: ${inp('noc-purpose')}.
+
+This NOC is issued by ${inp('noc-issuer')} for the above-mentioned purpose only.`,
+
+    property: () => `This is to certify that we, ${inp('noc-issuer')}, have no objection to the proposed transaction for the property — ${inp('noc-property')} — belonging to ${inp('noc-person')}.
+
+Purpose: ${inp('noc-purpose')}.
+
+All dues and maintenance charges of the said property have been cleared up to date. This certificate is issued for the above-stated purpose only.`,
+
+    bank: () => `This is to certify that the loan/account bearing number ${inp('noc-loan')} held by ${inp('noc-person')} with ${inp('noc-issuer')} has been fully settled.
+
+We have no further claim on the borrower or any property/asset associated with the said account. This No Objection Certificate is issued for: ${inp('noc-purpose')}.`,
+
+    college: () => `This is to certify that ${inp('noc-person')}, enrolled in ${inp('noc-course')} at ${inp('noc-issuer')}, is a bonafide student and has no pending dues or disciplinary cases.
+
+We have no objection to the above-named student pursuing: ${inp('noc-purpose')}.
+
+This NOC is issued at the student's request for the above purpose.`,
+
+    custom: () => `This is to certify that we, ${inp('noc-issuer')}, have no objection whatsoever to ${inp('noc-person')} (Ref: ${inp('noc-ref')}) in connection with: ${inp('noc-purpose')}.
+
+This No Objection Certificate is issued in good faith for the above-stated purpose only and is valid for a period of three months from the date of issue.`,
+  };
+
+  function renderFields() {
+    const container = document.getElementById('noc-fields');
+    container.innerHTML = '';
+    FIELD_DEFS[nocType].forEach(f => {
+      const div = document.createElement('div');
+      div.innerHTML = `<label class="text-slate-400 text-xs mb-1 block">${f.label}</label><input id="${f.id}" type="text" placeholder="${f.placeholder}" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-violet-500" />`;
+      container.appendChild(div);
+    });
+  }
+
+  document.querySelectorAll('.noc-type-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      nocType = btn.dataset.type;
+      document.querySelectorAll('.noc-type-btn').forEach(b => {
+        b.style.background = ''; b.style.borderColor = '#475569';
+        b.className = b.className.replace('text-white font-medium', 'text-slate-400');
+      });
+      btn.style.background = '#7c3aed'; btn.style.borderColor = '#7c3aed';
+      btn.className = btn.className.replace('text-slate-400', 'text-white font-medium');
+      renderFields();
+      document.getElementById('noc-output').classList.add('hidden');
+    });
+  });
+
+  document.getElementById('noc-generate').addEventListener('click', () => {
+    const today = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' });
+    const issuer = inp('noc-issuer');
+    const body = TEMPLATES[nocType]();
+
+    const noc = `NO OBJECTION CERTIFICATE
+
+Date: ${today}
+
+To Whom It May Concern
+
+${body}
+
+Issued by:
+${issuer}
+
+Authorised Signatory: _____________________
+Name: _____________________
+Designation: _____________________
+Stamp: _____________________
+
+Date: ${today}`;
+
+    document.getElementById('noc-preview').textContent = noc;
+    document.getElementById('noc-output').classList.remove('hidden');
+  });
+
+  document.getElementById('noc-print').addEventListener('click', () => {
+    const content = document.getElementById('noc-preview').innerText;
+    const w = window.open('', '_blank');
+    w.document.write(`<html><head><title>NOC</title><style>body{font-family:Georgia,serif;font-size:13px;line-height:1.9;margin:48px;color:#111;white-space:pre-wrap;}h2{text-align:center;letter-spacing:2px;font-size:16px;}@media print{body{margin:24px;}}</style></head><body>${content.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</body></html>`);
+    w.document.close(); w.focus(); setTimeout(() => w.print(), 300);
+  });
+
+  renderFields();
+})();
+</script>

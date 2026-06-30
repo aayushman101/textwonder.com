@@ -1,0 +1,53 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Can I combine multiple filters?', a: 'Yes. Filters are applied sequentially — apply one, download, re-upload, and apply another to stack effects.' },
+  { q: 'What is the difference between Grayscale and Fade?', a: 'Grayscale removes all colour. Fade keeps the colours but brightens the image significantly, creating a washed-out vintage look.' },
+  { q: 'Does the Vignette filter work on its own?', a: 'Yes. Apply Vignette alone for a subtle darkened-edge effect without changing the colour.' },
+  { q: 'Can I adjust filter intensity?', a: 'Yes. Sepia, Vintage, Cool, Warm, Fade, and Vignette all have an intensity slider. Other filters are applied at full strength.' },
+];
+---
+
+<BlogLayout
+  title="How to Add Filters and Effects to Images Online for Free"
+  description="Apply grayscale, sepia, vintage, cool, warm, invert, vignette, and more effects to any image online for free. One-click filters with live preview. No upload."
+  canonical="/blog/how-to-add-filters-and-effects-to-images-online"
+  date="2026-06-30"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+  <p>Instagram has filters. Photoshop has adjustment layers. But what if you just want to quickly convert a photo to grayscale, add a vintage look, or invert an image — without installing anything or paying for a subscription?</p>
+
+  <p>The Image Effects &amp; Filters tool on ImageWonder gives you 12 one-click filters, all free, all browser-based.</p>
+
+  <h2>Available Filters</h2>
+  <ul>
+    <li><strong>Grayscale</strong> — Converts the image to black and white using luminance weights</li>
+    <li><strong>Sepia</strong> — Classic warm brownish-orange tone (adjustable intensity)</li>
+    <li><strong>Invert</strong> — Reverses all colours (like a photo negative)</li>
+    <li><strong>Vintage</strong> — Sepia + vignette combo for an aged photo look</li>
+    <li><strong>Cool</strong> — Adds a blue tint for a cold, cinematic feel</li>
+    <li><strong>Warm</strong> — Adds an orange tint for golden-hour warmth</li>
+    <li><strong>Fade</strong> — Washes out the image for a faded, matte look</li>
+    <li><strong>High Contrast</strong> — Pushes shadows and highlights for a dramatic B&amp;W look</li>
+    <li><strong>Soft Blur</strong> — Applies a subtle blur for a dreamy effect</li>
+    <li><strong>Sharpen</strong> — Enhances edges for a crisper look</li>
+    <li><strong>Vignette</strong> — Darkens the edges while keeping the centre bright</li>
+  </ul>
+
+  <h2>How to Apply a Filter</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/imagewonder/image-effects">textwonder.com/imagewonder/image-effects</a></li>
+    <li>Upload your image by dropping it or clicking to select</li>
+    <li>Click any filter thumbnail — the main preview updates instantly</li>
+    <li>For adjustable filters, drag the intensity slider</li>
+    <li>Click <strong>Download JPG</strong> or <strong>PNG</strong></li>
+  </ol>
+
+  <div class="my-8 p-5 bg-rose-950/30 border border-rose-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Add Image Effects for Free</p>
+    <a href="https://textwonder.com/imagewonder/image-effects" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#f43f5e">Open Image Effects →</a>
+  </div>
+</BlogLayout>

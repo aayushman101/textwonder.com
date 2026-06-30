@@ -1,0 +1,179 @@
+---
+---
+<div class="max-w-2xl mx-auto space-y-6">
+  <!-- Drop Zone -->
+  <div id="itp-drop" class="border-2 border-dashed border-slate-600 rounded-2xl p-10 text-center cursor-pointer hover:border-rose-500 transition-colors">
+    <div class="text-4xl mb-3">📑</div>
+    <p class="text-slate-300 font-medium mb-1">Drop images here or click to select</p>
+    <p class="text-slate-500 text-sm">JPG, PNG, WebP, BMP — multiple files supported</p>
+    <input id="itp-input" type="file" accept="image/*" multiple class="hidden" />
+  </div>
+
+  <!-- Image List -->
+  <div id="itp-list" class="hidden space-y-3">
+    <div class="flex items-center justify-between">
+      <h3 class="text-white font-semibold">Images (<span id="itp-count">0</span>)</h3>
+      <button id="itp-add-more" class="text-sm text-rose-400 hover:text-rose-300">+ Add more</button>
+    </div>
+    <div id="itp-thumbs" class="grid grid-cols-3 sm:grid-cols-4 gap-3"></div>
+  </div>
+
+  <!-- Options -->
+  <div id="itp-opts" class="hidden bg-slate-800/50 rounded-xl p-4 space-y-3">
+    <div class="flex items-center gap-4 flex-wrap">
+      <label class="text-slate-300 text-sm font-medium">Page Size:</label>
+      <select id="itp-pagesize" class="bg-slate-700 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-600 outline-none">
+        <option value="A4">A4 (210×297mm)</option>
+        <option value="Letter">US Letter (216×279mm)</option>
+        <option value="fit">Fit to image</option>
+      </select>
+      <label class="text-slate-300 text-sm font-medium">Orientation:</label>
+      <select id="itp-orient" class="bg-slate-700 text-white text-sm rounded-lg px-3 py-1.5 border border-slate-600 outline-none">
+        <option value="portrait">Portrait</option>
+        <option value="landscape">Landscape</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div id="itp-progress" class="hidden">
+    <div class="flex justify-between text-sm text-slate-400 mb-1">
+      <span id="itp-prog-msg">Processing…</span>
+      <span id="itp-prog-pct">0%</span>
+    </div>
+    <div class="w-full bg-slate-700 rounded-full h-2">
+      <div id="itp-prog-bar" class="h-2 rounded-full transition-all" style="width:0%;background:#f43f5e"></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div id="itp-actions" class="hidden flex gap-3">
+    <button id="itp-convert" class="flex-1 py-3 rounded-xl font-semibold text-white transition-colors" style="background:#f43f5e">Convert to PDF</button>
+    <button id="itp-clear" class="px-4 py-3 rounded-xl border border-slate-600 text-slate-300 hover:border-slate-500 transition-colors">Clear</button>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const drop = document.getElementById('itp-drop');
+  const input = document.getElementById('itp-input');
+  const list = document.getElementById('itp-list');
+  const thumbs = document.getElementById('itp-thumbs');
+  const count = document.getElementById('itp-count');
+  const opts = document.getElementById('itp-opts');
+  const actions = document.getElementById('itp-actions');
+  const addMore = document.getElementById('itp-add-more');
+  const convertBtn = document.getElementById('itp-convert');
+  const clearBtn = document.getElementById('itp-clear');
+  const progress = document.getElementById('itp-progress');
+  const progMsg = document.getElementById('itp-prog-msg');
+  const progPct = document.getElementById('itp-prog-pct');
+  const progBar = document.getElementById('itp-prog-bar');
+
+  let files = [];
+
+  drop.addEventListener('click', () => input.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.style.borderColor='#f43f5e'; });
+  drop.addEventListener('dragleave', () => drop.style.borderColor='');
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.style.borderColor=''; addFiles(e.dataTransfer.files); });
+  input.addEventListener('change', () => addFiles(input.files));
+  addMore.addEventListener('click', () => input.click());
+
+  function addFiles(newFiles) {
+    for (const f of newFiles) {
+      if (f.type.startsWith('image/')) files.push(f);
+    }
+    input.value = '';
+    renderList();
+  }
+
+  function renderList() {
+    thumbs.innerHTML = '';
+    files.forEach((f, i) => {
+      const url = URL.createObjectURL(f);
+      const div = document.createElement('div');
+      div.className = 'relative group';
+      div.innerHTML = `
+        <img src="${url}" class="w-full aspect-square object-cover rounded-lg border border-slate-700" />
+        <div class="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
+          <button data-i="${i}" class="itp-rm text-white text-xl font-bold">✕</button>
+        </div>
+        <div class="absolute bottom-1 left-1 bg-black/60 text-white text-xs rounded px-1">${i+1}</div>
+      `;
+      thumbs.appendChild(div);
+    });
+    count.textContent = files.length;
+    const has = files.length > 0;
+    list.classList.toggle('hidden', !has);
+    opts.classList.toggle('hidden', !has);
+    actions.classList.toggle('hidden', !has);
+    drop.classList.toggle('hidden', has);
+
+    thumbs.querySelectorAll('.itp-rm').forEach(btn => {
+      btn.addEventListener('click', () => { files.splice(+btn.dataset.i, 1); renderList(); });
+    });
+  }
+
+  clearBtn.addEventListener('click', () => { files = []; renderList(); });
+
+  convertBtn.addEventListener('click', async () => {
+    if (!files.length) return;
+    convertBtn.disabled = true;
+    progress.classList.remove('hidden');
+
+    const PDF_LIB = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+    if (!window.PDFLib) {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script'); s.src = PDF_LIB;
+        s.onload = res; s.onerror = rej; document.head.appendChild(s);
+      });
+    }
+
+    const pageSize = document.getElementById('itp-pagesize').value;
+    const orient = document.getElementById('itp-orient').value;
+    const pdfDoc = await PDFLib.PDFDocument.create();
+
+    const PAGE_SIZES = { A4: [595.28, 841.89], Letter: [612, 792] };
+
+    for (let i = 0; i < files.length; i++) {
+      const pct = Math.round((i / files.length) * 90);
+      progBar.style.width = pct + '%'; progPct.textContent = pct + '%';
+      progMsg.textContent = `Embedding image ${i+1} of ${files.length}…`;
+
+      const imgData = await new Promise(res => {
+        const r = new FileReader(); r.onload = e => res(e.target.result); r.readAsDataURL(files[i]);
+      });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      await new Promise(res => { img.onload = res; img.src = imgData; });
+      canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+      const jpegDataUrl = canvas.toDataURL('image/jpeg', 0.95);
+      const jpegBytes = Uint8Array.from(atob(jpegDataUrl.split(',')[1]), c => c.charCodeAt(0));
+      const embeddedImg = await pdfDoc.embedJpg(jpegBytes);
+
+      let [pw, ph] = pageSize === 'fit' ? [embeddedImg.width, embeddedImg.height] : PAGE_SIZES[pageSize];
+      if (pageSize !== 'fit' && orient === 'landscape') [pw, ph] = [ph, pw];
+
+      const scale = Math.min(pw / embeddedImg.width, ph / embeddedImg.height);
+      const dw = embeddedImg.width * scale;
+      const dh = embeddedImg.height * scale;
+      const page = pdfDoc.addPage([pw, ph]);
+      page.drawImage(embeddedImg, { x: (pw - dw) / 2, y: (ph - dh) / 2, width: dw, height: dh });
+    }
+
+    progMsg.textContent = 'Saving PDF…';
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'images.pdf'; a.click();
+
+    progBar.style.width = '100%'; progPct.textContent = '100%';
+    progMsg.textContent = 'Done! PDF downloaded.';
+    convertBtn.disabled = false;
+    setTimeout(() => progress.classList.add('hidden'), 3000);
+  });
+})();
+</script>

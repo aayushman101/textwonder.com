@@ -1,0 +1,123 @@
+---
+---
+<div class="max-w-2xl mx-auto space-y-5">
+  <!-- Mode toggle -->
+  <div class="flex bg-slate-800 rounded-xl p-1 border border-slate-700">
+    <button id="b64-enc-tab" class="flex-1 py-2 rounded-lg text-sm font-semibold text-white transition-colors" style="background:#06b6d4">Encode → Base64</button>
+    <button id="b64-dec-tab" class="flex-1 py-2 rounded-lg text-sm font-semibold text-slate-400 hover:text-white transition-colors">Decode ← Base64</button>
+  </div>
+
+  <!-- Options row -->
+  <div class="flex items-center gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input id="b64-urlsafe" type="checkbox" class="w-4 h-4 accent-cyan-500" />
+      <span class="text-slate-300 text-sm">URL-safe Base64 (use - and _ instead of + and /)</span>
+    </label>
+  </div>
+
+  <!-- Input -->
+  <div>
+    <div class="flex justify-between mb-1">
+      <label id="b64-in-label" class="text-slate-400 text-sm">Plain text input</label>
+      <button id="b64-paste" class="text-xs text-cyan-400 hover:text-cyan-300">Paste</button>
+    </div>
+    <textarea id="b64-input" rows="5" placeholder="Enter text to encode…" class="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-3 text-white text-sm font-mono outline-none focus:border-cyan-500 transition-colors resize-none"></textarea>
+  </div>
+
+  <!-- Convert button -->
+  <button id="b64-convert" class="w-full py-3 rounded-xl font-semibold text-white transition-colors" style="background:#06b6d4">Encode</button>
+
+  <!-- Output -->
+  <div>
+    <div class="flex justify-between mb-1">
+      <label id="b64-out-label" class="text-slate-400 text-sm">Base64 output</label>
+      <button id="b64-copy" class="text-xs text-cyan-400 hover:text-cyan-300">Copy</button>
+    </div>
+    <textarea id="b64-output" rows="5" readonly placeholder="Output will appear here…" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-green-400 text-sm font-mono outline-none resize-none"></textarea>
+  </div>
+
+  <!-- Swap button -->
+  <button id="b64-swap" class="w-full py-2 rounded-xl border border-slate-600 text-slate-400 hover:border-cyan-500 hover:text-cyan-400 transition-colors text-sm">⇅ Swap input and output</button>
+
+  <!-- Error -->
+  <p id="b64-error" class="hidden text-red-400 text-sm"></p>
+</div>
+
+<script is:inline>
+(function() {
+  let mode = 'encode';
+  const input = document.getElementById('b64-input');
+  const output = document.getElementById('b64-output');
+  const convertBtn = document.getElementById('b64-convert');
+  const encTab = document.getElementById('b64-enc-tab');
+  const decTab = document.getElementById('b64-dec-tab');
+  const inLabel = document.getElementById('b64-in-label');
+  const outLabel = document.getElementById('b64-out-label');
+  const errEl = document.getElementById('b64-error');
+  const urlSafe = document.getElementById('b64-urlsafe');
+
+  function setMode(m) {
+    mode = m;
+    const isEnc = m === 'encode';
+    encTab.style.background = isEnc ? '#06b6d4' : '';
+    encTab.style.color = isEnc ? 'white' : '';
+    decTab.style.background = isEnc ? '' : '#06b6d4';
+    decTab.style.color = isEnc ? '' : 'white';
+    convertBtn.textContent = isEnc ? 'Encode' : 'Decode';
+    inLabel.textContent = isEnc ? 'Plain text input' : 'Base64 input';
+    outLabel.textContent = isEnc ? 'Base64 output' : 'Decoded text output';
+    input.placeholder = isEnc ? 'Enter text to encode…' : 'Paste Base64 string to decode…';
+    output.placeholder = isEnc ? 'Base64 output appears here…' : 'Decoded text appears here…';
+    output.style.color = isEnc ? '#4ade80' : '#60a5fa';
+    output.value = ''; errEl.classList.add('hidden');
+  }
+
+  encTab.addEventListener('click', () => setMode('encode'));
+  decTab.addEventListener('click', () => setMode('decode'));
+
+  function toBase64(str) {
+    const bytes = new TextEncoder().encode(str);
+    let b64 = btoa(String.fromCharCode(...bytes));
+    if (urlSafe.checked) b64 = b64.replace(/\+/g, '-').replace(/\//g, '_');
+    return b64;
+  }
+
+  function fromBase64(b64) {
+    if (urlSafe.checked) b64 = b64.replace(/-/g, '+').replace(/_/g, '/');
+    const bin = atob(b64);
+    const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+    return new TextDecoder().decode(bytes);
+  }
+
+  convertBtn.addEventListener('click', () => {
+    errEl.classList.add('hidden');
+    const val = input.value;
+    if (!val.trim()) { errEl.textContent = 'Please enter some text.'; errEl.classList.remove('hidden'); return; }
+    try {
+      output.value = mode === 'encode' ? toBase64(val) : fromBase64(val.trim());
+    } catch(e) {
+      errEl.textContent = mode === 'decode' ? 'Invalid Base64 string. Check input for typos or missing padding.' : 'Encoding error: ' + e.message;
+      errEl.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('b64-copy').addEventListener('click', () => {
+    if (!output.value) return;
+    navigator.clipboard.writeText(output.value);
+    const btn = document.getElementById('b64-copy');
+    btn.textContent = 'Copied!'; setTimeout(() => btn.textContent = 'Copy', 1500);
+  });
+
+  document.getElementById('b64-paste').addEventListener('click', async () => {
+    try { input.value = await navigator.clipboard.readText(); } catch {}
+  });
+
+  document.getElementById('b64-swap').addEventListener('click', () => {
+    const tmp = input.value; input.value = output.value; output.value = tmp;
+    setMode(mode === 'encode' ? 'decode' : 'encode');
+  });
+
+  input.addEventListener('input', () => output.value = '');
+  setMode('encode');
+})();
+</script>

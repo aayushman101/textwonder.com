@@ -1,0 +1,39 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is leet speak (1337)?', a: 'Leet speak (or 1337) is a form of internet slang where letters are replaced with numbers and symbols — originally used by hackers in the 1980s–90s and now common in gaming culture.' },
+  { q: 'What are the three levels?', a: 'Basic substitutes common letters (a→4, e→3, i→1, o→0). Intermediate adds more symbol substitutions. Elite uses complex multi-character replacements for maximum leet style.' },
+  { q: 'Can I decode leet speak back to normal text?', a: 'The tool is a one-way encoder. For decoding, just read the substitutions — once you know the mappings, leet speak is easy to read.' },
+  { q: 'Where did leet speak come from?', a: 'Leet speak originated on early internet bulletin boards and hacker communities in the 1980s. The name comes from "elite" — l33t = leet = elite.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to Leet Speak (1337) Online Free"
+  description="Convert text to leet speak with Basic, Intermediate, or Elite level substitutions. Free online 1337 text generator — no signup needed."
+  canonical="/blog/how-to-convert-text-to-leet-speak"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Leet speak (1337) replaces letters with numbers and symbols — a tradition from early hacker culture and online gaming. Whether you want a subtle nod to internet history or full elite-mode text, this tool handles it instantly.</p>
+
+  <h2>How to Use the Leet Speak Converter</h2>
+  <ol>
+    <li>Type or paste your text.</li>
+    <li>Select a level: <strong>Basic</strong>, <strong>Intermediate</strong>, or <strong>Elite</strong>.</li>
+    <li>Copy the result and use it in usernames, Discord, gaming chats, or social media.</li>
+  </ol>
+
+  <h2>Leet Speak Examples</h2>
+  <ul>
+    <li><strong>Basic:</strong> Hello World → H3ll0 W0rld</li>
+    <li><strong>Intermediate:</strong> Hello World → H3ll0 W0r|d</li>
+    <li><strong>Elite:</strong> Hello World → |-|3||0 \/\/0r|d</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert text to 1337 leet speak — 3 elite levels</p>
+    <a href="/tools/leet-speak-converter" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Leet Speak Converter →</a>
+  </div>
+</BlogLayout>

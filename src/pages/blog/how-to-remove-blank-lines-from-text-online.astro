@@ -1,0 +1,40 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What counts as a blank line?', a: 'A line that is empty or contains only whitespace (spaces or tabs) is considered blank and will be removed.' },
+  { q: 'Will it remove lines that have only spaces?', a: 'Yes — lines containing only spaces or tabs are treated as blank and removed.' },
+  { q: 'Is there a limit on how many lines I can process?', a: 'No — you can paste as much text as needed. All blank lines are removed in one operation.' },
+  { q: 'Will the line order change?', a: 'No — only blank lines are removed. The order of all non-blank lines is preserved exactly.' },
+];
+---
+<BlogLayout
+  title="How to Remove Blank Lines from Text Online Free"
+  description="Remove all empty and blank lines from text instantly. Paste your text, click copy, done. Free online blank line remover — no signup needed."
+  canonical="/blog/how-to-remove-blank-lines-from-text-online"
+  date="2026-07-02"
+  readTime="2 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Empty lines in copied text can be annoying — especially when pasted from PDFs, websites, or code editors. This tool strips all blank lines instantly, leaving only the lines that have actual content.</p>
+
+  <h2>How to Remove Blank Lines</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>All blank lines are removed automatically in real time.</li>
+    <li>Copy the output.</li>
+  </ol>
+
+  <h2>When to Use This Tool</h2>
+  <ul>
+    <li>Cleaning up text pasted from PDFs</li>
+    <li>Removing extra blank lines from copied web content</li>
+    <li>Preparing data files (CSV, TSV) with consistent formatting</li>
+    <li>Cleaning code or configuration files</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove all blank lines instantly — free, no signup</p>
+    <a href="/tools/remove-blank-lines" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Blank Lines Tool →</a>
+  </div>
+</BlogLayout>

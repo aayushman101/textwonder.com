@@ -1,0 +1,42 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is a prefix and suffix?', a: 'A prefix is text added to the beginning of each line; a suffix is text added to the end. For example, prefix ">" and suffix "." would turn "hello" into ">hello.".' },
+  { q: 'Can I add both prefix and suffix at once?', a: 'Yes — both fields are optional and can be used together or independently.' },
+  { q: 'What does "Skip Blank Lines" do?', a: 'It prevents the tool from adding prefix/suffix to empty lines, which would otherwise add stray characters.' },
+  { q: 'What does "Trim Each Line" do?', a: 'It removes leading and trailing spaces from each line before adding the prefix/suffix.' },
+];
+---
+<BlogLayout
+  title="How to Add Prefix and Suffix to Lines Online Free"
+  description="Add a prefix, suffix, or both to every line of text at once. Skip blank lines option. Free online prefix suffix adder — no signup needed."
+  canonical="/blog/how-to-add-prefix-and-suffix-to-lines-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Adding the same prefix or suffix to hundreds of lines manually is tedious. This tool processes all lines at once — useful for creating HTML lists, SQL values, CSV wrappers, code arrays, and more.</p>
+
+  <h2>How to Add Prefix/Suffix to Lines</h2>
+  <ol>
+    <li>Paste your lines of text into the input box.</li>
+    <li>Type a <strong>Prefix</strong> (added to the start of each line).</li>
+    <li>Type a <strong>Suffix</strong> (added to the end of each line).</li>
+    <li>Toggle <strong>Skip Blank Lines</strong> and <strong>Trim Lines</strong> as needed.</li>
+    <li>Copy the output.</li>
+  </ol>
+
+  <h2>Practical Examples</h2>
+  <ul>
+    <li><strong>SQL values:</strong> prefix <code>'</code> + suffix <code>',</code> → turn a word list into SQL string values</li>
+    <li><strong>Markdown list:</strong> prefix <code>- </code> → instant bullet-point list</li>
+    <li><strong>HTML list items:</strong> prefix <code>&lt;li&gt;</code> + suffix <code>&lt;/li&gt;</code></li>
+    <li><strong>CSV column:</strong> prefix and suffix <code>"</code> → wrap each item in quotes</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Add prefix and suffix to all lines at once — free</p>
+    <a href="/tools/add-prefix-suffix" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Add Prefix / Suffix Tool →</a>
+  </div>
+</BlogLayout>

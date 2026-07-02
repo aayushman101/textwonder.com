@@ -1,0 +1,48 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What does Lines to CSV do?', a: 'It takes a list of values (one per line) and combines them into a single CSV (comma-separated values) row or multi-column format.' },
+  { q: 'Can I choose a different delimiter?', a: 'Yes — you can choose comma, semicolon, tab, or pipe as the delimiter.' },
+  { q: 'Can I decode CSV back to lines?', a: 'Yes — the tool has a Decode mode that splits a CSV row into individual lines.' },
+  { q: 'What does the Quote Wrap option do?', a: 'It wraps each value in double quotes — essential when values contain commas or special characters.' },
+];
+---
+<BlogLayout
+  title="How to Convert Lines to CSV Online Free — Lines to CSV & CSV to Lines"
+  description="Convert a list of lines to CSV format and decode CSV back to lines. Choose delimiter, quote wrapping, and trim options. Free online lines to CSV converter."
+  canonical="/blog/how-to-convert-lines-to-csv-online-free"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Converting a column of values into a CSV row (or vice versa) is a common data task. This tool handles both directions — encode a line list to CSV or decode a CSV line back to individual lines.</p>
+
+  <h2>How to Convert Lines to CSV</h2>
+  <ol>
+    <li>Select <strong>Encode</strong> (lines → CSV).</li>
+    <li>Paste one value per line.</li>
+    <li>Choose delimiter, quote wrap, and trim options.</li>
+    <li>Copy the CSV output.</li>
+  </ol>
+
+  <h2>How to Convert CSV to Lines</h2>
+  <ol>
+    <li>Select <strong>Decode</strong> (CSV → lines).</li>
+    <li>Paste your CSV row.</li>
+    <li>Each value appears on its own line.</li>
+  </ol>
+
+  <h2>Common Use Cases</h2>
+  <ul>
+    <li>Preparing data for spreadsheet import</li>
+    <li>Creating SQL IN clauses from a list</li>
+    <li>Formatting email lists for mail merge</li>
+    <li>Converting bullet lists to data rows</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert lines to CSV or CSV to lines — free, instant</p>
+    <a href="/tools/lines-to-csv" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Lines to CSV Tool →</a>
+  </div>
+</BlogLayout>

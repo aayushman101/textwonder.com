@@ -1,0 +1,40 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'How does upside-down text work?', a: 'Each character is mapped to a Unicode lookalike that appears flipped. The entire string is also reversed, so when physically rotated 180°, it reads left to right.' },
+  { q: 'Can I paste upside-down text on social media?', a: 'Yes — these are standard Unicode characters supported on all modern platforms including Instagram, Twitter/X, Facebook, and Discord.' },
+  { q: 'Does it support all characters?', a: 'It supports all 26 English letters (upper and lower), digits 0–9, and common punctuation. Characters without a Unicode flip equivalent are left unchanged.' },
+  { q: 'Is the text readable when flipped?', a: 'Yes. If you rotate your screen 180°, the upside-down text will read as normal text.' },
+];
+---
+<BlogLayout
+  title="How to Flip Text Upside Down Online Free — Upside Down Text Generator"
+  description="Convert any text to upside-down flipped text using Unicode characters. Copy and paste flipped text into Instagram, Twitter, Discord, and more."
+  canonical="/blog/how-to-flip-text-upside-down-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Upside-down text is a fun way to make your posts stand out. This tool maps each character to its Unicode upside-down lookalike and reverses the string, so when flipped 180°, the text reads normally.</p>
+
+  <h2>How to Generate Upside Down Text</h2>
+  <ol>
+    <li>Type or paste your text into the input box.</li>
+    <li>The upside-down version appears instantly below.</li>
+    <li>Click Copy and paste it anywhere.</li>
+  </ol>
+
+  <h2>Where to Use It</h2>
+  <ul>
+    <li>Social media captions and bios</li>
+    <li>Discord nicknames and messages</li>
+    <li>Email signatures for a quirky touch</li>
+    <li>Text messages to confuse friends</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Flip your text upside down instantly — free, no signup</p>
+    <a href="/tools/upside-down-text" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Upside Down Text Tool →</a>
+  </div>
+</BlogLayout>

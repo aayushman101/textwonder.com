@@ -1,0 +1,50 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What characters are supported?', a: 'All 26 uppercase letters (A–Z), digits 0–9, space, exclamation mark (!), and question mark (?) are supported.' },
+  { q: 'What styles are available?', a: 'Block (solid Unicode block characters), Banner (uses #, *, + instead of blocks), and Shadow (a stylistic variant of Block).' },
+  { q: 'How many characters work best?', a: 'Short text (1–12 characters) works best. Longer text will extend the output width and may need horizontal scrolling.' },
+  { q: 'Can I use this in Discord or Reddit?', a: 'Yes — wrap the ASCII art in a code block (``` ``` ```) to preserve the spacing when pasting into Discord, Reddit, or any markdown-enabled platform.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to ASCII Art Online Free — ASCII Art Generator"
+  description="Generate ASCII art from text with Block, Banner, and Shadow styles. Free online text to ASCII art converter — supports letters, numbers, and symbols."
+  canonical="/blog/how-to-convert-text-to-ascii-art-online-free"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>ASCII art creates large stylised text using only keyboard characters — a tradition dating back to early computer terminals. This tool instantly converts your text into Block, Banner, or Shadow ASCII art styles.</p>
+
+  <h2>How to Generate ASCII Art</h2>
+  <ol>
+    <li>Select a style: <strong>Block</strong>, <strong>Banner</strong>, or <strong>Shadow</strong>.</li>
+    <li>Type your text (1–12 characters work best).</li>
+    <li>The ASCII art renders instantly below.</li>
+    <li>Click <strong>Copy</strong> to copy it.</li>
+    <li>Paste it into Discord, Reddit, terminals, or email.</li>
+  </ol>
+
+  <h2>Tips for Best Results</h2>
+  <ul>
+    <li>Use a monospace font when displaying ASCII art (it will look misaligned in proportional fonts)</li>
+    <li>Wrap in code blocks (```) when posting on Discord or Reddit</li>
+    <li>Short words and abbreviations work better than long sentences</li>
+  </ul>
+
+  <h2>Popular ASCII Art Uses</h2>
+  <ul>
+    <li>Discord server announcements</li>
+    <li>Terminal / command-line banners</li>
+    <li>Reddit posts and comments</li>
+    <li>Email signatures</li>
+    <li>GitHub README headers</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Generate ASCII art in Block, Banner, and Shadow styles — free</p>
+    <a href="/tools/text-to-ascii-art" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Text to ASCII Art Generator →</a>
+  </div>
+</BlogLayout>

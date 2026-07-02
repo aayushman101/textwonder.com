@@ -1,0 +1,74 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-3">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="nw-ordinal" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Ordinal (first, second, third…)</span>
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Enter a number</label>
+    <input id="nw-input" type="text" inputmode="numeric" placeholder="e.g. 1234567" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 outline-none focus:ring-2 focus:ring-violet-600 text-sm" />
+  </div>
+  <div id="nw-result" class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-5 py-4 text-slate-200 text-base leading-relaxed min-h-[60px] hidden"></div>
+  <button id="nw-copy" class="hidden bg-[var(--bg-surface-hover)] hover:bg-violet-700 hover:text-white text-slate-300 font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Copy Result</button>
+</div>
+
+<script>
+const ones=['','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+const ordSuffix={one:'first',two:'second',three:'third',five:'fifth',eight:'eighth',nine:'ninth',twelve:'twelfth'};
+
+function numToWords(n) {
+  if (n === 0) return 'zero';
+  if (n < 0) return 'negative ' + numToWords(-n);
+  let result = '';
+  if (n >= 1e9) { result += numToWords(Math.floor(n/1e9)) + ' billion '; n %= 1e9; }
+  if (n >= 1e6) { result += numToWords(Math.floor(n/1e6)) + ' million '; n %= 1e6; }
+  if (n >= 1e3) { result += numToWords(Math.floor(n/1e3)) + ' thousand '; n %= 1e3; }
+  if (n >= 100) { result += ones[Math.floor(n/100)] + ' hundred '; n %= 100; }
+  if (n >= 20) { result += tens[Math.floor(n/10)] + (n%10 ? '-' + ones[n%10] : '') + ' '; n = 0; }
+  else if (n > 0) { result += ones[n] + ' '; }
+  return result.trim();
+}
+
+function toOrdinal(words) {
+  const parts = words.split(/[\s-]/);
+  const last = parts[parts.length - 1];
+  const ord = ordSuffix[last] || (last.endsWith('t') ? last + 'h' : last + 'th');
+  parts[parts.length - 1] = ord;
+  return parts.join(' ').replace(/  +/g, ' ');
+}
+
+function convert() {
+  const raw = document.getElementById('nw-input').value.replace(/[,\s]/g,'');
+  const result = document.getElementById('nw-result');
+  const copyBtn = document.getElementById('nw-copy');
+  if (!raw) { result.classList.add('hidden'); copyBtn.classList.add('hidden'); return; }
+  const n = parseInt(raw, 10);
+  if (isNaN(n) || Math.abs(n) > 999999999999) {
+    result.textContent = 'Please enter a whole number up to 999,999,999,999.';
+    result.classList.remove('hidden');
+    copyBtn.classList.add('hidden');
+    return;
+  }
+  let words = numToWords(n);
+  if (document.getElementById('nw-ordinal').checked) words = toOrdinal(words);
+  result.textContent = words.charAt(0).toUpperCase() + words.slice(1);
+  result.classList.remove('hidden');
+  copyBtn.classList.remove('hidden');
+}
+
+document.getElementById('nw-input').addEventListener('input', convert);
+document.getElementById('nw-ordinal').addEventListener('change', convert);
+document.getElementById('nw-copy').addEventListener('click', () => {
+  const val = document.getElementById('nw-result').textContent;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('nw-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy Result', 1500);
+});
+</script>

@@ -1,0 +1,40 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What does "Remove Whole Numbers" mode do?', a: 'This mode removes entire number sequences (including decimals like 3.14) — leaving no trace of where the number was, other than the surrounding space.' },
+  { q: 'What does "Remove Digits Only" mode do?', a: 'This mode removes individual digit characters but leaves the rest of the word. For example, "h3llo" becomes "hllo".' },
+  { q: 'Will it remove numbers inside words?', a: 'In Remove Digits mode, yes. In Remove Whole Numbers mode, only standalone number sequences are removed.' },
+  { q: 'Can I remove numbers from multiple lines at once?', a: 'Yes — paste as many lines as you need and the tool processes all of them simultaneously.' },
+];
+---
+<BlogLayout
+  title="How to Remove Numbers from Text Online Free"
+  description="Remove all numbers or just digits from text instantly. Choose Remove Digits mode or Remove Whole Numbers mode. Free online number remover."
+  canonical="/blog/how-to-remove-numbers-from-text-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Need to strip numbers from a block of text for analysis, formatting, or cleaning? This tool removes numbers instantly with two modes: remove individual digit characters or remove entire numeric sequences.</p>
+
+  <h2>How to Remove Numbers from Text</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>Choose <strong>Remove Digits</strong> (removes each digit character) or <strong>Remove Whole Numbers</strong> (removes entire number sequences).</li>
+    <li>Copy the clean output.</li>
+  </ol>
+
+  <h2>Use Cases</h2>
+  <ul>
+    <li>Cleaning data for text analysis</li>
+    <li>Removing page numbers from pasted PDFs</li>
+    <li>Stripping reference numbers from legal documents</li>
+    <li>Preprocessing text for NLP models</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove numbers from text in one click — free</p>
+    <a href="/tools/remove-numbers" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Numbers Tool →</a>
+  </div>
+</BlogLayout>

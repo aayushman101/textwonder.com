@@ -1,0 +1,52 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rbl-ws" checked class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Also remove whitespace-only lines</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <span id="rbl-in-count" class="text-xs text-slate-500">0 lines</span>
+    </div>
+    <textarea id="rbl-input" rows="8" placeholder="Paste text with blank lines here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <div class="flex items-center gap-2">
+        <span id="rbl-out-count" class="text-xs text-slate-500">0 lines</span>
+        <button id="rbl-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="rbl-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  const text = document.getElementById('rbl-input').value;
+  const lines = text.split('\n');
+  document.getElementById('rbl-in-count').textContent = lines.length + ' lines';
+  const removeWS = document.getElementById('rbl-ws').checked;
+  const filtered = lines.filter(l => removeWS ? l.trim() !== '' : l !== '');
+  document.getElementById('rbl-output').value = filtered.join('\n');
+  document.getElementById('rbl-out-count').textContent = filtered.length + ' lines';
+}
+
+document.getElementById('rbl-input').addEventListener('input', convert);
+document.getElementById('rbl-ws').addEventListener('change', convert);
+
+document.getElementById('rbl-copy').addEventListener('click', () => {
+  const val = document.getElementById('rbl-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rbl-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

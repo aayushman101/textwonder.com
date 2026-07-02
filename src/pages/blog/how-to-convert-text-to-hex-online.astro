@@ -1,0 +1,50 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is hex encoding for text?', a: 'Hex encoding converts each character to its hexadecimal Unicode code point (e.g., "A" becomes "41"). It is used in programming, data encoding, debugging, and network protocols.' },
+  { q: 'Can I decode hex back to text?', a: 'Yes — switch to Decode mode, paste your hex values, and the tool reconstructs the original text.' },
+  { q: 'What delimiter options are available?', a: 'Space, no delimiter, comma, and 0x prefix (e.g., 0x48 0x65 0x6C).' },
+  { q: 'Does it support Unicode characters?', a: 'Yes — the tool uses codePointAt() and fromCodePoint(), supporting the full Unicode range including emoji and non-ASCII characters.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to Hex Online Free — Hex Encoder & Decoder"
+  description="Convert text to hexadecimal (hex) encoding and decode hex back to text. Free online text-to-hex tool with delimiter options and uppercase/lowercase output."
+  canonical="/blog/how-to-convert-text-to-hex-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Hex encoding represents each character as a two-digit hexadecimal value. It is widely used in programming, cryptography, data serialisation, and debugging. This tool makes the conversion instant — no coding required.</p>
+
+  <h2>How to Convert Text to Hex</h2>
+  <ol>
+    <li>Select <strong>Encode</strong> mode.</li>
+    <li>Type or paste your text.</li>
+    <li>Choose a delimiter: space, none, comma, or 0x prefix.</li>
+    <li>Choose uppercase or lowercase hex output.</li>
+    <li>Copy the hex result.</li>
+  </ol>
+
+  <h2>How to Decode Hex to Text</h2>
+  <ol>
+    <li>Select <strong>Decode</strong> mode.</li>
+    <li>Paste your hex values (space or comma separated).</li>
+    <li>The original text appears instantly.</li>
+  </ol>
+
+  <h2>Common Uses</h2>
+  <ul>
+    <li>Debugging network packets</li>
+    <li>Encoding data in configuration files</li>
+    <li>Colour codes (hex colours) in web design</li>
+    <li>Encoding special characters in URLs</li>
+    <li>CTF (Capture the Flag) challenges</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert text to hex instantly — free, no signup</p>
+    <a href="/tools/text-to-hex" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Text to Hex Tool →</a>
+  </div>
+</BlogLayout>

@@ -1,0 +1,77 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-4">
+    <span class="text-slate-300 text-sm">Intensity:</span>
+    <div class="flex gap-2">
+      <button id="z-mini" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Mini</button>
+      <button id="z-mid" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Normal</button>
+      <button id="z-maxi" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Maxi</button>
+    </div>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="z-input" rows="5" placeholder="Type here to generate creepy Zalgo text..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Z̸̧̛̗̺̪̾͊̊ͅa̶l̷g̵o̵ Text</label>
+      <button id="z-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="z-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm leading-loose"></textarea>
+  </div>
+</div>
+
+<script>
+const above=['̍','̎','̄','̅','̿','̑','̆','̐','͒','͗','͑','̇','̈','̊','͂','̓','̈́','͊','͋','͌','̃','̂','̌','͐','̀','́','̋','̏','̒','̓','̔','̽','̉','ͣ','ͤ','ͥ','ͦ','ͧ','ͨ','ͩ','ͪ','ͫ','ͬ','ͭ','ͮ','ͯ','̾','͛'];
+const below=['̖','̗','̘','̙','̜','̝','̞','̟','̠','̤','̥','̦','̩','̪','̫','̬','̭','̮','̯','̰','̱','̲','̳','̹','̺','̻','̼','ͅ','͇','͈','͉','͍','͎','͓','͔','͕','͖','͙','͚','̣'];
+const mid=['̕','̛','̀','́','͘','̡','̢','̧','̨','̴','̵','̶','͏','͜','͝','͞','͟','͠','͡','͢','̸','̷','҉'];
+
+let intensity = 1;
+
+function rand(arr, max) {
+  const n = Math.floor(Math.random() * max) + 1;
+  let s = '';
+  for (let i = 0; i < n; i++) s += arr[Math.floor(Math.random() * arr.length)];
+  return s;
+}
+
+function zalgo(text) {
+  const maxA = [2, 5, 10][intensity];
+  const maxM = [0, 1, 2][intensity];
+  const maxB = [2, 5, 10][intensity];
+  return [...text].map(ch => {
+    if (ch === ' ' || ch === '\n') return ch;
+    return ch + rand(above, maxA) + rand(mid, Math.max(maxM, 0) || 0) + rand(below, maxB);
+  }).join('');
+}
+
+function convert() {
+  document.getElementById('z-output').value = zalgo(document.getElementById('z-input').value);
+}
+
+document.getElementById('z-input').addEventListener('input', convert);
+
+['mini','mid','maxi'].forEach((id, i) => {
+  document.getElementById('z-' + id).addEventListener('click', () => {
+    intensity = i;
+    ['mini','mid','maxi'].forEach((b, j) => {
+      const el = document.getElementById('z-' + b);
+      el.className = el.className.replace(/bg-violet-700 text-white/, '').replace(/bg-\[var\(--bg-surface-hover\)\] text-slate-300/, '');
+      if (j === i) el.className += ' bg-violet-700 text-white';
+      else el.className += ' bg-[var(--bg-surface-hover)] text-slate-300';
+    });
+    convert();
+  });
+});
+
+document.getElementById('z-copy').addEventListener('click', () => {
+  const val = document.getElementById('z-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('z-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

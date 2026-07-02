@@ -1,0 +1,42 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What are special characters?', a: 'Special characters are any characters that are not standard letters (A-Z, a-z), digits (0-9), or spaces. This includes @, #, $, %, ^, &, *, !, ~, and more.' },
+  { q: 'Can I keep certain special characters?', a: 'Yes — use the Custom Allowlist field to specify characters you want to preserve (e.g., "-_." to keep hyphens, underscores, and periods).' },
+  { q: 'Does it support Unicode (non-English) letters?', a: 'Yes — enable the "Keep Unicode Letters" option to preserve letters from all languages, not just English.' },
+  { q: 'Will newlines be removed?', a: 'By default no — you can toggle whether newlines are preserved or removed.' },
+];
+---
+<BlogLayout
+  title="How to Remove Special Characters from Text Online Free"
+  description="Remove special characters, symbols, and non-alphanumeric characters from text. Custom allowlist to keep specific characters. Free online special character remover."
+  canonical="/blog/how-to-remove-special-characters-from-text-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Special characters can cause problems in databases, code, filenames, and APIs. This tool removes them instantly, with options to preserve specific characters you need and Unicode letter support.</p>
+
+  <h2>How to Remove Special Characters</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>Optionally enter characters to <strong>allow</strong> in the allowlist field.</li>
+    <li>Toggle whether to keep Unicode letters (non-English characters) and newlines.</li>
+    <li>Copy the cleaned output.</li>
+  </ol>
+
+  <h2>Common Use Cases</h2>
+  <ul>
+    <li>Cleaning data before database import</li>
+    <li>Sanitising user input in forms</li>
+    <li>Preparing filenames (remove slashes, colons, etc.)</li>
+    <li>Stripping formatting from pasted text</li>
+    <li>NLP and text preprocessing</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove special characters with custom allowlist — free</p>
+    <a href="/tools/remove-special-characters" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Special Characters Tool →</a>
+  </div>
+</BlogLayout>

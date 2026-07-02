@@ -1,0 +1,38 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is Pig Latin?', a: 'Pig Latin is a language game where words are altered by moving the leading consonant cluster to the end and adding "ay" — or adding "way" if the word starts with a vowel.' },
+  { q: 'Can I convert Pig Latin back to English?', a: 'Yes — the tool has both Encode and Decode modes. Decode reverses the Pig Latin rules to recover the original text.' },
+  { q: 'Does it handle punctuation and capitalisation?', a: 'Yes — punctuation is preserved in place, and capitalisation of the first letter is maintained after transformation.' },
+  { q: 'Is Pig Latin a real language?', a: "No — it is a word game, not a true language. It originated as a children's secret language in the early 20th century." },
+];
+---
+<BlogLayout
+  title="How to Translate Text to Pig Latin Online Free — Encode & Decode"
+  description="Translate English text to Pig Latin and decode Pig Latin back to English. Free online Pig Latin translator with encode and decode modes."
+  canonical="/blog/how-to-translate-text-to-pig-latin"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Pig Latin is the classic word game where you rearrange syllables to create a secret-sounding version of English. This tool handles the encoding and decoding automatically — just type and copy.</p>
+
+  <h2>The Pig Latin Rules</h2>
+  <ul>
+    <li><strong>Words starting with consonants:</strong> Move the consonant cluster to the end and add "ay" — e.g., <em>hello → ellohay</em></li>
+    <li><strong>Words starting with vowels:</strong> Add "way" to the end — e.g., <em>apple → appleway</em></li>
+  </ul>
+
+  <h2>How to Use the Pig Latin Converter</h2>
+  <ol>
+    <li>Select <strong>Encode</strong> (English → Pig Latin) or <strong>Decode</strong> (Pig Latin → English).</li>
+    <li>Type or paste your text.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Translate to and from Pig Latin instantly — free</p>
+    <a href="/tools/pig-latin-converter" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Pig Latin Converter →</a>
+  </div>
+</BlogLayout>

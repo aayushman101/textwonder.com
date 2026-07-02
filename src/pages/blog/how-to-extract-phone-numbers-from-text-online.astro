@@ -1,0 +1,41 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What phone number formats are detected?', a: 'The tool detects international formats (+1 555-123-4567), local formats (555.123.4567), parenthetical area codes ((555) 123-4567), and more. Any sequence that contains 7–15 digits in a phone-like pattern is matched.' },
+  { q: 'Does it remove duplicate phone numbers?', a: 'Yes — the tool uses a Set to deduplicate results, so each unique phone number appears only once.' },
+  { q: 'Can I extract phone numbers from a large document?', a: 'Yes — paste as much text as needed. The tool processes the entire input and extracts all matching phone numbers.' },
+  { q: 'Does it work with country codes?', a: 'Yes — phone numbers starting with + or a country code (e.g., +44 or +91) are detected.' },
+];
+---
+<BlogLayout
+  title="How to Extract Phone Numbers from Text Online Free"
+  description="Extract all phone numbers from any text, document, or webpage content. Detects international and local formats. Free online phone number extractor."
+  canonical="/blog/how-to-extract-phone-numbers-from-text-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Need to pull all phone numbers out of a document, webpage, or large block of text? This tool scans the entire input and extracts every phone number it finds — detecting international formats, dashes, dots, parentheses, and more.</p>
+
+  <h2>How to Extract Phone Numbers</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>Click <strong>Extract Phone Numbers</strong>.</li>
+    <li>All detected phone numbers appear in the output, one per line.</li>
+    <li>Copy All to paste the list wherever you need it.</li>
+  </ol>
+
+  <h2>Use Cases</h2>
+  <ul>
+    <li>Extracting contacts from pasted email threads</li>
+    <li>Data mining phone numbers from reports</li>
+    <li>Collecting customer contacts from form responses</li>
+    <li>Cleaning and auditing contact databases</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Extract all phone numbers from any text — free</p>
+    <a href="/tools/extract-phone-numbers" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Extract Phone Numbers Tool →</a>
+  </div>
+</BlogLayout>

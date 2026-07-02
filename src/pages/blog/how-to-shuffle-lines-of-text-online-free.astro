@@ -1,0 +1,43 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'How is the shuffle randomised?', a: 'The tool uses the Fisher-Yates algorithm — a proven, unbiased method that ensures every permutation is equally likely.' },
+  { q: 'Can I shuffle again to get a different order?', a: 'Yes — click "Shuffle Again" to get a new random order without re-pasting your text.' },
+  { q: 'Can I remove blank lines before shuffling?', a: 'Yes — there is an option to remove blank lines before the shuffle is applied.' },
+  { q: 'Is the shuffle truly random?', a: 'It uses the browser\'s Math.random(), which is a pseudo-random number generator — suitable for all non-cryptographic purposes.' },
+];
+---
+<BlogLayout
+  title="How to Shuffle Lines of Text Online Free — Random Line Shuffler"
+  description="Randomly shuffle lines of text using the Fisher-Yates algorithm. Shuffle again with one click. Free online line shuffler — no signup needed."
+  canonical="/blog/how-to-shuffle-lines-of-text-online-free"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Need to randomise the order of a list? Whether it is quiz questions, team names, task lists, or study flashcards, this tool shuffles all lines randomly in one click using the Fisher-Yates algorithm.</p>
+
+  <h2>How to Shuffle Lines of Text</h2>
+  <ol>
+    <li>Paste your lines into the input box.</li>
+    <li>Optionally check <strong>Remove Blank Lines</strong>.</li>
+    <li>Click <strong>Shuffle Lines</strong>.</li>
+    <li>Click <strong>Shuffle Again</strong> to re-randomise.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <h2>Use Cases</h2>
+  <ul>
+    <li>Randomising quiz question order</li>
+    <li>Picking a random order for team presentations</li>
+    <li>Shuffling a word list for a game</li>
+    <li>Randomising flashcard order for studying</li>
+    <li>Creating varied playlists from a song list</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Shuffle lines of text randomly — free, instant</p>
+    <a href="/tools/shuffle-lines" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Shuffle Lines Tool →</a>
+  </div>
+</BlogLayout>

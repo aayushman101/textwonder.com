@@ -1,0 +1,69 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-x-6 gap-y-2">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rsc-unicode" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Keep Unicode letters (é, ñ, etc.)</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rsc-newlines" checked class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Keep newlines</span>
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Custom characters to allow (e.g. _-.@)</label>
+    <input id="rsc-allow" type="text" placeholder="Characters to preserve..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 outline-none focus:ring-2 focus:ring-violet-600 text-sm" />
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <span id="rsc-in-count" class="text-xs text-slate-500">0 chars</span>
+    </div>
+    <textarea id="rsc-input" rows="7" placeholder="Paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Cleaned Text</label>
+      <div class="flex items-center gap-2">
+        <span id="rsc-out-count" class="text-xs text-slate-500">0 chars</span>
+        <button id="rsc-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="rsc-output" rows="7" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  let text = document.getElementById('rsc-input').value;
+  document.getElementById('rsc-in-count').textContent = text.length + ' chars';
+  const keepUnicode = document.getElementById('rsc-unicode').checked;
+  const keepNewlines = document.getElementById('rsc-newlines').checked;
+  const allow = document.getElementById('rsc-allow').value.replace(/[-\]\\^]/g, '\\$&');
+  let base = keepUnicode ? '\\p{L}\\p{N}' : 'a-zA-Z0-9';
+  let newlinePart = keepNewlines ? '\\n\\r' : '';
+  let pattern;
+  try {
+    pattern = new RegExp(`[^${base}\\s${newlinePart}${allow}]`, keepUnicode ? 'gu' : 'g');
+  } catch {
+    pattern = new RegExp(`[^a-zA-Z0-9\\s${newlinePart}]`, 'g');
+  }
+  const result = text.replace(pattern, '');
+  document.getElementById('rsc-output').value = result;
+  document.getElementById('rsc-out-count').textContent = result.length + ' chars';
+}
+
+['rsc-input','rsc-allow'].forEach(id => document.getElementById(id).addEventListener('input', convert));
+['rsc-unicode','rsc-newlines'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+document.getElementById('rsc-copy').addEventListener('click', () => {
+  const val = document.getElementById('rsc-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rsc-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

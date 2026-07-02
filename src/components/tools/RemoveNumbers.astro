@@ -1,0 +1,57 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rn-whole" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Remove whole number sequences (including decimals)</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rn-collapse" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Collapse extra spaces after removal</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <span id="rn-in-count" class="text-xs text-slate-500">0 chars</span>
+    </div>
+    <textarea id="rn-input" rows="7" placeholder="Paste text with numbers here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Text Without Numbers</label>
+      <div class="flex items-center gap-2">
+        <span id="rn-out-count" class="text-xs text-slate-500">0 chars</span>
+        <button id="rn-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="rn-output" rows="7" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  let text = document.getElementById('rn-input').value;
+  document.getElementById('rn-in-count').textContent = text.length + ' chars';
+  const whole = document.getElementById('rn-whole').checked;
+  const collapse = document.getElementById('rn-collapse').checked;
+  let result = whole ? text.replace(/-?\d+(\.\d+)?/g, '') : text.replace(/\d/g, '');
+  if (collapse) result = result.replace(/[ \t]{2,}/g, ' ');
+  document.getElementById('rn-output').value = result;
+  document.getElementById('rn-out-count').textContent = result.length + ' chars';
+}
+
+['rn-input'].forEach(id => document.getElementById(id).addEventListener('input', convert));
+['rn-whole','rn-collapse'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+document.getElementById('rn-copy').addEventListener('click', () => {
+  const val = document.getElementById('rn-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rn-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

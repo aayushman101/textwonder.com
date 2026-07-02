@@ -1,0 +1,91 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4 items-center">
+    <div class="flex items-center gap-2">
+      <button id="ltc-encode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Lines → CSV</button>
+      <button id="ltc-decode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">CSV → Lines</button>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-xs">Delimiter:</span>
+      <select id="ltc-delim" class="bg-[var(--bg-surface)] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1.5 outline-none">
+        <option value=",">Comma (,)</option>
+        <option value=";">Semicolon (;)</option>
+        <option value="|">Pipe (|)</option>
+        <option value="&#9;">Tab</option>
+      </select>
+    </div>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="ltc-quote" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Wrap in quotes</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="ltc-trim" checked class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Trim whitespace</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium" id="ltc-in-label">Input Lines (one per line)</label>
+      <span id="ltc-in-count" class="text-xs text-slate-500">0 items</span>
+    </div>
+    <textarea id="ltc-input" rows="7" placeholder="apple&#10;banana&#10;cherry" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium" id="ltc-out-label">CSV Output</label>
+      <button id="ltc-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="ltc-output" rows="4" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let mode = 'encode';
+
+function convert() {
+  const text = document.getElementById('ltc-input').value;
+  const delim = document.getElementById('ltc-delim').value;
+  const quote = document.getElementById('ltc-quote').checked;
+  const trim = document.getElementById('ltc-trim').checked;
+  if (mode === 'encode') {
+    let lines = text.split('\n');
+    if (trim) lines = lines.map(l => l.trim());
+    lines = lines.filter(l => l !== '');
+    document.getElementById('ltc-in-count').textContent = lines.length + ' items';
+    const items = quote ? lines.map(l => '"' + l.replace(/"/g, '""') + '"') : lines;
+    document.getElementById('ltc-output').value = items.join(delim);
+  } else {
+    const items = text.split(delim).map(l => trim ? l.trim() : l);
+    document.getElementById('ltc-in-count').textContent = items.length + ' items';
+    document.getElementById('ltc-output').value = items.map(l => l.replace(/^"|"$/g, '').replace(/""/g, '"')).join('\n');
+  }
+}
+
+['ltc-input','ltc-delim'].forEach(id => {
+  document.getElementById(id).addEventListener('input', convert);
+  document.getElementById(id).addEventListener('change', convert);
+});
+['ltc-quote','ltc-trim'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+['encode','decode'].forEach(m => {
+  document.getElementById('ltc-' + m).addEventListener('click', () => {
+    mode = m;
+    document.getElementById('ltc-encode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (m==='encode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+    document.getElementById('ltc-decode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (m==='decode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+    document.getElementById('ltc-in-label').textContent = m==='encode' ? 'Input Lines (one per line)' : 'CSV Input';
+    document.getElementById('ltc-out-label').textContent = m==='encode' ? 'CSV Output' : 'Lines Output';
+    convert();
+  });
+});
+
+document.getElementById('ltc-copy').addEventListener('click', () => {
+  const val = document.getElementById('ltc-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('ltc-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

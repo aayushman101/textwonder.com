@@ -1,0 +1,65 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="sc-input" rows="6" placeholder="Paste text or type here — syllables will be counted per word..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
+      <div id="sc-total" class="text-2xl font-bold text-violet-400">0</div>
+      <div class="text-xs text-slate-500 mt-1">Total Syllables</div>
+    </div>
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
+      <div id="sc-words" class="text-2xl font-bold text-slate-300">0</div>
+      <div class="text-xs text-slate-500 mt-1">Words</div>
+    </div>
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
+      <div id="sc-avg" class="text-2xl font-bold text-slate-300">0.0</div>
+      <div class="text-xs text-slate-500 mt-1">Avg / Word</div>
+    </div>
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
+      <div id="sc-poly" class="text-2xl font-bold text-slate-300">0</div>
+      <div class="text-xs text-slate-500 mt-1">Polysyllabic</div>
+    </div>
+  </div>
+  <div id="sc-breakdown" class="space-y-1 max-h-60 overflow-y-auto"></div>
+</div>
+
+<script>
+function countSyllables(word) {
+  word = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (!word) return 0;
+  if (word.length <= 3) return 1;
+  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  word = word.replace(/^y/, '');
+  const m = word.match(/[aeiouy]{1,2}/g);
+  return m ? m.length : 1;
+}
+
+function count() {
+  const text = document.getElementById('sc-input').value;
+  const words = text.match(/[a-zA-Z']+/g) || [];
+  let total = 0, poly = 0;
+  const breakdown = words.map(w => {
+    const s = countSyllables(w);
+    total += s;
+    if (s >= 3) poly++;
+    return { w, s };
+  });
+  document.getElementById('sc-total').textContent = total;
+  document.getElementById('sc-words').textContent = words.length;
+  document.getElementById('sc-avg').textContent = words.length ? (total / words.length).toFixed(1) : '0.0';
+  document.getElementById('sc-poly').textContent = poly;
+  const bd = document.getElementById('sc-breakdown');
+  if (breakdown.length === 0) { bd.innerHTML = ''; return; }
+  bd.innerHTML = '<p class="text-xs text-slate-500 mb-2">Syllable count per word:</p>' +
+    '<div class="flex flex-wrap gap-1.5">' +
+    breakdown.map(({w,s}) =>
+      `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-0.5 text-xs text-slate-200">${w} <span class="text-violet-400">${s}</span></span>`
+    ).join('') + '</div>';
+}
+
+document.getElementById('sc-input').addEventListener('input', count);
+</script>

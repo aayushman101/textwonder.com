@@ -1,0 +1,87 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4 items-center">
+    <div class="flex items-center gap-2">
+      <button id="th-encode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Text → Hex</button>
+      <button id="th-decode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Hex → Text</button>
+    </div>
+    <div class="flex items-center gap-2">
+      <span class="text-slate-400 text-xs">Delimiter:</span>
+      <select id="th-delim" class="bg-[var(--bg-surface)] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1.5 outline-none">
+        <option value=" ">Space</option>
+        <option value="">None</option>
+        <option value=",">Comma</option>
+        <option value="0x">0x prefix</option>
+      </select>
+      <select id="th-case" class="bg-[var(--bg-surface)] border border-slate-700 text-slate-300 text-xs rounded-lg px-2 py-1.5 outline-none">
+        <option value="upper">UPPERCASE</option>
+        <option value="lower">lowercase</option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block" id="th-in-label">Input Text</label>
+    <textarea id="th-input" rows="6" placeholder="Enter text to convert..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm font-mono"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium" id="th-out-label">Hex Output</label>
+      <button id="th-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="th-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let mode = 'encode';
+
+function convert() {
+  const input = document.getElementById('th-input').value;
+  const delim = document.getElementById('th-delim').value;
+  const upper = document.getElementById('th-case').value === 'upper';
+  if (mode === 'encode') {
+    let parts = [];
+    for (let i = 0; i < input.length; i++) {
+      const cp = input.codePointAt(i);
+      if (cp > 0xFFFF) i++;
+      let hex = cp.toString(16);
+      if (upper) hex = hex.toUpperCase();
+      hex = hex.padStart(2, '0');
+      parts.push(delim === '0x' ? '0x' + hex : hex);
+    }
+    document.getElementById('th-output').value = delim === '0x' ? parts.join(' ') : parts.join(delim);
+  } else {
+    try {
+      let raw = input.replace(/0x/gi, ' ').replace(/[,\s]+/g, ' ').trim();
+      const parts = raw.split(' ').filter(Boolean);
+      const chars = parts.map(h => String.fromCodePoint(parseInt(h, 16)));
+      document.getElementById('th-output').value = chars.join('');
+    } catch { document.getElementById('th-output').value = 'Invalid hex input'; }
+  }
+}
+
+['th-input','th-delim','th-case'].forEach(id => document.getElementById(id).addEventListener('input', convert));
+['th-input','th-delim','th-case'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+['encode','decode'].forEach(m => {
+  document.getElementById('th-' + m).addEventListener('click', () => {
+    mode = m;
+    document.getElementById('th-encode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (m==='encode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+    document.getElementById('th-decode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (m==='decode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+    document.getElementById('th-in-label').textContent = m==='encode' ? 'Input Text' : 'Hex Input';
+    document.getElementById('th-out-label').textContent = m==='encode' ? 'Hex Output' : 'Decoded Text';
+    convert();
+  });
+});
+
+document.getElementById('th-copy').addEventListener('click', () => {
+  const val = document.getElementById('th-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('th-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

@@ -1,0 +1,66 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rp-hyphens" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Preserve hyphens</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rp-apos" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Preserve apostrophes</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="rp-spaces" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Collapse extra spaces after removal</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <span id="rp-in-count" class="text-xs text-slate-500">0 chars</span>
+    </div>
+    <textarea id="rp-input" rows="7" placeholder="Paste text here — punctuation will be removed..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Clean Text</label>
+      <div class="flex items-center gap-2">
+        <span id="rp-out-count" class="text-xs text-slate-500">0 chars</span>
+        <button id="rp-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="rp-output" rows="7" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  let text = document.getElementById('rp-input').value;
+  document.getElementById('rp-in-count').textContent = text.length + ' chars';
+  const keepHyphen = document.getElementById('rp-hyphens').checked;
+  const keepApos = document.getElementById('rp-apos').checked;
+  const collapse = document.getElementById('rp-spaces').checked;
+  let regex = keepHyphen && keepApos ? /[^\w\s'\-]/gu
+    : keepHyphen ? /[^\w\s\-]/gu
+    : keepApos ? /[^\w\s']/gu
+    : /[^\w\s]/gu;
+  let result = text.replace(regex, '');
+  if (collapse) result = result.replace(/[ \t]+/g, ' ');
+  document.getElementById('rp-output').value = result;
+  document.getElementById('rp-out-count').textContent = result.length + ' chars';
+}
+
+['rp-input','rp-hyphens','rp-apos','rp-spaces'].forEach(id => document.getElementById(id).addEventListener('input', convert));
+['rp-hyphens','rp-apos','rp-spaces'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+document.getElementById('rp-copy').addEventListener('click', () => {
+  const val = document.getElementById('rp-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rp-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

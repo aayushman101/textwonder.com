@@ -69,6 +69,26 @@ import ProformaInvoiceGenerator from '../../components/tools/ProformaInvoiceGene
 import TextToVoice from '../../components/tools/TextToVoice.astro';
 import LeaveApplicationGenerator from '../../components/tools/LeaveApplicationGenerator.astro';
 import NocGenerator from '../../components/tools/NocGenerator.astro';
+import FancyTextGenerator from '../../components/tools/FancyTextGenerator.astro';
+import AlternatingCaseConverter from '../../components/tools/AlternatingCaseConverter.astro';
+import UpsideDownText from '../../components/tools/UpsideDownText.astro';
+import ZalgoTextGenerator from '../../components/tools/ZalgoTextGenerator.astro';
+import LeetSpeakConverter from '../../components/tools/LeetSpeakConverter.astro';
+import PigLatinConverter from '../../components/tools/PigLatinConverter.astro';
+import TextToHex from '../../components/tools/TextToHex.astro';
+import NumbersToWords from '../../components/tools/NumbersToWords.astro';
+import RemovePunctuation from '../../components/tools/RemovePunctuation.astro';
+import RemoveNumbers from '../../components/tools/RemoveNumbers.astro';
+import RemoveSpecialCharacters from '../../components/tools/RemoveSpecialCharacters.astro';
+import RemoveBlankLines from '../../components/tools/RemoveBlankLines.astro';
+import AddPrefixSuffix from '../../components/tools/AddPrefixSuffix.astro';
+import ShuffleLines from '../../components/tools/ShuffleLines.astro';
+import LinesToCsv from '../../components/tools/LinesToCsv.astro';
+import WordScrambler from '../../components/tools/WordScrambler.astro';
+import SyllableCounter from '../../components/tools/SyllableCounter.astro';
+import ExtractPhoneNumbers from '../../components/tools/ExtractPhoneNumbers.astro';
+import TextToAsciiArt from '../../components/tools/TextToAsciiArt.astro';
+import SmallCapsGenerator from '../../components/tools/SmallCapsGenerator.astro';
 import { TOOLS } from '../../data/tools.js';
 
 export function getStaticPaths() {
@@ -147,6 +167,26 @@ const componentMap: Record<string, any> = {
   'text-to-voice': TextToVoice,
   'leave-application-generator': LeaveApplicationGenerator,
   'noc-generator': NocGenerator,
+  'fancy-text-generator': FancyTextGenerator,
+  'alternating-case-converter': AlternatingCaseConverter,
+  'upside-down-text': UpsideDownText,
+  'zalgo-text-generator': ZalgoTextGenerator,
+  'leet-speak-converter': LeetSpeakConverter,
+  'pig-latin-converter': PigLatinConverter,
+  'text-to-hex': TextToHex,
+  'numbers-to-words': NumbersToWords,
+  'remove-punctuation': RemovePunctuation,
+  'remove-numbers': RemoveNumbers,
+  'remove-special-characters': RemoveSpecialCharacters,
+  'remove-blank-lines': RemoveBlankLines,
+  'add-prefix-suffix': AddPrefixSuffix,
+  'shuffle-lines': ShuffleLines,
+  'lines-to-csv': LinesToCsv,
+  'word-scrambler': WordScrambler,
+  'syllable-counter': SyllableCounter,
+  'extract-phone-numbers': ExtractPhoneNumbers,
+  'text-to-ascii-art': TextToAsciiArt,
+  'small-caps-generator': SmallCapsGenerator,
 };
 
 const ToolComponent = componentMap[tool.slug];

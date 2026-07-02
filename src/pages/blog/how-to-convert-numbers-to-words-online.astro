@@ -1,0 +1,50 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is the largest number this tool supports?', a: 'The tool supports numbers up to 999,999,999,999 (nine hundred ninety-nine billion, nine hundred ninety-nine million, nine hundred ninety-nine thousand, nine hundred ninety-nine).' },
+  { q: 'Does it support ordinal numbers?', a: 'Yes — toggle the Ordinal option to get "first", "second", "third", etc. instead of "one", "two", "three".' },
+  { q: 'Can I use this for cheque writing?', a: 'Yes — this tool is commonly used to write out numbers in words for cheques, legal documents, and invoices.' },
+  { q: 'Does it handle decimal numbers?', a: 'The current version handles whole integers. For decimal numbers, convert the integer and fractional parts separately.' },
+];
+---
+<BlogLayout
+  title="How to Convert Numbers to Words Online Free — Number to English Words"
+  description="Convert any number to English words instantly. Supports up to 999 billion. Ordinal option (first, second, third). Free online number to words converter."
+  canonical="/blog/how-to-convert-numbers-to-words-online"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Need to write a number in words for a cheque, legal document, or invoice? This tool converts any integer up to 999 billion into its English word form — instantly and accurately.</p>
+
+  <h2>How to Convert Numbers to Words</h2>
+  <ol>
+    <li>Type a number into the input box.</li>
+    <li>The English words appear below immediately.</li>
+    <li>Toggle <strong>Ordinal</strong> if you need "forty-second" instead of "forty-two".</li>
+    <li>Click Copy to copy the result.</li>
+  </ol>
+
+  <h2>Example Conversions</h2>
+  <ul>
+    <li>1 → one (ordinal: first)</li>
+    <li>42 → forty-two (ordinal: forty-second)</li>
+    <li>1,000 → one thousand</li>
+    <li>1,234,567 → one million, two hundred thirty-four thousand, five hundred sixty-seven</li>
+  </ul>
+
+  <h2>When You Need Numbers in Words</h2>
+  <ul>
+    <li>Cheque writing (amounts in words)</li>
+    <li>Legal contracts and agreements</li>
+    <li>Academic writing (numbers below ten in words)</li>
+    <li>Invoice amounts</li>
+    <li>Rank and position (ordinal numbers)</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert numbers to words instantly — supports up to 999 billion</p>
+    <a href="/tools/numbers-to-words" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Numbers to Words Converter →</a>
+  </div>
+</BlogLayout>

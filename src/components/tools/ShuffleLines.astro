@@ -1,0 +1,69 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="shl-blanks" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Remove blank lines before shuffling</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Lines</label>
+      <span id="shl-in-count" class="text-xs text-slate-500">0 lines</span>
+    </div>
+    <textarea id="shl-input" rows="8" placeholder="Paste your lines here, one per line..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div class="flex items-center gap-3">
+    <button id="shl-shuffle" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Shuffle Lines</button>
+    <button id="shl-again" class="bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm hidden">Shuffle Again</button>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Shuffled Lines</label>
+      <div class="flex items-center gap-2">
+        <span id="shl-out-count" class="text-xs text-slate-500">0 lines</span>
+        <button id="shl-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="shl-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function doShuffle() {
+  let lines = document.getElementById('shl-input').value.split('\n');
+  if (document.getElementById('shl-blanks').checked) lines = lines.filter(l => l.trim() !== '');
+  const shuffled = shuffle(lines);
+  document.getElementById('shl-output').value = shuffled.join('\n');
+  document.getElementById('shl-out-count').textContent = shuffled.length + ' lines';
+  document.getElementById('shl-again').classList.remove('hidden');
+}
+
+document.getElementById('shl-input').addEventListener('input', () => {
+  const lines = document.getElementById('shl-input').value.split('\n');
+  document.getElementById('shl-in-count').textContent = lines.length + ' lines';
+});
+
+document.getElementById('shl-shuffle').addEventListener('click', doShuffle);
+document.getElementById('shl-again').addEventListener('click', doShuffle);
+
+document.getElementById('shl-copy').addEventListener('click', () => {
+  const val = document.getElementById('shl-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('shl-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

@@ -1,0 +1,44 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'How accurate is the syllable counter?', a: 'The tool uses a heuristic algorithm based on vowel group detection with corrections for silent-e endings, -le endings, and other common English patterns. It is accurate for most common English words.' },
+  { q: 'What is a polysyllabic word?', a: 'A word with three or more syllables is called polysyllabic. The tool counts and displays how many polysyllabic words are in your text.' },
+  { q: 'Does it show the syllable count per word?', a: 'Yes — the tool shows a breakdown chip for every word in your input, with the syllable count displayed in violet.' },
+  { q: 'What is the average syllables per word stat?', a: 'It divides the total syllable count by the number of words. A higher average indicates more complex vocabulary.' },
+];
+---
+<BlogLayout
+  title="How to Count Syllables in Text Online Free — Syllable Counter"
+  description="Count syllables in any text instantly. Shows total syllables, words, average syllables per word, and per-word breakdown. Free online syllable counter."
+  canonical="/blog/how-to-count-syllables-in-text-online-free"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Syllable counting is essential for poetry writing, song lyrics, haiku, reading level analysis, and educational tasks. This tool counts syllables in real time and shows a detailed per-word breakdown.</p>
+
+  <h2>How to Count Syllables</h2>
+  <ol>
+    <li>Type or paste your text into the input box.</li>
+    <li>View the stats grid: total syllables, word count, average syllables per word, and polysyllabic word count.</li>
+    <li>Scroll down to see the per-word syllable breakdown.</li>
+  </ol>
+
+  <h2>Who Uses Syllable Counters?</h2>
+  <ul>
+    <li><strong>Poets</strong> — for metered verse and haiku (5-7-5 syllables)</li>
+    <li><strong>Songwriters</strong> — for fitting lyrics to a melody</li>
+    <li><strong>Teachers</strong> — for reading level assessment</li>
+    <li><strong>Copywriters</strong> — to check word complexity</li>
+    <li><strong>Students</strong> — for English phonics exercises</li>
+  </ul>
+
+  <h2>Haiku Syllable Structure</h2>
+  <p>A traditional haiku has 17 syllables: 5 in the first line, 7 in the second, and 5 in the third. Use this tool to verify your haiku line by line.</p>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Count syllables in any text — per-word breakdown, free</p>
+    <a href="/tools/syllable-counter" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Syllable Counter →</a>
+  </div>
+</BlogLayout>

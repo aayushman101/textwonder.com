@@ -1,0 +1,36 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is alternating case text?', a: 'Alternating case text switches between uppercase and lowercase on each letter — like "HeLLo WoRLd". It is often used for mocking memes on social media.' },
+  { q: 'Is this the same as the SpongeBob meme font?', a: 'Yes — the alternating caps style is directly associated with the "mocking SpongeBob" meme format.' },
+  { q: 'Can I choose whether to start with upper or lower case?', a: 'Yes. TextWonder lets you pick Start Upper (e.g., HeLLo) or Start Lower (e.g., hElLo).' },
+  { q: 'Does the converter skip numbers and punctuation?', a: 'Yes — only letters alternate. Numbers, spaces, and symbols stay as-is.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to Alternating Case — Free Online Tool"
+  description="Convert text to aLtErNaTiNg CaSe (SpongeBob meme font) instantly. Choose start-upper or start-lower, copy and paste anywhere."
+  canonical="/blog/how-to-convert-text-to-alternating-case"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>The alternating case converter switches each letter between uppercase and lowercase — creating the iconic "mocking SpongeBob" text style used in memes. It is one of the most recognisable text formats on the internet.</p>
+
+  <h2>How to Use the Alternating Case Converter</h2>
+  <ol>
+    <li>Go to the Alternating Case Converter tool.</li>
+    <li>Type or paste your text.</li>
+    <li>Choose <strong>Start Upper</strong> (HeLLo) or <strong>Start Lower</strong> (hElLo).</li>
+    <li>Copy the output and paste it into your meme, comment, or post.</li>
+  </ol>
+
+  <h2>Why Alternating Case Is Everywhere</h2>
+  <p>This style went viral thanks to the "mocking SpongeBob" meme in 2017 and has been used ever since to indicate sarcasm or mockery. Typing it manually is tedious — a converter does it in one click.</p>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Try the Alternating Case Converter — instant SpongeBob text</p>
+    <a href="/tools/alternating-case-converter" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Alternating Case Converter →</a>
+  </div>
+</BlogLayout>

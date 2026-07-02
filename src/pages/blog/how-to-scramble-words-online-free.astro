@@ -1,0 +1,45 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is the middle-letter scramble?', a: 'Research shows readers can recognise words even when internal letters are scrambled, as long as the first and last letters remain in place. The middle scramble preserves the first and last letter of each word.' },
+  { q: 'What is the full scramble option?', a: 'Full scramble randomises every letter of every word, including the first and last.' },
+  { q: 'What does "Scramble Word Order" do?', a: 'It randomly reorders the words in the text, not just the letters within words.' },
+  { q: 'Can I scramble a single word?', a: 'Yes — type any single word and it will be scrambled.' },
+];
+---
+<BlogLayout
+  title="How to Scramble Words Online Free — Word Scrambler Tool"
+  description="Scramble words and text online. Middle-letter scramble preserves first and last letters. Full scramble or word order scramble options. Free online word scrambler."
+  canonical="/blog/how-to-scramble-words-online-free"
+  date="2026-07-02"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>A word scrambler randomly rearranges letters in words — used for word games, puzzles, and demonstrating the psychology of reading. TextWonder offers three scramble modes: middle-letter, full, and word order.</p>
+
+  <h2>How to Scramble Words</h2>
+  <ol>
+    <li>Type or paste your text.</li>
+    <li>Choose a scramble mode: <strong>Middle Letters</strong>, <strong>Full Scramble</strong>, or <strong>Scramble Word Order</strong>.</li>
+    <li>Click <strong>Scramble</strong>.</li>
+    <li>Click again for a new random scramble.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <h2>The Interesting Science Behind Middle-Letter Scramble</h2>
+  <p>Studies (including the famous Cambridge University reading experiment) found that readers can still understand sentences when the internal letters of words are scrambled — because the brain reads words as a whole pattern, not letter by letter. The first and last letters are the anchor points.</p>
+
+  <h2>Use Cases</h2>
+  <ul>
+    <li>Creating word puzzles and games</li>
+    <li>Educational activities for children</li>
+    <li>Demonstrating cognitive science concepts</li>
+    <li>Fun scrambled-message social media posts</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Scramble words and letters instantly — 3 modes, free</p>
+    <a href="/tools/word-scrambler" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Word Scrambler Tool →</a>
+  </div>
+</BlogLayout>

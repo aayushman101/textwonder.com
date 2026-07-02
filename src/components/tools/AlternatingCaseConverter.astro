@@ -1,0 +1,58 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Text</label>
+      <div class="flex gap-2">
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="radio" name="ac-start" id="ac-upper" checked class="accent-violet-600" />
+          <span class="text-slate-400 text-xs">Start UPPER</span>
+        </label>
+        <label class="flex items-center gap-1.5 cursor-pointer">
+          <input type="radio" name="ac-start" id="ac-lower" class="accent-violet-600" />
+          <span class="text-slate-400 text-xs">Start lower</span>
+        </label>
+      </div>
+    </div>
+    <textarea id="ac-input" rows="5" placeholder="Paste text here — it will be converted to aLtErNaTiNg CaSe" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Alternating Case</label>
+      <button id="ac-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="ac-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  const input = document.getElementById('ac-input').value;
+  const startUpper = document.getElementById('ac-upper').checked;
+  let upper = startUpper;
+  const result = [...input].map(ch => {
+    if (/[a-zA-Z]/.test(ch)) {
+      const out = upper ? ch.toUpperCase() : ch.toLowerCase();
+      upper = !upper;
+      return out;
+    }
+    return ch;
+  }).join('');
+  document.getElementById('ac-output').value = result;
+}
+
+document.getElementById('ac-input').addEventListener('input', convert);
+document.getElementById('ac-upper').addEventListener('change', convert);
+document.getElementById('ac-lower').addEventListener('change', convert);
+
+document.getElementById('ac-copy').addEventListener('click', () => {
+  const val = document.getElementById('ac-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('ac-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

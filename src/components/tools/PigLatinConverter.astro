@@ -1,0 +1,89 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex items-center gap-2">
+    <button id="pl-encode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">English → Pig Latin</button>
+    <button id="pl-decode" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Pig Latin → English</button>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input</label>
+    <textarea id="pl-input" rows="6" placeholder="Enter text to convert..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <button id="pl-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="pl-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+const VOWELS = 'aeiouAEIOU';
+let mode = 'encode';
+
+function toPigLatin(word) {
+  if (!word) return word;
+  const punct = word.match(/[^a-zA-Z]+$/)?.[0] || '';
+  const clean = word.replace(/[^a-zA-Z]+$/, '');
+  if (!clean) return word;
+  const upper = clean[0] === clean[0].toUpperCase() && clean[0] !== clean[0].toLowerCase();
+  const low = clean.toLowerCase();
+  if (VOWELS.includes(low[0])) {
+    const r = clean + 'way' + punct;
+    return upper ? r[0].toUpperCase() + r.slice(1) : r;
+  }
+  let i = 0;
+  while (i < low.length && !VOWELS.includes(low[i])) i++;
+  if (i === low.length) return clean + 'ay' + punct;
+  const cons = clean.slice(0, i);
+  const rest = clean.slice(i);
+  const r = rest + cons.toLowerCase() + 'ay' + punct;
+  return upper ? r[0].toUpperCase() + r.slice(1) : r;
+}
+
+function fromPigLatin(word) {
+  const punct = word.match(/[^a-zA-Z]+$/)?.[0] || '';
+  const clean = word.replace(/[^a-zA-Z]+$/, '');
+  if (!clean) return word;
+  if (clean.endsWith('way')) {
+    return clean.slice(0, -3) + punct;
+  }
+  if (clean.endsWith('ay')) {
+    const stem = clean.slice(0, -2);
+    const match = stem.match(/^(.+?)([aeiou][a-z]*)$/i);
+    if (match) return match[2] + match[1] + punct;
+  }
+  return word;
+}
+
+function convert() {
+  const text = document.getElementById('pl-input').value;
+  const words = text.split(/(\s+)/);
+  const out = words.map(token => /\s/.test(token) ? token : (mode === 'encode' ? toPigLatin(token) : fromPigLatin(token))).join('');
+  document.getElementById('pl-output').value = out;
+}
+
+document.getElementById('pl-input').addEventListener('input', convert);
+document.getElementById('pl-encode').addEventListener('click', () => {
+  mode = 'encode';
+  document.getElementById('pl-encode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors';
+  document.getElementById('pl-decode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors';
+  convert();
+});
+document.getElementById('pl-decode').addEventListener('click', () => {
+  mode = 'decode';
+  document.getElementById('pl-decode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors';
+  document.getElementById('pl-encode').className = 'px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors';
+  convert();
+});
+document.getElementById('pl-copy').addEventListener('click', () => {
+  const val = document.getElementById('pl-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('pl-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

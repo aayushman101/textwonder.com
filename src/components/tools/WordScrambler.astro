@@ -1,0 +1,82 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="ws-full" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Full scramble (all letters, including first & last)</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="ws-words" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Also scramble word order</span>
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="ws-input" rows="5" placeholder="Type or paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <button id="ws-btn" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Scramble</button>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Scrambled Text</label>
+      <button id="ws-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="ws-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function shuffleArr(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function scrambleWord(word, full) {
+  const letters = word.match(/[a-zA-Z]/g);
+  if (!letters || letters.length <= 3 || full) {
+    if (full && letters && letters.length > 1) {
+      let chars = [...word];
+      const alpha = chars.map((c, i) => /[a-zA-Z]/.test(c) ? i : -1).filter(i => i >= 0);
+      const shuffled = shuffleArr(alpha.map(i => chars[i]));
+      alpha.forEach((i, j) => { chars[i] = shuffled[j]; });
+      return chars.join('');
+    }
+    return word;
+  }
+  const first = word[0];
+  const last = word[word.length - 1];
+  const mid = [...word.slice(1, -1)];
+  const shuffledMid = shuffleArr(mid);
+  return first + shuffledMid.join('') + last;
+}
+
+function doScramble() {
+  const text = document.getElementById('ws-input').value;
+  const full = document.getElementById('ws-full').checked;
+  const scrambleOrder = document.getElementById('ws-words').checked;
+  let tokens = text.split(/(\s+)/);
+  let words = tokens.filter((_, i) => i % 2 === 0);
+  let spaces = tokens.filter((_, i) => i % 2 === 1);
+  let scrambledWords = words.map(w => scrambleWord(w, full));
+  if (scrambleOrder) scrambledWords = shuffleArr(scrambledWords);
+  let result = scrambledWords.map((w, i) => w + (spaces[i] || '')).join('');
+  document.getElementById('ws-output').value = result;
+}
+
+document.getElementById('ws-btn').addEventListener('click', doScramble);
+document.getElementById('ws-input').addEventListener('input', doScramble);
+
+document.getElementById('ws-copy').addEventListener('click', () => {
+  const val = document.getElementById('ws-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('ws-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

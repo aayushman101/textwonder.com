@@ -1,0 +1,41 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="scg-input" rows="5" placeholder="Type or paste text here — it will be converted to ꜱᴍᴀʟʟ ᴄᴀᴘꜱ" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Small Caps Output</label>
+      <button id="scg-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="scg-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm text-lg tracking-wide"></textarea>
+  </div>
+  <p class="text-xs text-slate-500">These are Unicode characters — copy and paste them into Instagram bio, Twitter, Discord, or anywhere that supports Unicode text.</p>
+</div>
+
+<script>
+const MAP = {a:'ᴀ',b:'ʙ',c:'ᴄ',d:'ᴅ',e:'ᴇ',f:'ꜰ',g:'ɢ',h:'ʜ',i:'ɪ',j:'ᴊ',k:'ᴋ',l:'ʟ',m:'ᴍ',n:'ɴ',o:'ᴏ',p:'ᴘ',q:'Q',r:'ʀ',s:'ꜱ',t:'ᴛ',u:'ᴜ',v:'ᴠ',w:'ᴡ',x:'x',y:'ʏ',z:'ᴢ'};
+
+function convert() {
+  const text = document.getElementById('scg-input').value;
+  const out = [...text].map(ch => {
+    const low = ch.toLowerCase();
+    if (MAP[low]) return MAP[low];
+    return ch;
+  }).join('');
+  document.getElementById('scg-output').value = out;
+}
+
+document.getElementById('scg-input').addEventListener('input', convert);
+document.getElementById('scg-copy').addEventListener('click', () => {
+  const val = document.getElementById('scg-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('scg-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

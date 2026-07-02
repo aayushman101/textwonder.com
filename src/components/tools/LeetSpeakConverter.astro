@@ -1,0 +1,62 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4 items-center">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-300 text-sm">Level:</span>
+      <button id="ls-l1" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Basic</button>
+      <button id="ls-l2" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Intermediate</button>
+      <button id="ls-l3" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Elite</button>
+    </div>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="ls-input" rows="5" placeholder="Type normal text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">1337 5P34K</label>
+      <button id="ls-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="ls-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+const levels = [
+  {a:'4',e:'3',i:'1',o:'0',s:'5',t:'7'},
+  {a:'4',b:'8',e:'3',g:'9',i:'1',l:'1',o:'0',s:'5',t:'7',z:'2'},
+  {a:'@',b:'8',c:'(',d:'|)',e:'3',f:'ph',g:'9',h:'#',i:'!',j:'_|',k:'|<',l:'1',m:'|\\/|',n:'|\\|',o:'0',p:'|>',q:'0_',r:'|2',s:'$',t:'+',u:'|_|',v:'\\/',w:'\\/\\/',x:'><',y:'`/',z:'2'},
+];
+let level = 0;
+
+function convert() {
+  const text = document.getElementById('ls-input').value;
+  const map = levels[level];
+  let result = text.toLowerCase().split('').map(ch => map[ch] || ch).join('');
+  document.getElementById('ls-output').value = result;
+}
+
+document.getElementById('ls-input').addEventListener('input', convert);
+
+['l1','l2','l3'].forEach((id, i) => {
+  document.getElementById('ls-' + id).addEventListener('click', () => {
+    level = i;
+    ['l1','l2','l3'].forEach((b, j) => {
+      const el = document.getElementById('ls-' + b);
+      el.className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (j === i ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+    });
+    convert();
+  });
+});
+
+document.getElementById('ls-copy').addEventListener('click', () => {
+  const val = document.getElementById('ls-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('ls-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

@@ -1,0 +1,73 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="grid grid-cols-2 gap-3">
+    <div>
+      <label class="text-slate-300 text-sm font-medium mb-1 block">Prefix</label>
+      <input id="aps-prefix" type="text" placeholder='e.g. "' class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-600 outline-none focus:ring-2 focus:ring-violet-600 text-sm font-mono" />
+    </div>
+    <div>
+      <label class="text-slate-300 text-sm font-medium mb-1 block">Suffix</label>
+      <input id="aps-suffix" type="text" placeholder='e.g. ",' class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-2.5 text-slate-100 placeholder-slate-600 outline-none focus:ring-2 focus:ring-violet-600 text-sm font-mono" />
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="aps-skip" checked class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Skip blank lines</span>
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer">
+      <input type="checkbox" id="aps-trim" class="accent-violet-600" />
+      <span class="text-slate-300 text-sm">Trim whitespace per line</span>
+    </label>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Input Lines</label>
+      <span id="aps-in-count" class="text-xs text-slate-500">0 lines</span>
+    </div>
+    <textarea id="aps-input" rows="7" placeholder="Paste your lines here, one per line..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <div class="flex items-center gap-2">
+        <span id="aps-out-count" class="text-xs text-slate-500">0 lines</span>
+        <button id="aps-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+    </div>
+    <textarea id="aps-output" rows="7" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+function convert() {
+  const text = document.getElementById('aps-input').value;
+  const prefix = document.getElementById('aps-prefix').value;
+  const suffix = document.getElementById('aps-suffix').value;
+  const skip = document.getElementById('aps-skip').checked;
+  const trim = document.getElementById('aps-trim').checked;
+  const lines = text.split('\n');
+  document.getElementById('aps-in-count').textContent = lines.length + ' lines';
+  const out = lines.map(l => {
+    const line = trim ? l.trim() : l;
+    if (skip && line === '') return '';
+    return prefix + line + suffix;
+  });
+  document.getElementById('aps-output').value = out.join('\n');
+  document.getElementById('aps-out-count').textContent = out.filter(l => l !== '').length + ' lines';
+}
+
+['aps-input','aps-prefix','aps-suffix'].forEach(id => document.getElementById(id).addEventListener('input', convert));
+['aps-skip','aps-trim'].forEach(id => document.getElementById(id).addEventListener('change', convert));
+
+document.getElementById('aps-copy').addEventListener('click', () => {
+  const val = document.getElementById('aps-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('aps-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

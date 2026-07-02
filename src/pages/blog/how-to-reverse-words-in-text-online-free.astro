@@ -1,0 +1,31 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is the difference between reversing text and reversing words?', a: 'Reverse text flips the character order of the entire string (hello → olleh). Reverse words flips the word order (hello world → world hello) — the letters within each word stay in the correct order.' },
+  { q: 'Does it reverse per line or the whole text?', a: 'Both options are available. Per-line mode reverses word order on each line independently. Global mode treats the entire text as a single block of words.' },
+  { q: 'Is punctuation preserved?', a: 'Yes — punctuation remains attached to its word. "Hello, world!" becomes "world! Hello,".' },
+];
+---
+<BlogLayout
+  title="How to Reverse Words in Text Online Free — Word Order Reverser"
+  description="Reverse the order of words in any text. Choose per-line or global reversal. Free online word order reverser — no signup."
+  canonical="/blog/how-to-reverse-words-in-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Reversing word order is different from reversing text character-by-character. This tool flips the positions of words so "the quick brown fox" becomes "fox brown quick the" — with letters within each word unchanged.</p>
+
+  <h2>How to Reverse Word Order</h2>
+  <ol>
+    <li>Paste your text.</li>
+    <li>Choose Per Line (reverses each line independently) or Global (reverses all words across the entire text).</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Reverse word order in text — free, instant</p>
+    <a href="/tools/reverse-words" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Reverse Words Tool →</a>
+  </div>
+</BlogLayout>

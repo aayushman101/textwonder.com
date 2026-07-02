@@ -1,0 +1,34 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What does invert case (swap case) mean?', a: 'Every uppercase letter becomes lowercase and every lowercase letter becomes uppercase. "Hello World" becomes "hELLO wORLD".' },
+  { q: 'What is the difference from alternating case?', a: 'Invert case flips the existing case of each specific letter. Alternating case applies a fixed upper/lower pattern regardless of original case.' },
+  { q: 'What if I accidentally typed with Caps Lock on?', a: 'Invert case is the perfect fix — it flips every letter to what it should have been.' },
+];
+---
+<BlogLayout
+  title="How to Invert Text Case Online Free — Swap Case Converter"
+  description="Invert the case of every letter: uppercase becomes lowercase, lowercase becomes uppercase. Free online swap-case / case inverter tool."
+  canonical="/blog/how-to-invert-text-case-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Case inversion (also called swap case or toggle case) flips every letter — A becomes a, and a becomes A. It is the perfect fix for text accidentally typed with Caps Lock on, and it creates interesting visual effects for social media.</p>
+
+  <h2>How to Invert Text Case</h2>
+  <ol>
+    <li>Type or paste your text.</li>
+    <li>The inverted case version appears instantly below.</li>
+    <li>Copy and paste wherever you need it.</li>
+  </ol>
+
+  <h2>Fix Caps Lock Typos</h2>
+  <p>If you typed a paragraph with Caps Lock accidentally on — "hELLO, hOW ARE YOU?" — just paste it into this tool and click Copy. The inverted output will be the correct "Hello, how are you?" in normal case.</p>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Swap uppercase and lowercase instantly — free</p>
+    <a href="/tools/invert-case" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Invert Case Tool →</a>
+  </div>
+</BlogLayout>

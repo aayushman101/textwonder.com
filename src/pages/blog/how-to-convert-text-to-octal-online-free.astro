@@ -1,0 +1,33 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is octal notation?', a: 'Octal is base-8, using only digits 0-7. It is famously used in Unix/Linux for file permissions (e.g., chmod 755 = rwxr-xr-x).' },
+  { q: 'How is text converted to octal?', a: 'Each character is converted to its Unicode code point, then that number is expressed in base-8.' },
+  { q: 'Can I decode octal back to text?', a: 'Yes — switch to Decode mode and paste your space-separated octal values.' },
+  { q: 'What delimiter options are available?', a: 'Space, no delimiter, and comma are available.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to Octal Online Free — Octal Encoder & Decoder"
+  description="Convert text to octal (base-8) character values and decode octal back to text. Free online text to octal converter."
+  canonical="/blog/how-to-convert-text-to-octal-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Octal encoding represents each character as its base-8 Unicode code point. It is commonly used in Unix file permissions, embedded programming, and CTF (Capture the Flag) challenges. This tool converts text to octal and back instantly.</p>
+
+  <h2>How to Convert Text to Octal</h2>
+  <ol>
+    <li>Select <strong>Encode</strong> mode.</li>
+    <li>Type or paste your text.</li>
+    <li>Choose a delimiter (space is most common).</li>
+    <li>Copy the octal output.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert text to octal and back — free</p>
+    <a href="/tools/text-to-octal" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Text to Octal Tool →</a>
+  </div>
+</BlogLayout>

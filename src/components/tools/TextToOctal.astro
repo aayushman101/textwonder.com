@@ -1,0 +1,67 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex gap-3">
+    <button id="toc-encode" class="px-4 py-2 rounded-xl text-sm font-medium bg-violet-700 text-white transition-colors">Encode (Text → Octal)</button>
+    <button id="toc-decode" class="px-4 py-2 rounded-xl text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Decode (Octal → Text)</button>
+  </div>
+  <div class="flex items-center gap-3 flex-wrap">
+    <label class="text-slate-400 text-sm">Delimiter:</label>
+    <select id="toc-delim" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value=" ">Space</option>
+      <option value="">None</option>
+      <option value=",">Comma</option>
+    </select>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input</label>
+    <textarea id="toc-input" rows="5" placeholder="Enter text to encode or octal values to decode..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <button id="toc-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="toc-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let mode = 'encode';
+function setMode(m) {
+  mode = m;
+  document.getElementById('toc-encode').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='encode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  document.getElementById('toc-decode').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='decode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  process();
+}
+document.getElementById('toc-encode').addEventListener('click', () => setMode('encode'));
+document.getElementById('toc-decode').addEventListener('click', () => setMode('decode'));
+
+function process() {
+  const text = document.getElementById('toc-input').value;
+  const delim = document.getElementById('toc-delim').value;
+  let result = '';
+  try {
+    if (mode === 'encode') {
+      result = [...text].map(ch => ch.codePointAt(0).toString(8).padStart(3,'0')).join(delim);
+    } else {
+      const sep = delim || /\s+/;
+      const tokens = typeof sep === 'string' && sep === '' ? text.match(/.{1,3}/g) || [] : text.split(sep === '' ? /\s+/ : sep);
+      result = tokens.filter(t => t.trim()).map(t => String.fromCodePoint(parseInt(t, 8))).join('');
+    }
+  } catch(e) { result = 'Error: invalid input'; }
+  document.getElementById('toc-output').value = result;
+}
+
+document.getElementById('toc-input').addEventListener('input', process);
+document.getElementById('toc-delim').addEventListener('change', process);
+document.getElementById('toc-copy').addEventListener('click', () => {
+  const val = document.getElementById('toc-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('toc-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

@@ -1,0 +1,31 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is the difference between ROT13 and ROT47?', a: 'ROT13 only rotates the 26 letters (A-Z) by 13 positions. ROT47 rotates all 94 printable ASCII characters (including digits and punctuation) by 47 positions.' },
+  { q: 'How do I decode ROT47?', a: 'Applying ROT47 twice returns the original text — so the encode and decode buttons do the same thing. Just paste your ROT47 text and it will be decoded automatically.' },
+  { q: 'Is ROT47 secure for encryption?', a: 'No — ROT47 is a simple substitution cipher, not secure encryption. Use it for obfuscation or puzzles only.' },
+];
+---
+<BlogLayout
+  title="How to Encode Text with ROT47 Online Free — ROT47 Encoder & Decoder"
+  description="Encode and decode text using the ROT47 cipher. Rotates all 94 printable ASCII characters by 47 positions. Free online ROT47 tool."
+  canonical="/blog/how-to-encode-text-with-rot47-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>ROT47 is an extension of ROT13 that rotates all 94 printable ASCII characters — including digits, punctuation, and symbols — by 47 positions. Unlike ROT13 which only affects letters, ROT47 obscures everything. Since it is symmetric, the same operation encodes and decodes.</p>
+
+  <h2>How to Use the ROT47 Encoder</h2>
+  <ol>
+    <li>Type or paste your text.</li>
+    <li>The ROT47 output appears instantly below.</li>
+    <li>To decode ROT47 text, paste it in the same tool — the output will be the original text.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Encode and decode text with ROT47 — free, instant</p>
+    <a href="/tools/rot47-encoder" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open ROT47 Encoder →</a>
+  </div>
+</BlogLayout>

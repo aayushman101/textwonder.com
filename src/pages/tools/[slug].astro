@@ -89,6 +89,26 @@ import SyllableCounter from '../../components/tools/SyllableCounter.astro';
 import ExtractPhoneNumbers from '../../components/tools/ExtractPhoneNumbers.astro';
 import TextToAsciiArt from '../../components/tools/TextToAsciiArt.astro';
 import SmallCapsGenerator from '../../components/tools/SmallCapsGenerator.astro';
+import SplitText from '../../components/tools/SplitText.astro';
+import JoinLines from '../../components/tools/JoinLines.astro';
+import TruncateText from '../../components/tools/TruncateText.astro';
+import ReverseWords from '../../components/tools/ReverseWords.astro';
+import InvertCase from '../../components/tools/InvertCase.astro';
+import RemoveVowels from '../../components/tools/RemoveVowels.astro';
+import RemoveConsonants from '../../components/tools/RemoveConsonants.astro';
+import RemoveLineBreaks from '../../components/tools/RemoveLineBreaks.astro';
+import RemoveWhitespace from '../../components/tools/RemoveWhitespace.astro';
+import RemoveDiacritics from '../../components/tools/RemoveDiacritics.astro';
+import SortWords from '../../components/tools/SortWords.astro';
+import RemoveDuplicateWords from '../../components/tools/RemoveDuplicateWords.astro';
+import FilterLines from '../../components/tools/FilterLines.astro';
+import AddQuotes from '../../components/tools/AddQuotes.astro';
+import TextToOctal from '../../components/tools/TextToOctal.astro';
+import TextToDecimal from '../../components/tools/TextToDecimal.astro';
+import Rot47Encoder from '../../components/tools/Rot47Encoder.astro';
+import CensorWords from '../../components/tools/CensorWords.astro';
+import DuplicateWords from '../../components/tools/DuplicateWords.astro';
+import SpacesToTabs from '../../components/tools/SpacesToTabs.astro';
 import { TOOLS } from '../../data/tools.js';
 
 export function getStaticPaths() {
@@ -187,6 +207,26 @@ const componentMap: Record<string, any> = {
   'extract-phone-numbers': ExtractPhoneNumbers,
   'text-to-ascii-art': TextToAsciiArt,
   'small-caps-generator': SmallCapsGenerator,
+  'split-text': SplitText,
+  'join-lines': JoinLines,
+  'truncate-text': TruncateText,
+  'reverse-words': ReverseWords,
+  'invert-case': InvertCase,
+  'remove-vowels': RemoveVowels,
+  'remove-consonants': RemoveConsonants,
+  'remove-line-breaks': RemoveLineBreaks,
+  'remove-whitespace': RemoveWhitespace,
+  'remove-diacritics': RemoveDiacritics,
+  'sort-words': SortWords,
+  'remove-duplicate-words': RemoveDuplicateWords,
+  'filter-lines': FilterLines,
+  'add-quotes': AddQuotes,
+  'text-to-octal': TextToOctal,
+  'text-to-decimal': TextToDecimal,
+  'rot47-encoder': Rot47Encoder,
+  'censor-words': CensorWords,
+  'duplicate-words': DuplicateWords,
+  'spaces-to-tabs': SpacesToTabs,
 };
 
 const ToolComponent = componentMap[tool.slug];

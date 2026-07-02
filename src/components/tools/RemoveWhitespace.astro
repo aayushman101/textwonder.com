@@ -1,0 +1,51 @@
+---
+---
+
+<div class="space-y-4">
+  <p class="text-sm text-slate-400">Choose what to remove:</p>
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="rws-spaces" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+      Spaces
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="rws-tabs" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+      Tabs
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="rws-newlines" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+      Newlines
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="rws-input" rows="6" placeholder="Paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output (whitespace removed)</label>
+      <button id="rws-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="rws-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function process() {
+  let text = document.getElementById('rws-input').value;
+  if (document.getElementById('rws-spaces').checked) text = text.replace(/ /g, '');
+  if (document.getElementById('rws-tabs').checked) text = text.replace(/\t/g, '');
+  if (document.getElementById('rws-newlines').checked) text = text.replace(/\r\n|\r|\n/g, '');
+  document.getElementById('rws-output').value = text;
+}
+document.getElementById('rws-input').addEventListener('input', process);
+['rws-spaces','rws-tabs','rws-newlines'].forEach(id => document.getElementById(id).addEventListener('change', process));
+document.getElementById('rws-copy').addEventListener('click', () => {
+  const val = document.getElementById('rws-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rws-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

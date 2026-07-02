@@ -1,0 +1,41 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What tab sizes are supported?', a: '2, 4, and 8 spaces per tab. These match the most common editor configurations.' },
+  { q: 'Does it only convert leading indentation?', a: 'By default yes — only leading spaces at the start of each line are converted to tabs. Enable "Convert all spaces" to replace spaces anywhere on the line.' },
+  { q: 'Can I convert tabs back to spaces?', a: 'Yes — switch to Tabs to Spaces mode. Select the tab size and the tool expands each tab to that many spaces.' },
+  { q: 'Why would I need to convert indentation?', a: 'Different editors and style guides use either spaces or tabs for indentation. Mismatches cause visual issues and linting errors. This tool normalises indentation instantly.' },
+];
+---
+<BlogLayout
+  title="How to Convert Spaces to Tabs Online Free — Tabs to Spaces Converter"
+  description="Convert spaces to tabs or tabs to spaces in code or text. Set tab size (2, 4, 8 spaces). Free online spaces/tabs converter."
+  canonical="/blog/how-to-convert-spaces-to-tabs-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Indentation style wars (spaces vs. tabs) affect every developer at some point. This tool converts spaces to tabs or tabs to spaces in any code or text — with configurable tab size (2, 4, or 8 spaces).</p>
+
+  <h2>How to Convert Spaces to Tabs</h2>
+  <ol>
+    <li>Select <strong>Spaces → Tabs</strong> mode.</li>
+    <li>Choose tab size (2, 4, or 8 spaces).</li>
+    <li>Paste your code or text.</li>
+    <li>Copy the output with converted indentation.</li>
+  </ol>
+
+  <h2>Common Use Cases</h2>
+  <ul>
+    <li>Converting code from spaces to tabs for a tabs-first project</li>
+    <li>Normalising indentation when merging code from different editors</li>
+    <li>Preparing YAML or Makefile content that requires tabs</li>
+    <li>Cleaning pasted code snippets for consistent indentation</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert spaces to tabs (or tabs to spaces) — free</p>
+    <a href="/tools/spaces-to-tabs" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Spaces to Tabs Converter →</a>
+  </div>
+</BlogLayout>

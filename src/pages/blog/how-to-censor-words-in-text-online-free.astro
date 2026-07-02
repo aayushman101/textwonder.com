@@ -1,0 +1,33 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'Can I use my own word list to censor?', a: 'Yes — enter any words you want to censor, one per line or comma-separated. There is no built-in profanity list, so you have full control.' },
+  { q: 'What replacement styles are available?', a: '*** (full asterisks), first+last letter visible (f**k), or a custom replacement like [censored] or [REDACTED].' },
+  { q: 'Is matching case-sensitive?', a: 'No by default — "Bad", "bad", and "BAD" are all censored. Enable Case-Sensitive for exact matching.' },
+  { q: 'Does it match partial words?', a: 'No — word boundary matching is used, so censoring "bad" will not affect "badge" or "abaddon".' },
+];
+---
+<BlogLayout
+  title="How to Censor Words in Text Online Free — Word Censor Tool"
+  description="Replace specific words or profanity in text with *** or custom replacement. Enter your own word list. Free online word censor tool."
+  canonical="/blog/how-to-censor-words-in-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Need to publish text with certain words removed or replaced? This tool lets you define your own censor word list and replace every match with asterisks, a partial mask (first+last letter), or custom text like [censored].</p>
+
+  <h2>How to Censor Words</h2>
+  <ol>
+    <li>Enter the words to censor — one per line or comma-separated.</li>
+    <li>Choose replacement style: ***, first+last letter, or custom text.</li>
+    <li>Paste the text to censor.</li>
+    <li>Copy the censored result.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Censor words with custom replacement — free, instant</p>
+    <a href="/tools/censor-words" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Censor Words Tool →</a>
+  </div>
+</BlogLayout>

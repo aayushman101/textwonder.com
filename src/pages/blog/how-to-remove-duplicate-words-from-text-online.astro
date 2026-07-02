@@ -1,0 +1,31 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is the difference from Remove Duplicate Lines?', a: 'Remove Duplicate Lines removes entire repeated rows. Remove Duplicate Words finds and removes repeated words at the word level — even within the same line.' },
+  { q: 'Is matching case-sensitive?', a: 'No by default — "Hello" and "hello" count as duplicates. Enable Case-Sensitive mode to treat them as different words.' },
+  { q: 'Which occurrence is kept?', a: 'The first occurrence of each word is kept. All subsequent duplicates are removed.' },
+];
+---
+<BlogLayout
+  title="How to Remove Duplicate Words from Text Online Free"
+  description="Remove all repeated duplicate words from text. Per-line or global mode. Case-sensitive option. Free online duplicate word remover."
+  canonical="/blog/how-to-remove-duplicate-words-from-text-online"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Duplicate words in text can result from copy-paste errors, auto-repeat, or sloppy editing. This tool removes all repeated words — keeping only the first occurrence of each unique word.</p>
+
+  <h2>How to Remove Duplicate Words</h2>
+  <ol>
+    <li>Paste your text.</li>
+    <li>Choose Case-Sensitive and Per Line options as needed.</li>
+    <li>Copy the deduplicated output.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove duplicate words from text instantly — free</p>
+    <a href="/tools/remove-duplicate-words" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Duplicate Words Tool →</a>
+  </div>
+</BlogLayout>

@@ -1,0 +1,33 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'Can I sort words per line or globally?', a: 'Both — Per Line mode sorts words within each line independently. Global mode sorts every word across the entire text together.' },
+  { q: 'What sort orders are available?', a: 'A-Z (alphabetical), Z-A (reverse alphabetical), Shortest first, and Longest first.' },
+  { q: 'Is sorting case-sensitive?', a: 'No by default — uppercase and lowercase letters are treated the same for sorting (a and A sort together).' },
+  { q: 'What is the difference from Sort Lines?', a: 'Sort Lines sorts entire lines (rows). Sort Words rearranges individual words within lines or across the entire text.' },
+];
+---
+<BlogLayout
+  title="How to Sort Words Alphabetically Online Free — Word Sorter"
+  description="Sort all words in text alphabetically A-Z, Z-A, by shortest, or by longest. Per-line or global mode. Free online word sorter."
+  canonical="/blog/how-to-sort-words-alphabetically-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Sorting words alphabetically is useful for organising keyword lists, creating word banks, alphabetising tag lists, and preparing data for analysis. This tool sorts all words in your text instantly with four ordering options.</p>
+
+  <h2>How to Sort Words</h2>
+  <ol>
+    <li>Paste your text.</li>
+    <li>Choose a sort order: A-Z, Z-A, Shortest first, or Longest first.</li>
+    <li>Select Per Line or Global mode.</li>
+    <li>Copy the sorted output.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Sort words alphabetically in one click — free</p>
+    <a href="/tools/sort-words" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Sort Words Tool →</a>
+  </div>
+</BlogLayout>

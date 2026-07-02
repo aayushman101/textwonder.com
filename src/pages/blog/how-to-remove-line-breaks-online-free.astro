@@ -1,0 +1,41 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'Why does text pasted from a PDF have so many line breaks?', a: 'PDF files store text with hard line breaks at the end of every visual line. When you copy text from a PDF, those line breaks come along. This tool removes them so the text flows as a natural paragraph.' },
+  { q: 'What should I replace line breaks with?', a: 'A space is the most common choice — it keeps words separated properly. Use nothing to concatenate lines directly.' },
+  { q: 'Does it handle Windows (CRLF) and Mac (CR) line endings?', a: 'Yes — the tool removes all three types: CRLF (Windows), CR (old Mac), and LF (Unix/modern).' },
+  { q: 'Can I replace line breaks with a comma?', a: 'Yes — choose "Comma + space" from the replacement selector.' },
+];
+---
+<BlogLayout
+  title="How to Remove Line Breaks Online Free — Join Paragraphs Into One"
+  description="Remove all line breaks from text and join everything into one continuous paragraph. Replace newlines with space or custom character. Free, instant."
+  canonical="/blog/how-to-remove-line-breaks-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>One of the most common problems when copying text from PDFs, emails, or documents is unwanted line breaks that split sentences in the middle. This tool removes all line breaks instantly, joining everything into clean, flowing paragraphs.</p>
+
+  <h2>How to Remove Line Breaks from Text</h2>
+  <ol>
+    <li>Paste your text (with unwanted line breaks) into the input box.</li>
+    <li>Choose what to replace line breaks with: a space, nothing, comma, pipe, or custom.</li>
+    <li>Toggle "Collapse multiple spaces" to clean up any double-space artifacts.</li>
+    <li>Copy the clean, line-break-free result.</li>
+  </ol>
+
+  <h2>Most Common Use Cases</h2>
+  <ul>
+    <li><strong>PDF copy-paste cleanup</strong> — remove hard line breaks from PDF text</li>
+    <li><strong>Email formatting</strong> — join wrapped email lines into paragraphs</li>
+    <li><strong>Data cleanup</strong> — remove newlines from fields</li>
+    <li><strong>Single-line output</strong> — flatten multi-line text for APIs</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove line breaks from text in one click — free</p>
+    <a href="/tools/remove-line-breaks" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Line Breaks Tool →</a>
+  </div>
+</BlogLayout>

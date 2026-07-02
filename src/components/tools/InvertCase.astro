@@ -1,0 +1,39 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="ic-input" rows="6" placeholder="Type or paste text — every letter's case will be flipped..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Inverted Case Output</label>
+      <button id="ic-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="ic-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+  <p class="text-xs text-slate-500">Example: "Hello World" → "hELLO wORLD"</p>
+</div>
+
+<script>
+function invert() {
+  const text = document.getElementById('ic-input').value;
+  const result = [...text].map(ch => {
+    const lo = ch.toLowerCase(), hi = ch.toUpperCase();
+    if (ch === lo && ch !== hi) return hi;
+    if (ch === hi && ch !== lo) return lo;
+    return ch;
+  }).join('');
+  document.getElementById('ic-output').value = result;
+}
+document.getElementById('ic-input').addEventListener('input', invert);
+document.getElementById('ic-copy').addEventListener('click', () => {
+  const val = document.getElementById('ic-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('ic-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

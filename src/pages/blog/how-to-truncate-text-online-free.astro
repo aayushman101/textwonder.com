@@ -1,0 +1,41 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'Can I truncate by words instead of characters?', a: 'Yes — choose Words mode and set the maximum word count.' },
+  { q: 'Can I truncate by lines?', a: 'Yes — Lines mode keeps only the first N lines of text.' },
+  { q: 'What does the ellipsis option do?', a: 'When enabled, a ... character is appended to indicate that the text continues beyond the truncation point.' },
+  { q: 'Can I keep the end of the text instead of the beginning?', a: 'Yes — enable Truncate from Start to keep the last N characters/words/lines instead of the first.' },
+];
+---
+<BlogLayout
+  title="How to Truncate Text Online Free — Cut Text to Length"
+  description="Truncate text to a specific number of characters, words, or lines. Add ellipsis automatically. Free online text truncation tool."
+  canonical="/blog/how-to-truncate-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Truncating text is essential for generating preview snippets, meta descriptions, social media excerpts, and UI labels. This tool lets you cut text to an exact character, word, or line limit — with optional ellipsis.</p>
+
+  <h2>How to Truncate Text</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>Set the limit and choose the unit: <strong>Characters</strong>, <strong>Words</strong>, or <strong>Lines</strong>.</li>
+    <li>Toggle ellipsis (…) and truncate direction as needed.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <h2>Common Limits</h2>
+  <ul>
+    <li><strong>Meta description:</strong> 155–160 characters</li>
+    <li><strong>Twitter/X post:</strong> 280 characters</li>
+    <li><strong>Open Graph description:</strong> 200 characters</li>
+    <li><strong>SMS message:</strong> 160 characters</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Cut text to any length with ellipsis — free</p>
+    <a href="/tools/truncate-text" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Truncate Text Tool →</a>
+  </div>
+</BlogLayout>

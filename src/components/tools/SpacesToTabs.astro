@@ -1,0 +1,77 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex gap-3">
+    <button id="stt-s2t" class="px-4 py-2 rounded-xl text-sm font-medium bg-violet-700 text-white transition-colors">Spaces → Tabs</button>
+    <button id="stt-t2s" class="px-4 py-2 rounded-xl text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Tabs → Spaces</button>
+  </div>
+  <div class="flex items-center gap-3 flex-wrap">
+    <label class="text-slate-400 text-sm">Tab size:</label>
+    <select id="stt-size" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value="2">2 spaces</option>
+      <option value="4" selected>4 spaces</option>
+      <option value="8">8 spaces</option>
+    </select>
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="stt-all" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      Convert all spaces (not just indentation)
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="stt-input" rows="8" placeholder="Paste code or text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm font-mono"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <button id="stt-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="stt-output" rows="8" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let mode = 's2t';
+function setMode(m) {
+  mode = m;
+  document.getElementById('stt-s2t').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='s2t'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  document.getElementById('stt-t2s').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='t2s'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  process();
+}
+document.getElementById('stt-s2t').addEventListener('click', () => setMode('s2t'));
+document.getElementById('stt-t2s').addEventListener('click', () => setMode('t2s'));
+
+function process() {
+  const text = document.getElementById('stt-input').value;
+  const n = parseInt(document.getElementById('stt-size').value);
+  const all = document.getElementById('stt-all').checked;
+  const spaces = ' '.repeat(n);
+  let result;
+  if (mode === 't2s') {
+    result = text.replace(/\t/g, spaces);
+  } else {
+    if (all) {
+      result = text.replace(new RegExp(spaces, 'g'), '\t');
+    } else {
+      result = text.split('\n').map(line => {
+        let i = 0;
+        while (line.startsWith(spaces, i)) { i += n; }
+        return '\t'.repeat(i / n) + line.slice(i);
+      }).join('\n');
+    }
+  }
+  document.getElementById('stt-output').value = result;
+}
+
+document.getElementById('stt-input').addEventListener('input', process);
+['stt-size','stt-all'].forEach(id => document.getElementById(id).addEventListener('change', process));
+document.getElementById('stt-copy').addEventListener('click', () => {
+  const val = document.getElementById('stt-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('stt-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

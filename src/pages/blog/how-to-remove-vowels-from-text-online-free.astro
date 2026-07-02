@@ -1,0 +1,31 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'Which vowels are removed?', a: 'By default: a, e, i, o, u (and uppercase variants A, E, I, O, U). Options to also remove Y and accented vowels like é, à, ü.' },
+  { q: 'Are spaces and punctuation affected?', a: 'No — only vowel letters are removed. Spaces, numbers, and punctuation remain untouched.' },
+  { q: 'What does removing vowels look like?', a: '"Hello World" becomes "Hll Wrld".' },
+];
+---
+<BlogLayout
+  title="How to Remove Vowels from Text Online Free"
+  description="Remove all vowels (a e i o u) from any text online. Option to also remove Y and accented vowels. Free online vowel remover tool."
+  canonical="/blog/how-to-remove-vowels-from-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Removing vowels from text creates shorthand forms, abbreviations, and consonant-only strings used in linguistics, data encoding, puzzles, and creative writing. This tool strips all vowels instantly.</p>
+
+  <h2>How to Remove Vowels</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>Optionally toggle "Also remove Y" or "Include accented vowels".</li>
+    <li>Copy the vowel-free result.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove vowels from any text instantly — free</p>
+    <a href="/tools/remove-vowels" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Vowels Tool →</a>
+  </div>
+</BlogLayout>

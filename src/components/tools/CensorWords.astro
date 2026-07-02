@@ -1,0 +1,69 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Words to Censor <span class="text-slate-500 font-normal">(one per line or comma-separated)</span></label>
+    <textarea id="cw-words" rows="3" placeholder="bad&#10;terrible&#10;awful" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div class="flex flex-wrap gap-3 items-center">
+    <label class="text-slate-400 text-sm">Replacement:</label>
+    <button id="cw-stars" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">*** (all stars)</button>
+    <button id="cw-partial" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">f**k (keep first+last)</button>
+    <button id="cw-custom" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Custom</button>
+    <input id="cw-custom-val" type="text" value="[censored]" class="hidden bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none w-32 focus:ring-2 focus:ring-violet-600" />
+  </div>
+  <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+    <input id="cw-case" type="checkbox" class="w-4 h-4 accent-violet-600" />
+    Case-sensitive matching
+  </label>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="cw-input" rows="5" placeholder="Paste text to censor..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Censored Output</label>
+      <button id="cw-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="cw-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+let repMode = 'stars';
+const repBtns = ['cw-stars','cw-partial','cw-custom'];
+function setRep(m) {
+  repMode = m;
+  repBtns.forEach(b => document.getElementById(b).className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (b.replace('cw-','') === m ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]'));
+  document.getElementById('cw-custom-val').classList.toggle('hidden', m !== 'custom');
+  process();
+}
+repBtns.forEach(b => document.getElementById(b).addEventListener('click', () => setRep(b.replace('cw-',''))));
+
+function process() {
+  const wordList = document.getElementById('cw-words').value.split(/[\n,]/).map(w => w.trim()).filter(Boolean);
+  if (!wordList.length) { document.getElementById('cw-output').value = document.getElementById('cw-input').value; return; }
+  const flags = document.getElementById('cw-case').checked ? 'g' : 'gi';
+  const pattern = wordList.map(w => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+  const rx = new RegExp('\\b(' + pattern + ')\\b', flags);
+  const text = document.getElementById('cw-input').value;
+  const result = text.replace(rx, match => {
+    if (repMode === 'stars') return '*'.repeat(match.length);
+    if (repMode === 'partial') return match.length <= 2 ? '*'.repeat(match.length) : match[0] + '*'.repeat(match.length - 2) + match[match.length - 1];
+    return document.getElementById('cw-custom-val').value;
+  });
+  document.getElementById('cw-output').value = result;
+}
+
+['cw-words','cw-input','cw-custom-val'].forEach(id => document.getElementById(id).addEventListener('input', process));
+['cw-case'].forEach(id => document.getElementById(id).addEventListener('change', process));
+document.getElementById('cw-copy').addEventListener('click', () => {
+  const val = document.getElementById('cw-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('cw-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

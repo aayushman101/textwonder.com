@@ -1,0 +1,39 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What separators are available?', a: 'Comma + space, space, semicolon, pipe, no separator, and a custom separator you type yourself.' },
+  { q: 'Can I skip blank lines when joining?', a: 'Yes — toggle Skip Blank Lines to exclude empty lines from the output.' },
+  { q: 'What is the difference between Join Lines and Lines to CSV?', a: 'Join Lines is a general-purpose line merger with any separator. Lines to CSV is specifically for creating comma-separated values with proper quoting for spreadsheet import.' },
+];
+---
+<BlogLayout
+  title="How to Join Lines of Text Online Free — Line Joiner Tool"
+  description="Join multiple lines of text into a single line with any separator: comma, space, pipe, or custom. Free online line joiner — no signup."
+  canonical="/blog/how-to-join-lines-of-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Converting a multi-line list into a single delimited string is one of the most common text-processing tasks — whether you are building a SQL IN() clause, creating a CSV row, or flattening a list for code. This tool does it in one click.</p>
+
+  <h2>How to Join Lines</h2>
+  <ol>
+    <li>Paste your lines of text (one item per line).</li>
+    <li>Choose a separator: comma, space, pipe, or custom.</li>
+    <li>Toggle Skip Blank Lines if needed.</li>
+    <li>Copy the joined output.</li>
+  </ol>
+
+  <h2>Example Use Cases</h2>
+  <ul>
+    <li><strong>SQL IN clause:</strong> Join with <code>, </code> → <code>WHERE id IN (1, 2, 3)</code></li>
+    <li><strong>Array literal:</strong> Join with <code>, </code> then wrap in brackets</li>
+    <li><strong>Email list:</strong> Join with <code>; </code> for Outlook BCC field</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Join lines with any separator — free, instant</p>
+    <a href="/tools/join-lines" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Join Lines Tool →</a>
+  </div>
+</BlogLayout>

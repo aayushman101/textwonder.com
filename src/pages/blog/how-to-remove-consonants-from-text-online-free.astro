@@ -1,0 +1,31 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What letters are removed?', a: 'All letters that are NOT vowels: b, c, d, f, g, h, j, k, l, m, n, p, q, r, s, t, v, w, x, y, z and their uppercase equivalents.' },
+  { q: 'Are spaces preserved?', a: 'Yes — only consonant letters are removed. Spaces, digits, and punctuation stay intact.' },
+  { q: 'What does "Hello World" look like with consonants removed?', a: '"Hello World" becomes "e o" (only vowels and the space remain).' },
+];
+---
+<BlogLayout
+  title="How to Remove Consonants from Text Online Free"
+  description="Remove all consonants from text, keeping only vowels, spaces, digits, and symbols. Free online consonant remover tool."
+  canonical="/blog/how-to-remove-consonants-from-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Removing consonants reveals the vowel skeleton of any text — useful for linguistics analysis, phonetics research, creating text puzzles, and understanding the vowel patterns in languages.</p>
+
+  <h2>How to Remove Consonants</h2>
+  <ol>
+    <li>Paste your text into the input box.</li>
+    <li>All consonants are removed in real time, leaving only vowels and non-letter characters.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Remove all consonants from text instantly — free</p>
+    <a href="/tools/remove-consonants" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Consonants Tool →</a>
+  </div>
+</BlogLayout>

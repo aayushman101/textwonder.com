@@ -1,0 +1,39 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What delimiter options are available?', a: 'You can split by any custom delimiter (comma, semicolon, newline, word) or split into fixed-size chunks by character count or line count.' },
+  { q: 'Can I split a paragraph into sentences?', a: 'Use the custom delimiter mode and enter a period (.) to split on sentences.' },
+  { q: 'Is there a character limit?', a: 'No — the tool runs entirely in your browser and can handle as much text as you paste.' },
+];
+---
+<BlogLayout
+  title="How to Split Text Online Free — Text Splitter Tool"
+  description="Split text into parts using a custom delimiter, or divide it into equal chunks by character count or line count. Free online text splitter."
+  canonical="/blog/how-to-split-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Splitting text into parts is a common data processing task — whether you are separating a CSV row, chunking a long document for API input, or splitting paragraphs by a custom delimiter. This tool makes it instant.</p>
+
+  <h2>How to Split Text</h2>
+  <ol>
+    <li>Choose a split mode: <strong>Delimiter</strong>, <strong>Characters</strong>, or <strong>Lines</strong>.</li>
+    <li>Set the delimiter (comma, newline, space, or custom) or chunk size.</li>
+    <li>Paste your text and click <strong>Split Text</strong>.</li>
+    <li>Each part is shown with its own Copy button.</li>
+  </ol>
+
+  <h2>Three Split Modes</h2>
+  <ul>
+    <li><strong>Delimiter:</strong> Split wherever a specific character or string appears — like a comma, semicolon, or word.</li>
+    <li><strong>Characters:</strong> Divide text into chunks of N characters each.</li>
+    <li><strong>Lines:</strong> Group every N consecutive lines into one chunk.</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Split text by delimiter or chunk size — free</p>
+    <a href="/tools/split-text" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Split Text Tool →</a>
+  </div>
+</BlogLayout>

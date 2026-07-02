@@ -1,0 +1,77 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-3">
+    <button id="sw-az" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">A → Z</button>
+    <button id="sw-za" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Z → A</button>
+    <button id="sw-short" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Shortest first</button>
+    <button id="sw-long" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Longest first</button>
+  </div>
+  <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+    <input id="sw-per-line" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+    Sort per line (uncheck = sort all words globally)
+  </label>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="sw-input" rows="6" placeholder="Paste text with words to sort..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Sorted Output</label>
+      <button id="sw-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="sw-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+let sortMode = 'az';
+const btns = { az: 'sw-az', za: 'sw-za', short: 'sw-short', long: 'sw-long' };
+
+function setSort(m) {
+  sortMode = m;
+  Object.keys(btns).forEach(k => {
+    document.getElementById(btns[k]).className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' +
+      (k === m ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  });
+  sort();
+}
+
+function sortWords(words) {
+  const copy = [...words];
+  if (sortMode === 'az') copy.sort((a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' }));
+  else if (sortMode === 'za') copy.sort((a, b) => b.localeCompare(a, undefined, { sensitivity: 'base' }));
+  else if (sortMode === 'short') copy.sort((a, b) => a.length - b.length || a.localeCompare(b));
+  else copy.sort((a, b) => b.length - a.length || a.localeCompare(b));
+  return copy;
+}
+
+function sort() {
+  const text = document.getElementById('sw-input').value;
+  const perLine = document.getElementById('sw-per-line').checked;
+  let result;
+  if (perLine) {
+    result = text.split('\n').map(line => {
+      const words = line.split(/\s+/).filter(Boolean);
+      return sortWords(words).join(' ');
+    }).join('\n');
+  } else {
+    const words = text.split(/\s+/).filter(Boolean);
+    result = sortWords(words).join(' ');
+  }
+  document.getElementById('sw-output').value = result;
+}
+
+Object.keys(btns).forEach(k => document.getElementById(btns[k]).addEventListener('click', () => setSort(k)));
+document.getElementById('sw-input').addEventListener('input', sort);
+document.getElementById('sw-per-line').addEventListener('change', sort);
+document.getElementById('sw-copy').addEventListener('click', () => {
+  const val = document.getElementById('sw-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('sw-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

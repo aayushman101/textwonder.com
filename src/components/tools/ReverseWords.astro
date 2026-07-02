@@ -1,0 +1,49 @@
+---
+---
+
+<div class="space-y-4">
+  <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+    <input id="rw-per-line" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+    Reverse per line (uncheck = reverse all words globally)
+  </label>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="rw-input" rows="6" placeholder="Type or paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Reversed Output</label>
+      <button id="rw-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="rw-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function reverseWords(line) {
+  return line.split(/(\s+)/).reverse().join('');
+}
+function convert() {
+  const text = document.getElementById('rw-input').value;
+  const perLine = document.getElementById('rw-per-line').checked;
+  let result;
+  if (perLine) {
+    result = text.split('\n').map(line => reverseWords(line)).join('\n');
+  } else {
+    const tokens = text.split(/(\s+)/);
+    tokens.reverse();
+    result = tokens.join('');
+  }
+  document.getElementById('rw-output').value = result;
+}
+document.getElementById('rw-input').addEventListener('input', convert);
+document.getElementById('rw-per-line').addEventListener('change', convert);
+document.getElementById('rw-copy').addEventListener('click', () => {
+  const val = document.getElementById('rw-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rw-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

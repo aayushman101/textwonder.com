@@ -1,0 +1,66 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex gap-3">
+    <button id="tdec-encode" class="px-4 py-2 rounded-xl text-sm font-medium bg-violet-700 text-white transition-colors">Encode (Text → Decimal)</button>
+    <button id="tdec-decode" class="px-4 py-2 rounded-xl text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Decode (Decimal → Text)</button>
+  </div>
+  <div class="flex items-center gap-3 flex-wrap">
+    <label class="text-slate-400 text-sm">Delimiter:</label>
+    <select id="tdec-delim" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value=" ">Space</option>
+      <option value=",">Comma</option>
+      <option value="">None</option>
+    </select>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input</label>
+    <textarea id="tdec-input" rows="5" placeholder="Enter text to encode or decimal values to decode..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output</label>
+      <button id="tdec-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="tdec-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let mode = 'encode';
+function setMode(m) {
+  mode = m;
+  document.getElementById('tdec-encode').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='encode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  document.getElementById('tdec-decode').className = 'px-4 py-2 rounded-xl text-sm font-medium transition-colors ' + (m==='decode'?'bg-violet-700 text-white':'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  process();
+}
+document.getElementById('tdec-encode').addEventListener('click', () => setMode('encode'));
+document.getElementById('tdec-decode').addEventListener('click', () => setMode('decode'));
+
+function process() {
+  const text = document.getElementById('tdec-input').value;
+  const delim = document.getElementById('tdec-delim').value;
+  let result = '';
+  try {
+    if (mode === 'encode') {
+      result = [...text].map(ch => ch.codePointAt(0).toString(10)).join(delim || ' ');
+    } else {
+      const tokens = text.split(delim === '' ? /\s+/ : (delim === ',' ? ',' : ' ')).filter(t => t.trim());
+      result = tokens.map(t => String.fromCodePoint(parseInt(t, 10))).join('');
+    }
+  } catch(e) { result = 'Error: invalid input'; }
+  document.getElementById('tdec-output').value = result;
+}
+
+document.getElementById('tdec-input').addEventListener('input', process);
+document.getElementById('tdec-delim').addEventListener('change', process);
+document.getElementById('tdec-copy').addEventListener('click', () => {
+  const val = document.getElementById('tdec-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('tdec-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

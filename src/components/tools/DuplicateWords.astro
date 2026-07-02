@@ -1,0 +1,47 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="text-slate-400 text-sm">Separator between copies:</label>
+    <select id="dw-sep" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value=" ">Space</option>
+      <option value=", ">Comma</option>
+      <option value="-">Hyphen</option>
+      <option value="/">Slash</option>
+    </select>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="dw-input" rows="6" placeholder="Type or paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output (every word doubled)</label>
+      <button id="dw-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="dw-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+  <p class="text-xs text-slate-500">Example: "hello world" → "hello hello world world"</p>
+</div>
+
+<script>
+function process() {
+  const text = document.getElementById('dw-input').value;
+  const sep = document.getElementById('dw-sep').value;
+  const result = text.split('\n').map(line =>
+    line.split(/(\s+)/).map(tok => /^\s+$/.test(tok) ? tok : tok + sep + tok).join('')
+  ).join('\n');
+  document.getElementById('dw-output').value = result;
+}
+document.getElementById('dw-input').addEventListener('input', process);
+document.getElementById('dw-sep').addEventListener('change', process);
+document.getElementById('dw-copy').addEventListener('click', () => {
+  const val = document.getElementById('dw-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('dw-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

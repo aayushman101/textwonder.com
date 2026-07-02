@@ -1,0 +1,49 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="rv-include-y" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      Also remove Y
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="rv-include-accented" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      Also remove accented vowels (é, à, ü…)
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="rv-input" rows="6" placeholder="Type or paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output (vowels removed)</label>
+      <button id="rv-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="rv-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function remove() {
+  const text = document.getElementById('rv-input').value;
+  const inclY = document.getElementById('rv-include-y').checked;
+  const inclAcc = document.getElementById('rv-include-accented').checked;
+  let pattern = 'aeiouAEIOU';
+  if (inclY) pattern += 'yY';
+  if (inclAcc) pattern += 'àáâãäåæèéêëìíîïòóôõöùúûüýÿÀÁÂÃÄÅÆÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝ';
+  const regex = new RegExp('[' + pattern + ']', 'g');
+  document.getElementById('rv-output').value = text.replace(regex, '');
+}
+['rv-input'].forEach(id => document.getElementById(id).addEventListener('input', remove));
+['rv-include-y','rv-include-accented'].forEach(id => document.getElementById(id).addEventListener('change', remove));
+document.getElementById('rv-copy').addEventListener('click', () => {
+  const val = document.getElementById('rv-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rv-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

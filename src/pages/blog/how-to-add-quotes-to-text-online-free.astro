@@ -1,0 +1,39 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What quote types are available?', a: 'Double quotes (" "), single quotes (\' \'), and backticks (` `). You can also use these as prefix/suffix in the Add Prefix/Suffix tool for custom characters.' },
+  { q: 'Can I add quotes to each line?', a: 'Yes — select "Each Line" mode to wrap each line individually.' },
+  { q: 'Can I add quotes to each word?', a: 'Yes — select "Each Word" mode.' },
+  { q: 'What is a common use case for quoting each line?', a: 'Wrapping SQL values in quotes: paste a column of words, choose double quotes, per-line mode, and get a ready-to-paste list of quoted strings for a SQL IN() clause.' },
+];
+---
+<BlogLayout
+  title="How to Add Quotes to Text Online Free — Quote Wrapper Tool"
+  description="Add single quotes, double quotes, or backticks around text, each word, or each line. Free online quote adder tool."
+  canonical="/blog/how-to-add-quotes-to-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Wrapping text in quotes is a common task when preparing SQL values, JavaScript arrays, JSON strings, and command-line arguments. This tool quotes each line, each word, or the entire text block in one click.</p>
+
+  <h2>How to Add Quotes</h2>
+  <ol>
+    <li>Choose a quote type: Double, Single, or Backtick.</li>
+    <li>Choose what to quote: Each Line, Each Word, or Entire Text.</li>
+    <li>Paste your text and copy the quoted output.</li>
+  </ol>
+
+  <h2>Common Use Cases</h2>
+  <ul>
+    <li><strong>SQL IN clause:</strong> Quote each line with single quotes → <code>&apos;value1&apos;, &apos;value2&apos;</code></li>
+    <li><strong>JavaScript array:</strong> Quote each word with double quotes</li>
+    <li><strong>Shell arguments:</strong> Quote lines with backticks</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Wrap text in quotes instantly — free</p>
+    <a href="/tools/add-quotes" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Add Quotes Tool →</a>
+  </div>
+</BlogLayout>

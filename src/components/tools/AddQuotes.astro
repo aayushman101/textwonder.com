@@ -1,0 +1,87 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap gap-3 items-center">
+    <span class="text-slate-400 text-sm">Quote type:</span>
+    <button id="aq-double" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">" " Double</button>
+    <button id="aq-single" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">' ' Single</button>
+    <button id="aq-backtick" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">` ` Backtick</button>
+  </div>
+  <div class="flex flex-wrap gap-3 items-center">
+    <span class="text-slate-400 text-sm">Apply to:</span>
+    <button id="aq-lines" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Each Line</button>
+    <button id="aq-words" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Each Word</button>
+    <button id="aq-all" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Entire Text</button>
+  </div>
+  <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+    <input id="aq-skip-blank" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+    Skip blank lines
+  </label>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="aq-input" rows="6" placeholder="Paste text here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Quoted Output</label>
+      <button id="aq-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="aq-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+</div>
+
+<script>
+let quoteType = '"';
+let applyTo = 'lines';
+const quoteMap = { double: '"', single: "'", backtick: '`' };
+const qBtns = ['aq-double', 'aq-single', 'aq-backtick'];
+const aBtns = ['aq-lines', 'aq-words', 'aq-all'];
+
+function setQuote(q, id) {
+  quoteType = q;
+  qBtns.forEach(b => document.getElementById(b).className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (b === id ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]'));
+  process();
+}
+function setApply(a, id) {
+  applyTo = a;
+  aBtns.forEach(b => document.getElementById(b).className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' + (b === id ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]'));
+  process();
+}
+document.getElementById('aq-double').addEventListener('click', () => setQuote('"', 'aq-double'));
+document.getElementById('aq-single').addEventListener('click', () => setQuote("'", 'aq-single'));
+document.getElementById('aq-backtick').addEventListener('click', () => setQuote('`', 'aq-backtick'));
+document.getElementById('aq-lines').addEventListener('click', () => setApply('lines', 'aq-lines'));
+document.getElementById('aq-words').addEventListener('click', () => setApply('words', 'aq-words'));
+document.getElementById('aq-all').addEventListener('click', () => setApply('all', 'aq-all'));
+
+function wrap(s) { return quoteType + s + quoteType; }
+
+function process() {
+  const text = document.getElementById('aq-input').value;
+  const skipBlank = document.getElementById('aq-skip-blank').checked;
+  let result;
+  if (applyTo === 'all') {
+    result = wrap(text);
+  } else if (applyTo === 'lines') {
+    result = text.split('\n').map(l => (skipBlank && !l.trim()) ? l : wrap(l)).join('\n');
+  } else {
+    result = text.split('\n').map(l => {
+      if (skipBlank && !l.trim()) return l;
+      return l.split(/(\s+)/).map(tok => /^\s+$/.test(tok) ? tok : wrap(tok)).join('');
+    }).join('\n');
+  }
+  document.getElementById('aq-output').value = result;
+}
+
+document.getElementById('aq-input').addEventListener('input', process);
+document.getElementById('aq-skip-blank').addEventListener('change', process);
+document.getElementById('aq-copy').addEventListener('click', () => {
+  const val = document.getElementById('aq-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('aq-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

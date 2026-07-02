@@ -1,0 +1,84 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center gap-4">
+    <div class="flex items-center gap-2">
+      <label class="text-slate-400 text-sm">Limit:</label>
+      <input id="tt-limit" type="number" value="100" min="1" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none w-24 focus:ring-2 focus:ring-violet-600" />
+    </div>
+    <div class="flex items-center gap-2">
+      <label class="text-slate-400 text-sm">Unit:</label>
+      <select id="tt-unit" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+        <option value="chars">Characters</option>
+        <option value="words">Words</option>
+        <option value="lines">Lines</option>
+      </select>
+    </div>
+  </div>
+  <div class="flex flex-wrap gap-4">
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="tt-ellipsis" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+      Add ellipsis (…) when truncated
+    </label>
+    <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+      <input id="tt-from-end" type="checkbox" class="w-4 h-4 accent-violet-600" />
+      Truncate from start (keep end)
+    </label>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="tt-input" rows="6" placeholder="Paste text to truncate..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Truncated Output <span id="tt-info" class="text-xs text-slate-500 ml-2"></span></label>
+      <button id="tt-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="tt-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function truncate() {
+  const text = document.getElementById('tt-input').value;
+  const limit = parseInt(document.getElementById('tt-limit').value) || 100;
+  const unit = document.getElementById('tt-unit').value;
+  const ellipsis = document.getElementById('tt-ellipsis').checked;
+  const fromEnd = document.getElementById('tt-from-end').checked;
+
+  let result = text, truncated = false;
+  if (unit === 'chars') {
+    if (text.length > limit) {
+      result = fromEnd ? text.slice(text.length - limit) : text.slice(0, limit);
+      truncated = true;
+    }
+  } else if (unit === 'words') {
+    const words = text.split(/\s+/).filter(Boolean);
+    if (words.length > limit) {
+      result = fromEnd ? words.slice(words.length - limit).join(' ') : words.slice(0, limit).join(' ');
+      truncated = true;
+    }
+  } else {
+    const lines = text.split('\n');
+    if (lines.length > limit) {
+      result = fromEnd ? lines.slice(lines.length - limit).join('\n') : lines.slice(0, limit).join('\n');
+      truncated = true;
+    }
+  }
+  if (truncated && ellipsis) result = fromEnd ? '…' + result : result + '…';
+  document.getElementById('tt-output').value = result;
+  document.getElementById('tt-info').textContent = truncated ? `truncated · ${result.length} chars` : 'no truncation needed';
+}
+
+['tt-input','tt-limit'].forEach(id => document.getElementById(id).addEventListener('input', truncate));
+['tt-unit','tt-ellipsis','tt-from-end'].forEach(id => document.getElementById(id).addEventListener('change', truncate));
+document.getElementById('tt-copy').addEventListener('click', () => {
+  const val = document.getElementById('tt-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('tt-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

@@ -1,0 +1,41 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is Include vs Exclude mode?', a: 'Include mode keeps only lines that match your pattern (like grep). Exclude mode removes lines that match and keeps everything else (like grep -v).' },
+  { q: 'Does it support regular expressions?', a: 'Yes — enable Regex Mode to use full JavaScript regular expression syntax for advanced pattern matching.' },
+  { q: 'Is matching case-sensitive?', a: 'No by default. Enable Case-Sensitive to require exact case matching.' },
+  { q: 'How many lines can I filter at once?', a: 'No limit — the tool runs in your browser and handles as many lines as you paste.' },
+];
+---
+<BlogLayout
+  title="How to Filter Lines of Text Online Free — Include or Exclude Matching Lines"
+  description="Filter lines of text by keyword or pattern. Keep matching lines or remove them. Regex support. Free online line filter tool."
+  canonical="/blog/how-to-filter-lines-of-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Filtering lines is the browser-based equivalent of the Unix <code>grep</code> command. Enter a search pattern and choose to keep matching lines (include) or remove them (exclude) — perfect for log files, contact lists, and data cleaning.</p>
+
+  <h2>How to Filter Text Lines</h2>
+  <ol>
+    <li>Paste your multi-line text into the input.</li>
+    <li>Type your search pattern (word, phrase, or regex).</li>
+    <li>Choose <strong>Keep matching lines</strong> or <strong>Remove matching lines</strong>.</li>
+    <li>Copy the filtered result.</li>
+  </ol>
+
+  <h2>Example Uses</h2>
+  <ul>
+    <li>Extract all lines containing "error" from a log file</li>
+    <li>Remove all email addresses from a list</li>
+    <li>Keep only lines starting with a specific word</li>
+    <li>Filter a contact list by domain name</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Filter lines by keyword or regex — free, instant</p>
+    <a href="/tools/filter-lines" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Filter Lines Tool →</a>
+  </div>
+</BlogLayout>

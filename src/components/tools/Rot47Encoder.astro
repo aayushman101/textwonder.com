@@ -1,0 +1,38 @@
+---
+---
+
+<div class="space-y-4">
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="r47-input" rows="6" placeholder="Type or paste text — ROT47 is applied instantly (same operation encodes and decodes)..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">ROT47 Output</label>
+      <button id="r47-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="r47-output" rows="6" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm font-mono"></textarea>
+  </div>
+  <p class="text-xs text-slate-500">ROT47 rotates all 94 printable ASCII characters (! through ~) by 47 positions. Applying it twice returns the original text — so encode and decode are the same operation.</p>
+</div>
+
+<script>
+function rot47(text) {
+  return [...text].map(ch => {
+    const code = ch.charCodeAt(0);
+    if (code >= 33 && code <= 126) return String.fromCharCode(((code - 33 + 47) % 94) + 33);
+    return ch;
+  }).join('');
+}
+document.getElementById('r47-input').addEventListener('input', (e) => {
+  document.getElementById('r47-output').value = rot47(e.target.value);
+});
+document.getElementById('r47-copy').addEventListener('click', () => {
+  const val = document.getElementById('r47-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('r47-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

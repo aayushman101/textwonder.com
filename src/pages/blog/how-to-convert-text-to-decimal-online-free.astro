@@ -1,0 +1,32 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What is a decimal code point?', a: 'Every character has a numeric ID in the Unicode standard. The decimal code point is that number in base-10 — for example, "A" = 65, "a" = 97, "€" = 8364.' },
+  { q: 'Is this the same as ASCII code?', a: 'For the first 128 characters (standard ASCII), yes — the decimal Unicode code point equals the ASCII code. For characters beyond ASCII (Unicode), the values differ.' },
+  { q: 'Can I decode decimal values back to text?', a: 'Yes — switch to Decode mode, paste the space or comma-separated decimal numbers, and the tool reconstructs the original text.' },
+];
+---
+<BlogLayout
+  title="How to Convert Text to Decimal Online Free — ASCII Decimal Converter"
+  description="Convert text to decimal ASCII/Unicode code point values and decode decimal back to text. Free online text to decimal converter."
+  canonical="/blog/how-to-convert-text-to-decimal-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Converting text to decimal gives you the Unicode code point (numeric ID) of each character. "A" becomes 65, "B" becomes 66, and so on. This is essential for programming, character analysis, and CTF challenges.</p>
+
+  <h2>How to Convert Text to Decimal</h2>
+  <ol>
+    <li>Select <strong>Encode</strong> mode.</li>
+    <li>Type or paste your text.</li>
+    <li>Choose space or comma as delimiter.</li>
+    <li>Copy the decimal output.</li>
+  </ol>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Convert text to decimal code points — free, instant</p>
+    <a href="/tools/text-to-decimal" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Text to Decimal Tool →</a>
+  </div>
+</BlogLayout>

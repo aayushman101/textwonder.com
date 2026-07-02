@@ -1,0 +1,57 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center gap-3">
+    <label class="text-slate-400 text-sm">Replace line breaks with:</label>
+    <select id="rlb-replace" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value=" ">Space</option>
+      <option value="">Nothing (concatenate)</option>
+      <option value=", ">Comma + space</option>
+      <option value=" | ">Pipe</option>
+      <option value="custom">Custom…</option>
+    </select>
+    <input id="rlb-custom" type="text" placeholder="replacement" class="hidden bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none w-32 focus:ring-2 focus:ring-violet-600" />
+  </div>
+  <label class="flex items-center gap-2 cursor-pointer text-sm text-slate-300">
+    <input id="rlb-collapse" type="checkbox" checked class="w-4 h-4 accent-violet-600" />
+    Collapse multiple consecutive spaces
+  </label>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="rlb-input" rows="6" placeholder="Paste text with line breaks here..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label class="text-slate-300 text-sm font-medium">Output (line breaks removed)</label>
+      <button id="rlb-copy" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+    </div>
+    <textarea id="rlb-output" rows="5" readonly class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 resize-y outline-none text-sm"></textarea>
+  </div>
+</div>
+
+<script>
+function process() {
+  const text = document.getElementById('rlb-input').value;
+  const preset = document.getElementById('rlb-replace').value;
+  const rep = preset === 'custom' ? document.getElementById('rlb-custom').value : preset;
+  const collapse = document.getElementById('rlb-collapse').checked;
+  let result = text.replace(/\r\n|\r|\n/g, rep);
+  if (collapse) result = result.replace(/ {2,}/g, ' ');
+  document.getElementById('rlb-output').value = result;
+}
+document.getElementById('rlb-replace').addEventListener('change', (e) => {
+  document.getElementById('rlb-custom').classList.toggle('hidden', e.target.value !== 'custom');
+  process();
+});
+['rlb-input','rlb-custom'].forEach(id => document.getElementById(id).addEventListener('input', process));
+['rlb-collapse'].forEach(id => document.getElementById(id).addEventListener('change', process));
+document.getElementById('rlb-copy').addEventListener('click', () => {
+  const val = document.getElementById('rlb-output').value;
+  if (!val) return;
+  navigator.clipboard.writeText(val);
+  const btn = document.getElementById('rlb-copy');
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 1500);
+});
+</script>

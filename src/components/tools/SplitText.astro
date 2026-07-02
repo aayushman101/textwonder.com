@@ -1,0 +1,89 @@
+---
+---
+
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center gap-3">
+    <span class="text-slate-300 text-sm">Split by:</span>
+    <button id="st-by-delim" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-700 text-white transition-colors">Delimiter</button>
+    <button id="st-by-chars" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Characters</button>
+    <button id="st-by-lines" class="px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)] transition-colors">Lines</button>
+  </div>
+  <div id="st-delim-row" class="flex items-center gap-3 flex-wrap">
+    <label class="text-slate-400 text-sm">Delimiter:</label>
+    <select id="st-delim-preset" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none">
+      <option value="\n">Newline</option>
+      <option value=",">Comma</option>
+      <option value=";">Semicolon</option>
+      <option value=" ">Space</option>
+      <option value="custom">Custom…</option>
+    </select>
+    <input id="st-delim-custom" type="text" placeholder="Enter delimiter" class="hidden bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none w-36 focus:ring-2 focus:ring-violet-600" />
+  </div>
+  <div id="st-size-row" class="hidden items-center gap-3">
+    <label class="text-slate-400 text-sm">Chunk size:</label>
+    <input id="st-size" type="number" value="100" min="1" class="bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-1.5 text-slate-100 text-sm outline-none w-24 focus:ring-2 focus:ring-violet-600" />
+    <span id="st-size-unit" class="text-slate-400 text-sm">characters</span>
+  </div>
+  <div>
+    <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
+    <textarea id="st-input" rows="6" placeholder="Paste text here to split it into parts..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
+  </div>
+  <button id="st-run" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Split Text</button>
+  <div id="st-output" class="space-y-3"></div>
+</div>
+
+<script>
+let mode = 'delim';
+const btnIds = ['st-by-delim', 'st-by-chars', 'st-by-lines'];
+const modes = ['delim', 'chars', 'lines'];
+
+function setMode(m) {
+  mode = m;
+  btnIds.forEach((id, i) => {
+    document.getElementById(id).className = 'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ' +
+      (modes[i] === m ? 'bg-violet-700 text-white' : 'bg-[var(--bg-surface-hover)] text-slate-300 hover:bg-[var(--bg-surface-alt)]');
+  });
+  document.getElementById('st-delim-row').style.display = m === 'delim' ? 'flex' : 'none';
+  document.getElementById('st-size-row').style.display = m !== 'delim' ? 'flex' : 'none';
+  document.getElementById('st-size-unit').textContent = m === 'chars' ? 'characters' : 'lines';
+}
+
+document.getElementById('st-by-delim').addEventListener('click', () => setMode('delim'));
+document.getElementById('st-by-chars').addEventListener('click', () => setMode('chars'));
+document.getElementById('st-by-lines').addEventListener('click', () => setMode('lines'));
+
+document.getElementById('st-delim-preset').addEventListener('change', (e) => {
+  const custom = document.getElementById('st-delim-custom');
+  custom.classList.toggle('hidden', e.target.value !== 'custom');
+});
+
+document.getElementById('st-run').addEventListener('click', () => {
+  const text = document.getElementById('st-input').value;
+  if (!text.trim()) return;
+  let parts = [];
+  if (mode === 'delim') {
+    const preset = document.getElementById('st-delim-preset').value;
+    const delim = preset === 'custom' ? document.getElementById('st-delim-custom').value : preset.replace('\\n', '\n');
+    parts = text.split(delim);
+  } else if (mode === 'chars') {
+    const n = parseInt(document.getElementById('st-size').value) || 100;
+    for (let i = 0; i < text.length; i += n) parts.push(text.slice(i, i + n));
+  } else {
+    const allLines = text.split('\n');
+    const n = parseInt(document.getElementById('st-size').value) || 10;
+    for (let i = 0; i < allLines.length; i += n) parts.push(allLines.slice(i, i + n).join('\n'));
+  }
+  parts = parts.filter((p, i) => parts.length === 1 || p.trim());
+  const out = document.getElementById('st-output');
+  if (!parts.length) { out.innerHTML = ''; return; }
+  out.innerHTML = parts.map((p, i) => `
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-xs text-slate-500">Part ${i+1} · ${p.length} chars</span>
+        <button onclick="navigator.clipboard.writeText(this.closest('div').nextElementSibling.textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)" class="text-xs bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 px-3 py-1 rounded-lg transition-colors">Copy</button>
+      </div>
+      <pre class="text-slate-200 text-sm whitespace-pre-wrap break-words">${p.replace(/</g,'&lt;')}</pre>
+    </div>
+  `).join('');
+});
+</script>

@@ -1,0 +1,40 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+const faqs = [
+  { q: 'What diacritics are removed?', a: 'All combining diacritical marks: acute (é), grave (è), circumflex (ê), tilde (ñ), umlaut (ü), cedilla (ç), breve, caron, and hundreds more across Latin-based languages.' },
+  { q: 'Does it work for names with accents like José or Ünsal?', a: 'Yes — José becomes Jose and Ünsal becomes Unsal. The base letter is preserved and the accent mark is stripped.' },
+  { q: 'Why would I need to remove diacritics?', a: 'Databases without full Unicode support, ASCII-only APIs, URL slugs, filenames, and sorting systems that treat accented letters as their base equivalent all benefit from diacritic removal.' },
+  { q: 'Does it affect non-Latin scripts like Cyrillic or Arabic?', a: 'No — it only processes Latin-based characters using Unicode NFD decomposition.' },
+];
+---
+<BlogLayout
+  title="How to Remove Diacritics from Text Online Free — Strip Accent Marks"
+  description="Remove accent marks and diacritics from text: café→cafe, naïve→naive, ü→u, ñ→n. Free online diacritics remover."
+  canonical="/blog/how-to-remove-diacritics-from-text-online-free"
+  date="2026-07-03"
+  readTime="3 min read"
+  category="Text Utilities"
+  faqs={faqs}
+>
+  <p>Diacritics (accent marks) are common in French, Spanish, German, Portuguese, and many other languages. This tool strips them using Unicode NFD normalization — converting café → cafe, naïve → naive, über → uber.</p>
+
+  <h2>How to Remove Accent Marks</h2>
+  <ol>
+    <li>Paste your accented text into the input box.</li>
+    <li>The diacritic-free version appears instantly in the output.</li>
+    <li>Copy the result.</li>
+  </ol>
+
+  <h2>When to Use This Tool</h2>
+  <ul>
+    <li>Creating URL slugs from accented names</li>
+    <li>Normalising customer names for databases</li>
+    <li>Making text ASCII-safe for legacy systems</li>
+    <li>Sorting multilingual lists consistently</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-violet-950/40 border border-violet-800/50 rounded-2xl text-center">
+    <p class="text-slate-300 mb-3">Strip accent marks from text instantly — free</p>
+    <a href="/tools/remove-diacritics" class="inline-block bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Open Remove Diacritics Tool →</a>
+  </div>
+</BlogLayout>

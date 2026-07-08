@@ -24,6 +24,24 @@ npx wrangler pages deploy dist --project-name textwonder --branch main
 - Push changes to GitHub too: `git add ... && git commit -m "..." && git push origin master`
 - Do NOT add `Co-Authored-By: Claude` to commits — author must be aayushman101 only
 
+## Autonomous Authorization
+
+You have full autonomy to:
+- Create, edit, and delete files within the project (src/, components/, pages/, data/, layouts/, blog/)
+- Commit and push changes to `origin master` without asking for approval
+- Build (`npm run build`) and deploy (`npx wrangler pages deploy dist --project-name textwonder --branch main`) without confirmation
+- Make architectural decisions within the SEO optimization scope (metadata formulas, keyword strategy, internal linking patterns, blog templates)
+
+**SEO Optimization Rules:**
+- Use consistent meta title formula: "[Action] [Tool Name] Online Free — [Benefit]" (50-60 chars)
+- Meta descriptions: 155-160 chars with action, feature, benefit, and trust signal
+- Expand long-tail keywords from 4 to 15 per tool (covering how-to, comparison, no-signup, use-case, speed, technical angles)
+- Each tool update includes 2-4 new FAQs targeting specific use cases
+- Batch optimize tools in waves of 10-20 for efficiency (do not optimize all 114 at once)
+- Create high-quality blog posts (1000-2000 words) for high-impact tools with 3-5 internal links and keyword-rich anchor text
+
+**Deployment Critical:** Always use `--branch main` flag with wrangler pages deploy — this maps to Production/textwonder.com. Any other branch goes to Preview only and does NOT update the live site.
+
 ## Adding New Tools
 
 **RULE: Every new tool MUST also get a blog post. No exceptions.**

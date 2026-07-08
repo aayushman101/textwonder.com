@@ -1,0 +1,177 @@
+---
+import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
+
+const toolsForSearch = getGlobalSearchIndex();
+---
+
+<header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
+
+  <!-- Mobile: horizontal scrolling swipeable category pill bar (hidden on md+) -->
+  <div class="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2.5 border-b border-slate-800/60 bg-[var(--bg-surface)] scrollbar-none">
+    {SECTIONS.map(s => (
+      <a href={s.path}
+        class="flex items-center gap-1.5 shrink-0 px-3 py-1 rounded-full text-xs font-semibold text-white border transition-all"
+        style={`background:rgba(${s.accentRgb},0.04);border-color:rgba(${s.accentRgb},0.15);`}>
+        <span class="text-xs leading-none">{s.icon}</span>
+        <span class="leading-none">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
+      </a>
+    ))}
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+    <!-- Logo -->
+    <a href="/imagewonder" class="flex items-center gap-2 group">
+      <div class="w-8 h-8 rounded-lg bg-rose-500 flex items-center justify-center shrink-0">
+        <svg class="w-4.5 h-4.5 text-white" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+        </svg>
+      </div>
+      <span class="text-2xl font-bold text-white group-hover:text-rose-400 transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+        Image<span class="text-rose-400">Wonder</span>
+      </span>
+    </a>
+
+    <!-- Desktop Nav -->
+    <nav class="hidden md:flex items-center gap-5">
+      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
+
+      <!-- Unified Categories Mega-Menu -->
+      <div class="relative" id="img-categories-menu-wrapper">
+        <button id="img-categories-menu-btn" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          Categories
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <div id="img-categories-menu-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[600px] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
+            {SECTIONS.map(s => (
+              <a href={s.path}
+                class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-slate-800 transition-all group">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105"
+                  style={`background:rgba(${s.accentRgb},0.08); border: 1px solid rgba(${s.accentRgb},0.2)`}>
+                  {s.icon}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-bold text-white">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                      style={`background:rgba(${s.accentRgb},0.1); color:${s.color};`}>
+                      {s.count}
+                    </span>
+                  </div>
+                  <p class="text-slate-500 text-xs mt-0.5 leading-snug truncate group-hover:text-slate-400">{s.tagline}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs">
+            <span class="text-slate-500">Fast, private, and 100% browser-based tools</span>
+            <a href="/tools" class="flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium transition-colors">
+              View all tools ({toolsForSearch.length}) &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <a href="/blog" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Blog</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <!-- Theme toggle -->
+      <button id="img-theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors" aria-label="Toggle theme">
+        <svg id="img-icon-sun" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+        </svg>
+        <svg id="img-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      </button>
+
+      <!-- Search -->
+      <button id="img-search-open" class="flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-400 hover:text-white px-3 py-2 rounded-lg transition-colors text-sm" aria-label="Search tools">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="hidden sm:inline">Search tools…</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Search Modal -->
+<div id="img-search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="img-search-backdrop"></div>
+  <div class="relative max-w-lg mx-auto mt-20 mx-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-700">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input id="img-search-input" type="text" placeholder="Search 150+ free tools…" class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base" autocomplete="off"/>
+        <button id="img-search-close" class="text-slate-400 hover:text-white transition-colors text-sm">ESC</button>
+      </div>
+      <ul id="img-search-results" class="max-h-72 overflow-y-auto py-2"></ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script is:inline define:vars={{ toolsForSearch }}>
+  (function() {
+    const toggle = document.getElementById('img-theme-toggle');
+    const sun = document.getElementById('img-icon-sun');
+    const moon = document.getElementById('img-icon-moon');
+    function applyTheme(t) {
+      document.documentElement.setAttribute('data-theme', t);
+      localStorage.setItem('tw-theme', t);
+      if (t === 'dark') { sun.classList.remove('hidden'); moon.classList.add('hidden'); }
+      else { sun.classList.add('hidden'); moon.classList.remove('hidden'); }
+    }
+    applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+    toggle.addEventListener('click', () => {
+      applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    const modal = document.getElementById('img-search-modal');
+    const input = document.getElementById('img-search-input');
+    const results = document.getElementById('img-search-results');
+    const openBtn = document.getElementById('img-search-open');
+    const closeBtn = document.getElementById('img-search-close');
+    const backdrop = document.getElementById('img-search-backdrop');
+
+    function openModal() { modal.classList.remove('hidden'); setTimeout(() => input.focus(), 50); renderResults(''); }
+    function closeModal() { modal.classList.add('hidden'); input.value = ''; }
+
+    openBtn.addEventListener('click', openModal);
+    closeBtn.addEventListener('click', closeModal);
+    backdrop.addEventListener('click', closeModal);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') { closeModal(); closeCategoriesMenu(); }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+    });
+
+    function renderResults(query) {
+      const q = query.toLowerCase().trim();
+      const filtered = q
+        ? toolsForSearch.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q))
+        : toolsForSearch.slice(0, 8);
+      results.innerHTML = filtered.length
+        ? filtered.map(t => `<li><a href="${t.path}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${t.color}15;color:${t.color}">${t.icon || '🖼️'}</div><span class="text-white text-sm font-medium">${t.name}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-medium ml-auto" style="background:${t.color}15;color:${t.color}">${t.category}</span></a></li>`).join('')
+        : '<li class="px-4 py-4 text-slate-500 text-sm text-center">No tools found</li>';
+    }
+    input.addEventListener('input', e => renderResults(e.target.value));
+
+    const categoriesBtn = document.getElementById('img-categories-menu-btn');
+    const categoriesDropdown = document.getElementById('img-categories-menu-dropdown');
+
+    function closeCategoriesMenu() { categoriesDropdown && categoriesDropdown.classList.add('hidden'); }
+    if (categoriesBtn && categoriesDropdown) {
+      categoriesBtn.addEventListener('click', e => { e.stopPropagation(); categoriesDropdown.classList.toggle('hidden'); });
+      document.addEventListener('click', e => { if (!categoriesBtn.contains(e.target) && !categoriesDropdown.contains(e.target)) closeCategoriesMenu(); });
+    }
+  })();
+</script>

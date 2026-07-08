@@ -1,0 +1,73 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How much can I compress an image without losing quality?', a: 'JPEG at 80–85% quality is typically indistinguishable from the original at normal viewing distances, while reducing file size by 40–60%. Below 70%, artefacts in high-detail areas become noticeable.' },
+  { q: 'What is the difference between lossy and lossless compression?', a: 'Lossy compression (JPEG, WebP) permanently discards some image data to achieve smaller sizes. Lossless compression (PNG, WebP lossless) reduces file size without any data loss — but the reduction is smaller.' },
+  { q: 'Should I use JPEG or WebP for web images?', a: 'WebP is the modern standard: it achieves 25–35% smaller files than JPEG at the same quality. However, very old browsers do not support WebP. For maximum compatibility, use JPEG; for modern web projects, use WebP.' },
+  { q: 'Can I compress a PNG file?', a: 'PNG uses lossless compression, so the browser tool repackages it without quality loss. For significant reduction, convert the PNG to JPEG or WebP (if it has no transparency).' },
+  { q: 'Does compressing an image affect its dimensions?', a: 'No. Compression only reduces the file size — the pixel dimensions remain the same. Use the Image Resizer if you need to change the dimensions.' },
+];
+---
+
+<BlogLayout
+  title="How to Compress an Image Online for Free (Reduce File Size)"
+  description="Reduce image file size by up to 80% without visible quality loss. Free browser-based image compressor — no upload, supports JPG, PNG, and WebP."
+  canonical="/blog/how-to-compress-an-image-online-free"
+  date="2026-06-25"
+  readTime="5 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Large images slow down websites, bounce off email size limits, and eat up storage. This guide shows you how to compress any image for free — directly in your browser, with no upload required.
+</p>
+
+<h2>Why Image Compression Matters</h2>
+
+<ul>
+  <li><strong>Page speed:</strong> Images are typically the largest assets on a web page. Google's Core Web Vitals directly measure how quickly images load. Compressing images is the single fastest win for page performance.</li>
+  <li><strong>Storage:</strong> A folder of 200 uncompressed photos from a DSLR can be 2–4 GB. The same photos at 80% JPEG quality take under 300 MB.</li>
+  <li><strong>Email:</strong> Gmail and Outlook have 25 MB attachment limits. A batch of product photos often exceeds this without compression.</li>
+  <li><strong>Upload limits:</strong> CMS platforms, social networks, and form builders often limit uploads to 2–5 MB per image.</li>
+</ul>
+
+<h2>How to Compress an Image Free Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-compressor">Image Compressor</a>.</li>
+  <li>Drop your JPG, PNG, or WebP image onto the upload area.</li>
+  <li>Adjust the quality slider — 80% is the default sweet spot.</li>
+  <li>Select the output format (JPEG, WebP, or PNG).</li>
+  <li>See the before/after file sizes side by side.</li>
+  <li>Click <strong>Download Compressed Image</strong>.</li>
+</ol>
+
+<a href="/imagewonder/image-compressor" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Compressor — Reduce File Size Instantly →</div>
+  <div class="cta-desc">Adjustable quality, side-by-side size comparison. Export as JPEG, WebP, or PNG. No upload, no account. 100% browser-based.</div>
+</a>
+
+<h2>Choosing the Right Quality Setting</h2>
+
+<ul>
+  <li><strong>Quality 90–100%:</strong> Near-lossless. Good for archival or print. File size reduction is small (10–20%).</li>
+  <li><strong>Quality 75–85%:</strong> Best balance. Visually identical to the original at normal viewing size. 40–60% smaller.</li>
+  <li><strong>Quality 50–70%:</strong> Significant reduction (60–80%). Minor artefacts visible in high-detail regions on close inspection.</li>
+  <li><strong>Below 50%:</strong> Severe quality loss. Only suitable for thumbnails or previews.</li>
+</ul>
+
+<h2>Compress Images on Desktop</h2>
+
+<p><strong>Windows:</strong> Paint doesn't offer quality control. Use the browser tool above, or install IrfanView (free) for batch compression.</p>
+<p><strong>Mac:</strong> Preview → Export → reduce quality slider. Or use the browser tool for no-install simplicity.</p>
+
+<h2>Compress Images for WhatsApp / Telegram</h2>
+
+<p>
+  Messaging apps automatically compress images on send, but you lose control over the output. If you need to send a specific quality level, compress first using the Image Compressor, then send the compressed file to avoid double compression.
+</p>
+
+</BlogLayout>

@@ -1,0 +1,78 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I decode a Base64 image?', a: 'Paste the Base64 string into the Base64 to Image tool and click Decode. The tool constructs the data URI and renders the image in your browser. You can then download it as PNG or JPEG.' },
+  { q: 'Does it need the data:image prefix?', a: 'No. You can paste just the raw Base64 string and the tool defaults to PNG. For best results with other formats, include the full prefix (data:image/jpeg;base64,...).' },
+  { q: 'Why does my decoded image look broken or corrupted?', a: 'The most common cause is a truncated or modified Base64 string — check for added line breaks, missing characters, or whitespace. The Base64 string must be complete and unmodified.' },
+  { q: 'What image types can be decoded?', a: 'Any image format encoded as Base64: JPEG, PNG, GIF, WebP, SVG, and BMP are all supported.' },
+  { q: 'Can I convert Base64 in JavaScript?', a: 'Yes. Use atob() to decode the raw Base64 string back to binary. To display it, set the data URI directly as an image src: img.src = "data:image/png;base64," + base64String;' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Base64 to Image Online Free (Decode & Preview)"
+  description="Decode any Base64 string back to a viewable image online for free. Paste a data URI or raw Base64, preview, and download as PNG or JPEG. No upload."
+  canonical="/blog/how-to-convert-base64-to-image"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  When working with APIs, email templates, or web applications, you often encounter images stored as Base64 strings. This guide shows you how to decode a Base64 string back to a viewable, downloadable image — for free, in seconds.
+</p>
+
+<h2>What Does Base64 Look Like?</h2>
+
+<p>A Base64 image string looks like this (truncated for readability):</p>
+<pre><code>data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA
+AAAFCAYAAACNbyblAAAAHElEQVQI12P4
+BCAmvA8ABGABCK/AAAAAElFTkSuQmCC</code></pre>
+
+<p>It may also appear without the prefix (raw Base64 only):</p>
+<pre><code>iVBORw0KGgoAAAANSUhEUgAAAAUA...</code></pre>
+
+<h2>How to Decode Base64 to an Image Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/base64-to-image">Base64 to Image decoder</a>.</li>
+  <li>Paste your Base64 string (with or without the <code>data:image/...;base64,</code> prefix).</li>
+  <li>Click <strong>Decode & Preview</strong>.</li>
+  <li>See the image rendered in the preview pane.</li>
+  <li>Click <strong>Download PNG</strong> or <strong>Download JPG</strong>.</li>
+</ol>
+
+<a href="/imagewonder/base64-to-image" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Base64 to Image Decoder — Paste, Preview & Download →</div>
+  <div class="cta-desc">Handles data URIs and raw Base64 strings. Instant preview with PNG and JPEG download. No upload, no account required.</div>
+</a>
+
+<h2>Decode Base64 to Image in JavaScript</h2>
+
+<pre><code>// Display a Base64 string as an image
+const base64 = 'iVBORw0KGgoAAAANSUhEUg...';
+const img = document.createElement('img');
+img.src = "data:image/png;base64," + base64;
+document.body.appendChild(img);</code></pre>
+
+<h2>Decode in Python</h2>
+
+<pre><code>import base64
+
+encoded = "iVBORw0KGgoAAAANSUhEUg..."
+image_data = base64.b64decode(encoded)
+with open("output.png", "wb") as f:
+    f.write(image_data)</code></pre>
+
+<h2>Common Errors</h2>
+
+<ul>
+  <li><strong>Corrupted/partial image:</strong> The Base64 string was truncated. Copy the full string from the source.</li>
+  <li><strong>Wrong format:</strong> If you know the image is JPEG but see color issues, include the correct prefix: <code>data:image/jpeg;base64,</code>.</li>
+  <li><strong>Extra whitespace:</strong> Some systems add line breaks to Base64 strings. Strip all newlines before decoding.</li>
+</ul>
+
+</BlogLayout>

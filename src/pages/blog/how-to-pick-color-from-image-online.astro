@@ -1,0 +1,74 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What color formats can I get from the color picker?', a: 'HEX (#rrggbb), RGB (r, g, b), and HSL (hue, saturation, lightness) are all shown for every color you pick. Click any Copy button to copy that format to your clipboard.' },
+  { q: 'Can I pick colors from a screenshot?', a: 'Yes. Take a screenshot, then upload it to the Image Color Picker. Click anywhere on the screenshot to get the exact color code from that pixel.' },
+  { q: 'How accurate is the color picker?', a: 'It reads exact 8-bit RGBA values from the canvas pixel at the clicked coordinate. JPEG images may show slightly different values due to compression artefacts — PNG screenshots give the most accurate results.' },
+  { q: 'How do I find the HEX color code of a website?', a: 'Take a screenshot of the website, upload it to the Image Color Picker, and click the element whose color you want. You will get the exact HEX code.' },
+  { q: 'What is the difference between HEX, RGB, and HSL?', a: 'HEX (#ff5733) is used in HTML/CSS. RGB (255, 87, 51) is used in CSS and design tools. HSL (11°, 100%, 60%) describes hue, saturation, and lightness — intuitive for design adjustments.' },
+];
+---
+
+<BlogLayout
+  title="How to Pick a Color from Any Image Online (Free Eyedropper Tool)"
+  description="Extract exact HEX, RGB, and HSL color codes from any image by clicking on it. Free browser-based eyedropper tool — no upload, instant results."
+  canonical="/blog/how-to-pick-color-from-image-online"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Need to match a color from a logo, photo, or screenshot? An image color picker (also called an eyedropper) lets you click any pixel and instantly get the exact color code — in HEX, RGB, and HSL.
+</p>
+
+<h2>What is an Image Color Picker?</h2>
+
+<p>
+  An image color picker samples the color of a specific pixel in an image. It's the web equivalent of the eyedropper tool in Photoshop or Figma. Instead of guessing a hex code, you click the exact pixel and get the precise value.
+</p>
+
+<h2>How to Pick a Color from an Image Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-color-picker">Image Color Picker</a>.</li>
+  <li>Upload any JPG, PNG, WebP, or screenshot.</li>
+  <li>Hover over the image to preview colors in real time.</li>
+  <li>Click any pixel to lock the color and see HEX, RGB, and HSL values.</li>
+  <li>Click <strong>Copy</strong> next to the format you need.</li>
+  <li>Build a palette of recently picked colors at the bottom.</li>
+</ol>
+
+<a href="/imagewonder/image-color-picker" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Color Picker — Extract HEX, RGB, HSL from Any Image →</div>
+  <div class="cta-desc">Click any pixel to get exact color codes. Hover preview, recent picks palette. No upload to any server — 100% browser-based.</div>
+</a>
+
+<h2>Use Cases</h2>
+
+<ul>
+  <li><strong>Brand color matching:</strong> Your client sends a logo. Pick the exact brand colors from it for use in your CSS or design tools.</li>
+  <li><strong>Recreating designs:</strong> You see a color palette in a screenshot that you want to use in your project — pick each color and copy the hex codes.</li>
+  <li><strong>Photography color grading:</strong> Sample the dominant color from a reference photo to match the mood in your design.</li>
+  <li><strong>Accessibility checking:</strong> Pick a text color and a background color, then paste them into a contrast checker.</li>
+</ul>
+
+<h2>How to Get a Color Code from a Website</h2>
+
+<ol>
+  <li>Press <kbd>F12</kbd> to open browser DevTools → Elements tab → hover over elements to see colors in the computed styles.</li>
+  <li>Or: take a full-page screenshot (browser extension or OS screenshot), upload to the Image Color Picker, and click anywhere.</li>
+</ol>
+
+<h2>HEX vs RGB vs HSL — Which to Use?</h2>
+
+<ul>
+  <li><strong>HEX:</strong> Best for copy-pasting into HTML, CSS, and most design tools. Six-character format (#rrggbb).</li>
+  <li><strong>RGB:</strong> Useful in CSS <code>rgb()</code> and <code>rgba()</code> functions. Clear representation of red, green, blue channel values (0–255).</li>
+  <li><strong>HSL:</strong> Best for design intuition. Hue (0–360°), Saturation (0–100%), Lightness (0–100%). Easy to create lighter or darker versions by adjusting L.</li>
+</ul>
+
+</BlogLayout>

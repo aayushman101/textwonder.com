@@ -1,0 +1,79 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the difference between JPG and PNG?', a: 'JPEG uses lossy compression — ideal for photos where minor quality loss is acceptable in exchange for much smaller file sizes. PNG uses lossless compression and supports transparency — ideal for logos, icons, and screenshots where sharp edges and text must stay crisp.' },
+  { q: 'Should I use WebP instead of JPEG?', a: 'For web images, yes. WebP achieves 25–35% smaller file sizes than JPEG at the same visual quality, and supports both lossy and lossless compression as well as transparency. All modern browsers support it.' },
+  { q: 'Will converting from JPEG to PNG improve quality?', a: 'No. Converting a JPEG to PNG will not recover any quality lost during the original JPEG compression. PNG will simply store the already-compressed pixel data losslessly, resulting in a larger file with the same visual quality.' },
+  { q: 'What happens to transparency when converting PNG to JPEG?', a: 'JPEG does not support an alpha channel (transparency). Transparent areas are filled with white when converting PNG to JPEG. Use PNG or WebP if you need to preserve transparency.' },
+  { q: 'What is BMP format used for?', a: 'BMP (Bitmap) is an uncompressed Windows format. Files are very large but universally compatible with older Windows software. It is rarely used for web or sharing — JPEG or PNG are always better alternatives.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert Image Format Online Free (JPG, PNG, WebP, BMP)"
+  description="Convert images between JPG, PNG, WebP, and BMP formats online for free. No upload, instant — learn which format to use and how to convert in seconds."
+  canonical="/blog/how-to-convert-image-format-online-free"
+  date="2026-06-25"
+  readTime="5 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Different image formats suit different purposes. This guide explains when to use JPG, PNG, WebP, and BMP — and shows you how to convert between them for free, instantly, in your browser.
+</p>
+
+<h2>Image Format Comparison</h2>
+
+<table>
+  <thead>
+    <tr><th>Format</th><th>Compression</th><th>Transparency</th><th>Best for</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>JPEG (.jpg)</td><td>Lossy</td><td>No</td><td>Photos, social media</td></tr>
+    <tr><td>PNG</td><td>Lossless</td><td>Yes</td><td>Logos, icons, screenshots</td></tr>
+    <tr><td>WebP</td><td>Both</td><td>Yes</td><td>Web images (modern browsers)</td></tr>
+    <tr><td>BMP</td><td>None</td><td>No</td><td>Legacy Windows compatibility</td></tr>
+  </tbody>
+</table>
+
+<h2>How to Convert an Image Format Free Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-converter">Image Format Converter</a>.</li>
+  <li>Drop or select your image file.</li>
+  <li>Click the target format: JPEG, PNG, WebP, or BMP.</li>
+  <li>Adjust quality if converting to JPEG or WebP.</li>
+  <li>Click <strong>Convert & Download</strong>.</li>
+</ol>
+
+<a href="/imagewonder/image-converter" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Format Converter — JPG, PNG, WebP, BMP →</div>
+  <div class="cta-desc">Convert between all major image formats instantly. Adjustable quality for JPEG/WebP. No upload, no account. 100% browser-based.</div>
+</a>
+
+<h2>Common Conversion Use Cases</h2>
+
+<h3>PNG to JPEG</h3>
+<p>
+  Use when: you have a logo or screenshot saved as PNG and need a smaller file for email or web. The tool fills transparent areas with white before converting.
+</p>
+
+<h3>JPEG to PNG</h3>
+<p>
+  Use when: you need to overlay the image on a colored background without a white box, or add transparency. Note: this won't restore quality lost in the original JPEG.
+</p>
+
+<h3>Any format to WebP</h3>
+<p>
+  Use when: you're uploading images to a website and want the best file size. WebP beats JPEG and PNG in both size and quality. Check browser support for your audience first.
+</p>
+
+<h3>Any format to BMP</h3>
+<p>
+  Use when: you need uncompressed images for legacy Windows software or specific industrial applications.
+</p>
+
+</BlogLayout>

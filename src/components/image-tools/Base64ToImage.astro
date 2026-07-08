@@ -1,0 +1,86 @@
+---
+---
+<div class="space-y-5">
+  <div>
+    <label class="block text-sm font-medium text-slate-300 mb-2">Paste Base64 string or data URI</label>
+    <textarea id="b2i-input" rows="5"
+      class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-slate-300 rounded-xl px-4 py-3 text-xs font-mono resize-none focus:outline-none focus:border-rose-500"
+      placeholder="data:image/png;base64,iVBORw0KGgo... or just the raw Base64 string"></textarea>
+  </div>
+
+  <button id="b2i-decode-btn" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold text-sm transition-colors">
+    Decode & Preview
+  </button>
+
+  <p id="b2i-error" class="text-red-400 text-sm hidden"></p>
+
+  <div id="b2i-result" class="hidden space-y-4">
+    <div class="rounded-xl border border-slate-700 overflow-hidden bg-[var(--bg-surface-hover)] p-4 text-center">
+      <img id="b2i-preview" src="" alt="Decoded image" class="max-w-full max-h-64 mx-auto rounded-lg object-contain" />
+    </div>
+    <div id="b2i-meta" class="text-xs text-slate-500 text-center"></div>
+    <div class="flex gap-3">
+      <button id="b2i-dl-png" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold text-sm transition-colors">
+        Download PNG
+      </button>
+      <button id="b2i-dl-jpg" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition-colors">
+        Download JPG
+      </button>
+    </div>
+  </div>
+</div>
+
+<canvas id="b2i-canvas" class="hidden"></canvas>
+
+<script is:inline>
+(function () {
+  const input = document.getElementById('b2i-input');
+  const decodeBtn = document.getElementById('b2i-decode-btn');
+  const errorEl = document.getElementById('b2i-error');
+  const result = document.getElementById('b2i-result');
+  const preview = document.getElementById('b2i-preview');
+  const metaEl = document.getElementById('b2i-meta');
+  const dlPng = document.getElementById('b2i-dl-png');
+  const dlJpg = document.getElementById('b2i-dl-jpg');
+  const canvas = document.getElementById('b2i-canvas');
+
+  let loadedImg = null;
+
+  function showError(msg) { errorEl.textContent = msg; errorEl.classList.remove('hidden'); result.classList.add('hidden'); }
+  function hideError() { errorEl.classList.add('hidden'); }
+
+  decodeBtn.addEventListener('click', () => {
+    hideError();
+    let val = input.value.trim();
+    if (!val) { showError('Please paste a Base64 string.'); return; }
+    if (!val.startsWith('data:')) { val = 'data:image/png;base64,' + val; }
+    const img = new Image();
+    img.onload = () => {
+      loadedImg = img;
+      preview.src = val;
+      metaEl.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+      result.classList.remove('hidden');
+    };
+    img.onerror = () => showError('Could not decode image. Check that the string is a valid Base64 encoded image.');
+    img.src = val;
+  });
+
+  function download(mime, ext) {
+    if (!loadedImg) return;
+    canvas.width = loadedImg.naturalWidth;
+    canvas.height = loadedImg.naturalHeight;
+    const ctx = canvas.getContext('2d');
+    if (mime === 'image/jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+    ctx.drawImage(loadedImg, 0, 0);
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `decoded.${ext}`;
+      a.click();
+    }, mime, mime === 'image/jpeg' ? 0.92 : undefined);
+  }
+
+  dlPng.addEventListener('click', () => download('image/png', 'png'));
+  dlJpg.addEventListener('click', () => download('image/jpeg', 'jpg'));
+})();
+</script>

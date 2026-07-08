@@ -53,10 +53,10 @@ export const TOOLS = [
     name: 'Remove Emojis',
     category: 'text-cleaning',
     tagline: 'Strip all emojis from any text instantly.',
-    metaTitle: 'Remove Emojis from Text Online — Free Tool | TextWonder',
+    metaTitle: 'Remove Emojis from Text Online Free — Instantly Delete All Emoji',
     metaDescription:
-      'Paste your text and remove all emojis in one click. Perfect for cleaning social media exports, CSV files, and documents. Free, instant, no signup.',
-    h1: 'Remove Emojis from Text Online',
+      'Paste text and remove all emojis instantly. Supports emoji flags, skin tones, ZWJ sequences. Perfect for data cleaning. Free, no signup.',
+    h1: 'Remove Emojis from Text Online Free',
     descriptionLong:
       'The Remove Emojis tool scans your text and strips every emoji character using Unicode regex patterns. It covers all emoji ranges including faces, symbols, flags, skin tone modifiers, and ZWJ sequences — removing them completely without affecting your regular text.',
     useCases:
@@ -68,9 +68,11 @@ export const TOOLS = [
       { q: 'Is my text stored anywhere?', a: 'No. All processing happens in your browser. Nothing is sent to our servers.' },
       { q: 'Can I remove emojis from a large document?', a: 'Yes. Paste up to 1 million characters. The tool handles large text without slowing down.' },
       { q: 'How is this different from doing it manually?', a: 'Emojis span multiple Unicode code points, making manual deletion tedious and error-prone. This tool catches every one automatically.' },
+      { q: 'Does it remove emojis from CSV files?', a: 'Yes. Copy CSV data here, remove emojis, and paste the clean data back to Excel or any spreadsheet.' },
+      { q: 'What about skin tone emoji variants?', a: 'All emoji variants including skin tone modifiers (👩🏻) and ZWJ sequences (👨‍👩‍👧‍👦) are completely removed.' },
     ],
     relatedTools: ['remove-extra-spaces', 'remove-duplicate-lines', 'emoji-counter', 'symbol-counter'],
-    longTailKeywords: ['remove emojis from text online', 'strip emojis from string', 'delete emoji from text free', 'clean emojis from csv'],
+    longTailKeywords: ['remove emojis from text online', 'strip emojis free', 'delete emoji from text', 'clean emojis from csv', 'emoji remover online', 'how to remove emojis online', 'remove emoji from string', 'batch remove emojis', 'emoji cleanup tool free', 'remove all emoji from text', 'instant emoji remover online', 'strip emoji characters free', 'emoji filter tool', 'remove emoji from data', 'delete emoji fast online'],
     searchVolume: 'medium',
     competition: 'low',
     buildPriority: 1,

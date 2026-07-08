@@ -1,0 +1,72 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I add a watermark to an image for free?', a: 'Use the free Image Watermark tool: upload your image, enter your watermark text, choose the position and opacity, and download the watermarked image. No upload to any server — runs entirely in your browser.' },
+  { q: 'Can a text watermark be removed?', a: 'A semi-transparent text watermark overlaid on the main subject of the image is difficult to remove cleanly. Content-aware fill in Photoshop can remove simple watermarks on plain backgrounds, but watermarks over complex textures are much harder to remove.' },
+  { q: 'What position is best for a watermark?', a: 'Bottom right or bottom center is the convention for copyright marks. For stronger protection, center the watermark on the main subject — this makes removal much harder than corner placement.' },
+  { q: 'What opacity should I use?', a: '40–70% opacity is the standard range. Too transparent (below 30%) and the watermark is easy to crop or remove. Too opaque (above 80%) and it distracts from the image. 60% is a good default.' },
+  { q: 'Can I add an image watermark (logo) instead of text?', a: 'The current tool supports text watermarks only. For logo watermarks, use a design tool like Canva (free) or Adobe Photoshop.' },
+];
+---
+
+<BlogLayout
+  title="How to Add a Watermark to an Image Online for Free"
+  description="Add a custom text watermark to any image online for free. Set text, position, opacity, and color. No upload — 100% browser-based. Download instantly."
+  canonical="/blog/how-to-add-watermark-to-image-online-free"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Watermarks protect your photos from unauthorized use and help establish ownership. Here is how to add a text watermark to any image for free — in seconds, with no software to install.
+</p>
+
+<h2>Why Add a Watermark?</h2>
+
+<ul>
+  <li><strong>Copyright protection:</strong> Makes it clear who created the image and deters unauthorized copying.</li>
+  <li><strong>Proof images:</strong> Send clients a watermarked preview before payment, then send the clean version after.</li>
+  <li><strong>Brand visibility:</strong> Adding your website URL or brand name turns every shared image into free advertising.</li>
+  <li><strong>Marking drafts:</strong> Overlay "DRAFT", "CONFIDENTIAL", or "FOR REVIEW" before sharing work in progress.</li>
+</ul>
+
+<h2>How to Add a Watermark to an Image Free Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-watermark">Image Watermark</a> tool.</li>
+  <li>Drop your image or click to browse.</li>
+  <li>Type your watermark text (e.g., "© Your Name 2026" or your website URL).</li>
+  <li>Choose position: Bottom Right, Center, Bottom Left, etc.</li>
+  <li>Adjust font size, opacity, and color.</li>
+  <li>See the live preview update instantly.</li>
+  <li>Click <strong>Download Watermarked Image</strong>.</li>
+</ol>
+
+<a href="/imagewonder/image-watermark" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Watermark — Add Text Watermark Instantly →</div>
+  <div class="cta-desc">9 position presets, adjustable opacity and color. Live preview. No upload, no account. Download as PNG.</div>
+</a>
+
+<h2>Best Practices for Watermarking</h2>
+
+<ul>
+  <li><strong>Position matters:</strong> Corner watermarks are easy to crop off. Place it over the main subject for stronger protection.</li>
+  <li><strong>Use semi-transparency:</strong> A watermark at 60–70% opacity is visible without destroying the image.</li>
+  <li><strong>Include your URL:</strong> Instead of just a name, use your website URL — viewers can find you even if the watermark is partially visible.</li>
+  <li><strong>Batch watermarking:</strong> For many images, use the tool one by one, or consider a desktop tool like IrfanView for batch processing.</li>
+</ul>
+
+<h2>Add a Watermark in Photoshop</h2>
+
+<ol>
+  <li>Open the image.</li>
+  <li>Select the Text tool → type your watermark.</li>
+  <li>In the Layers panel, reduce the text layer Opacity to 50–70%.</li>
+  <li>Save as JPEG or PNG with File → Export.</li>
+</ol>
+
+</BlogLayout>

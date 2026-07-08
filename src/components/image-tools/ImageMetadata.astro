@@ -1,0 +1,185 @@
+---
+---
+<div class="space-y-5">
+  <div id="imd-drop" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-rose-500/60 transition-colors">
+    <input id="imd-file" type="file" accept="image/*" class="hidden" />
+    <div class="text-3xl mb-2">🔍</div>
+    <p class="text-slate-300 font-medium">Drop an image here or <span class="text-rose-400 underline cursor-pointer">click to browse</span></p>
+    <p class="text-slate-500 text-xs mt-1">View EXIF data, dimensions, file size, and more — no upload</p>
+  </div>
+
+  <div id="imd-panel" class="hidden space-y-4">
+    <div class="flex gap-4 items-start">
+      <img id="imd-preview" src="" alt="Preview" class="w-24 h-24 rounded-xl object-cover border border-slate-700 shrink-0" />
+      <div>
+        <p id="imd-filename" class="text-white font-semibold text-sm"></p>
+        <p id="imd-basic" class="text-slate-400 text-xs mt-1"></p>
+      </div>
+    </div>
+
+    <!-- Core metadata table -->
+    <div class="rounded-xl border border-slate-700 overflow-hidden">
+      <table class="w-full text-sm">
+        <tbody id="imd-table">
+        </tbody>
+      </table>
+    </div>
+
+    <!-- EXIF section -->
+    <div id="imd-exif-section" class="hidden">
+      <h3 class="text-sm font-semibold text-white mb-2">EXIF Data</h3>
+      <div class="rounded-xl border border-slate-700 overflow-hidden">
+        <table class="w-full text-sm">
+          <tbody id="imd-exif-table"></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="imd-no-exif" class="text-xs text-slate-500 hidden">No EXIF data found. JPEG files from cameras or phones typically contain EXIF metadata.</p>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('imd-drop');
+  const fileInput = document.getElementById('imd-file');
+  const panel = document.getElementById('imd-panel');
+  const preview = document.getElementById('imd-preview');
+  const filenameEl = document.getElementById('imd-filename');
+  const basicEl = document.getElementById('imd-basic');
+  const tableBody = document.getElementById('imd-table');
+  const exifSection = document.getElementById('imd-exif-section');
+  const exifTable = document.getElementById('imd-exif-table');
+  const noExifEl = document.getElementById('imd-no-exif');
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-rose-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-rose-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-rose-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  function row(label, value, odd) {
+    return `<tr class="${odd ? 'bg-[var(--bg-surface-hover)]' : ''}"><td class="px-4 py-2.5 text-slate-400 text-xs font-medium w-40 border-b border-slate-800">${label}</td><td class="px-4 py-2.5 text-white text-xs border-b border-slate-800">${value}</td></tr>`;
+  }
+
+  function fmtSize(b) { return b < 1024*1024 ? (b/1024).toFixed(1)+' KB' : (b/1024/1024).toFixed(2)+' MB'; }
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    preview.src = url;
+    filenameEl.textContent = file.name;
+
+    const img = new Image();
+    img.onload = () => {
+      const rows = [
+        { k: 'File name', v: file.name },
+        { k: 'File type', v: file.type },
+        { k: 'File size', v: fmtSize(file.size) },
+        { k: 'Dimensions', v: `${img.naturalWidth} × ${img.naturalHeight} px` },
+        { k: 'Aspect ratio', v: gcd(img.naturalWidth, img.naturalHeight) },
+        { k: 'Megapixels', v: ((img.naturalWidth * img.naturalHeight) / 1e6).toFixed(2) + ' MP' },
+        { k: 'Last modified', v: new Date(file.lastModified).toLocaleString() },
+      ];
+      tableBody.innerHTML = rows.map((r, i) => row(r.k, r.v, i % 2 === 1)).join('');
+      basicEl.textContent = `${img.naturalWidth}×${img.naturalHeight}px · ${fmtSize(file.size)}`;
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+      if (file.type === 'image/jpeg') parseExif(file);
+      else { noExifEl.classList.remove('hidden'); exifSection.classList.add('hidden'); }
+    };
+    img.src = url;
+  }
+
+  function gcd(a, b) {
+    while (b) { [a, b] = [b, a % b]; }
+    const g = a;
+    const wa = img => img;
+    return (a / g) + ':' + (b / g);
+  }
+
+  // Minimal EXIF parser for JPEG APP1/IFD0
+  function parseExif(file) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      try {
+        const buf = e.target.result;
+        const view = new DataView(buf);
+        if (view.getUint16(0) !== 0xFFD8) return showNoExif();
+        let offset = 2;
+        while (offset < buf.byteLength) {
+          const marker = view.getUint16(offset);
+          if (marker === 0xFFE1) { parseApp1(view, offset + 4); return; }
+          if (marker === 0xFFDA) break;
+          offset += 2 + view.getUint16(offset + 2);
+        }
+        showNoExif();
+      } catch { showNoExif(); }
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function showNoExif() { noExifEl.classList.remove('hidden'); exifSection.classList.add('hidden'); }
+
+  function parseApp1(view, offset) {
+    const exifHeader = String.fromCharCode(...[0x45,0x78,0x69,0x66,0x00,0x00]);
+    const header = String.fromCharCode(view.getUint8(offset), view.getUint8(offset+1), view.getUint8(offset+2), view.getUint8(offset+3), view.getUint8(offset+4), view.getUint8(offset+5));
+    if (header !== exifHeader) return showNoExif();
+    const tiffOffset = offset + 6;
+    const endian = view.getUint16(tiffOffset);
+    const le = endian === 0x4949;
+    const ifd0 = tiffOffset + view.getUint32(tiffOffset + 4, le);
+    const entries = view.getUint16(ifd0, le);
+    const TAGS = {
+      0x010E: 'Image Description', 0x010F: 'Camera Make', 0x0110: 'Camera Model',
+      0x0112: 'Orientation', 0x011A: 'X Resolution', 0x011B: 'Y Resolution',
+      0x0128: 'Resolution Unit', 0x0131: 'Software', 0x0132: 'Date/Time',
+      0x013B: 'Artist', 0x8769: 'EXIF IFD Pointer', 0x8825: 'GPS IFD',
+      0x9003: 'Date Taken', 0x9004: 'Date Digitized', 0x9202: 'Aperture',
+      0x9203: 'Brightness', 0x920A: 'Focal Length', 0xA002: 'Image Width',
+      0xA003: 'Image Height', 0xA40C: 'Subject Distance Range',
+      0x829A: 'Exposure Time', 0x829D: 'F-Number', 0x8827: 'ISO Speed',
+    };
+    const exifRows = [];
+    for (let i = 0; i < entries; i++) {
+      const entryOffset = ifd0 + 2 + i * 12;
+      const tag = view.getUint16(entryOffset, le);
+      const type = view.getUint16(entryOffset + 2, le);
+      const count = view.getUint32(entryOffset + 4, le);
+      const label = TAGS[tag];
+      if (!label || tag === 0x8769 || tag === 0x8825) continue;
+      try {
+        let val = readExifValue(view, entryOffset + 8, type, count, tiffOffset, le);
+        if (val !== null) exifRows.push({ k: label, v: String(val) });
+      } catch { /* skip malformed entry */ }
+    }
+    if (exifRows.length === 0) return showNoExif();
+    exifTable.innerHTML = exifRows.map((r, i) => row(r.k, r.v, i % 2 === 1)).join('');
+    exifSection.classList.remove('hidden');
+    noExifEl.classList.add('hidden');
+  }
+
+  function readExifValue(view, valOffset, type, count, tiffOffset, le) {
+    const sizes = [0, 1, 1, 2, 4, 8, 1, 1, 2, 4, 8, 4, 8];
+    const size = sizes[type] || 1;
+    let dataOffset = valOffset;
+    if (size * count > 4) dataOffset = tiffOffset + view.getUint32(valOffset, le);
+    if (type === 2) {
+      let str = '';
+      for (let i = 0; i < count; i++) str += String.fromCharCode(view.getUint8(dataOffset + i));
+      return str.replace(/\0/g, '').trim() || null;
+    }
+    if (type === 3) return view.getUint16(dataOffset, le);
+    if (type === 4) return view.getUint32(dataOffset, le);
+    if (type === 5) {
+      const num = view.getUint32(dataOffset, le);
+      const den = view.getUint32(dataOffset + 4, le);
+      return den ? (num / den).toFixed(2) : `${num}/${den}`;
+    }
+    return null;
+  }
+
+  function row(label, value, odd) {
+    return `<tr class="${odd ? 'bg-[var(--bg-surface-hover)]' : ''}"><td class="px-4 py-2.5 text-slate-400 text-xs font-medium w-40 border-b border-slate-800">${label}</td><td class="px-4 py-2.5 text-white text-xs border-b border-slate-800 break-all">${value}</td></tr>`;
+  }
+})();
+</script>

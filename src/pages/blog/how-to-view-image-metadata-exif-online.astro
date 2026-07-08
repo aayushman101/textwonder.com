@@ -1,0 +1,77 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is EXIF data?', a: 'EXIF (Exchangeable Image File Format) is metadata embedded in JPEG and TIFF images by cameras and phones. It includes camera make and model, focal length, aperture, ISO, shutter speed, capture date, and GPS coordinates if location services were enabled.' },
+  { q: 'Do all images contain EXIF data?', a: 'Only JPEGs from cameras and smartphones typically contain full EXIF metadata. PNGs, WebPs, and screenshots have minimal metadata. Images processed through web tools or social media are often stripped of EXIF data.' },
+  { q: 'Does uploading to social media remove EXIF data?', a: 'Yes. Most platforms (Instagram, Facebook, Twitter, WhatsApp) strip all EXIF metadata when you upload an image. This is a privacy feature — they remove GPS locations before publicly hosting your photos.' },
+  { q: 'How do I check if a photo has GPS data?', a: 'Upload the photo to the Image Metadata Viewer and look for GPS Latitude and GPS Longitude fields in the EXIF section. If those fields are present, the photo contains location information.' },
+  { q: 'How do I remove EXIF data from an image?', a: 'Export the image through any canvas-based tool — such as the Image Converter. The canvas re-export does not write EXIF headers, effectively stripping all metadata from the output file.' },
+];
+---
+
+<BlogLayout
+  title="How to View Image Metadata & EXIF Data Online for Free"
+  description="View EXIF data from any JPEG image online for free — camera make, GPS location, focal length, ISO, and more. No upload, browser-based EXIF viewer."
+  canonical="/blog/how-to-view-image-metadata-exif-online"
+  date="2026-06-25"
+  readTime="5 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Every photo taken with a camera or smartphone contains hidden information — called metadata — that records when, where, and how the photo was taken. This guide explains what image metadata is and how to view it for free.
+</p>
+
+<h2>What is Image Metadata?</h2>
+
+<p>Image metadata is data embedded inside the image file that is not part of the visual content itself. There are two main types:</p>
+
+<ul>
+  <li><strong>Basic metadata:</strong> File name, file size, dimensions, color mode, MIME type, and last modified date. Available for all image types.</li>
+  <li><strong>EXIF metadata:</strong> Camera-specific data embedded by JPEG files from cameras and phones. Includes camera make and model, lens focal length, aperture (f-stop), ISO speed, shutter speed, capture date and time, and GPS coordinates.</li>
+</ul>
+
+<h2>How to View EXIF Data Free Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-metadata">Image Metadata Viewer</a>.</li>
+  <li>Drop your JPEG photo or click to browse.</li>
+  <li>See basic properties instantly: dimensions, file size, MIME type, last modified.</li>
+  <li>If the file contains EXIF data, the EXIF section shows camera make/model, date taken, focal length, aperture, ISO, and GPS coordinates.</li>
+</ol>
+
+<a href="/imagewonder/image-metadata" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Metadata Viewer — View EXIF Data Instantly →</div>
+  <div class="cta-desc">Reads dimensions, file size, color mode, and full EXIF: camera, lens, date, GPS. No upload — everything runs in your browser.</div>
+</a>
+
+<h2>Common EXIF Fields Explained</h2>
+
+<ul>
+  <li><strong>Camera Make / Model:</strong> The manufacturer and model of the camera (e.g., "Apple iPhone 15 Pro").</li>
+  <li><strong>Date Taken:</strong> The exact date and time the shutter was pressed.</li>
+  <li><strong>Focal Length:</strong> The zoom level used (e.g., 24mm = wide, 200mm = telephoto).</li>
+  <li><strong>F-Number:</strong> Aperture setting. Lower f-stop = more background blur (bokeh).</li>
+  <li><strong>ISO Speed:</strong> Sensor sensitivity. Higher ISO = brighter in low light, more grain.</li>
+  <li><strong>Exposure Time:</strong> Shutter speed (e.g., 1/500s = fast, 1/30s = slow). Fast shutter freezes motion; slow shutter blurs it.</li>
+  <li><strong>GPS Latitude / Longitude:</strong> The coordinates where the photo was taken, if location services were active.</li>
+</ul>
+
+<h2>Privacy Considerations</h2>
+
+<p>
+  If you share photos publicly, EXIF GPS data reveals exactly where a photo was taken — including your home address if you photographed something inside. Always check for GPS data before sharing photos publicly. You can strip EXIF data by re-exporting through the <a href="/imagewonder/image-converter">Image Converter</a> — the canvas export does not write EXIF headers.
+</p>
+
+<h2>View EXIF Data on Desktop</h2>
+
+<ul>
+  <li><strong>Windows:</strong> Right-click the image → Properties → Details tab. Shows all embedded EXIF fields.</li>
+  <li><strong>Mac:</strong> Open in Preview → Tools → Show Inspector → EXIF tab.</li>
+  <li><strong>Linux:</strong> <code>exiftool filename.jpg</code> (install via package manager).</li>
+</ul>
+
+</BlogLayout>

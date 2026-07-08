@@ -1,0 +1,82 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is Base64 image encoding?', a: 'Base64 is an encoding scheme that converts binary data (like image files) into a string of ASCII characters. This allows binary files to be embedded directly in text-based formats like HTML, CSS, JSON, and XML.' },
+  { q: 'How much larger does a Base64 image get?', a: 'Base64 encoding increases file size by approximately 33%. A 100 KB image becomes about 133 KB as a Base64 string. For this reason, Base64 embedding is best reserved for small images under 50 KB.' },
+  { q: 'Can I use a Base64 image directly in an img tag?', a: 'Yes. Set the src attribute to the full data URI: <img src="data:image/png;base64,iVBORw...">. The browser will render it without any network request.' },
+  { q: 'Does Base64 encoding affect image quality?', a: 'No. Base64 is a pure encoding of the binary file — it does not compress or alter the image data. Decoding produces the exact original file.' },
+  { q: 'Is it good practice to embed images as Base64 in production websites?', a: 'Only for very small images like icons under 5 KB. Large Base64 images bloat your HTML/CSS, cannot be cached separately, and delay rendering. Use a regular image URL for anything meaningful.' },
+];
+---
+
+<BlogLayout
+  title="How to Convert an Image to Base64 Online Free"
+  description="Convert any image to a Base64 encoded string or data URI online for free. Ready to embed in HTML, CSS, or JSON. No upload, browser-based."
+  canonical="/blog/how-to-convert-image-to-base64"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Base64 encoding lets you embed an image directly inside HTML, CSS, JSON, or any text file — with no separate image file or HTTP request. Here is how to convert any image to Base64 for free.
+</p>
+
+<h2>What is a Base64 Image?</h2>
+
+<p>
+  A Base64 image is a text string representation of an image file. Instead of referencing an image via a URL (<code>src="/images/logo.png"</code>), you embed the full image data as a string:
+</p>
+<pre><code>&lt;img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUg..."&gt;</code></pre>
+<p>
+  The <code>data:</code> URL scheme (also called a data URI) tells the browser to decode the Base64 string directly into an image without fetching any external file.
+</p>
+
+<h2>When to Use Base64 Images</h2>
+
+<ul>
+  <li><strong>Inline SVG icons and small logos:</strong> Embedding a 500-byte icon as Base64 saves an HTTP round trip.</li>
+  <li><strong>Email templates:</strong> Some email clients block external images. Embedding images as Base64 ensures they always display.</li>
+  <li><strong>API payloads:</strong> Sending an image via a JSON REST API — Base64 is the standard way to include binary data in a JSON body.</li>
+  <li><strong>Single-file HTML documents:</strong> Creating a self-contained HTML file that includes its own images.</li>
+</ul>
+
+<h2>How to Convert an Image to Base64 Free</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-to-base64">Image to Base64 converter</a>.</li>
+  <li>Drop your image or click to browse (JPG, PNG, WebP, SVG, GIF).</li>
+  <li>Choose <strong>Data URI</strong> (with the <code>data:image/...;base64,</code> prefix) or <strong>Raw Base64</strong> only.</li>
+  <li>Click <strong>Copy to Clipboard</strong> or <strong>Download as .txt</strong>.</li>
+</ol>
+
+<a href="/imagewonder/image-to-base64" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image to Base64 Converter — Encode Any Image →</div>
+  <div class="cta-desc">Generates a full data URI or raw Base64 string. Copy to clipboard or download. No upload, no account. Supports JPG, PNG, WebP, SVG, GIF.</div>
+</a>
+
+<h2>How to Use the Base64 Output</h2>
+
+<h3>In HTML</h3>
+<pre><code>&lt;img src="data:image/png;base64,YOUR_BASE64_HERE" alt="Logo" /&gt;</code></pre>
+
+<h3>In CSS</h3>
+<pre><code>.logo &#123;
+  background-image: url("data:image/png;base64,YOUR_BASE64_HERE");
+&#125;</code></pre>
+
+<h3>In JSON</h3>
+<pre><code>&#123;
+  "image": "data:image/jpeg;base64,YOUR_BASE64_HERE"
+&#125;</code></pre>
+
+<h2>Limitations</h2>
+
+<p>
+  Base64 strings are 33% larger than the original binary file. Browsers also cannot cache inline Base64 images separately. For anything over 10 KB, a separate image file served with proper cache headers will always be faster and more efficient.
+</p>
+
+</BlogLayout>

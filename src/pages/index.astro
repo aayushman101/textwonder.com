@@ -13,7 +13,7 @@ const websiteSchema = {
   name: 'TextWonder',
   alternateName: 'textwonder',
   url: 'https://textwonder.com',
-  description: `textwonder — ${totalTools} free browser-based tools across 10 categories — text, PDF, developer, calculator, unit converter, health, student, color, and data tools. No signup required.`,
+  description: `textwonder — ${totalTools} free browser-based tools across 11 categories — text, PDF, image, developer, calculator, unit converter, health, student, color, and data tools. No signup required.`,
   potentialAction: {
     '@type': 'SearchAction',
     target: 'https://textwonder.com/tools?q={search_term_string}',
@@ -33,7 +33,7 @@ const orgSchema = {
 const homepageFaqs = [
   { q: 'Are all the tools on TextWonder free?', a: 'Yes. Every tool across all 10 sections is completely free — no hidden charges, no premium tiers, no subscription, ever.' },
   { q: 'Is my data uploaded to a server?', a: 'Never. All tools run entirely in your browser using JavaScript. Your text, files, and data never leave your device.' },
-  { q: 'What categories of tools are available?', a: `TextWonder has ${totalTools} tools across 10 categories: Text tools, PDF tools, Dev tools, calculators, unit converters, health tools, student utilities, color tools, data formatters, and document generators.` },
+  { q: 'What categories of tools are available?', a: `TextWonder has ${totalTools} tools across 11 categories: Text tools, PDF tools, Image tools, Dev tools, calculators, unit converters, health tools, student utilities, color tools, data formatters, and document generators.` },
   { q: 'Do the tools work on mobile?', a: 'Yes. Every tool is fully responsive and works on smartphones and tablets without losing any functionality.' },
   { q: 'Do I need to install anything?', a: 'No. Everything runs directly in your browser. No app download, no browser extension, no dependencies.' },
   { q: 'Can I use TextWonder tools offline?', a: 'Most tools work offline once the page has loaded, because all processing happens in your browser using JavaScript. Tools that use external APIs — such as certain text-to-speech voices — require an internet connection.' },
@@ -75,7 +75,7 @@ const faqSchema = {
         <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">every tool you need</span>
       </h1>
       <p class="text-slate-400 text-base md:text-lg max-w-xl mx-auto mb-8">
-        Free, browser-based utilities across 10 categories. No signup, no ads, no data sent anywhere.
+        Free, browser-based utilities across 11 categories. No signup, no ads, no data sent anywhere.
       </p>
 
       <!-- Large Hero Search Bar -->
@@ -106,7 +106,7 @@ const faqSchema = {
       <div class="inline-flex flex-wrap justify-center gap-x-5 gap-y-1.5 text-xs text-slate-500">
         <span><strong class="text-white font-semibold">{totalTools}</strong> tools</span>
         <span class="text-slate-700">·</span>
-        <span><strong class="text-white font-semibold">10</strong> categories</span>
+        <span><strong class="text-white font-semibold">11</strong> categories</span>
         <span class="text-slate-700">·</span>
         <span><strong class="text-white font-semibold">100%</strong> browser-based</span>
         <span class="text-slate-700">·</span>
@@ -118,7 +118,7 @@ const faqSchema = {
     <section class="max-w-5xl mx-auto px-4 pb-12">
       <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest text-center mb-6">Browse by Category</h2>
       
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3" id="category-cards-grid">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="category-cards-grid">
         {SECTIONS.map((s, idx) => (
           <button 
             class="category-card-btn group text-left flex flex-col justify-between p-4 bg-[var(--bg-surface)] border border-slate-800/80 rounded-2xl hover:border-slate-700 transition-all cursor-pointer relative overflow-hidden active:scale-[0.98]"
@@ -263,7 +263,7 @@ const faqSchema = {
       </h2>
       <div class="text-slate-400 space-y-4 leading-relaxed text-sm">
         <p>
-          TextWonder is one platform for every tool you need — free, browser-based utilities covering 10 categories, from
+          TextWonder is one platform for every tool you need — free, browser-based utilities covering 11 categories, from
           <a href="/tools" class="text-violet-400 hover:underline">text processing tools</a> and
           <a href="/pdfwonder" class="text-orange-400 hover:underline">PDF utilities</a> to
           <a href="/devwonder" class="text-cyan-400 hover:underline">developer tools</a>,

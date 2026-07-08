@@ -1,0 +1,85 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'How do I resize an image without losing quality?', a: 'Downscaling (making an image smaller) has minimal quality loss. The key is to avoid upscaling — enlarging an image beyond its original dimensions causes pixelation because the browser has to invent pixels that do not exist. Always start from the highest resolution original you have.' },
+  { q: 'What is the best size for social media images?', a: 'Common sizes: Instagram square 1080×1080px, Facebook cover 820×312px, Twitter/X post 1200×675px, LinkedIn post 1200×627px, YouTube thumbnail 1280×720px.' },
+  { q: 'Does resizing change the file size?', a: 'Yes. A smaller image has fewer pixels, so the file size decreases proportionally. Halving both width and height reduces the pixel count to 25% of the original, and the file size drops accordingly.' },
+  { q: 'Can I resize a PNG without losing transparency?', a: 'Yes. If you download the resized image as PNG, transparency is preserved. Downloading as JPEG will fill transparent areas with white.' },
+  { q: 'Is there a limit to how much I can resize?', a: 'The tool supports any size from 1×1px up to 8000×8000px. Practical limits depend on the original image resolution and your device\'s available memory.' },
+];
+---
+
+<BlogLayout
+  title="How to Resize an Image Online for Free (No Upload, Instant)"
+  description="Resize any image to exact pixel dimensions for free in your browser. No upload, no signup — learn how to resize JPG, PNG, and WebP images instantly."
+  canonical="/blog/how-to-resize-an-image-online-free"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Whether you need to resize a profile photo, prepare a thumbnail for your blog, or meet specific upload dimension requirements, you can resize any image for free in seconds — directly in your browser.
+</p>
+
+<h2>Why Resize an Image?</h2>
+
+<ul>
+  <li><strong>Social media requirements:</strong> Every platform has specific dimension requirements. Instagram, X, Facebook, and LinkedIn each expect different sizes for profile photos, posts, and covers.</li>
+  <li><strong>Page load speed:</strong> Serving a 4000×3000px photo when only a 400×300px thumbnail is displayed wastes bandwidth. Resizing to the display size can cut page load times dramatically.</li>
+  <li><strong>Upload limits:</strong> Many web portals restrict image uploads to a maximum width or height. Resizing brings the file within those limits.</li>
+  <li><strong>Email attachments:</strong> Emailing a full-resolution DSLR photo at 24 MP is unnecessary. Resize it to 1200px wide and the file becomes a fraction of the size.</li>
+</ul>
+
+<h2>How to Resize an Image Free Online (No Upload)</h2>
+
+<ol>
+  <li>Go to the <a href="/imagewonder/image-resizer">Image Resizer</a>.</li>
+  <li>Drop your image onto the upload area or click to browse.</li>
+  <li>Enter your target width and/or height in pixels.</li>
+  <li>Enable "Lock aspect ratio" to prevent stretching.</li>
+  <li>Adjust the quality slider if saving as JPEG.</li>
+  <li>Click <strong>Resize & Download</strong>. The resized image saves to your device.</li>
+</ol>
+
+<a href="/imagewonder/image-resizer" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Resizer — Resize to Any Dimensions →</div>
+  <div class="cta-desc">Set exact width and height in pixels. Lock aspect ratio, adjust quality. No upload, no account. Works with JPG, PNG, WebP, BMP.</div>
+</a>
+
+<h2>Resize an Image on Windows</h2>
+
+<p>If you prefer desktop methods:</p>
+<ul>
+  <li><strong>Paint:</strong> Open → Resize (Home tab) → set pixels → save. Simple, but no aspect ratio locking.</li>
+  <li><strong>Photos app:</strong> Open → three-dot menu → Resize → choose a preset or enter custom dimensions.</li>
+</ul>
+
+<h2>Resize an Image on Mac</h2>
+
+<ol>
+  <li>Open the image in <strong>Preview</strong>.</li>
+  <li>Go to <strong>Tools → Adjust Size</strong>.</li>
+  <li>Enter width or height. Tick "Scale proportionally" to lock aspect ratio.</li>
+  <li>Click OK and save.</li>
+</ol>
+
+<h2>Resize on iPhone or Android</h2>
+
+<p>
+  The browser-based Image Resizer works on mobile too — open it in Chrome or Safari, upload your image, and download the resized version directly to your phone's camera roll.
+</p>
+
+<h2>Tips for Best Results</h2>
+
+<ul>
+  <li>Always resize from the original high-resolution file, not from a copy that's already been compressed.</li>
+  <li>For web images, save as JPEG at 85–90% quality for the best size-to-quality ratio.</li>
+  <li>For images that need transparency (logos, icons), save as PNG.</li>
+  <li>WebP gives the best compression for web use and is supported in all modern browsers.</li>
+</ul>
+
+</BlogLayout>

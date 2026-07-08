@@ -1,0 +1,199 @@
+---
+---
+<div class="space-y-5">
+  <div id="icrp-drop" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-rose-500/60 transition-colors">
+    <input id="icrp-file" type="file" accept="image/*" class="hidden" />
+    <div class="text-3xl mb-2">✂️</div>
+    <p class="text-slate-300 font-medium">Drop an image here or <span class="text-rose-400 underline cursor-pointer">click to browse</span></p>
+    <p class="text-slate-500 text-xs mt-1">JPG, PNG, WebP — cropped in your browser</p>
+  </div>
+
+  <div id="icrp-panel" class="hidden space-y-4">
+    <!-- Canvas crop area -->
+    <div class="relative overflow-auto rounded-xl border border-slate-700 bg-[var(--bg-surface-hover)]" style="max-height:320px;">
+      <canvas id="icrp-canvas-display" class="block mx-auto cursor-crosshair" style="max-width:100%;"></canvas>
+    </div>
+    <p class="text-xs text-slate-500 text-center">Click and drag on the image to select a crop area</p>
+
+    <!-- Numeric controls -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">X (px)</label>
+        <input id="icrp-x" type="number" value="0" min="0" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Y (px)</label>
+        <input id="icrp-y" type="number" value="0" min="0" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Width (px)</label>
+        <input id="icrp-w" type="number" value="100" min="1" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Height (px)</label>
+        <input id="icrp-h" type="number" value="100" min="1" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500" />
+      </div>
+    </div>
+
+    <!-- Aspect ratio presets -->
+    <div class="flex flex-wrap gap-2">
+      <span class="text-xs text-slate-500 self-center">Preset:</span>
+      {['Free', '1:1', '4:3', '16:9', '3:2'].map(r => (
+        <button class="icrp-preset px-3 py-1 rounded-full text-xs border border-slate-700 text-slate-300 hover:border-rose-500 hover:text-white transition-colors" data-ratio={r}>{r}</button>
+      ))}
+    </div>
+
+    <button id="icrp-btn" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold text-sm transition-colors">
+      Crop & Download
+    </button>
+  </div>
+</div>
+
+<canvas id="icrp-canvas-out" class="hidden"></canvas>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('icrp-drop');
+  const fileInput = document.getElementById('icrp-file');
+  const panel = document.getElementById('icrp-panel');
+  const displayCanvas = document.getElementById('icrp-canvas-display');
+  const outCanvas = document.getElementById('icrp-canvas-out');
+  const xIn = document.getElementById('icrp-x');
+  const yIn = document.getElementById('icrp-y');
+  const wIn = document.getElementById('icrp-w');
+  const hIn = document.getElementById('icrp-h');
+  const btn = document.getElementById('icrp-btn');
+
+  let img = null, imgW = 0, imgH = 0, scale = 1;
+  let dragging = false, startX = 0, startY = 0;
+  let cropX = 0, cropY = 0, cropW = 100, cropH = 100;
+  let aspectRatio = null;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-rose-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-rose-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-rose-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    img = new Image();
+    img.onload = () => {
+      imgW = img.naturalWidth; imgH = img.naturalHeight;
+      const maxW = Math.min(600, imgW);
+      scale = maxW / imgW;
+      displayCanvas.width = Math.round(imgW * scale);
+      displayCanvas.height = Math.round(imgH * scale);
+      cropX = 0; cropY = 0; cropW = imgW; cropH = imgH;
+      syncInputs();
+      drawDisplay();
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+    };
+    img.src = url;
+  }
+
+  function syncInputs() {
+    xIn.value = cropX; yIn.value = cropY; wIn.value = cropW; hIn.value = cropH;
+  }
+
+  function drawDisplay() {
+    const ctx = displayCanvas.getContext('2d');
+    ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+    ctx.drawImage(img, 0, 0, displayCanvas.width, displayCanvas.height);
+    ctx.fillStyle = 'rgba(0,0,0,0.45)';
+    ctx.fillRect(0, 0, displayCanvas.width, displayCanvas.height);
+    const sx = cropX * scale, sy = cropY * scale, sw = cropW * scale, sh = cropH * scale;
+    ctx.drawImage(img, cropX, cropY, cropW, cropH, sx, sy, sw, sh);
+    ctx.strokeStyle = '#f43f5e';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(sx, sy, sw, sh);
+  }
+
+  displayCanvas.addEventListener('mousedown', e => {
+    const r = displayCanvas.getBoundingClientRect();
+    startX = (e.clientX - r.left) / scale;
+    startY = (e.clientY - r.top) / scale;
+    dragging = true;
+  });
+  displayCanvas.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    const r = displayCanvas.getBoundingClientRect();
+    let ex = (e.clientX - r.left) / scale;
+    let ey = (e.clientY - r.top) / scale;
+    let x = Math.min(startX, ex), y = Math.min(startY, ey);
+    let w = Math.abs(ex - startX), h = Math.abs(ey - startY);
+    if (aspectRatio) { h = w / aspectRatio; }
+    cropX = Math.max(0, Math.round(x));
+    cropY = Math.max(0, Math.round(y));
+    cropW = Math.min(imgW - cropX, Math.max(1, Math.round(w)));
+    cropH = Math.min(imgH - cropY, Math.max(1, Math.round(h)));
+    syncInputs(); drawDisplay();
+  });
+  displayCanvas.addEventListener('mouseup', () => { dragging = false; });
+  displayCanvas.addEventListener('mouseleave', () => { dragging = false; });
+
+  // touch support
+  displayCanvas.addEventListener('touchstart', e => {
+    e.preventDefault();
+    const t = e.touches[0];
+    const r = displayCanvas.getBoundingClientRect();
+    startX = (t.clientX - r.left) / scale;
+    startY = (t.clientY - r.top) / scale;
+    dragging = true;
+  });
+  displayCanvas.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!dragging) return;
+    const t = e.touches[0];
+    const r = displayCanvas.getBoundingClientRect();
+    let ex = (t.clientX - r.left) / scale;
+    let ey = (t.clientY - r.top) / scale;
+    let x = Math.min(startX, ex), y = Math.min(startY, ey);
+    let w = Math.abs(ex - startX), h = Math.abs(ey - startY);
+    if (aspectRatio) { h = w / aspectRatio; }
+    cropX = Math.max(0, Math.round(x));
+    cropY = Math.max(0, Math.round(y));
+    cropW = Math.min(imgW - cropX, Math.max(1, Math.round(w)));
+    cropH = Math.min(imgH - cropY, Math.max(1, Math.round(h)));
+    syncInputs(); drawDisplay();
+  });
+  displayCanvas.addEventListener('touchend', () => { dragging = false; });
+
+  [xIn, yIn, wIn, hIn].forEach(el => {
+    el.addEventListener('change', () => {
+      cropX = Math.max(0, parseInt(xIn.value) || 0);
+      cropY = Math.max(0, parseInt(yIn.value) || 0);
+      cropW = Math.max(1, parseInt(wIn.value) || 1);
+      cropH = Math.max(1, parseInt(hIn.value) || 1);
+      drawDisplay();
+    });
+  });
+
+  document.querySelectorAll('.icrp-preset').forEach(b => {
+    b.addEventListener('click', () => {
+      const r = b.dataset.ratio;
+      if (r === 'Free') { aspectRatio = null; return; }
+      const [rw, rh] = r.split(':').map(Number);
+      aspectRatio = rw / rh;
+      cropH = Math.round(cropW / aspectRatio);
+      syncInputs(); drawDisplay();
+    });
+  });
+
+  btn.addEventListener('click', () => {
+    if (!img) return;
+    outCanvas.width = cropW;
+    outCanvas.height = cropH;
+    const ctx = outCanvas.getContext('2d');
+    ctx.drawImage(img, cropX, cropY, cropW, cropH, 0, 0, cropW, cropH);
+    outCanvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `cropped-${cropW}x${cropH}.png`;
+      a.click();
+    }, 'image/png');
+  });
+})();
+</script>

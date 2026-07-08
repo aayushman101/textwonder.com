@@ -1,0 +1,71 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Does rotating an image reduce its quality?', a: 'Rotating by 90°, 180°, or 270° is geometrically lossless — no pixels are discarded. Saving as PNG preserves full quality. Saving as JPEG applies standard compression, which is a normal property of that format, not caused by the rotation.' },
+  { q: 'Why is my phone photo sideways when I upload it?', a: 'Phone cameras save images in landscape orientation and store rotation metadata in the EXIF tags. Most browsers respect EXIF orientation automatically now, but some upload tools or platforms do not read EXIF and display the raw orientation.' },
+  { q: 'Can I flip an image horizontally to create a mirror effect?', a: 'Yes. The Flip Horizontal button mirrors the image left-to-right, creating a mirror image. Flip Vertical flips it upside down.' },
+  { q: 'Can I rotate by arbitrary angles like 30° or 45°?', a: 'Currently the tool supports 90° increments. Arbitrary rotation requires padding the canvas with background fill to avoid clipping the corners — this feature is not yet available.' },
+  { q: 'Can I undo a rotation?', a: 'Click Reset to return the image to its original orientation at any time. Or rotate by 270° (3 × 90° clockwise) to undo a 90° clockwise rotation.' },
+];
+---
+
+<BlogLayout
+  title="How to Rotate and Flip an Image Online for Free"
+  description="Rotate images 90°, 180°, 270° and flip horizontally or vertically for free in your browser. No upload, instant download. Supports JPG, PNG, WebP."
+  canonical="/blog/how-to-rotate-and-flip-image-online"
+  date="2026-06-25"
+  readTime="3 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Fix sideways photos, create mirror effects, or correct scanned documents with the free Image Rotate & Flip tool — all in your browser, no upload required.
+</p>
+
+<h2>How to Rotate an Image Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-rotate-flip">Image Rotate & Flip</a> tool.</li>
+  <li>Drop your image or click to browse.</li>
+  <li>Click <strong>Rotate 90° CW</strong> or <strong>Rotate 90° CCW</strong> to rotate.</li>
+  <li>Click multiple times for 180° or 270°.</li>
+  <li>Click <strong>Download</strong> to save.</li>
+</ol>
+
+<a href="/imagewonder/image-rotate-flip" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Rotate & Flip — One-Click Transform →</div>
+  <div class="cta-desc">Rotate 90°/180°/270°, flip horizontal or vertical. Live preview, instant PNG download. No upload, no account.</div>
+</a>
+
+<h2>Rotate on Windows</h2>
+
+<p>Right-click any image in File Explorer → <strong>Rotate right</strong> or <strong>Rotate left</strong>. This rotates by 90° and saves in place (overwrites the original). For more control, use the browser tool above.</p>
+
+<h2>Rotate on Mac</h2>
+
+<ol>
+  <li>Open in <strong>Preview</strong>.</li>
+  <li>Go to <strong>Tools → Rotate Left/Right</strong>.</li>
+  <li>Save the file.</li>
+</ol>
+
+<h2>Rotate on iPhone</h2>
+
+<ol>
+  <li>Open in <strong>Photos</strong> → tap <strong>Edit</strong>.</li>
+  <li>Tap the crop/rotate icon → use the rotate button (top-left).</li>
+  <li>Tap <strong>Done</strong>.</li>
+</ol>
+
+<h2>Flip vs Rotate — What's the Difference?</h2>
+
+<ul>
+  <li><strong>Rotate:</strong> Turns the image clockwise or counter-clockwise. The image is the same but seen from a different angle.</li>
+  <li><strong>Flip Horizontal (mirror):</strong> Creates a left-right mirror image. Useful for text on clothing mockups, profile poses, and symmetry effects.</li>
+  <li><strong>Flip Vertical:</strong> Creates an upside-down mirror. Used for reflection effects in design and photography.</li>
+</ul>
+
+</BlogLayout>

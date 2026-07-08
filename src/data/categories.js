@@ -7,8 +7,10 @@ import { HEALTH_TOOLS } from './healthtools.js';
 import { STUDENT_TOOLS } from './studenttools.js';
 import { COLOR_TOOLS } from './colortools.js';
 import { DATA_TOOLS } from './datatools.js';
+import { IMAGE_TOOLS } from './imagetools.js';
 
 export const SECTIONS = [
+  // Row 1: Text, PDF, Doc, Image
   {
     prefix: 'Text', suffix: 'Wonder',
     path: '/tools',
@@ -37,6 +39,39 @@ export const SECTIONS = [
     toolsList: PDF_TOOLS.map((t) => ({ name: t.name, path: `/pdfwonder/${t.slug}` }))
   },
   {
+    prefix: 'Doc', suffix: 'Wonder',
+    path: '/categories/document-generators',
+    color: '#0d9488', accentRgb: '13,148,136',
+    tagline: 'Rent receipts, salary slips, experience letters, relieving letters, and proforma invoices.',
+    count: 5,
+    icon: '📁',
+    featured: [
+      { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator' },
+      { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator' },
+      { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator' },
+      { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator' },
+      { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator' },
+    ],
+    toolsList: [
+      { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator' },
+      { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator' },
+      { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator' },
+      { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator' },
+      { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator' },
+    ]
+  },
+  {
+    prefix: 'Image', suffix: 'Wonder',
+    path: '/imagewonder',
+    color: '#f43f5e', accentRgb: '244,63,94',
+    tagline: 'Resize, compress, convert, crop, watermark, and analyse images — all in your browser.',
+    count: IMAGE_TOOLS.length,
+    icon: '🖼️',
+    featured: IMAGE_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/imagewonder/${t.slug}` })),
+    toolsList: IMAGE_TOOLS.map((t) => ({ name: t.name, path: `/imagewonder/${t.slug}` }))
+  },
+  // Row 2: Dev, Student, Calc, Health
+  {
     prefix: 'Dev', suffix: 'Wonder',
     path: '/devwonder',
     color: '#06b6d4', accentRgb: '6,182,212',
@@ -45,6 +80,16 @@ export const SECTIONS = [
     icon: '🛠️',
     featured: DEV_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/devwonder/${t.slug}` })),
     toolsList: DEV_TOOLS.map((t) => ({ name: t.name, path: `/devwonder/${t.slug}` }))
+  },
+  {
+    prefix: 'Student', suffix: 'Wonder',
+    path: '/student',
+    color: '#3b82f6', accentRgb: '59,130,246',
+    tagline: 'CGPA, GPA, attendance tracker, exam countdown, Pomodoro timer — built for students.',
+    count: STUDENT_TOOLS.length,
+    icon: '🎓',
+    featured: STUDENT_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/student/${t.slug}` })),
+    toolsList: STUDENT_TOOLS.map((t) => ({ name: t.name, path: `/student/${t.slug}` }))
   },
   {
     prefix: 'Calc', suffix: 'Wonder',
@@ -57,16 +102,6 @@ export const SECTIONS = [
     toolsList: CALC_TOOLS.map((t) => ({ name: t.name, path: `/calc/${t.slug}` }))
   },
   {
-    prefix: 'Unit', suffix: 'Wonder',
-    path: '/unit',
-    color: '#6366f1', accentRgb: '99,102,241',
-    tagline: 'Length, weight, temperature, speed, volume, time, area, data — instant unit conversions.',
-    count: UNIT_TOOLS.length,
-    icon: '📐',
-    featured: UNIT_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/unit/${t.slug}` })),
-    toolsList: UNIT_TOOLS.map((t) => ({ name: t.name, path: `/unit/${t.slug}` }))
-  },
-  {
     prefix: 'Health', suffix: 'Wonder',
     path: '/health',
     color: '#22c55e', accentRgb: '34,197,94',
@@ -76,16 +111,7 @@ export const SECTIONS = [
     featured: HEALTH_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/health/${t.slug}` })),
     toolsList: HEALTH_TOOLS.map((t) => ({ name: t.name, path: `/health/${t.slug}` }))
   },
-  {
-    prefix: 'Student', suffix: 'Wonder',
-    path: '/student',
-    color: '#3b82f6', accentRgb: '59,130,246',
-    tagline: 'CGPA, GPA, attendance tracker, exam countdown, Pomodoro timer — built for students.',
-    count: STUDENT_TOOLS.length,
-    icon: '🎓',
-    featured: STUDENT_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/student/${t.slug}` })),
-    toolsList: STUDENT_TOOLS.map((t) => ({ name: t.name, path: `/student/${t.slug}` }))
-  },
+  // Row 3: Color, Data, Unit
   {
     prefix: 'Color', suffix: 'Wonder',
     path: '/color',
@@ -107,26 +133,14 @@ export const SECTIONS = [
     toolsList: DATA_TOOLS.map((t) => ({ name: t.name, path: `/data/${t.slug}` }))
   },
   {
-    prefix: 'Doc', suffix: 'Wonder',
-    path: '/categories/document-generators',
-    color: '#0d9488', accentRgb: '13,148,136',
-    tagline: 'Rent receipts, salary slips, experience letters, relieving letters, and proforma invoices.',
-    count: 5,
-    icon: '📁',
-    featured: [
-      { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator' },
-      { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator' },
-      { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator' },
-      { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator' },
-      { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator' },
-    ],
-    toolsList: [
-      { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator' },
-      { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator' },
-      { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator' },
-      { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator' },
-      { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator' },
-    ]
+    prefix: 'Unit', suffix: 'Wonder',
+    path: '/unit',
+    color: '#6366f1', accentRgb: '99,102,241',
+    tagline: 'Length, weight, temperature, speed, volume, time, area, data — instant unit conversions.',
+    count: UNIT_TOOLS.length,
+    icon: '📐',
+    featured: UNIT_TOOLS.slice(0, 6).map((t) => ({ name: t.name, path: `/unit/${t.slug}` })),
+    toolsList: UNIT_TOOLS.map((t) => ({ name: t.name, path: `/unit/${t.slug}` }))
   },
 ];
 

@@ -1,0 +1,122 @@
+---
+---
+<div class="space-y-5">
+  <div id="irf-drop" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-rose-500/60 transition-colors">
+    <input id="irf-file" type="file" accept="image/*" class="hidden" />
+    <div class="text-3xl mb-2">↻</div>
+    <p class="text-slate-300 font-medium">Drop an image here or <span class="text-rose-400 underline cursor-pointer">click to browse</span></p>
+    <p class="text-slate-500 text-xs mt-1">JPG, PNG, WebP — transformed in your browser</p>
+  </div>
+
+  <div id="irf-panel" class="hidden space-y-4">
+    <!-- Preview -->
+    <div class="flex justify-center rounded-xl border border-slate-700 overflow-hidden bg-[var(--bg-surface-hover)] p-4" style="min-height:160px;">
+      <img id="irf-preview" src="" alt="Preview" class="max-w-full max-h-64 object-contain rounded" />
+    </div>
+
+    <!-- Transform buttons -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <button class="irf-action flex flex-col items-center gap-2 py-3 bg-[var(--bg-surface-hover)] border border-slate-700 rounded-xl hover:border-rose-500/50 hover:bg-rose-950/20 text-white text-sm font-medium transition-all" data-action="cw">
+        <span class="text-xl">↻</span>Rotate 90° CW
+      </button>
+      <button class="irf-action flex flex-col items-center gap-2 py-3 bg-[var(--bg-surface-hover)] border border-slate-700 rounded-xl hover:border-rose-500/50 hover:bg-rose-950/20 text-white text-sm font-medium transition-all" data-action="ccw">
+        <span class="text-xl">↺</span>Rotate 90° CCW
+      </button>
+      <button class="irf-action flex flex-col items-center gap-2 py-3 bg-[var(--bg-surface-hover)] border border-slate-700 rounded-xl hover:border-rose-500/50 hover:bg-rose-950/20 text-white text-sm font-medium transition-all" data-action="fliph">
+        <span class="text-xl">⇔</span>Flip Horizontal
+      </button>
+      <button class="irf-action flex flex-col items-center gap-2 py-3 bg-[var(--bg-surface-hover)] border border-slate-700 rounded-xl hover:border-rose-500/50 hover:bg-rose-950/20 text-white text-sm font-medium transition-all" data-action="flipv">
+        <span class="text-xl">⇕</span>Flip Vertical
+      </button>
+    </div>
+
+    <div class="flex gap-3">
+      <button id="irf-reset" class="flex-1 py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition-colors">
+        Reset
+      </button>
+      <button id="irf-download" class="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold text-sm transition-colors">
+        Download
+      </button>
+    </div>
+    <p id="irf-dims" class="text-xs text-slate-500 text-center"></p>
+  </div>
+</div>
+
+<canvas id="irf-canvas" class="hidden"></canvas>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('irf-drop');
+  const fileInput = document.getElementById('irf-file');
+  const panel = document.getElementById('irf-panel');
+  const previewImg = document.getElementById('irf-preview');
+  const canvas = document.getElementById('irf-canvas');
+  const dimsEl = document.getElementById('irf-dims');
+
+  let origImg = null;
+  let rotation = 0; // 0, 90, 180, 270
+  let flipH = false, flipV = false;
+  let origFileName = 'image';
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-rose-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-rose-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-rose-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    origFileName = file.name.replace(/\.[^.]+$/, '');
+    rotation = 0; flipH = false; flipV = false;
+    const url = URL.createObjectURL(file);
+    origImg = new Image();
+    origImg.onload = () => { renderTransform(); panel.classList.remove('hidden'); drop.classList.add('hidden'); };
+    origImg.src = url;
+  }
+
+  function renderTransform() {
+    const rad = rotation * Math.PI / 180;
+    const isRotated = rotation === 90 || rotation === 270;
+    const w = isRotated ? origImg.naturalHeight : origImg.naturalWidth;
+    const h = isRotated ? origImg.naturalWidth : origImg.naturalHeight;
+    canvas.width = w;
+    canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, w, h);
+    ctx.save();
+    ctx.translate(w / 2, h / 2);
+    ctx.rotate(rad);
+    ctx.scale(flipH ? -1 : 1, flipV ? -1 : 1);
+    ctx.drawImage(origImg, -origImg.naturalWidth / 2, -origImg.naturalHeight / 2);
+    ctx.restore();
+    previewImg.src = canvas.toDataURL('image/png');
+    dimsEl.textContent = `${w} × ${h} px`;
+  }
+
+  document.querySelectorAll('.irf-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const a = btn.dataset.action;
+      if (a === 'cw') rotation = (rotation + 90) % 360;
+      else if (a === 'ccw') rotation = (rotation + 270) % 360;
+      else if (a === 'fliph') flipH = !flipH;
+      else if (a === 'flipv') flipV = !flipV;
+      renderTransform();
+    });
+  });
+
+  document.getElementById('irf-reset').addEventListener('click', () => {
+    rotation = 0; flipH = false; flipV = false;
+    if (origImg) renderTransform();
+  });
+
+  document.getElementById('irf-download').addEventListener('click', () => {
+    if (!origImg) return;
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `${origFileName}-transformed.png`;
+      a.click();
+    }, 'image/png');
+  });
+})();
+</script>

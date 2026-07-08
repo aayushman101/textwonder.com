@@ -1,0 +1,80 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'Does cropping reduce image quality?', a: 'No. Cropping removes pixels from the edges — it does not re-compress or alter the remaining pixels. The cropped region is saved at full quality.' },
+  { q: 'Can I crop to an exact pixel size?', a: 'Yes. Enter the X, Y, width, and height values directly in the numeric inputs for pixel-perfect crops. Or drag on the preview canvas to select visually.' },
+  { q: 'What aspect ratios are available?', a: 'Free (any shape), 1:1 (square), 4:3 (standard), 16:9 (widescreen), and 3:2 (DSLR standard). Select a preset and the crop selection will be constrained to that ratio.' },
+  { q: 'Will cropping make the file smaller?', a: 'Yes. A cropped image has fewer pixels, so the file size decreases proportionally. Cropping to half the width and half the height reduces pixel count to 25% of the original.' },
+  { q: 'Can I crop on iPhone or Android?', a: 'Yes. The browser-based crop tool works on mobile. Upload your image, drag to select on the touch canvas, and download the cropped result.' },
+];
+---
+
+<BlogLayout
+  title="How to Crop an Image Online for Free — Exact Pixels & Aspect Ratios"
+  description="Crop any image online for free — drag to select or enter exact pixel coordinates. Supports 1:1, 4:3, 16:9 aspect ratios. No upload, browser-based."
+  canonical="/blog/how-to-crop-an-image-online-free"
+  date="2026-06-25"
+  readTime="4 min read"
+  category="Image Guide"
+  faqs={faqs}
+>
+
+<p>
+  Cropping removes the outer parts of an image to focus on a specific area, meet an aspect ratio requirement, or eliminate unwanted content. Here is how to crop any image for free — in your browser, no software needed.
+</p>
+
+<h2>When to Crop an Image</h2>
+
+<ul>
+  <li><strong>Social media profile photos:</strong> Most platforms require a square (1:1) crop for profile pictures.</li>
+  <li><strong>YouTube thumbnails:</strong> 16:9 aspect ratio is required — crop your photo to fit before uploading.</li>
+  <li><strong>Remove unwanted borders:</strong> Scanned documents often have black or white borders. Crop them out for a clean result.</li>
+  <li><strong>Focus on the subject:</strong> Tighten the composition by cropping out distracting background elements.</li>
+  <li><strong>Print formats:</strong> Different print sizes (4×6, 5×7, 8×10) require different aspect ratios.</li>
+</ul>
+
+<h2>How to Crop an Image Free Online</h2>
+
+<ol>
+  <li>Open the <a href="/imagewonder/image-cropper">Image Cropper</a>.</li>
+  <li>Drop your image or click to browse.</li>
+  <li>Drag on the canvas to draw your crop selection.</li>
+  <li>Or enter exact X, Y, width, height values in the number inputs.</li>
+  <li>Select an aspect ratio preset if needed (1:1, 4:3, 16:9, 3:2).</li>
+  <li>Click <strong>Crop & Download</strong>.</li>
+</ol>
+
+<a href="/imagewonder/image-cropper" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Image Cropper — Drag to Crop or Enter Exact Pixels →</div>
+  <div class="cta-desc">Freeform drag selection plus aspect ratio presets. Enter pixel coordinates directly. No upload, no account. Touch-friendly.</div>
+</a>
+
+<h2>Crop on iPhone (Built-in)</h2>
+
+<ol>
+  <li>Open the photo in the <strong>Photos</strong> app.</li>
+  <li>Tap <strong>Edit</strong> → crop icon (bottom right).</li>
+  <li>Drag the corners to crop. Tap an aspect ratio icon for presets.</li>
+  <li>Tap <strong>Done</strong>.</li>
+</ol>
+
+<h2>Crop on Android</h2>
+
+<ol>
+  <li>Open the photo in <strong>Google Photos</strong>.</li>
+  <li>Tap the edit pencil → <strong>Crop</strong>.</li>
+  <li>Drag corners or select an aspect ratio preset.</li>
+  <li>Tap <strong>Save copy</strong>.</li>
+</ol>
+
+<h2>Crop Tips</h2>
+
+<ul>
+  <li>Apply the Rule of Thirds: position your subject at one of the four intersection points of the grid, not dead center.</li>
+  <li>Crop generously — you can always crop more later, but you cannot recover removed pixels.</li>
+  <li>For print, crop to the exact aspect ratio of your print size before ordering.</li>
+</ul>
+
+</BlogLayout>

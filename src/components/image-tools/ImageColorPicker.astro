@@ -1,0 +1,150 @@
+---
+---
+<div class="space-y-5">
+  <div id="icp-drop" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-rose-500/60 transition-colors">
+    <input id="icp-file" type="file" accept="image/*" class="hidden" />
+    <div class="text-3xl mb-2">🎨</div>
+    <p class="text-slate-300 font-medium">Drop an image here or <span class="text-rose-400 underline cursor-pointer">click to browse</span></p>
+    <p class="text-slate-500 text-xs mt-1">Click anywhere on the image to pick a color</p>
+  </div>
+
+  <div id="icp-panel" class="hidden space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <!-- Canvas -->
+      <div class="sm:col-span-2">
+        <canvas id="icp-canvas" class="rounded-xl border border-slate-700 cursor-crosshair w-full block" style="max-height:300px;object-fit:contain;"></canvas>
+      </div>
+      <!-- Color info -->
+      <div class="space-y-3">
+        <div id="icp-swatch" class="w-full h-20 rounded-xl border border-slate-700 flex items-center justify-center" style="background:#7f1d1d;">
+          <span id="icp-hex-text" class="text-white font-mono text-sm font-bold drop-shadow">#7f1d1d</span>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between bg-[var(--bg-surface-hover)] rounded-lg px-3 py-2">
+            <span class="text-xs text-slate-400">HEX</span>
+            <span id="icp-hex" class="text-white font-mono text-sm">—</span>
+            <button class="icp-copy-btn text-xs text-rose-400 hover:text-rose-300" data-target="icp-hex">Copy</button>
+          </div>
+          <div class="flex items-center justify-between bg-[var(--bg-surface-hover)] rounded-lg px-3 py-2">
+            <span class="text-xs text-slate-400">RGB</span>
+            <span id="icp-rgb" class="text-white font-mono text-sm">—</span>
+            <button class="icp-copy-btn text-xs text-rose-400 hover:text-rose-300" data-target="icp-rgb">Copy</button>
+          </div>
+          <div class="flex items-center justify-between bg-[var(--bg-surface-hover)] rounded-lg px-3 py-2">
+            <span class="text-xs text-slate-400">HSL</span>
+            <span id="icp-hsl" class="text-white font-mono text-sm">—</span>
+            <button class="icp-copy-btn text-xs text-rose-400 hover:text-rose-300" data-target="icp-hsl">Copy</button>
+          </div>
+        </div>
+        <!-- Recent picks -->
+        <div>
+          <p class="text-xs text-slate-500 mb-2">Recent picks</p>
+          <div id="icp-recents" class="flex flex-wrap gap-1.5"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('icp-drop');
+  const fileInput = document.getElementById('icp-file');
+  const panel = document.getElementById('icp-panel');
+  const canvas = document.getElementById('icp-canvas');
+  const swatch = document.getElementById('icp-swatch');
+  const hexTextEl = document.getElementById('icp-hex-text');
+  const hexEl = document.getElementById('icp-hex');
+  const rgbEl = document.getElementById('icp-rgb');
+  const hslEl = document.getElementById('icp-hsl');
+  const recents = document.getElementById('icp-recents');
+
+  let img = null, scale = 1;
+  const recentColors = [];
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-rose-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-rose-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-rose-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    img = new Image();
+    img.onload = () => {
+      const maxW = Math.min(480, img.naturalWidth);
+      scale = maxW / img.naturalWidth;
+      canvas.width = Math.round(img.naturalWidth * scale);
+      canvas.height = Math.round(img.naturalHeight * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      panel.classList.remove('hidden');
+      drop.classList.add('hidden');
+    };
+    img.src = url;
+  }
+
+  function pick(cx, cy) {
+    const ctx = canvas.getContext('2d');
+    const px = ctx.getImageData(cx, cy, 1, 1).data;
+    const r = px[0], g = px[1], b = px[2];
+    const hex = '#' + [r, g, b].map(x => x.toString(16).padStart(2, '0')).join('');
+    const rgb = `rgb(${r}, ${g}, ${b})`;
+    const hsl = rgbToHsl(r, g, b);
+    swatch.style.background = hex;
+    hexTextEl.textContent = hex;
+    hexEl.textContent = hex;
+    rgbEl.textContent = rgb;
+    hslEl.textContent = hsl;
+    if (!recentColors.includes(hex)) {
+      recentColors.unshift(hex);
+      if (recentColors.length > 10) recentColors.pop();
+      renderRecents();
+    }
+  }
+
+  function renderRecents() {
+    recents.innerHTML = recentColors.map(c =>
+      `<div title="${c}" class="w-7 h-7 rounded-full border-2 border-slate-700 cursor-pointer hover:scale-110 transition-transform" style="background:${c}" data-color="${c}"></div>`
+    ).join('');
+    recents.querySelectorAll('[data-color]').forEach(el => {
+      el.addEventListener('click', () => { hexEl.textContent = el.dataset.color; swatch.style.background = el.dataset.color; hexTextEl.textContent = el.dataset.color; });
+    });
+  }
+
+  function canvasCoords(e) {
+    const r = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / r.width;
+    const scaleY = canvas.height / r.height;
+    return [Math.floor((e.clientX - r.left) * scaleX), Math.floor((e.clientY - r.top) * scaleY)];
+  }
+
+  canvas.addEventListener('click', e => { const [cx, cy] = canvasCoords(e); pick(cx, cy); });
+  canvas.addEventListener('mousemove', e => { const [cx, cy] = canvasCoords(e); pick(cx, cy); });
+
+  document.querySelectorAll('.icp-copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const val = document.getElementById(btn.dataset.target)?.textContent;
+      if (val && val !== '—') navigator.clipboard.writeText(val);
+    });
+  });
+
+  function rgbToHsl(r, g, b) {
+    r /= 255; g /= 255; b /= 255;
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let h, s, l = (max + min) / 2;
+    if (max === min) { h = s = 0; }
+    else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+      switch (max) {
+        case r: h = ((g - b) / d + (g < b ? 6 : 0)) / 6; break;
+        case g: h = ((b - r) / d + 2) / 6; break;
+        default: h = ((r - g) / d + 4) / 6;
+      }
+    }
+    return `hsl(${Math.round(h * 360)}°, ${Math.round(s * 100)}%, ${Math.round(l * 100)}%)`;
+  }
+})();
+</script>

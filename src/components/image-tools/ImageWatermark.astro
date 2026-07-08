@@ -1,0 +1,141 @@
+---
+---
+<div class="space-y-5">
+  <div id="iwm-drop" class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-rose-500/60 transition-colors">
+    <input id="iwm-file" type="file" accept="image/*" class="hidden" />
+    <div class="text-3xl mb-2">©</div>
+    <p class="text-slate-300 font-medium">Drop an image here or <span class="text-rose-400 underline cursor-pointer">click to browse</span></p>
+    <p class="text-slate-500 text-xs mt-1">Add a text watermark — no upload, runs in your browser</p>
+  </div>
+
+  <div id="iwm-panel" class="hidden space-y-4">
+    <!-- Preview -->
+    <div class="rounded-xl border border-slate-700 bg-[var(--bg-surface-hover)] p-3 text-center overflow-hidden" style="max-height:280px;">
+      <img id="iwm-preview" src="" alt="Preview" class="max-w-full max-h-60 mx-auto object-contain rounded" />
+    </div>
+
+    <!-- Controls -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Watermark text</label>
+        <input id="iwm-text" type="text" value="© My Name 2026"
+          class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Position</label>
+        <select id="iwm-position" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-rose-500">
+          <option value="bottom-right">Bottom Right</option>
+          <option value="bottom-center">Bottom Center</option>
+          <option value="bottom-left">Bottom Left</option>
+          <option value="center">Center</option>
+          <option value="top-right">Top Right</option>
+          <option value="top-center">Top Center</option>
+          <option value="top-left">Top Left</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Color</label>
+        <input id="iwm-color" type="color" value="#ffffff"
+          class="w-full h-10 bg-[var(--bg-surface-hover)] border border-slate-700 rounded-lg cursor-pointer" />
+      </div>
+      <div>
+        <div class="flex justify-between text-xs text-slate-400 mb-1">
+          <label>Font size</label>
+          <span id="iwm-size-val" class="text-rose-400">32px</span>
+        </div>
+        <input id="iwm-size" type="range" min="10" max="120" value="32" class="w-full accent-rose-500" />
+      </div>
+      <div class="sm:col-span-2">
+        <div class="flex justify-between text-xs text-slate-400 mb-1">
+          <label>Opacity</label>
+          <span id="iwm-opacity-val" class="text-rose-400">70%</span>
+        </div>
+        <input id="iwm-opacity" type="range" min="10" max="100" value="70" class="w-full accent-rose-500" />
+      </div>
+    </div>
+
+    <button id="iwm-download" class="w-full py-2.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-semibold text-sm transition-colors">
+      Download Watermarked Image
+    </button>
+  </div>
+</div>
+
+<canvas id="iwm-canvas" class="hidden"></canvas>
+
+<script is:inline>
+(function () {
+  const drop = document.getElementById('iwm-drop');
+  const fileInput = document.getElementById('iwm-file');
+  const panel = document.getElementById('iwm-panel');
+  const previewImg = document.getElementById('iwm-preview');
+  const canvas = document.getElementById('iwm-canvas');
+  const textInput = document.getElementById('iwm-text');
+  const posSelect = document.getElementById('iwm-position');
+  const colorInput = document.getElementById('iwm-color');
+  const sizeSlider = document.getElementById('iwm-size');
+  const sizeVal = document.getElementById('iwm-size-val');
+  const opacitySlider = document.getElementById('iwm-opacity');
+  const opacityVal = document.getElementById('iwm-opacity-val');
+
+  let img = null;
+
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-rose-500'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-rose-500'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-rose-500'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => loadFile(fileInput.files[0]));
+
+  function loadFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const url = URL.createObjectURL(file);
+    img = new Image();
+    img.onload = () => { renderWatermark(); panel.classList.remove('hidden'); drop.classList.add('hidden'); };
+    img.src = url;
+  }
+
+  function renderWatermark() {
+    if (!img) return;
+    const w = img.naturalWidth, h = img.naturalHeight;
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const text = textInput.value || '© Watermark';
+    const fontSize = parseInt(sizeSlider.value);
+    const opacity = parseInt(opacitySlider.value) / 100;
+    const color = colorInput.value;
+    ctx.font = `bold ${fontSize}px sans-serif`;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = opacity;
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 4;
+    const textW = ctx.measureText(text).width;
+    const pos = posSelect.value;
+    const padding = fontSize * 0.75;
+    let x, y;
+    if (pos.includes('left')) x = padding;
+    else if (pos.includes('right')) x = w - textW - padding;
+    else x = (w - textW) / 2;
+    if (pos.includes('top')) y = fontSize + padding;
+    else if (pos.includes('bottom')) y = h - padding;
+    else y = h / 2 + fontSize / 3;
+    ctx.fillText(text, x, y);
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    previewImg.src = canvas.toDataURL('image/png');
+  }
+
+  [textInput, posSelect, colorInput, sizeSlider, opacitySlider].forEach(el => el.addEventListener('input', renderWatermark));
+  sizeSlider.addEventListener('input', () => { sizeVal.textContent = sizeSlider.value + 'px'; });
+  opacitySlider.addEventListener('input', () => { opacityVal.textContent = opacitySlider.value + '%'; });
+
+  document.getElementById('iwm-download').addEventListener('click', () => {
+    if (!img) return;
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'watermarked.png';
+      a.click();
+    }, 'image/png');
+  });
+})();
+</script>

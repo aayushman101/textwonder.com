@@ -1,101 +1,176 @@
 ---
 ---
 <div class="space-y-5">
-  <div id="rrp-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
+  <div id="rrp-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-10 text-center cursor-pointer transition-colors">
     <input type="file" id="rrp-file" accept=".pdf" class="hidden" />
-    <div class="text-4xl mb-2">🗑️</div>
-    <p class="text-slate-300 font-medium mb-1">Drop a PDF here or click to select</p>
-    <p class="text-slate-500 text-sm">Click page numbers to mark them for removal</p>
+    <div class="text-5xl mb-3">🗑️</div>
+    <p class="text-slate-200 font-semibold text-lg mb-1">Drop your PDF here</p>
+    <p class="text-slate-500 text-sm mb-4">or click to browse — page previews load automatically</p>
+    <span class="inline-block px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer">Choose PDF</span>
   </div>
 
+  <!-- Loading progress -->
+  <div id="rrp-loading" class="hidden">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-6 text-center">
+      <div class="text-3xl mb-3">⏳</div>
+      <p class="text-slate-300 font-medium mb-1" id="rrp-loading-msg">Generating page previews…</p>
+      <p class="text-slate-500 text-xs mb-4">Rendering each page so you can see exactly what's on it</p>
+      <div class="w-full bg-slate-800 rounded-full h-2 max-w-sm mx-auto">
+        <div id="rrp-loading-bar" class="bg-orange-500 h-2 rounded-full transition-all duration-200" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main panel -->
   <div id="rrp-panel" class="hidden space-y-4">
+    <!-- File info bar -->
     <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
       <span class="text-orange-400 text-2xl shrink-0">📄</span>
       <div class="flex-1 min-w-0">
-        <p id="rrp-name" class="text-slate-200 text-sm font-medium truncate"></p>
-        <p id="rrp-info" class="text-slate-500 text-xs"></p>
+        <p id="rrp-name" class="text-slate-200 text-sm font-semibold truncate"></p>
+        <p id="rrp-info" class="text-slate-500 text-xs mt-0.5"></p>
       </div>
-      <button id="rrp-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 px-3 py-1.5 rounded-lg shrink-0">Change</button>
+      <button id="rrp-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg shrink-0 transition-colors">Change file</button>
     </div>
 
     <!-- Quick selectors -->
     <div class="flex flex-wrap gap-2 items-center">
-      <span class="text-xs text-slate-500">Quick select:</span>
-      <button data-qsel="first" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">First page</button>
-      <button data-qsel="last" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Last page</button>
-      <button data-qsel="odd" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Odd pages</button>
-      <button data-qsel="even" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-slate-200 hover:border-slate-500 rounded-lg transition-colors">Even pages</button>
+      <span class="text-xs text-slate-500 mr-1">Quick select:</span>
+      <button data-qsel="first" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">First page</button>
+      <button data-qsel="last" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">Last page</button>
+      <button data-qsel="odd" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">Odd pages</button>
+      <button data-qsel="even" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-orange-500/60 hover:bg-orange-500/10 rounded-lg transition-colors">Even pages</button>
       <button data-qsel="clear" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Clear all</button>
     </div>
 
-    <!-- Page grid -->
-    <div>
-      <p class="text-xs text-slate-500 mb-2">Click a page to mark it for removal <span class="text-red-500/70">(red = will be removed)</span>:</p>
-      <div id="rrp-grid" class="flex flex-wrap gap-2 max-h-64 overflow-y-auto p-1"></div>
-    </div>
+    <!-- Instruction -->
+    <p class="text-xs text-slate-500">Click page thumbnails below to mark them for removal, then click <strong class="text-slate-400">Remove Selected Pages</strong>.</p>
+
+    <!-- Thumbnail grid -->
+    <div id="rrp-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
 
     <!-- Live summary -->
-    <div id="rrp-summary" class="text-sm text-slate-400 py-1 min-h-[1.5rem]"></div>
+    <div id="rrp-summary" class="text-xs text-slate-600 font-mono bg-[var(--bg-surface)] border border-slate-800/60 rounded-lg px-3 py-2 leading-relaxed"></div>
 
-    <button id="rrp-remove" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>Remove Selected Pages</button>
+    <button id="rrp-remove" class="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>Remove Selected Pages</button>
   </div>
 
   <div id="rrp-status" class="hidden text-sm py-2"></div>
 </div>
 
 <style>
-  .rrp-chip { user-select: none; transition: all 0.12s; }
-  .rrp-chip.marked { background: rgb(239 68 68 / 0.18); border-color: rgb(239 68 68 / 0.6) !important; color: #f87171; }
-  .rrp-chip:not(.marked):hover { border-color: rgb(148 163 184 / 0.5); color: #cbd5e1; }
+  .rrp-card { transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s; }
+  .rrp-card.marked { border-color: rgb(239 68 68) !important; box-shadow: 0 0 0 2px rgb(239 68 68 / 0.2); }
+  .rrp-card:not(.marked):hover { border-color: rgb(249 115 22 / 0.7); }
+  .rrp-thumb-wrap { background: #fff; }
 </style>
 
 <script is:inline>
 (function() {
+  const PDFJS_CDN   = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFLIB_CDN  = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+
   const drop = document.getElementById('rrp-drop');
   const fileInput = document.getElementById('rrp-file');
   const panel = document.getElementById('rrp-panel');
+  const loading = document.getElementById('rrp-loading');
+  const loadingMsg = document.getElementById('rrp-loading-msg');
+  const loadingBar = document.getElementById('rrp-loading-bar');
   const status = document.getElementById('rrp-status');
   const grid = document.getElementById('rrp-grid');
   const summary = document.getElementById('rrp-summary');
   const removeBtn = document.getElementById('rrp-remove');
+
   let currentFile = null, pageCount = 0, pdfBytes = null;
   let pageStates = []; // true = marked for removal
+  let thumbs = [];    // thumbnails data URLs
 
   drop.addEventListener('click', () => fileInput.click());
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
-  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
-  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); loadFile(e.dataTransfer.files[0]); });
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500/80'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500/80'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500/80'); loadFile(e.dataTransfer.files[0]); });
   fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
 
   async function loadFile(file) {
     if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
-    showStatus('Loading…', 'info');
-    await loadPdfLib();
+
+    drop.classList.add('hidden');
+    loading.classList.remove('hidden');
+    status.classList.add('hidden');
+    loadingBar.style.width = '0%';
+    loadingMsg.textContent = 'Reading PDF…';
+
     try {
-      const { PDFDocument } = window.PDFLib;
       pdfBytes = await file.arrayBuffer();
-      const pdf = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
-      pageCount = pdf.getPageCount();
       currentFile = file;
+
+      await loadScript(PDFJS_CDN);
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      pageCount = pdfDoc.numPages;
       pageStates = new Array(pageCount).fill(false);
+      thumbs = [];
+
+      // render thumbnails at scale 0.3
+      for (let i = 1; i <= pageCount; i++) {
+        loadingMsg.textContent = `Generating previews… ${i} / ${pageCount}`;
+        loadingBar.style.width = `${Math.round((i / pageCount) * 100)}%`;
+
+        const page = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 0.3 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        thumbs.push(canvas.toDataURL('image/jpeg', 0.82));
+      }
+
       document.getElementById('rrp-name').textContent = file.name;
-      document.getElementById('rrp-info').textContent = `${pageCount} pages · ${(file.size/1024).toFixed(0)} KB`;
+      document.getElementById('rrp-info').textContent = `${pageCount} pages · ${(file.size / 1024).toFixed(0)} KB`;
+      loading.classList.add('hidden');
       panel.classList.remove('hidden');
-      drop.classList.add('hidden');
-      status.classList.add('hidden');
       renderGrid();
-    } catch(e) { showStatus('Could not read PDF: ' + e.message, 'error'); }
+    } catch(e) {
+      loading.classList.add('hidden');
+      drop.classList.remove('hidden');
+      showStatus('Could not read PDF: ' + e.message, 'error');
+    }
   }
 
   function renderGrid() {
-    grid.innerHTML = pageStates.map((marked, i) => `
-      <button class="rrp-chip w-11 h-11 rounded-lg border border-slate-700 text-slate-500 text-xs font-mono flex items-center justify-center shrink-0 ${marked ? 'marked' : ''}" data-page="${i}">${i+1}</button>
-    `).join('');
-    grid.querySelectorAll('.rrp-chip').forEach(chip => {
-      chip.addEventListener('click', () => {
-        const idx = +chip.dataset.page;
+    grid.innerHTML = pageStates.map((marked, i) => {
+      const thumb = thumbs[i] || '';
+      return `
+        <button class="rrp-card group relative cursor-pointer select-none rounded-2xl border-2 ${marked ? 'border-red-600' : 'border-slate-700/60'} hover:border-orange-400/70 bg-[var(--bg-surface)] overflow-hidden"
+                data-page="${i}">
+          <!-- thumbnail -->
+          <div class="rrp-thumb-wrap w-full flex items-center justify-center overflow-hidden">
+            ${thumb
+              ? `<img src="${thumb}" class="w-full h-auto block" alt="Page ${i + 1}" draggable="false" />`
+              : `<div class="w-full flex items-center justify-center py-12 text-slate-500 text-xs">Page ${i + 1}</div>`
+            }
+          </div>
+          <!-- label row -->
+          <div class="flex items-center justify-between px-3 py-2 border-t ${marked ? 'border-red-600 bg-red-900/20' : 'border-slate-800'}">
+            <span class="text-sm font-semibold ${marked ? 'text-red-300' : 'text-slate-300'}">Page ${i + 1}</span>
+            <span class="text-xs ${marked ? 'text-red-400 bg-red-600 text-white px-2 py-1 rounded-full font-medium' : 'text-slate-500'}">
+              ${marked ? '✕ Remove' : ''}
+            </span>
+          </div>
+        </button>`;
+    }).join('');
+
+    grid.querySelectorAll('.rrp-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = +card.dataset.page;
         pageStates[idx] = !pageStates[idx];
-        chip.classList.toggle('marked', pageStates[idx]);
+        card.classList.toggle('marked', pageStates[idx]);
+        renderGrid(); // re-render to update visual
         updateSummary();
       });
     });
@@ -106,7 +181,7 @@
     const marked = pageStates.filter(Boolean).length;
     const remaining = pageCount - marked;
     if (marked === 0) {
-      summary.textContent = 'No pages selected — click page numbers above to mark them for removal.';
+      summary.textContent = 'No pages selected — click page thumbnails above to mark them for removal.';
       removeBtn.disabled = true;
     } else if (remaining === 0) {
       summary.textContent = `⚠️ Cannot remove all ${pageCount} pages — at least 1 must remain.`;
@@ -117,17 +192,16 @@
     }
   }
 
-  document.querySelectorAll('[data-qsel]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      if (!pageCount) return;
-      const action = btn.dataset.qsel;
-      if (action === 'first') { pageStates.fill(false); pageStates[0] = true; }
-      else if (action === 'last') { pageStates.fill(false); pageStates[pageCount-1] = true; }
-      else if (action === 'odd') pageStates = pageStates.map((_, i) => (i+1) % 2 !== 0);
-      else if (action === 'even') pageStates = pageStates.map((_, i) => (i+1) % 2 === 0);
-      else pageStates.fill(false);
-      renderGrid();
-    });
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-qsel]');
+    if (!btn || !pageCount) return;
+    const action = btn.dataset.qsel;
+    if (action === 'first') { pageStates.fill(false); pageStates[0] = true; }
+    else if (action === 'last') { pageStates.fill(false); pageStates[pageCount-1] = true; }
+    else if (action === 'odd') pageStates = pageStates.map((_, i) => (i+1) % 2 !== 0);
+    else if (action === 'even') pageStates = pageStates.map((_, i) => (i+1) % 2 === 0);
+    else pageStates.fill(false);
+    renderGrid();
   });
 
   removeBtn.addEventListener('click', async () => {
@@ -136,6 +210,7 @@
     if (!markedCount) return;
     showStatus('Removing pages…', 'info');
     try {
+      await loadScript(PDFLIB_CDN);
       const { PDFDocument } = window.PDFLib;
       const src = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
       const out = await PDFDocument.create();
@@ -151,10 +226,11 @@
   });
 
   document.getElementById('rrp-change').addEventListener('click', () => {
-    currentFile = null; pageCount = 0; pdfBytes = null; pageStates = [];
+    currentFile = null; pageCount = 0; pdfBytes = null; pageStates = []; thumbs = [];
     panel.classList.add('hidden');
     drop.classList.remove('hidden');
     status.classList.add('hidden');
+    loading.classList.add('hidden');
     grid.innerHTML = '';
   });
 
@@ -167,16 +243,18 @@
   function downloadBytes(bytes, name) {
     const blob = new Blob([bytes], { type: 'application/pdf' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function loadPdfLib() {
-    if (window.PDFLib) return Promise.resolve();
+  function loadScript(src) {
     return new Promise((resolve, reject) => {
+      if (document.querySelector(`script[src="${src}"]`)) { resolve(); return; }
       const s = document.createElement('script');
-      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
-      s.onload = resolve; s.onerror = reject;
+      s.src = src;
+      s.onload = resolve;
+      s.onerror = reject;
       document.head.appendChild(s);
     });
   }

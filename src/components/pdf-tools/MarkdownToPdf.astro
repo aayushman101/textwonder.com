@@ -133,27 +133,23 @@
         }
       }
 
+      function cleanUnicode(text) {
+        return text
+          .replace(/[^\x00-\x7F]/g, (char) => {
+            const map = {
+              '∑': 'Sum', '∫': 'Integral', 'π': 'pi', 'θ': 'theta', 'μ': 'mu',
+              'σ': 'sigma', 'Σ': 'Sigma', 'α': 'alpha', 'β': 'beta', 'γ': 'gamma',
+              '→': '->', '←': '<-', '±': '+/-', '≈': '~', '≤': '<=', '≥': '>=',
+              '÷': '/', '×': 'x', '°': 'deg', '€': 'EUR', '£': 'GBP', '¥': 'JPY',
+              '©': '(c)', '®': '(R)', '™': '(TM)', '•': '-', '…': '...'
+            };
+            return map[char] || '?';
+          });
+      }
+
       function wrapText(text, f, size, maxW) {
         if (!text.trim()) return [''];
-        // Replace special unicode characters with ASCII equivalents where possible
-        let cleanText = text
-          .replace(/∑/g, 'Sum')
-          .replace(/∫/g, 'Integral')
-          .replace(/π/g, 'pi')
-          .replace(/θ/g, 'theta')
-          .replace(/μ/g, 'mu')
-          .replace(/σ/g, 'sigma')
-          .replace(/Σ/g, 'Sigma')
-          .replace(/α/g, 'alpha')
-          .replace(/β/g, 'beta')
-          .replace(/γ/g, 'gamma')
-          .replace(/→/g, '->')
-          .replace(/←/g, '<-')
-          .replace(/±/g, '+/-')
-          .replace(/≈/g, '~')
-          .replace(/≤/g, '<=')
-          .replace(/≥/g, '>=')
-          .replace(/÷/g, '/');
+        const cleanText = cleanUnicode(text);
         const words = cleanText.split(/\s+/);
         const lines = [];
         let current = '';
@@ -200,13 +196,7 @@
           }
           y -= 4;
         } else if (block.type === 'code') {
-          let codeText = block.text;
-          // Replace special unicode in code blocks too
-          codeText = codeText
-            .replace(/∑/g, 'Sum').replace(/∫/g, 'Integral').replace(/π/g, 'pi')
-            .replace(/θ/g, 'theta').replace(/μ/g, 'mu').replace(/σ/g, 'sigma')
-            .replace(/→/g, '->').replace(/←/g, '<-').replace(/±/g, '+/-')
-            .replace(/≈/g, '~').replace(/≤/g, '<=').replace(/≥/g, '>=').replace(/÷/g, '/');
+          const codeText = cleanUnicode(block.text);
           const lines = codeText.split('\n');
           if (y < margin + 20 + lines.length * fontSize) { page = doc.addPage(pageSize); y = pageH - margin; }
           page.drawRectangle({ x: margin, y: y - (lines.length * (fontSize + 2)) - 8, width: usableW, height: lines.length * (fontSize + 2) + 8, color: lightGrey });
@@ -236,12 +226,7 @@
       showStatus('✅ PDF created successfully!', false);
       downloadBtn.classList.remove('hidden');
     } catch(e) {
-      const msg = e.message || String(e);
-      if (msg.includes('WinAnsi')) {
-        showStatus('✅ Note: Special characters were converted to ASCII (e.g., ∑→Sum, π→pi). PDF created successfully!', false);
-      } else {
-        showStatus('Error: ' + msg, true);
-      }
+      showStatus('Error: ' + (e.message || String(e)), true);
     }
   });
 

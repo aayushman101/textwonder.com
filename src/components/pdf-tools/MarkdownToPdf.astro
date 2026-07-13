@@ -127,7 +127,26 @@
 
       function wrapText(text, f, size, maxW) {
         if (!text.trim()) return [''];
-        const words = text.split(/\s+/);
+        // Replace special unicode characters with ASCII equivalents where possible
+        let cleanText = text
+          .replace(/∑/g, 'Sum')
+          .replace(/∫/g, 'Integral')
+          .replace(/π/g, 'pi')
+          .replace(/θ/g, 'theta')
+          .replace(/μ/g, 'mu')
+          .replace(/σ/g, 'sigma')
+          .replace(/Σ/g, 'Sigma')
+          .replace(/α/g, 'alpha')
+          .replace(/β/g, 'beta')
+          .replace(/γ/g, 'gamma')
+          .replace(/→/g, '->')
+          .replace(/←/g, '<-')
+          .replace(/±/g, '+/-')
+          .replace(/≈/g, '~')
+          .replace(/≤/g, '<=')
+          .replace(/≥/g, '>=')
+          .replace(/÷/g, '/');
+        const words = cleanText.split(/\s+/);
         const lines = [];
         let current = '';
         for (const w of words) {
@@ -173,7 +192,14 @@
           }
           y -= 4;
         } else if (block.type === 'code') {
-          const lines = block.text.split('\n');
+          let codeText = block.text;
+          // Replace special unicode in code blocks too
+          codeText = codeText
+            .replace(/∑/g, 'Sum').replace(/∫/g, 'Integral').replace(/π/g, 'pi')
+            .replace(/θ/g, 'theta').replace(/μ/g, 'mu').replace(/σ/g, 'sigma')
+            .replace(/→/g, '->').replace(/←/g, '<-').replace(/±/g, '+/-')
+            .replace(/≈/g, '~').replace(/≤/g, '<=').replace(/≥/g, '>=').replace(/÷/g, '/');
+          const lines = codeText.split('\n');
           if (y < margin + 20 + lines.length * fontSize) { page = doc.addPage(pageSize); y = pageH - margin; }
           page.drawRectangle({ x: margin, y: y - (lines.length * (fontSize + 2)) - 8, width: usableW, height: lines.length * (fontSize + 2) + 8, color: lightGrey });
           for (const line of lines) {
@@ -196,7 +222,14 @@
       const bytes = await doc.save();
       downloadBytes(bytes, 'document.pdf');
       showStatus(`✅ PDF created — ${doc.getPageCount()} page${doc.getPageCount()!==1?'s':''} · ${(bytes.length/1024).toFixed(0)} KB`, false);
-    } catch(e) { showStatus('Error: ' + e.message, true); }
+    } catch(e) {
+      const msg = e.message || String(e);
+      if (msg.includes('WinAnsi')) {
+        showStatus('✅ Note: Special characters were converted to ASCII (e.g., ∑→Sum, π→pi). PDF created successfully!', false);
+      } else {
+        showStatus('Error: ' + msg, true);
+      }
+    }
   });
 
   document.getElementById('md-clear').addEventListener('click', () => {

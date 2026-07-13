@@ -169,32 +169,35 @@
       for (const block of blocks) {
         if (block.type === 'heading') {
           const lines = wrapText(block.text, boldFont, block.size, usableW);
+          // Add spacing before heading
+          y -= block.level === 1 ? 14 : 10;
           for (const line of lines) {
             if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
             page.drawText(line, { x: margin, y: y - block.size, size: block.size, font: boldFont, color: black });
-            y -= block.size + 4;
+            y -= block.size + 3;
           }
-          y -= 8;
+          y -= block.level === 1 ? 12 : 6;
         } else if (block.type === 'paragraph') {
           const lines = wrapText(block.text, font, fontSize, usableW);
           for (const line of lines) {
             if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
             page.drawText(line, { x: margin, y: y - fontSize, size: fontSize, font, color: black });
-            y -= fontSize + 2;
+            y -= fontSize + 2.5;
           }
-          y -= 6;
+          y -= 8;
         } else if (block.type === 'list') {
+          y -= 4;
           for (const item of block.items) {
             const bullet = block.ordered ? '•' : '•';
-            const lines = wrapText(item, font, fontSize, usableW - 20);
+            const lines = wrapText(item, font, fontSize, usableW - 30);
             for (let i = 0; i < lines.length; i++) {
               if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
-              const prefix = i === 0 ? bullet + ' ' : '  ';
-              page.drawText(prefix + lines[i], { x: margin + 10, y: y - fontSize, size: fontSize, font, color: black });
-              y -= fontSize + 2;
+              const prefix = i === 0 ? bullet + ' ' : '    ';
+              page.drawText(prefix + lines[i], { x: margin + 15, y: y - fontSize, size: fontSize, font, color: black });
+              y -= fontSize + 2.5;
             }
           }
-          y -= 4;
+          y -= 6;
         } else if (block.type === 'code') {
           const codeText = cleanUnicode(block.text);
           const lines = codeText.split('\n');
@@ -206,14 +209,15 @@
           }
           y -= 8;
         } else if (block.type === 'blockquote') {
-          const lines = wrapText(block.text, font, fontSize, usableW - 30);
-          page.drawRectangle({ x: margin + 5, y: y - (lines.length * (fontSize + 2)) - 4, width: 3, height: lines.length * (fontSize + 2) + 4, color: darkGrey });
+          y -= 6;
+          const lines = wrapText(block.text, font, fontSize, usableW - 40);
+          page.drawRectangle({ x: margin + 5, y: y - (lines.length * (fontSize + 2.5)) - 8, width: 3, height: lines.length * (fontSize + 2.5) + 8, color: darkGrey });
           for (const line of lines) {
             if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
             page.drawText(line, { x: margin + 30, y: y - fontSize, size: fontSize, font, color: darkGrey });
-            y -= fontSize + 2;
+            y -= fontSize + 2.5;
           }
-          y -= 6;
+          y -= 8;
         }
       }
 

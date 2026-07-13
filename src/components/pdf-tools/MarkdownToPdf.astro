@@ -227,7 +227,7 @@
       const filename = document.getElementById('md-filename').value.trim() || 'markdown-document';
       const fn = filename.endsWith('.pdf') ? filename : filename + '.pdf';
       downloadBytes(bytes, fn);
-      showStatus(`✅ PDF created — ${doc.getPageCount()} page${doc.getPageCount()!==1?'s':''} · ${(bytes.length/1024).toFixed(0)} KB · <strong>Downloaded as: ${fn}</strong>`, false);
+      showStatus('✅ PDF created successfully!', false);
     } catch(e) {
       const msg = e.message || String(e);
       if (msg.includes('WinAnsi')) {

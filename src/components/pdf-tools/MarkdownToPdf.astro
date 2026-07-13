@@ -48,6 +48,7 @@
   <div class="flex gap-2">
     <button id="md-create" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">Convert to PDF</button>
     <button id="md-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+    <button id="md-download" class="hidden px-6 py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-lg text-sm font-medium transition-colors">⬇️ Download PDF</button>
   </div>
 
   <div id="md-status" class="hidden text-sm py-1"></div>
@@ -58,6 +59,9 @@
   const input = document.getElementById('md-input');
   const fileInput = document.getElementById('md-file');
   const statusEl = document.getElementById('md-status');
+  const downloadBtn = document.getElementById('md-download');
+  let lastPdfBytes = null;
+  let lastFilename = null;
 
   const PAGE_SIZES = {
     A4:     [595.28, 841.89],
@@ -226,8 +230,11 @@
       const bytes = await doc.save();
       const filename = document.getElementById('md-filename').value.trim() || 'markdown-document';
       const fn = filename.endsWith('.pdf') ? filename : filename + '.pdf';
+      lastPdfBytes = bytes;
+      lastFilename = fn;
       downloadBytes(bytes, fn);
       showStatus('✅ PDF created successfully!', false);
+      downloadBtn.classList.remove('hidden');
     } catch(e) {
       const msg = e.message || String(e);
       if (msg.includes('WinAnsi')) {
@@ -242,6 +249,15 @@
     input.value = '';
     fileInput.value = '';
     statusEl.classList.add('hidden');
+    downloadBtn.classList.add('hidden');
+    lastPdfBytes = null;
+    lastFilename = null;
+  });
+
+  downloadBtn.addEventListener('click', () => {
+    if (lastPdfBytes && lastFilename) {
+      downloadBytes(lastPdfBytes, lastFilename);
+    }
   });
 
   function showStatus(msg, isError) {

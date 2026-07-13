@@ -133,23 +133,34 @@
         }
       }
 
-      function cleanUnicode(text) {
-        return text
-          .replace(/[^\x00-\x7F]/g, (char) => {
-            const map = {
-              '∑': 'Sum', '∫': 'Integral', 'π': 'pi', 'θ': 'theta', 'μ': 'mu',
-              'σ': 'sigma', 'Σ': 'Sigma', 'α': 'alpha', 'β': 'beta', 'γ': 'gamma',
-              '→': '->', '←': '<-', '±': '+/-', '≈': '~', '≤': '<=', '≥': '>=',
-              '÷': '/', '×': 'x', '°': 'deg', '€': 'EUR', '£': 'GBP', '¥': 'JPY',
-              '©': '(c)', '®': '(R)', '™': '(TM)', '•': '-', '…': '...'
-            };
-            return map[char] || '?';
-          });
+      function cleanText(text) {
+        // Remove markdown formatting
+        let cleaned = text
+          .replace(/\*\*(.*?)\*\*/g, '$1')  // Remove **bold**
+          .replace(/__(.*?)__/g, '$1')       // Remove __bold__
+          .replace(/\*(.*?)\*/g, '$1')       // Remove *italic*
+          .replace(/_(.*?)_/g, '$1')         // Remove _italic_
+          .replace(/~~(.*?)~~/g, '$1')       // Remove ~~strikethrough~~
+          .replace(/\[(.*?)\]\(.*?\)/g, '$1') // Remove [link](url)
+          .replace(/`(.*?)`/g, '$1')         // Remove `code`
+          .replace(/#{1,6}\s+/g, '');        // Remove heading markers
+
+        // Replace unicode with ASCII
+        return cleaned.replace(/[^\x00-\x7F]/g, (char) => {
+          const map = {
+            '∑': 'Sum', '∫': 'Integral', 'π': 'pi', 'θ': 'theta', 'μ': 'mu',
+            'σ': 'sigma', 'Σ': 'Sigma', 'α': 'alpha', 'β': 'beta', 'γ': 'gamma',
+            '→': '->', '←': '<-', '±': '+/-', '≈': '~', '≤': '<=', '≥': '>=',
+            '÷': '/', '×': 'x', '°': 'deg', '€': 'EUR', '£': 'GBP', '¥': 'JPY',
+            '©': '(c)', '®': '(R)', '™': '(TM)', '•': '-', '…': '...'
+          };
+          return map[char] || '?';
+        });
       }
 
       function wrapText(text, f, size, maxW) {
         if (!text.trim()) return [''];
-        const cleanText = cleanUnicode(text);
+        const cleanText = cleanText(text);
         const words = cleanText.split(/\s+/);
         const lines = [];
         let current = '';
@@ -199,7 +210,7 @@
           }
           y -= 6;
         } else if (block.type === 'code') {
-          const codeText = cleanUnicode(block.text);
+          const codeText = cleanText(block.text);
           const lines = codeText.split('\n');
           if (y < margin + 20 + lines.length * fontSize) { page = doc.addPage(pageSize); y = pageH - margin; }
           page.drawRectangle({ x: margin, y: y - (lines.length * (fontSize + 2)) - 8, width: usableW, height: lines.length * (fontSize + 2) + 8, color: lightGrey });

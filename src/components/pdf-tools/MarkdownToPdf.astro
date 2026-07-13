@@ -5,7 +5,12 @@
   <div class="space-y-2">
     <label class="text-xs text-slate-500">Markdown file or text</label>
     <textarea id="md-input" rows="12" placeholder="Paste your Markdown here or upload a .md file…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-indigo-500 text-sm leading-relaxed font-mono"></textarea>
-    <input type="file" id="md-file" accept=".md,.markdown,.txt" class="text-xs text-slate-500 cursor-pointer" />
+    <div class="flex gap-2">
+      <label for="md-file" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 hover:text-slate-300 rounded-lg text-sm transition-colors border border-slate-700 cursor-pointer">
+        📁 Upload .md file
+      </label>
+      <input type="file" id="md-file" accept=".md,.markdown,.txt" class="hidden" />
+    </div>
   </div>
 
   <!-- Options grid -->

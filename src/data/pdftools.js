@@ -491,6 +491,26 @@ export const PDF_TOOLS = [
     icon: '📝',
     iconBg: '#1d4ed8',
   },
+  {
+    slug: 'markdown-to-pdf',
+    name: 'Markdown to PDF',
+    tagline: 'Convert Markdown files to PDF with formatted headings, lists, and styling.',
+    metaTitle: 'Markdown to PDF Converter — Convert .md to PDF Free Online | PDFWonder',
+    metaDescription: 'Convert Markdown (.md) files to PDF with formatting preserved. Headings, bold, italic, lists, code blocks, and links are rendered. Free, browser-based, no upload.',
+    h1: 'Markdown to PDF Converter',
+    descriptionLong: 'Convert any Markdown (.md) file into a beautifully formatted PDF. Supports all standard Markdown syntax: headings, bold, italic, lists, code blocks, blockquotes, links, and images. All processing happens locally in your browser — no files are uploaded anywhere.',
+    useCases: 'Converting README files to PDF for sharing, turning Markdown notes into formatted documents, creating PDFs from GitHub issues or documentation, exporting Markdown blogs to PDF format.',
+    howItWorks: 'Uses marked.js to parse Markdown syntax and render formatted output, then pdf-lib embeds the styled content as a PDF. Headings use larger fonts, code blocks use monospace, and links are preserved as clickable URLs.',
+    faqs: [
+      { q: 'What Markdown syntax is supported?', a: 'Headings (#, ##, ###), bold (**text**), italic (*text*), lists (- and *), numbered lists, code blocks (```), blockquotes (>), links, and images.' },
+      { q: 'Are links clickable in the PDF?', a: 'Links in Markdown are preserved as text and styled as links in the PDF.' },
+      { q: 'Does it support embedded images?', a: 'Images in Markdown are processed — local file URLs, data URIs, and web URLs (http/https) are supported.' },
+      { q: 'Can I customize fonts or page size?', a: 'Yes. Choose from several fonts and page sizes (A4, Letter, A3) before converting.' },
+    ],
+    relatedTools: ['text-to-pdf', 'pdf-to-text', 'pdf-merger'],
+    icon: '📄',
+    iconBg: '#6366f1',
+  },
 ];
 
 export function getPdfToolBySlug(slug) {

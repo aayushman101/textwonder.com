@@ -1,0 +1,236 @@
+---
+---
+<div class="space-y-4">
+  <!-- File upload or text input -->
+  <div class="space-y-2">
+    <label class="text-xs text-slate-500">Markdown file or text</label>
+    <textarea id="md-input" rows="12" placeholder="Paste your Markdown here or upload a .md file…" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-500 resize-y focus:outline-none focus:border-indigo-500 text-sm leading-relaxed font-mono"></textarea>
+    <input type="file" id="md-file" accept=".md,.markdown,.txt" class="text-xs text-slate-500 cursor-pointer" />
+  </div>
+
+  <!-- Options grid -->
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Page size</label>
+      <select id="md-size" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+        <option value="A4">A4</option>
+        <option value="Letter">US Letter</option>
+        <option value="A3">A3</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Font</label>
+      <select id="md-font" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500">
+        <option value="Helvetica">Helvetica</option>
+        <option value="TimesRoman">Times Roman</option>
+        <option value="Courier">Courier</option>
+      </select>
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Body font size (pt)</label>
+      <input id="md-fontsize" type="number" value="11" min="8" max="16" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500" />
+    </div>
+    <div class="space-y-1">
+      <label class="text-xs text-slate-500">Margins (pt)</label>
+      <input id="md-margin" type="number" value="40" min="20" max="80" class="w-full bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-3 py-2 text-slate-100 text-sm focus:outline-none focus:border-indigo-500" />
+    </div>
+  </div>
+
+  <div class="flex gap-2">
+    <button id="md-create" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-medium transition-colors">Convert to PDF</button>
+    <button id="md-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm transition-colors border border-slate-700">Clear</button>
+  </div>
+
+  <div id="md-status" class="hidden text-sm py-1"></div>
+</div>
+
+<script is:inline>
+(function() {
+  const input = document.getElementById('md-input');
+  const fileInput = document.getElementById('md-file');
+  const statusEl = document.getElementById('md-status');
+
+  const PAGE_SIZES = {
+    A4:     [595.28, 841.89],
+    Letter: [612, 792],
+    A3:     [841.89, 1190.55],
+  };
+
+  fileInput.addEventListener('change', (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      input.value = event.target?.result || '';
+    };
+    reader.onerror = () => showStatus('Error reading file', true);
+    reader.readAsText(file);
+  });
+
+  document.getElementById('md-create').addEventListener('click', async () => {
+    const markdown = input.value.trim();
+    if (!markdown) { showStatus('Enter some Markdown first.', true); return; }
+    showStatus('Loading libraries…', false);
+    await Promise.all([loadMarkedLib(), loadPdfLib()]);
+    showStatus('Converting Markdown to PDF…', false);
+    try {
+      const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+      const { marked } = window;
+
+      const sizeKey = document.getElementById('md-size').value;
+      const fontKey = document.getElementById('md-font').value;
+      const fontSize = Math.max(8, Math.min(16, parseInt(document.getElementById('md-fontsize').value) || 11));
+      const margin = Math.max(20, parseInt(document.getElementById('md-margin').value) || 40);
+      const pageSize = PAGE_SIZES[sizeKey] || PAGE_SIZES.A4;
+      const [pageW, pageH] = pageSize;
+      const usableW = pageW - margin * 2;
+
+      const doc = await PDFDocument.create();
+      const fontMap = {
+        Helvetica: StandardFonts.Helvetica,
+        TimesRoman: StandardFonts.TimesRoman,
+        Courier: StandardFonts.Courier,
+      };
+      const font = await doc.embedFont(fontMap[fontKey] || StandardFonts.Helvetica);
+      const boldFont = await doc.embedFont(StandardFonts.HelveticaBold);
+      const codeFont = await doc.embedFont(StandardFonts.Courier);
+      const black = rgb(0, 0, 0);
+      const darkGrey = rgb(0.2, 0.2, 0.2);
+      const lightGrey = rgb(0.9, 0.9, 0.9);
+      const linkBlue = rgb(0, 0.5, 1);
+
+      // Parse markdown into blocks
+      const tokens = marked.lexer(markdown);
+      const blocks = [];
+
+      for (const token of tokens) {
+        if (token.type === 'heading') {
+          const level = token.depth;
+          const sizeMap = { 1: fontSize * 2.2, 2: fontSize * 1.8, 3: fontSize * 1.4, 4: fontSize * 1.2, 5: fontSize * 1.1, 6: fontSize };
+          blocks.push({ type: 'heading', text: token.text, size: sizeMap[level] || fontSize, level });
+        } else if (token.type === 'paragraph') {
+          blocks.push({ type: 'paragraph', text: token.text });
+        } else if (token.type === 'list') {
+          const items = token.items.map(item => item.text);
+          blocks.push({ type: 'list', items, ordered: token.ordered });
+        } else if (token.type === 'code') {
+          blocks.push({ type: 'code', text: token.text, lang: token.lang });
+        } else if (token.type === 'blockquote') {
+          blocks.push({ type: 'blockquote', text: token.text });
+        }
+      }
+
+      function wrapText(text, f, size, maxW) {
+        if (!text.trim()) return [''];
+        const words = text.split(/\s+/);
+        const lines = [];
+        let current = '';
+        for (const w of words) {
+          const test = current ? current + ' ' + w : w;
+          if (f.widthOfTextAtSize(test, size) <= maxW) { current = test; }
+          else { if (current) lines.push(current); current = w; }
+        }
+        if (current) lines.push(current);
+        return lines.length ? lines : [''];
+      }
+
+      // Render blocks
+      let page = doc.addPage(pageSize);
+      let y = pageH - margin;
+
+      for (const block of blocks) {
+        if (block.type === 'heading') {
+          const lines = wrapText(block.text, boldFont, block.size, usableW);
+          for (const line of lines) {
+            if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
+            page.drawText(line, { x: margin, y: y - block.size, size: block.size, font: boldFont, color: black });
+            y -= block.size + 4;
+          }
+          y -= 8;
+        } else if (block.type === 'paragraph') {
+          const lines = wrapText(block.text, font, fontSize, usableW);
+          for (const line of lines) {
+            if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
+            page.drawText(line, { x: margin, y: y - fontSize, size: fontSize, font, color: black });
+            y -= fontSize + 2;
+          }
+          y -= 6;
+        } else if (block.type === 'list') {
+          for (const item of block.items) {
+            const bullet = block.ordered ? '•' : '•';
+            const lines = wrapText(item, font, fontSize, usableW - 20);
+            for (let i = 0; i < lines.length; i++) {
+              if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
+              const prefix = i === 0 ? bullet + ' ' : '  ';
+              page.drawText(prefix + lines[i], { x: margin + 10, y: y - fontSize, size: fontSize, font, color: black });
+              y -= fontSize + 2;
+            }
+          }
+          y -= 4;
+        } else if (block.type === 'code') {
+          const lines = block.text.split('\n');
+          if (y < margin + 20 + lines.length * fontSize) { page = doc.addPage(pageSize); y = pageH - margin; }
+          page.drawRectangle({ x: margin, y: y - (lines.length * (fontSize + 2)) - 8, width: usableW, height: lines.length * (fontSize + 2) + 8, color: lightGrey });
+          for (const line of lines) {
+            page.drawText(line, { x: margin + 4, y: y - fontSize - 4, size: fontSize * 0.85, font: codeFont, color: darkGrey });
+            y -= fontSize + 2;
+          }
+          y -= 8;
+        } else if (block.type === 'blockquote') {
+          const lines = wrapText(block.text, font, fontSize, usableW - 30);
+          page.drawRectangle({ x: margin + 5, y: y - (lines.length * (fontSize + 2)) - 4, width: 3, height: lines.length * (fontSize + 2) + 4, color: darkGrey });
+          for (const line of lines) {
+            if (y < margin + 20) { page = doc.addPage(pageSize); y = pageH - margin; }
+            page.drawText(line, { x: margin + 30, y: y - fontSize, size: fontSize, font, color: darkGrey });
+            y -= fontSize + 2;
+          }
+          y -= 6;
+        }
+      }
+
+      const bytes = await doc.save();
+      downloadBytes(bytes, 'document.pdf');
+      showStatus(`✅ PDF created — ${doc.getPageCount()} page${doc.getPageCount()!==1?'s':''} · ${(bytes.length/1024).toFixed(0)} KB`, false);
+    } catch(e) { showStatus('Error: ' + e.message, true); }
+  });
+
+  document.getElementById('md-clear').addEventListener('click', () => {
+    input.value = '';
+    fileInput.value = '';
+    statusEl.classList.add('hidden');
+  });
+
+  function showStatus(msg, isError) {
+    statusEl.textContent = msg;
+    statusEl.className = 'text-sm py-1 ' + (isError ? 'text-red-400' : 'text-green-400');
+    statusEl.classList.remove('hidden');
+  }
+
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  function loadPdfLib() {
+    if (window.PDFLib) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadMarkedLib() {
+    if (window.marked) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = 'https://unpkg.com/marked@11.0.0/marked.min.js';
+      s.onload = resolve; s.onerror = reject;
+      document.head.appendChild(s);
+    });
+  }
+})();
+</script>

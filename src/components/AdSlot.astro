@@ -1,0 +1,36 @@
+---
+interface Props {
+  slot: string;
+  format?: 'auto' | 'rectangle' | 'horizontal' | 'vertical';
+  responsive?: boolean;
+}
+
+const { slot, format = 'auto', responsive = true } = Astro.props;
+---
+
+<div class="ad-slot">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-4076619037767871"
+       data-ad-slot={slot}
+       data-ad-format={format}
+       data-full-width-responsive={responsive.toString()}></ins>
+  <script is:inline>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<style>
+  .ad-slot {
+    margin: 1.5rem 0;
+    display: flex;
+    justify-content: center;
+    min-height: 60px;
+  }
+
+  @media (max-width: 768px) {
+    .ad-slot {
+      margin: 1rem 0;
+    }
+  }
+</style>

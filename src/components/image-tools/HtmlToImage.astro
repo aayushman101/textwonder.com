@@ -1,0 +1,135 @@
+---
+---
+<div class="space-y-5">
+  <div class="border-2 border-dashed border-slate-700 rounded-xl p-8 text-center">
+    <div class="text-3xl mb-2">✨</div>
+    <p class="text-slate-300 font-medium">Convert HTML & CSS to an image</p>
+    <p class="text-slate-500 text-xs mt-1">Paste HTML, CSS, and JavaScript code to generate PNG screenshots</p>
+  </div>
+
+  <div class="space-y-3">
+    <div>
+      <label class="block text-xs text-slate-400 mb-1">HTML Code</label>
+      <textarea id="html-code" placeholder="<div style='background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px; text-align: center; border-radius: 12px;'><h1>Hello World</h1><p>Your text here</p></div>"
+        class="w-full h-32 bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-xs text-slate-400 mb-1">CSS Styles (optional)</label>
+      <textarea id="css-code" placeholder="body { font-family: Arial, sans-serif; }"
+        class="w-full h-24 bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm font-mono focus:outline-none focus:border-indigo-500 resize-none"></textarea>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3">
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Width (px)</label>
+        <input id="html-width" type="number" value="800" min="100" max="2000"
+          class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500" />
+      </div>
+      <div>
+        <label class="block text-xs text-slate-400 mb-1">Format</label>
+        <select id="html-format" class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-indigo-500">
+          <option value="png">PNG</option>
+          <option value="jpg">JPEG</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="html-preview" class="rounded-xl border border-slate-700 bg-[var(--bg-surface-hover)] p-3 overflow-auto" style="max-height:300px;display:none;">
+      <div id="preview-content" style="min-width:400px;"></div>
+    </div>
+
+    <button id="html-preview-btn" class="w-full py-2.5 bg-slate-700 hover:bg-slate-600 text-white rounded-lg font-semibold text-sm transition-colors">
+      Preview
+    </button>
+
+    <button id="html-download" class="w-full py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-semibold text-sm transition-colors">
+      Download as Image
+    </button>
+  </div>
+
+  <div id="html-status" class="text-sm text-slate-400 text-center hidden"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script is:inline>
+(function () {
+  const htmlCode = document.getElementById('html-code');
+  const cssCode = document.getElementById('css-code');
+  const widthInput = document.getElementById('html-width');
+  const formatSelect = document.getElementById('html-format');
+  const previewDiv = document.getElementById('html-preview');
+  const previewContent = document.getElementById('preview-content');
+  const previewBtn = document.getElementById('html-preview-btn');
+  const downloadBtn = document.getElementById('html-download');
+  const statusEl = document.getElementById('html-status');
+
+  previewBtn.addEventListener('click', () => {
+    try {
+      previewContent.innerHTML = htmlCode.value;
+      previewContent.style.width = widthInput.value + 'px';
+
+      if (cssCode.value.trim()) {
+        const style = document.createElement('style');
+        style.textContent = cssCode.value;
+        previewContent.appendChild(style);
+      }
+
+      previewDiv.style.display = 'block';
+      statusEl.classList.add('hidden');
+    } catch (e) {
+      showStatus('Error in HTML: ' + e.message, 'error');
+    }
+  });
+
+  downloadBtn.addEventListener('click', async () => {
+    try {
+      showStatus('Processing...', 'info');
+
+      const width = parseInt(widthInput.value);
+      const container = document.createElement('div');
+      container.style.width = width + 'px';
+      container.style.position = 'absolute';
+      container.style.left = '-9999px';
+      container.innerHTML = htmlCode.value;
+
+      if (cssCode.value.trim()) {
+        const style = document.createElement('style');
+        style.textContent = cssCode.value;
+        container.appendChild(style);
+      }
+
+      document.body.appendChild(container);
+
+      const format = formatSelect.value;
+      const canvas = await html2canvas(container, {
+        width: width,
+        allowTaint: true,
+        useCORS: true,
+        logging: false,
+      });
+
+      document.body.removeChild(container);
+
+      const link = document.createElement('a');
+      link.href = canvas.toDataURL(`image/${format}`, format === 'jpg' ? 0.95 : undefined);
+      link.download = `html-to-image.${format === 'jpg' ? 'jpg' : 'png'}`;
+      link.click();
+
+      showStatus(`✓ Image downloaded successfully`, 'success');
+    } catch (e) {
+      showStatus('Error: ' + e.message, 'error');
+    }
+  });
+
+  function showStatus(message, type) {
+    statusEl.textContent = message;
+    statusEl.className = type === 'error' ? 'text-sm text-red-400 text-center' : type === 'success' ? 'text-sm text-green-400 text-center' : 'text-sm text-slate-400 text-center';
+    statusEl.classList.remove('hidden');
+    if (type === 'success') {
+      setTimeout(() => statusEl.classList.add('hidden'), 3000);
+    }
+  }
+})();
+</script>

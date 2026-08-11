@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Multiple Ad Networks - Compatibility Guide</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      padding: 2rem;
+      line-height: 1.6;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: #fff; }
+    .subtitle { font-size: 1.1rem; color: #94a3b8; margin-bottom: 2rem; }
+
+    .section { margin-bottom: 3rem; }
+    .section h2 {
+      font-size: 1.5rem;
+      color: #f1f5f9;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #334155;
+    }
+
+    /* Grid of compatibility cards */
+    .compatibility-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .combo-card {
+      background: #1e293b;
+      border: 2px solid;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .combo-card.safe {
+      border-color: #10b981;
+      background: linear-gradient(135deg, #1e293b 0%, #051f15 100%);
+    }
+
+    .combo-card.safe:hover {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+      border-color: #6ee7b7;
+    }
+
+    .combo-card.avoid {
+      border-color: #ef4444;
+      background: linear-gradient(135deg, #1e293b 0%, #1f1210 100%);
+    }
+
+    .combo-card.avoid:hover {
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+      border-color: #fca5a5;
+    }
+
+    .combo-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .combo-card.safe .combo-title { color: #6ee7b7; }
+    .combo-card.avoid .combo-title { color: #fca5a5; }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .badge.safe { background: #10b98130; color: #6ee7b7; }
+    .badge.avoid { background: #ef444430; color: #fca5a5; }
+    .badge.info { background: #3b82f630; color: #93c5fd; }
+
+    .combo-networks {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .network-tag {
+      background: #334155;
+      padding: 0.25rem 0.75rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #cbd5e1;
+    }
+
+    .combo-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+    }
+
+    .meta-item {
+      background: #0f172a;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      border-left: 2px solid #334155;
+    }
+
+    .meta-item.safe { border-left-color: #10b981; }
+    .meta-item.avoid { border-left-color: #ef4444; }
+
+    .meta-label { color: #94a3b8; font-size: 0.75rem; text-transform: uppercase; }
+    .meta-value { color: #f1f5f9; font-weight: 600; margin-top: 0.25rem; }
+
+    .combo-pros, .combo-cons {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #334155;
+      font-size: 0.85rem;
+    }
+
+    .combo-pros h4, .combo-cons h4 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .combo-card.safe .combo-pros h4 { color: #6ee7b7; }
+    .combo-card.avoid .combo-cons h4 { color: #fca5a5; }
+
+    .combo-pros ul, .combo-cons ul {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .combo-pros li:before { content: '✓ '; color: #6ee7b7; font-weight: bold; margin-right: 0.25rem; }
+    .combo-cons li:before { content: '✗ '; color: #fca5a5; font-weight: bold; margin-right: 0.25rem; }
+
+    .combo-pros li, .combo-cons li {
+      margin-bottom: 0.3rem;
+      color: #cbd5e1;
+      padding-left: 1.5rem;
+      margin-left: -1.5rem;
+    }
+
+    /* Compatibility Matrix -->
+    .matrix {
+      overflow-x: auto;
+      margin-bottom: 2rem;
+    }
+
+    .matrix-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+      overflow: hidden;
+    }
+
+    .matrix-table th, .matrix-table td {
+      padding: 0.75rem;
+      text-align: center;
+      border: 1px solid #334155;
+      font-size: 0.85rem;
+    }
+
+    .matrix-table th {
+      background: #0f172a;
+      font-weight: 600;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .matrix-table td { color: #cbd5e1; }
+
+    .matrix-table tr:hover { background: #0f172a; }
+
+    .matrix-table td.network {
+      text-align: left;
+      font-weight: 500;
+      color: #f1f5f9;
+      background: #0f172a;
+    }
+
+    .compatibility-safe {
+      background: #10b98120;
+      color: #6ee7b7;
+      font-weight: 600;
+    }
+
+    .compatibility-avoid {
+      background: #ef444420;
+      color: #fca5a5;
+      font-weight: 600;
+    }
+
+    /* Decision tree -->
+    .decision-tree {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .decision-box {
+      background: #0f172a;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0.25rem 0.5rem 0.5rem 0.25rem;
+    }
+
+    .decision-box.recommended {
+      border-left-color: #10b981;
+      background: linear-gradient(135deg, #051f15 0%, #0f172a 100%);
+    }
+
+    .decision-box.avoid {
+      border-left-color: #ef4444;
+      background: linear-gradient(135deg, #1f1210 0%, #0f172a 100%);
+    }
+
+    .decision-q {
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .decision-a {
+      color: #cbd5e1;
+      padding-left: 1.5rem;
+      margin-left: -1.5rem;
+    }
+
+    .decision-a:before {
+      content: '→ ';
+      color: #3b82f6;
+      font-weight: bold;
+      margin-right: 0.25rem;
+    }
+
+    .recommended .decision-a:before { color: #10b981; }
+    .avoid .decision-a:before { color: #ef4444; }
+
+    /* Timeline -->
+    .timeline {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #334155;
+    }
+
+    .timeline-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .timeline-label {
+      font-weight: 600;
+      color: #f1f5f9;
+      font-size: 0.9rem;
+    }
+
+    .timeline-content {
+      color: #cbd5e1;
+    }
+
+    .timeline-content strong { color: #f1f5f9; }
+
+    /* Alert boxes -->
+    .alert {
+      background: #1e293b;
+      border-left: 4px solid;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .alert.safe {
+      border-left-color: #10b981;
+      background: linear-gradient(135deg, #051f15 0%, #1e293b 100%);
+    }
+
+    .alert.avoid {
+      border-left-color: #ef4444;
+      background: linear-gradient(135deg, #1f1210 0%, #1e293b 100%);
+    }
+
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    .alert.safe .alert-title { color: #6ee7b7; }
+    .alert.avoid .alert-title { color: #fca5a5; }
+
+    .alert-content {
+      color: #cbd5e1;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    /* Recommendation box -->
+    .big-recommendation {
+      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+      border: 2px solid #10b981;
+      border-radius: 0.75rem;
+      padding: 2rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .rec-emoji { font-size: 3rem; margin-bottom: 1rem; }
+    .rec-title { font-size: 1.3rem; font-weight: 600; color: #6ee7b7; margin-bottom: 0.75rem; }
+    .rec-desc { color: #cbd5e1; margin-bottom: 1rem; }
+    .rec-action { color: #a3e635; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Multiple Ad Networks</h1>
+  <p class="subtitle">Which combinations work? Which should you avoid?</p>
+
+  <!-- Big Recommendation -->
+  <div class="big-recommendation">
+    <div class="rec-emoji">✅</div>
+    <div class="rec-title">Recommended: AdSense + BuySellAds (NOW)</div>
+    <div class="rec-desc">
+      No policy conflicts. Easy to implement. Revenue: $50-150/month.<br>
+      Then upgrade to Mediavine + BuySellAds in 2-3 months for $1.5K-2.5K/month.
+    </div>
+    <div class="rec-action">Don't try to run 3+ networks (diminishing returns + conflicts)</div>
+  </div>
+
+  <!-- Quick Answer Section -->
+  <div class="section">
+    <h2>Can You Run Multiple Ad Networks?</h2>
+
+    <div class="alert safe">
+      <div class="alert-title">✓ YES, but with restrictions</div>
+      <div class="alert-content">
+        You CAN run multiple ad networks, but NOT all combinations work together.
+        Some networks have policies that prohibit running alongside competitors.
+        Running incompatible networks together risks account suspension.
+      </div>
+    </div>
+
+    <div class="alert avoid">
+      <div class="alert-title">✗ DON'T run 3+ networks</div>
+      <div class="alert-content">
+        More networks ≠ more revenue. Multiple programmatic networks compete for same slots,
+        lowering CPM for each. Performance also degrades (slower page loads).
+        Stick to 1-2 programmatic + 1-2 sponsorships max.
+      </div>
+    </div>
+  </div>
+
+  <!-- Compatibility Cards -->
+  <div class="section">
+    <h2>Network Compatibility Guide</h2>
+
+    <div class="compatibility-grid">
+      <!-- SAFE: AdSense + BuySellAds -->
+      <div class="combo-card safe">
+        <span class="badge safe">✓ SAFE</span>
+        <div class="combo-title">AdSense + BuySellAds</div>
+        <div class="combo-networks">
+          <span class="network-tag">AdSense</span>
+          <span class="network-tag">BuySellAds</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item safe">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">None</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Revenue (10K/mo)</div>
+            <div class="meta-value">$150-550</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Setup</div>
+            <div class="meta-value">Easy</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">✅ BEST NOW</div>
+          </div>
+        </div>
+
+        <div class="combo-pros">
+          <h4>Why it works</h4>
+          <ul>
+            <li>AdSense = programmatic (fills all slots)</li>
+            <li>BuySellAds = direct sponsorships (premium)</li>
+            <li>Zero policy conflicts</li>
+            <li>Complementary revenue sources</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SAFE: Mediavine + BuySellAds -->
+      <div class="combo-card safe">
+        <span class="badge safe">✓ SAFE</span>
+        <div class="combo-title">Mediavine + BuySellAds</div>
+        <div class="combo-networks">
+          <span class="network-tag">Mediavine</span>
+          <span class="network-tag">BuySellAds</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item safe">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">None</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Revenue (50K/mo)</div>
+            <div class="meta-value">$1.5K-3.5K</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Setup</div>
+            <div class="meta-value">Medium</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">✅ BEST LONG-TERM</div>
+          </div>
+        </div>
+
+        <div class="combo-pros">
+          <h4>Why it works</h4>
+          <ul>
+            <li>Mediavine = premium CPM ($35-45)</li>
+            <li>BuySellAds = direct sponsorships</li>
+            <li>No policy conflicts</li>
+            <li>Start when you hit 25K pageviews</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- SAFE: AdSense + Carbon Ads -->
+      <div class="combo-card safe">
+        <span class="badge safe">✓ SAFE</span>
+        <div class="combo-title">AdSense + Carbon Ads</div>
+        <div class="combo-networks">
+          <span class="network-tag">AdSense</span>
+          <span class="network-tag">Carbon Ads</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item safe">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">None</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Revenue (10K/mo)</div>
+            <div class="meta-value">$70-110</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Setup</div>
+            <div class="meta-value">Easy</div>
+          </div>
+          <div class="meta-item safe">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">✅ BACKUP</div>
+          </div>
+        </div>
+
+        <div class="combo-pros">
+          <h4>Why it works</h4>
+          <ul>
+            <li>AdSense = primary revenue</li>
+            <li>Carbon Ads = privacy-first backup</li>
+            <li>Aligns with your brand values</li>
+            <li>No technical conflicts</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- AVOID: AdSense + Ezoic -->
+      <div class="combo-card avoid">
+        <span class="badge avoid">✗ AVOID</span>
+        <div class="combo-title">AdSense + Ezoic</div>
+        <div class="combo-networks">
+          <span class="network-tag">AdSense</span>
+          <span class="network-tag">Ezoic</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item avoid">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">⚠️ HIGH</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Revenue (10K/mo)</div>
+            <div class="meta-value">$80 (drops)</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Setup</div>
+            <div class="meta-value">Complex</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">❌ NOT RECOMMENDED</div>
+          </div>
+        </div>
+
+        <div class="combo-cons">
+          <h4>Why avoid</h4>
+          <ul>
+            <li>Ezoic controls DNS + optimizes placements</li>
+            <li>Both try to manage same ad slots</li>
+            <li>CPM often DROPS when combined (not additive)</li>
+            <li>Risk of AdSense account suspension</li>
+            <li>Google sees suspicious traffic patterns</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- AVOID: Mediavine + Ezoic -->
+      <div class="combo-card avoid">
+        <span class="badge avoid">✗ NEVER</span>
+        <div class="combo-title">Mediavine + Ezoic</div>
+        <div class="combo-networks">
+          <span class="network-tag">Mediavine</span>
+          <span class="network-tag">Ezoic</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item avoid">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">❌ BLOCKED</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Technical Risk</div>
+            <div class="meta-value">❌ CONFLICT</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Mediavine Response</div>
+            <div class="meta-value">Account rejection</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">❌ NEVER</div>
+          </div>
+        </div>
+
+        <div class="combo-cons">
+          <h4>Why avoid (ALWAYS)</h4>
+          <ul>
+            <li>Both are programmatic, AI-driven networks</li>
+            <li>Mediavine will reject if you mention Ezoic</li>
+            <li>Ezoic might block Mediavine scripts</li>
+            <li>Complete technical incompatibility</li>
+            <li>Mediavine explicitly prohibits this combo</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- AVOID: Mediavine + AdSense -->
+      <div class="combo-card avoid">
+        <span class="badge avoid">⚠️ NOT RECOMMENDED</span>
+        <div class="combo-title">Mediavine + AdSense</div>
+        <div class="combo-networks">
+          <span class="network-tag">Mediavine</span>
+          <span class="network-tag">AdSense</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item avoid">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">⚠️ Medium</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Technical Risk</div>
+            <div class="meta-value">⚠️ Medium</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Revenue Impact</div>
+            <div class="meta-value">CPM drops</div>
+          </div>
+          <div class="meta-item avoid">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">❌ PICK ONE</div>
+          </div>
+        </div>
+
+        <div class="combo-cons">
+          <h4>Why avoid</h4>
+          <ul>
+            <li>Both compete for same ad slots</li>
+            <li>CPM often drops (not additive)</li>
+            <li>Mediavine will penalize if discovered</li>
+            <li>Better: Switch from AdSense to Mediavine</li>
+            <li>Don't run both simultaneously</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- INFO: Ezoic Only -->
+      <div class="combo-card">
+        <span class="badge info">ℹ️ INFO</span>
+        <div class="combo-title">Ezoic Alone (No Combos)</div>
+        <div class="combo-networks">
+          <span class="network-tag">Ezoic Only</span>
+        </div>
+
+        <div class="combo-meta">
+          <div class="meta-item">
+            <div class="meta-label">Policy Risk</div>
+            <div class="meta-value">✓ Safe (alone)</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Revenue (10K/mo)</div>
+            <div class="meta-value">$80-120</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Setup</div>
+            <div class="meta-value">Medium (DNS)</div>
+          </div>
+          <div class="meta-item">
+            <div class="meta-label">Recommendation</div>
+            <div class="meta-value">⚠️ Run alone only</div>
+          </div>
+        </div>
+
+        <div class="combo-pros">
+          <h4>If you choose Ezoic</h4>
+          <ul>
+            <li>Run Ezoic ALONE (don't combine)</li>
+            <li>Can add BuySellAds sponsors</li>
+            <li>Cannot add other programmatic networks</li>
+            <li>Better: Use AdSense (simpler)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Compatibility Matrix -->
+  <div class="section">
+    <h2>Network Compatibility Matrix</h2>
+
+    <div class="matrix">
+      <table class="matrix-table">
+        <thead>
+          <tr>
+            <th>Network 1</th>
+            <th>AdSense</th>
+            <th>Ezoic</th>
+            <th>Mediavine</th>
+            <th>BuySellAds</th>
+            <th>Carbon Ads</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="network">AdSense</td>
+            <td class="compatibility-safe">—</td>
+            <td class="compatibility-avoid">⚠️ Not Recommended</td>
+            <td class="compatibility-avoid">⚠️ Pick One</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+          </tr>
+          <tr>
+            <td class="network">Ezoic</td>
+            <td class="compatibility-avoid">⚠️ Not Recommended</td>
+            <td class="compatibility-safe">—</td>
+            <td class="compatibility-avoid">✗ NEVER</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+          </tr>
+          <tr>
+            <td class="network">Mediavine</td>
+            <td class="compatibility-avoid">⚠️ Pick One</td>
+            <td class="compatibility-avoid">✗ NEVER</td>
+            <td class="compatibility-safe">—</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+          </tr>
+          <tr>
+            <td class="network">BuySellAds</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">—</td>
+            <td class="compatibility-safe">✓ Safe</td>
+          </tr>
+          <tr>
+            <td class="network">Carbon Ads</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">✓ Safe</td>
+            <td class="compatibility-safe">—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Decision Tree -->
+  <div class="section">
+    <h2>Which Combo Should YOU Choose?</h2>
+
+    <div class="decision-tree">
+      <div class="decision-box recommended">
+        <div class="decision-q">Want maximum revenue right NOW (10K pageviews)?</div>
+        <div class="decision-a"><strong>AdSense + BuySellAds</strong><br>Revenue: $150-550/month. Easy setup. No conflicts.</div>
+      </div>
+
+      <div class="decision-box recommended">
+        <div class="decision-q">Want the BEST revenue eventually (in 6 months)?</div>
+        <div class="decision-a"><strong>AdSense now → Mediavine + BuySellAds in 2-3 months</strong><br>Jump from $50 → $1.5K-2.5K/month</div>
+      </div>
+
+      <div class="decision-box">
+        <div class="decision-q">Want to run multiple networks simultaneously?</div>
+        <div class="decision-a"><strong>Only safe combo: AdSense + BuySellAds (or Mediavine + BuySellAds)</strong><br>Don't try 3+ networks. Diminishing returns + conflicts.</div>
+      </div>
+
+      <div class="decision-box">
+        <div class="decision-q">Want higher CPM from day 1?</div>
+        <div class="decision-a"><strong>Ezoic alone</strong> (don't combine with others)<br>CPM 2-3x higher than AdSense, but don't pair with other networks.</div>
+      </div>
+
+      <div class="decision-box recommended">
+        <div class="decision-q">Want a privacy-first strategy?</div>
+        <div class="decision-a"><strong>AdSense + Carbon Ads + BuySellAds</strong><br>Aligns with your brand. Lower revenue but ethical approach.</div>
+      </div>
+
+      <div class="decision-box avoid">
+        <div class="decision-q">Can I run AdSense + Ezoic together?</div>
+        <div class="decision-a"><strong>NOT RECOMMENDED</strong> (technical conflicts, CPM drops, suspension risk)<br>Better to pick one: AdSense (simpler) OR Ezoic alone (higher CPM)</div>
+      </div>
+
+      <div class="decision-box avoid">
+        <div class="decision-q">Can I run Mediavine + Ezoic?</div>
+        <div class="decision-a"><strong>NEVER. Mediavine will reject your application if you mention Ezoic.</strong><br>Pick one network, don't combine.</div>
+      </div>
+
+      <div class="decision-box avoid">
+        <div class="decision-q">Should I run 3+ ad networks?</div>
+        <div class="decision-a"><strong>NO.</strong> More networks ≠ more revenue. Diminishing returns. Multiple ad scripts slow your site. Stick to 1-2 max.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="section">
+    <h2>Implementation Timeline (Recommended Path)</h2>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-label">THIS WEEK</div>
+        <div class="timeline-content">
+          <strong>Apply to:</strong> AdSense, Carbon Ads (backup)<br>
+          <strong>Reach out to:</strong> Potential BuySellAds sponsors
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Week 2-3</div>
+        <div class="timeline-content">
+          <strong>After AdSense approval:</strong> Implement ads on site<br>
+          <strong>Monitor:</strong> CPM, impressions, CTR for 2 weeks
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Month 2-3</div>
+        <div class="timeline-content">
+          <strong>Target:</strong> Hit 25K pageviews/month<br>
+          <strong>Apply to:</strong> Mediavine<br>
+          <strong>Add:</strong> BuySellAds sponsor placements (if deals secured)
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Month 3-4</div>
+        <div class="timeline-content">
+          <strong>Decision:</strong> Switch to Mediavine OR run both (AdSense + Mediavine)<br>
+          <strong>Optimize:</strong> BuySellAds sponsor placements and outreach
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-label">Month 6+</div>
+        <div class="timeline-content">
+          <strong>Revenue target:</strong> $1.5K-2.5K/month<br>
+          <strong>Combo:</strong> Mediavine + 2-3 BuySellAds sponsors
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Takeaways -->
+  <div class="section">
+    <h2>Key Takeaways</h2>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 0.75rem; padding: 1.5rem;">
+        <div style="font-weight: 600; color: #6ee7b7; margin-bottom: 1rem;">✓ Safe Combos</div>
+        <ul style="list-style: none; padding-left: 0; color: #cbd5e1; font-size: 0.9rem;">
+          <li>✓ AdSense + BuySellAds</li>
+          <li>✓ Mediavine + BuySellAds</li>
+          <li>✓ AdSense + Carbon Ads</li>
+          <li>✓ Any network + sponsors</li>
+        </ul>
+      </div>
+
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 0.75rem; padding: 1.5rem;">
+        <div style="font-weight: 600; color: #fca5a5; margin-bottom: 1rem;">✗ Never Combine</div>
+        <ul style="list-style: none; padding-left: 0; color: #cbd5e1; font-size: 0.9rem;">
+          <li>✗ Mediavine + Ezoic</li>
+          <li>✗ 3+ programmatic networks</li>
+          <li>✗ Mediavine + AdSense (pick one)</li>
+          <li>✗ AdSense + Ezoic (risky)</li>
+        </ul>
+      </div>
+
+      <div style="background: #1e293b; border: 1px solid #334155; border-radius: 0.75rem; padding: 1.5rem;">
+        <div style="font-weight: 600; color: #3b82f6; margin-bottom: 1rem;">💡 Best Strategy</div>
+        <ul style="list-style: none; padding-left: 0; color: #cbd5e1; font-size: 0.9rem;">
+          <li>1. AdSense now ($50/mo)</li>
+          <li>2. Add sponsors ($100/mo)</li>
+          <li>3. Switch to Mediavine ($1.25K/mo)</li>
+          <li>4. Add more sponsors ($1.5K/mo)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

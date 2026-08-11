@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TextWonder Ad Placement Strategy</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+      padding: 2rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    h1 { font-size: 2.5rem; margin-bottom: 0.5rem; color: #fff; }
+    .subtitle { font-size: 1.1rem; color: #94a3b8; margin-bottom: 2rem; }
+    .section { margin-bottom: 3rem; }
+    .section h2 {
+      font-size: 1.5rem;
+      color: #f1f5f9;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #334155;
+    }
+
+    /* Layout mockups */
+    .mockup {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+    }
+    .mockup-title {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #cbd5e1;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+    }
+
+    /* Grid layouts */
+    .grid { display: grid; gap: 1rem; }
+    .grid-2col { grid-template-columns: 2fr 1fr; }
+    @media (max-width: 900px) {
+      .grid-2col { grid-template-columns: 1fr; }
+    }
+
+    /* Box elements */
+    .box {
+      border: 2px dashed;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      font-weight: 600;
+      text-align: center;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 60px;
+    }
+
+    .box.content {
+      background: #0f172a;
+      border-color: #7c3aed;
+      color: #a78bfa;
+    }
+
+    .box.ad {
+      background: #1e1b4b;
+      border-color: #f59e0b;
+      color: #fbbf24;
+    }
+
+    .box.header {
+      background: #0f172a;
+      border-color: #06b6d4;
+      color: #22d3ee;
+      min-height: 40px;
+    }
+
+    .box.footer {
+      background: #0f172a;
+      border-color: #8b5cf6;
+      color: #c4b5fd;
+      min-height: 40px;
+    }
+
+    /* Ad slot info */
+    .ad-info {
+      background: #1e1b4b;
+      border: 1px solid #f59e0b;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      margin-top: 0.5rem;
+      font-size: 0.85rem;
+      color: #fed7aa;
+    }
+
+    /* Metrics */
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .metric-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+
+    .metric-label {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #60a5fa;
+    }
+
+    /* Checklist */
+    .checklist {
+      background: #1e293b;
+      border-left: 4px solid #10b981;
+      border-radius: 0.25rem 0.5rem 0.5rem 0.25rem;
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .checklist li {
+      margin-bottom: 0.75rem;
+      padding-left: 1.5rem;
+    }
+
+    .checklist li:before {
+      content: '✓';
+      position: absolute;
+      margin-left: -1.5rem;
+      color: #10b981;
+      font-weight: bold;
+    }
+
+    /* Warning box */
+    .warning {
+      background: #7c2d12;
+      border: 1px solid #ea580c;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      color: #fed7aa;
+    }
+
+    .warning strong { color: #fef3c7; }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+    .timeline-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-left: 2px solid #334155;
+      padding-left: 1.5rem;
+      margin-left: -1.5rem;
+    }
+
+    .timeline-item:last-child {
+      border-left: none;
+    }
+
+    .timeline-title {
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 0.25rem;
+    }
+
+    .timeline-desc {
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    /* Comparison table */
+    .comparison {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .comparison th, .comparison td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    .comparison th {
+      background: #1e293b;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .comparison td {
+      color: #cbd5e1;
+    }
+
+    .comparison tr:hover {
+      background: #0f172a;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+    }
+
+    .badge.priority-high {
+      background: #dc2626;
+      color: #fee2e2;
+    }
+
+    .badge.priority-med {
+      background: #f59e0b;
+      color: #fef3c7;
+    }
+
+    .badge.priority-low {
+      background: #6b7280;
+      color: #f3f4f6;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>TextWonder Ad Placement Strategy</h1>
+  <p class="subtitle">Visual guide for monetizing while maintaining UX</p>
+
+  <!-- Homepage Layout -->
+  <div class="section">
+    <h2>1. Homepage Layout</h2>
+
+    <div class="mockup">
+      <div class="mockup-title">💻 Desktop & Mobile View</div>
+      <div class="grid">
+        <div>
+          <div class="box header">Hero Section (Search)</div>
+          <div class="box content" style="margin-top: 1rem;">Category Grid Cards</div>
+          <div class="box ad" style="margin-top: 1rem;">
+            📺 Ad Slot #1<br><span style="font-size: 0.75rem;">728x90 Leaderboard</span>
+            <div class="ad-info">After category section | Desktop only</div>
+          </div>
+          <div class="box content" style="margin-top: 1rem;">Dynamic Dashboard (Tabs)</div>
+          <div class="box ad" style="margin-top: 1rem;">
+            📺 Ad Slot #2<br><span style="font-size: 0.75rem;">728x90 Leaderboard</span>
+            <div class="ad-info">Between dashboard & privacy | Desktop only</div>
+          </div>
+          <div class="box content" style="margin-top: 1rem;">Privacy Section + Blog Posts</div>
+          <div class="box ad" style="margin-top: 1rem;">
+            📺 Ad Slot #3<br><span style="font-size: 0.75rem;">728x90 Leaderboard</span>
+            <div class="ad-info">After blog posts | Desktop only</div>
+          </div>
+          <div class="box content" style="margin-top: 1rem;">FAQs + Feedback Section</div>
+          <div class="box footer" style="margin-top: 1rem;">Footer</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">Ad Slots</div>
+        <div class="metric-value">3</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Estimated Impressions</div>
+        <div class="metric-value">1.5K/mo</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Est. Revenue</div>
+        <div class="metric-value">$4-7</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tool Pages Layout -->
+  <div class="section">
+    <h2>2. Tool Pages Layout (High Priority)</h2>
+    <span class="badge priority-high">HIGH PRIORITY</span>
+
+    <div class="mockup">
+      <div class="mockup-title">💻 Desktop Layout (Main Revenue Driver)</div>
+      <div class="grid grid-2col">
+        <div>
+          <div class="box header">Breadcrumb + Tool Name</div>
+          <div class="box content" style="margin-top: 1rem; min-height: 200px;">
+            ⚙️ Tool UI Area<br><span style="font-size: 0.75rem;">(Input/Output)</span>
+          </div>
+          <div class="box content" style="margin-top: 1rem;">📝 SEO Content (What is, Use Cases, How it works)</div>
+          <div class="box content" style="margin-top: 1rem;">❓ FAQs</div>
+          <div class="box content" style="margin-top: 1rem;">🔗 Related Tools</div>
+        </div>
+        <div>
+          <div class="box ad">
+            📺 Ad Slot #4<br><span style="font-size: 0.75rem;">300x250px</span>
+            <div class="ad-info">Sticky on scroll | Below tool</div>
+          </div>
+          <div class="box ad" style="margin-top: 1rem;">
+            📺 Ad Slot #5<br><span style="font-size: 0.75rem;">300x600px</span>
+            <div class="ad-info">Half-page ad | Mid-content</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mockup" style="margin-top: 1rem;">
+      <div class="mockup-title">📱 Mobile Layout (Simplified)</div>
+      <div class="box content" style="margin-top: 0;">Breadcrumb + Tool Name</div>
+      <div class="box content" style="margin-top: 1rem; min-height: 150px;">⚙️ Tool UI</div>
+      <div class="box ad" style="margin-top: 1rem;">
+        📺 Ad Slot #4 (Responsive)<br><span style="font-size: 0.75rem;">300x250 or 300x600</span>
+        <div class="ad-info">Below tool, before content</div>
+      </div>
+      <div class="box content" style="margin-top: 1rem;">📝 Content + FAQs</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">Ad Slots per Page</div>
+        <div class="metric-value">2</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Est. Impressions</div>
+        <div class="metric-value">6K/mo</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Est. Revenue</div>
+        <div class="metric-value">$24-48</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Pages Served</div>
+        <div class="metric-value">70+</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Blog Layout -->
+  <div class="section">
+    <h2>3. Blog Posts Layout (Medium Priority)</h2>
+    <span class="badge priority-med">MEDIUM PRIORITY</span>
+
+    <div class="mockup">
+      <div class="mockup-title">📄 Article Page Layout</div>
+      <div class="box header">Breadcrumb + Meta (Date, Read Time)</div>
+      <div class="box content" style="margin-top: 1rem;">Title + Description</div>
+      <div class="box content" style="margin-top: 1rem;">Article Start (First 300 words)</div>
+      <div class="box ad" style="margin-top: 1rem;">
+        📺 Ad Slot #6<br><span style="font-size: 0.75rem;">300x250 Rectangle</span>
+        <div class="ad-info">After first section | Responsive</div>
+      </div>
+      <div class="box content" style="margin-top: 1rem;">Article Middle (Heading 2)</div>
+      <div class="box content" style="margin-top: 1rem;">Article Content</div>
+      <div class="box ad" style="margin-top: 1rem;">
+        📺 Ad Slot #7 (Optional)<br><span style="font-size: 0.75rem;">300x250 Rectangle</span>
+        <div class="ad-info">Between sections | Optional</div>
+      </div>
+      <div class="box content" style="margin-top: 1rem;">Article End + CTA</div>
+      <div class="box footer" style="margin-top: 1rem;">Footer</div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric-card">
+        <div class="metric-label">Ad Slots per Post</div>
+        <div class="metric-value">1-2</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Est. Impressions</div>
+        <div class="metric-value">2.5K/mo</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Est. Revenue</div>
+        <div class="metric-value">$12-18</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revenue Projections -->
+  <div class="section">
+    <h2>💰 Revenue Projections</h2>
+
+    <div style="margin-bottom: 2rem;">
+      <h3 style="color: #cbd5e1; margin-bottom: 1rem;">Current Traffic: 10K pageviews/month</h3>
+      <table class="comparison">
+        <thead>
+          <tr>
+            <th>Placement</th>
+            <th>Slot Size</th>
+            <th>Impressions</th>
+            <th>CPM</th>
+            <th>Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Tool Pages (Sidebar)</td>
+            <td>300x250, 300x600</td>
+            <td>6K</td>
+            <td>$4-6</td>
+            <td>$24-36</td>
+          </tr>
+          <tr>
+            <td>Homepage Sections</td>
+            <td>728x90</td>
+            <td>1.5K</td>
+            <td>$2-4</td>
+            <td>$3-6</td>
+          </tr>
+          <tr>
+            <td>Blog Articles</td>
+            <td>300x250</td>
+            <td>2.5K</td>
+            <td>$4-6</td>
+            <td>$10-15</td>
+          </tr>
+          <tr>
+            <td>Footer (all pages)</td>
+            <td>728x90</td>
+            <td>10K</td>
+            <td>$1-2</td>
+            <td>$10-20</td>
+          </tr>
+          <tr style="background: #1e293b; font-weight: 600;">
+            <td>TOTAL</td>
+            <td>-</td>
+            <td>20K</td>
+            <td>$3.50</td>
+            <td><span style="color: #10b981;">$47-77</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <h3 style="color: #cbd5e1; margin-bottom: 1rem;">Projected Growth: 50K pageviews/month</h3>
+      <table class="comparison">
+        <thead>
+          <tr>
+            <th>Scenario</th>
+            <th>Monthly Revenue</th>
+            <th>Avg CPM</th>
+            <th>Annual Revenue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Conservative</td>
+            <td>$200-250</td>
+            <td>$3-4</td>
+            <td>$2,400-3,000</td>
+          </tr>
+          <tr>
+            <td>Optimistic</td>
+            <td>$300-350</td>
+            <td>$4-5</td>
+            <td>$3,600-4,200</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Implementation Timeline -->
+  <div class="section">
+    <h2>📅 Implementation Timeline</h2>
+
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-title">Phase 1: Prep & Setup (Days 1-2)</div>
+        <div class="timeline-desc">
+          • Remove "no ads" messaging from homepage<br>
+          • Apply to Google AdSense (wait for approval, 5-7 days)<br>
+          • Design mockups and preview ad placements
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-title">Phase 2: Code Changes (Days 3-5)</div>
+        <div class="timeline-desc">
+          • Create AdSlot.astro component<br>
+          • Update ToolLayout.astro (add sidebar ads)<br>
+          • Update index.astro (add homepage ads)<br>
+          • Update BlogLayout.astro (add article ads)<br>
+          • Add AdSense script to BaseLayout.astro
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-title">Phase 3: Testing & Deploy (Days 6-7)</div>
+        <div class="timeline-desc">
+          • Test locally in different browsers<br>
+          • Check responsive design (mobile/tablet/desktop)<br>
+          • Deploy to production (staging first)<br>
+          • Monitor AdSense dashboard for 2 weeks
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Critical Changes Needed -->
+  <div class="section">
+    <h2>⚠️ Critical Changes Before Launch</h2>
+
+    <div class="warning">
+      <strong>Your homepage currently claims:</strong><br>
+      ❌ "No ads, no data sent anywhere" (line 78)<br>
+      ❌ "No ad pixels or behaviour tracking" (line 253)<br><br>
+      <strong>You MUST update these before launching ads.</strong>
+    </div>
+
+    <div class="checklist">
+      <h3 style="color: #cbd5e1; margin-bottom: 1rem;">Update Homepage Copy</h3>
+      <ul>
+        <li><strong>Remove:</strong> "No ads" from hero tagline</li>
+        <li><strong>Remove:</strong> "No ad pixels or behaviour tracking" from privacy section</li>
+        <li><strong>Add:</strong> "Supported by ethical, privacy-first ads" or similar</li>
+        <li><strong>Clarify:</strong> "No data collection beyond ad serving" if using AdSense</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Action Items -->
+  <div class="section">
+    <h2>✅ Immediate Action Items</h2>
+    <div class="checklist">
+      <ul>
+        <li>Review the detailed AD_PLACEMENT_STRATEGY.md file</li>
+        <li>Decide on ad network (Google AdSense recommended)</li>
+        <li>Confirm which placements to implement (all or phased?)</li>
+        <li>Apply to AdSense (if chosen)</li>
+        <li>Update homepage messaging</li>
+        <li>Create mockups in Figma or similar</li>
+        <li>Proceed with Phase 1 implementation</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

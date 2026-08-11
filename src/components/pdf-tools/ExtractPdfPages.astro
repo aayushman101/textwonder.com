@@ -1,0 +1,213 @@
+---
+---
+
+<div id="pdf-extract-container" class="space-y-6">
+  <!-- File Upload -->
+  <div class="border-2 border-dashed border-slate-600 rounded-2xl p-8 text-center hover:border-red-400 transition-colors cursor-pointer" onclick="document.getElementById('pdf-file-input').click()">
+    <div class="text-4xl mb-2">📄</div>
+    <p class="text-white font-semibold">Click to upload PDF or drag & drop</p>
+    <p class="text-slate-400 text-sm mt-1">Max file size: 100MB</p>
+    <input type="file" id="pdf-file-input" accept=".pdf" style="display:none;" />
+  </div>
+
+  <!-- Page Selection Area -->
+  <div id="page-selection-area" style="display:none;" class="space-y-4">
+    <div class="flex items-center justify-between">
+      <h3 class="text-white font-semibold">Select Pages to Extract</h3>
+      <button id="select-all-btn" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded-lg transition-colors">
+        Select All
+      </button>
+    </div>
+
+    <!-- Thumbnails Grid -->
+    <div id="pages-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto p-2 bg-[var(--bg-base)] rounded-xl border border-slate-800"></div>
+
+    <!-- Extract Button -->
+    <div class="flex gap-3">
+      <button id="extract-btn" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-4 rounded-lg transition-all active:scale-[0.98]">
+        Extract Selected Pages
+      </button>
+      <button id="clear-btn" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">
+        Clear
+      </button>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progress-container" style="display:none;" class="space-y-2">
+      <div class="flex justify-between text-sm text-slate-400">
+        <span id="progress-text">Processing page 1 of 10...</span>
+        <span id="progress-percent">0%</span>
+      </div>
+      <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
+        <div id="progress-bar" class="bg-red-600 h-full transition-all" style="width: 0%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Messages -->
+  <div id="status-message" class="hidden"></div>
+</div>
+
+<script>
+  let pdfDoc = null;
+  let selectedPages = new Set();
+
+  // File input handling
+  document.getElementById('pdf-file-input').addEventListener('change', handleFileUpload);
+  document.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    document.querySelector('#pdf-extract-container > div').classList.add('border-red-400');
+  });
+  document.addEventListener('dragleave', (e) => {
+    if (e.target === document) {
+      document.querySelector('#pdf-extract-container > div').classList.remove('border-red-400');
+    }
+  });
+  document.addEventListener('drop', (e) => {
+    e.preventDefault();
+    document.querySelector('#pdf-extract-container > div').classList.remove('border-red-400');
+    if (e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.type === 'application/pdf') {
+        loadPdf(file);
+      }
+    }
+  });
+
+  async function handleFileUpload(e) {
+    const file = e.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      loadPdf(file);
+    }
+  }
+
+  async function loadPdf(file) {
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+      displayPages();
+      document.getElementById('page-selection-area').style.display = 'block';
+      hideStatus();
+    } catch (error) {
+      showStatus('Error loading PDF: ' + error.message, 'error');
+    }
+  }
+
+  function displayPages() {
+    const grid = document.getElementById('pages-grid');
+    grid.innerHTML = '';
+    selectedPages.clear();
+
+    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
+      const page = pdfDoc.getPage(i);
+      const { width, height } = page.getSize();
+
+      const container = document.createElement('div');
+      container.className = 'relative cursor-pointer group';
+      container.innerHTML = `
+        <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-transparent hover:border-red-500 transition-all">
+          <div style="width:120px;height:160px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
+            <div style="background:#f5f5f5;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#666;">
+              Page ${i + 1}
+            </div>
+          </div>
+          <input type="checkbox" class="absolute top-2 left-2 w-5 h-5 cursor-pointer page-checkbox" data-page="${i}" />
+        </div>
+        <p class="text-xs text-slate-400 mt-1 text-center">Page ${i + 1}</p>
+      `;
+
+      const checkbox = container.querySelector('.page-checkbox');
+      checkbox.addEventListener('change', () => {
+        if (checkbox.checked) {
+          selectedPages.add(i);
+          container.querySelector('div').classList.add('border-red-500', 'bg-red-500/10');
+        } else {
+          selectedPages.delete(i);
+          container.querySelector('div').classList.remove('border-red-500', 'bg-red-500/10');
+        }
+      });
+
+      container.addEventListener('click', (e) => {
+        if (e.target !== checkbox) {
+          checkbox.checked = !checkbox.checked;
+          checkbox.dispatchEvent(new Event('change'));
+        }
+      });
+
+      grid.appendChild(container);
+    }
+  }
+
+  document.getElementById('select-all-btn').addEventListener('click', () => {
+    const checkboxes = document.querySelectorAll('.page-checkbox');
+    const allSelected = selectedPages.size === pdfDoc.getPageCount();
+
+    checkboxes.forEach((cb, i) => {
+      cb.checked = !allSelected;
+      cb.dispatchEvent(new Event('change'));
+    });
+  });
+
+  document.getElementById('extract-btn').addEventListener('click', extractPages);
+  document.getElementById('clear-btn').addEventListener('click', () => {
+    document.getElementById('pdf-file-input').value = '';
+    document.getElementById('page-selection-area').style.display = 'none';
+    selectedPages.clear();
+    pdfDoc = null;
+  });
+
+  async function extractPages() {
+    if (selectedPages.size === 0) {
+      showStatus('Please select at least one page', 'error');
+      return;
+    }
+
+    try {
+      showProgress(true);
+      const newPdf = await PDFLib.PDFDocument.create();
+      const sortedPages = Array.from(selectedPages).sort((a, b) => a - b);
+
+      for (let i = 0; i < sortedPages.length; i++) {
+        const pageIndex = sortedPages[i];
+        const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageIndex]);
+        newPdf.addPage(copiedPage);
+
+        const progress = ((i + 1) / sortedPages.length) * 100;
+        document.getElementById('progress-bar').style.width = progress + '%';
+        document.getElementById('progress-text').textContent = `Processing page ${i + 1} of ${sortedPages.length}...`;
+        document.getElementById('progress-percent').textContent = Math.round(progress) + '%';
+      }
+
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'extracted-pages.pdf';
+      link.click();
+      URL.revokeObjectURL(url);
+
+      showStatus(`✓ Successfully extracted ${sortedPages.length} page(s)`, 'success');
+      showProgress(false);
+    } catch (error) {
+      showStatus('Error extracting pages: ' + error.message, 'error');
+      showProgress(false);
+    }
+  }
+
+  function showProgress(show) {
+    document.getElementById('progress-container').style.display = show ? 'block' : 'none';
+  }
+
+  function showStatus(message, type) {
+    const statusEl = document.getElementById('status-message');
+    statusEl.textContent = message;
+    statusEl.className = type === 'error' ? 'p-4 bg-red-900/30 border border-red-700 rounded-lg text-red-400 hidden' : 'p-4 bg-green-900/30 border border-green-700 rounded-lg text-green-400';
+    statusEl.classList.remove('hidden');
+    setTimeout(() => statusEl.classList.add('hidden'), 5000);
+  }
+
+  function hideStatus() {
+    document.getElementById('status-message').classList.add('hidden');
+  }
+</script>

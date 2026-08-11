@@ -14,6 +14,9 @@ import ImageScanner from '../../components/image-tools/ImageScanner.astro';
 import ImageToPdf from '../../components/image-tools/ImageToPdf.astro';
 import ImageBrightness from '../../components/image-tools/ImageBrightness.astro';
 import ImageEffects from '../../components/image-tools/ImageEffects.astro';
+import MemeGenerator from '../../components/image-tools/MemeGenerator.astro';
+import BlurFace from '../../components/image-tools/BlurFace.astro';
+import HtmlToImage from '../../components/image-tools/HtmlToImage.astro';
 import { IMAGE_TOOLS } from '../../data/imagetools.js';
 
 export function getStaticPaths() {
@@ -37,6 +40,9 @@ const componentMap: Record<string, any> = {
   'image-to-pdf': ImageToPdf,
   'image-brightness': ImageBrightness,
   'image-effects': ImageEffects,
+  'meme-generator': MemeGenerator,
+  'blur-face': BlurFace,
+  'html-to-image': HtmlToImage,
 };
 
 const ToolComponent = componentMap[tool.slug];

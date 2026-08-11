@@ -1,6 +1,7 @@
 ---
 import PDFToolLayout from '../../layouts/PDFToolLayout.astro';
 import PdfMerger from '../../components/pdf-tools/PdfMerger.astro';
+import ExtractPdfPages from '../../components/pdf-tools/ExtractPdfPages.astro';
 import PdfSplitter from '../../components/pdf-tools/PdfSplitter.astro';
 import PdfToText from '../../components/pdf-tools/PdfToText.astro';
 import TextToPdf from '../../components/pdf-tools/TextToPdf.astro';
@@ -37,6 +38,7 @@ const { tool } = Astro.props;
 
 const componentMap: Record<string, any> = {
   'pdf-merger': PdfMerger,
+  'pdf-extract-pages': ExtractPdfPages,
   'pdf-splitter': PdfSplitter,
   'pdf-to-text': PdfToText,
   'text-to-pdf': TextToPdf,

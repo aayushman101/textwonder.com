@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
 
 const toolsForSearch = getGlobalSearchIndex();
@@ -147,6 +148,11 @@ const faqSchema = {
       </div>
     </section>
 
+    <!-- ── Ad Slot #1: After Category Grid ────────────────────── -->
+    <section class="max-w-5xl mx-auto px-4 pb-8">
+      <AdSlot slot="3456789012" format="horizontal" />
+    </section>
+
     <!-- ── Dynamic Category Explorer Dashboard ────────────────── -->
     <section class="max-w-5xl mx-auto px-4 pb-16" id="dashboard-section">
       <!-- Tabs header wrapper (scrollable on mobile) -->
@@ -228,6 +234,11 @@ const faqSchema = {
           </div>
         ))}
       </div>
+    </section>
+
+    <!-- ── Ad Slot #2: After Dashboard ─────────────────────────── -->
+    <section class="max-w-5xl mx-auto px-4 pb-8">
+      <AdSlot slot="4567890123" format="horizontal" />
     </section>
 
     <!-- ── Privacy section ────────────────────────────────────── -->

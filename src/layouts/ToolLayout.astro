@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import RelatedTools from '../components/RelatedTools.astro';
 import ToolFAQ from '../components/ToolFAQ.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
+import AdSlot from '../components/AdSlot.astro';
 import { getCategoryBySlug, getRelatedTools } from '../data/tools.js';
 
 const { tool } = Astro.props;
@@ -75,6 +76,11 @@ const faqSchema = {
       <slot />
     </div>
 
+    <!-- Ad Slot #1: After Tool UI -->
+    <div class="mb-10">
+      <AdSlot slot="1234567890" format="rectangle" />
+    </div>
+
     <!-- SEO Content -->
     <section class="mb-10 space-y-6">
       <div>
@@ -90,6 +96,11 @@ const faqSchema = {
         <p class="text-slate-400 leading-relaxed">{tool.howItWorks}</p>
       </div>
     </section>
+
+    <!-- Ad Slot #2: Before FAQs -->
+    <div class="mb-10">
+      <AdSlot slot="2345678901" format="rectangle" />
+    </div>
 
     <ToolFAQ faqs={tool.faqs} />
 

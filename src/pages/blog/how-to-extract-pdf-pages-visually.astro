@@ -1,0 +1,166 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the difference between Extract PDF Pages and PDF Splitter?', a: 'Both tools extract pages, but Extract PDF Pages shows a visual thumbnail preview of each page so you can click to select which ones you want. PDF Splitter requires you to type page numbers. Use Extract PDF Pages if you want to see what each page looks like before extracting.' },
+  { q: 'Can I extract pages in a different order?', a: 'Yes! Click pages in any order you want. If you select page 5, then page 2, then page 8, the extracted PDF will have them in that order — 5, 2, 8.' },
+  { q: 'Can I extract multiple pages at once?', a: 'Yes. Click as many page thumbnails as you need. You can select all pages with the "Select All" button, or click individual pages to toggle them on/off.' },
+  { q: 'Will extracting pages affect the original PDF?', a: 'No. A completely new PDF is created containing only your selected pages. Your original file is never modified.' },
+  { q: 'Is there a limit to how many pages I can extract?', a: 'No limit. You can extract all pages from a PDF if you want. The tool handles PDFs with hundreds of pages.' },
+  { q: 'How do I preview what each page contains before extracting?', a: 'Each page is shown as a thumbnail preview in the grid. You can see what content is on each page before selecting it. Thumbnails are small, so text may not be readable — adjust your browser zoom if needed.' },
+  { q: 'Can I extract just one page?', a: 'Yes. Click the single page you want and click Extract. The result is a one-page PDF.' },
+  { q: 'Does extracting pages reduce file size?', a: 'Usually yes. If you extract 10 pages from a 100-page PDF, the new file will be roughly 10% the original size (assuming even page distribution).' },
+];
+---
+
+<BlogLayout
+  title="How to Extract PDF Pages Visually (Free Tool, No Page Numbers Needed)"
+  description="Extract specific PDF pages by clicking thumbnails. Visual page selection, instant preview, no typing required. Free browser tool, no upload needed."
+  canonical="/blog/how-to-extract-pdf-pages-visually"
+  date="2026-08-11"
+  readTime="4 min read"
+  category="PDF Guide"
+  faqs={faqs}
+>
+
+<p>
+  Extracting pages from a PDF is easy when you can see what's on each page. PDFWonder's <strong>Extract PDF Pages</strong> tool shows a thumbnail preview of every page so you can click to select exactly which pages you need — no typing page numbers required.
+</p>
+
+<h2>How to Extract PDF Pages Visually (Step-by-Step)</h2>
+
+<ol>
+  <li>Go to the <a href="/pdfwonder/pdf-extract-pages">Extract PDF Pages tool</a>.</li>
+  <li>Drop your PDF onto the upload area (or click to browse).</li>
+  <li>Wait for thumbnails to load. Each page of your PDF appears as a small preview.</li>
+  <li>Click the pages you want to extract. Selected pages highlight in red.</li>
+  <li>Use <strong>Select All</strong> to select every page at once (useful if you want to deselect a few instead).</li>
+  <li>Click <strong>Extract Selected Pages</strong>.</li>
+  <li>Your new PDF downloads automatically.</li>
+</ol>
+
+<a href="/pdfwonder/pdf-extract-pages" class="tool-cta">
+  <div class="cta-label">Free Tool</div>
+  <div class="cta-title">Extract PDF Pages Visually →</div>
+  <div class="cta-desc">Click page thumbnails to select. No page numbers to type. See exactly what you're extracting.</div>
+</a>
+
+<h2>Why This Is Better Than Typing Page Numbers</h2>
+
+<p>
+  Traditional PDF tools make you type page numbers like "1,3,5-8,10" — error-prone and slow if you have a 200-page document. With visual extraction:
+</p>
+
+<ul>
+  <li><strong>See before you extract:</strong> You can identify which pages contain the content you need by their thumbnail preview.</li>
+  <li><strong>No math needed:</strong> Just click the pages you want. No need to remember page counts or calculate ranges.</li>
+  <li><strong>Change your mind instantly:</strong> Click a page to deselect it if you change your mind. No retyping needed.</li>
+  <li><strong>Extract in any order:</strong> Select pages in any sequence and the extracted PDF preserves your order.</li>
+  <li><strong>Faster for large PDFs:</strong> Scrolling through thumbnails and clicking is quicker than typing complex ranges for 100+ page documents.</li>
+</ul>
+
+<h2>Common Use Cases for Page Extraction</h2>
+
+<h3>1. Extract One Chapter From an Ebook</h3>
+<p>
+  You have a 500-page ebook but only need chapters 3 and 4. Load the PDF, click those pages, extract. Done.
+</p>
+
+<h3>2. Share Only Relevant Pages of a Report</h3>
+<p>
+  A 50-page financial report was sent to you, but your manager only needs the summary (page 2) and the results section (pages 15-18). Extract just those pages to share instead of the whole document.
+</p>
+
+<h3>3. Separate Combined Invoices</h3>
+<p>
+  Your accounting system exported all invoices from June into one 30-page PDF. Extract each invoice individually by clicking its pages, then save separately for filing.
+</p>
+
+<h3>4. Remove Pages You Don't Need</h3>
+<p>
+  You scanned a document but the first page (blank cover sheet) and last page (blank back) aren't needed. Click everything except those two and extract. Result: clean PDF without blank pages.
+</p>
+
+<h3>5. Reorder Pages While Extracting</h3>
+<p>
+  Select page 3, then page 1, then page 2. The extracted PDF will have pages in your chosen order (3, 1, 2) instead of the original order.
+</p>
+
+<h2>How to Extract All Pages (PDF Backup)</h2>
+
+<p>
+  If you just need to copy or back up a PDF without actually removing anything:
+</p>
+
+<ol>
+  <li>Upload the PDF.</li>
+  <li>Click <strong>Select All</strong>.</li>
+  <li>Click <strong>Extract Selected Pages</strong>.</li>
+  <li>You get an identical copy of the original PDF.</li>
+</ol>
+
+<h2>Extract PDF Pages vs Other Tools</h2>
+
+<table style="width:100%;border-collapse:collapse;margin:1rem 0;">
+  <tr style="border-bottom:1px solid #334155;">
+    <th style="text-align:left;padding:0.75rem;color:#e2e8f0;">Tool</th>
+    <th style="text-align:left;padding:0.75rem;color:#e2e8f0;">How It Works</th>
+    <th style="text-align:left;padding:0.75rem;color:#e2e8f0;">Best For</th>
+  </tr>
+  <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+    <td style="padding:0.75rem;color:#cbd5e1;">Extract PDF Pages (Visual)</td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Click page thumbnails</td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Seeing what you're extracting; complex selections</td>
+  </tr>
+  <tr style="border-bottom:1px solid #334155;">
+    <td style="padding:0.75rem;color:#cbd5e1;"><a href="/pdfwonder/pdf-splitter">PDF Splitter</a></td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Type page numbers</td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Simple ranges (e.g., "1-5"); fewer selections</td>
+  </tr>
+  <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+    <td style="padding:0.75rem;color:#cbd5e1;"><a href="/pdfwonder/pdf-remove-pages">PDF Page Remover</a></td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Type pages to DELETE</td>
+    <td style="padding:0.75rem;color:#cbd5e1;">Removing a few unwanted pages from a large PDF</td>
+  </tr>
+</table>
+
+<h2>Tips for Best Results</h2>
+
+<ul>
+  <li><strong>Zoom in on thumbnails:</strong> If page content is too small to read in the preview, use your browser zoom (Ctrl/Cmd + +) to enlarge thumbnails.</li>
+  <li><strong>Check first page:</strong> Make sure the first page is indeed a cover or content you want. Sometimes PDFs have hidden metadata pages.</li>
+  <li><strong>Extract a test:</strong> Before extracting many pages, try extracting 2–3 to verify it works as expected.</li>
+  <li><strong>Name your downloads:</strong> Your extracted PDF downloads as "extracted-pages.pdf" — rename it immediately if you're extracting multiple files to avoid confusion.</li>
+</ul>
+
+<h2>Troubleshooting</h2>
+
+<h3>Thumbnails Not Loading</h3>
+<p>
+  Large PDFs (100+ MB) may take a moment to render thumbnails. Wait 10–15 seconds. If thumbnails still don't appear, try a smaller PDF first to test.
+</p>
+
+<h3>Selected Pages Don't Appear in Order</h3>
+<p>
+  This is a display quirk. Click pages in the order you want them in the extracted PDF. The result will match your click sequence even if the page numbers are out of order.
+</p>
+
+<h3>Downloaded PDF Is Corrupted</h3>
+<p>
+  This is rare, but if it happens: try extracting fewer pages at once (e.g., 10 pages instead of 50), or try the <a href="/pdfwonder/pdf-splitter">PDF Splitter tool</a> instead, which uses a different extraction method.
+</p>
+
+<div class="faq-section">
+<h2>Frequently Asked Questions</h2>
+{faqs.map(f => (
+  <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group mb-2">
+    <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
+      <span class="text-white font-medium text-sm">{f.q}</span>
+      <svg class="w-4 h-4 text-slate-400 shrink-0 ml-2 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+    </summary>
+    <div class="px-5 pb-4"><p class="text-slate-400 text-sm leading-relaxed">{f.a}</p></div>
+  </details>
+))}
+</div>
+
+</BlogLayout>

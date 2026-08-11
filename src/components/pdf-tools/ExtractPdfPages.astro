@@ -75,7 +75,8 @@
   .ep-card { transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s; }
   .ep-card.selected { border-color: rgb(239 68 68) !important; box-shadow: 0 0 0 2px rgb(239 68 68 / 0.2); }
   .ep-card:not(.selected):hover { border-color: rgb(239 68 68 / 0.7); }
-  .ep-thumb-wrap { background: #fff; }
+  .ep-thumb-wrap { background: #fff; min-height: 180px; display: flex; align-items: center; justify-content: center; }
+  .ep-thumb-wrap img { width: 100%; height: auto; display: block; }
 </style>
 
 <script is:inline>

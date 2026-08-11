@@ -4,257 +4,279 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
-<div id="pdf-extract-container" class="space-y-6">
-  <!-- File Upload -->
-  <div class="border-2 border-dashed border-slate-600 rounded-2xl p-8 text-center hover:border-red-400 transition-colors cursor-pointer" onclick="document.getElementById('pdf-file-input').click()">
-    <div class="text-4xl mb-2">📄</div>
-    <p class="text-white font-semibold">Click to upload PDF or drag & drop</p>
-    <p class="text-slate-400 text-sm mt-1">Max file size: 100MB</p>
-    <input type="file" id="pdf-file-input" accept=".pdf" style="display:none;" />
+<div class="space-y-5">
+  <div id="ep-drop" class="border-2 border-dashed border-slate-700 hover:border-red-500/60 rounded-xl p-10 text-center cursor-pointer transition-colors">
+    <input type="file" id="ep-file" accept=".pdf" class="hidden" />
+    <div class="text-5xl mb-3">📄</div>
+    <p class="text-slate-200 font-semibold text-lg mb-1">Drop your PDF here</p>
+    <p class="text-slate-500 text-sm mb-4">or click to browse — page previews load automatically</p>
+    <span class="inline-block px-4 py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg text-sm font-medium transition-colors cursor-pointer">Choose PDF</span>
   </div>
 
-  <!-- Page Selection Area -->
-  <div id="page-selection-area" style="display:none;" class="space-y-4">
-    <div class="flex items-center justify-between">
-      <h3 class="text-white font-semibold">Select Pages to Extract</h3>
-      <button id="select-all-btn" class="px-3 py-1 bg-red-600 hover:bg-red-500 text-white text-sm rounded-lg transition-colors">
-        Select All
-      </button>
+  <!-- Loading progress -->
+  <div id="ep-loading" class="hidden">
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-6 text-center">
+      <div class="text-3xl mb-3">⏳</div>
+      <p class="text-slate-300 font-medium mb-1" id="ep-loading-msg">Generating page previews…</p>
+      <p class="text-slate-500 text-xs mb-4">Rendering each page so you can see exactly what's on it</p>
+      <div class="w-full bg-slate-800 rounded-full h-2 max-w-sm mx-auto">
+        <div id="ep-loading-bar" class="bg-red-500 h-2 rounded-full transition-all duration-200" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main panel -->
+  <div id="ep-panel" class="hidden space-y-4">
+    <!-- File info bar -->
+    <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+      <span class="text-red-400 text-2xl shrink-0">📄</span>
+      <div class="flex-1 min-w-0">
+        <p id="ep-name" class="text-slate-200 text-sm font-semibold truncate"></p>
+        <p id="ep-info" class="text-slate-500 text-xs mt-0.5"></p>
+      </div>
+      <button id="ep-change" class="text-xs text-slate-500 hover:text-slate-300 border border-slate-700 hover:border-slate-500 px-3 py-1.5 rounded-lg shrink-0 transition-colors">Change file</button>
     </div>
 
-    <!-- Thumbnails Grid -->
-    <div id="pages-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 max-h-96 overflow-y-auto p-2 bg-[var(--bg-base)] rounded-xl border border-slate-800"></div>
+    <!-- Quick selectors -->
+    <div class="flex flex-wrap gap-2 items-center">
+      <span class="text-xs text-slate-500 mr-1">Quick select:</span>
+      <button data-qsel="first" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-red-500/60 hover:bg-red-500/10 rounded-lg transition-colors">First page</button>
+      <button data-qsel="last" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-red-500/60 hover:bg-red-500/10 rounded-lg transition-colors">Last page</button>
+      <button data-qsel="odd" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-red-500/60 hover:bg-red-500/10 rounded-lg transition-colors">Odd pages</button>
+      <button data-qsel="even" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-400 hover:text-white hover:border-red-500/60 hover:bg-red-500/10 rounded-lg transition-colors">Even pages</button>
+      <button data-qsel="clear" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Clear all</button>
+      <button data-qsel="all" class="px-3 py-1.5 text-xs border border-slate-700 text-slate-500 hover:text-slate-300 rounded-lg transition-colors">Select all</button>
+    </div>
+
+    <!-- Instruction -->
+    <p class="text-xs text-slate-500">Click page thumbnails below to select them for extraction, then enter a filename and click <strong class="text-slate-400">Extract Selected Pages</strong>.</p>
+
+    <!-- Thumbnail grid -->
+    <div id="ep-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+    <!-- Live summary -->
+    <div id="ep-summary" class="text-xs text-slate-600 font-mono bg-[var(--bg-surface)] border border-slate-800/60 rounded-lg px-3 py-2 leading-relaxed"></div>
 
     <!-- Filename Input -->
     <div>
       <label class="block text-xs text-slate-400 mb-2">PDF Filename</label>
-      <input id="pdf-filename" type="text" placeholder="extracted-pages.pdf" value="extracted-pages.pdf"
+      <input id="ep-filename" type="text" placeholder="extracted-pages.pdf" value="extracted-pages.pdf"
         class="w-full bg-[var(--bg-surface-hover)] border border-slate-700 text-white rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-red-500" />
       <p class="text-xs text-slate-500 mt-1">.pdf extension will be added automatically if not included</p>
     </div>
 
-    <!-- Extract Button -->
-    <div class="flex gap-3">
-      <button id="extract-btn" class="flex-1 bg-red-600 hover:bg-red-500 text-white font-semibold py-3 px-4 rounded-lg transition-all active:scale-[0.98]">
-        Extract Selected Pages
-      </button>
-      <button id="clear-btn" class="px-4 py-3 bg-slate-700 hover:bg-slate-600 text-white rounded-lg transition-colors">
-        Clear
-      </button>
-    </div>
-
-    <!-- Progress Bar -->
-    <div id="progress-container" style="display:none;" class="space-y-2">
-      <div class="flex justify-between text-sm text-slate-400">
-        <span id="progress-text">Processing page 1 of 10...</span>
-        <span id="progress-percent">0%</span>
-      </div>
-      <div class="w-full bg-slate-700 rounded-full h-2 overflow-hidden">
-        <div id="progress-bar" class="bg-red-600 h-full transition-all" style="width: 0%;"></div>
-      </div>
-    </div>
+    <button id="ep-extract" class="w-full py-3 bg-red-600 hover:bg-red-500 text-white rounded-xl text-sm font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed" disabled>Extract Selected Pages</button>
   </div>
 
-  <!-- Status Messages -->
-  <div id="status-message" class="hidden"></div>
+  <div id="ep-status" class="hidden text-sm py-2"></div>
 </div>
 
-<script>
-  // Initialize PDF.js worker
-  if (typeof pdfjsLib !== 'undefined') {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-  }
+<style>
+  .ep-card { transition: transform 0.12s, box-shadow 0.12s, border-color 0.12s; }
+  .ep-card.selected { border-color: rgb(239 68 68) !important; box-shadow: 0 0 0 2px rgb(239 68 68 / 0.2); }
+  .ep-card:not(.selected):hover { border-color: rgb(239 68 68 / 0.7); }
+  .ep-thumb-wrap { background: #fff; }
+</style>
 
-  let pdfDoc = null;
-  let selectedPages = new Set();
+<script is:inline>
+(function() {
+  const PDFJS_CDN   = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  const PDFLIB_CDN  = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
 
-  // File input handling
-  document.getElementById('pdf-file-input').addEventListener('change', handleFileUpload);
-  document.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    document.querySelector('#pdf-extract-container > div').classList.add('border-red-400');
-  });
-  document.addEventListener('dragleave', (e) => {
-    if (e.target === document) {
-      document.querySelector('#pdf-extract-container > div').classList.remove('border-red-400');
-    }
-  });
-  document.addEventListener('drop', (e) => {
-    e.preventDefault();
-    document.querySelector('#pdf-extract-container > div').classList.remove('border-red-400');
-    if (e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      if (file.type === 'application/pdf') {
-        loadPdf(file);
-      }
-    }
-  });
+  const drop = document.getElementById('ep-drop');
+  const fileInput = document.getElementById('ep-file');
+  const panel = document.getElementById('ep-panel');
+  const loading = document.getElementById('ep-loading');
+  const loadingMsg = document.getElementById('ep-loading-msg');
+  const loadingBar = document.getElementById('ep-loading-bar');
+  const status = document.getElementById('ep-status');
+  const grid = document.getElementById('ep-grid');
+  const summary = document.getElementById('ep-summary');
+  const extractBtn = document.getElementById('ep-extract');
+  const filenameInput = document.getElementById('ep-filename');
 
-  async function handleFileUpload(e) {
-    const file = e.target.files[0];
-    if (file && file.type === 'application/pdf') {
-      loadPdf(file);
-    }
-  }
+  let currentFile = null, pageCount = 0, pdfBytes = null;
+  let pageStates = []; // true = selected for extraction
+  let thumbs = [];    // thumbnails data URLs
 
-  async function loadPdf(file) {
+  drop.addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-red-500/80'); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('border-red-500/80'));
+  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-red-500/80'); loadFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', () => { loadFile(fileInput.files[0]); fileInput.value = ''; });
+
+  async function loadFile(file) {
+    if (!file || (!file.type.includes('pdf') && !file.name.endsWith('.pdf'))) return;
+
+    drop.classList.add('hidden');
+    loading.classList.remove('hidden');
+    status.classList.add('hidden');
+    loadingBar.style.width = '0%';
+    loadingMsg.textContent = 'Reading PDF…';
+
     try {
-      const arrayBuffer = await file.arrayBuffer();
-      pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-      await displayPages(arrayBuffer);
-      document.getElementById('page-selection-area').style.display = 'block';
-      hideStatus();
-    } catch (error) {
-      showStatus('Error loading PDF: ' + error.message, 'error');
-    }
-  }
+      pdfBytes = await file.arrayBuffer();
+      currentFile = file;
 
-  async function displayPages(arrayBuffer) {
-    const grid = document.getElementById('pages-grid');
-    grid.innerHTML = '';
-    selectedPages.clear();
+      await loadScript(PDFJS_CDN);
+      const pdfjsLib = window['pdfjs-dist/build/pdf'];
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-    // Load PDF for rendering with PDF.js
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdfDoc = await pdfjsLib.getDocument({ data: pdfBytes.slice(0) }).promise;
+      pageCount = pdfDoc.numPages;
+      pageStates = new Array(pageCount).fill(false);
+      thumbs = [];
 
-    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-      const container = document.createElement('div');
-      container.className = 'relative cursor-pointer group';
+      // render thumbnails at scale 0.3
+      for (let i = 1; i <= pageCount; i++) {
+        loadingMsg.textContent = `Generating previews… ${i} / ${pageCount}`;
+        loadingBar.style.width = `${Math.round((i / pageCount) * 100)}%`;
 
-      // Create canvas for thumbnail
-      const canvas = document.createElement('canvas');
-      canvas.width = 120;
-      canvas.height = 160;
-      canvas.style.backgroundColor = '#fff';
-      canvas.style.borderRadius = '4px';
-
-      // Render page thumbnail
-      try {
-        const page = await pdf.getPage(i + 1);
-        const viewport = page.getViewport({ scale: 0.5 });
+        const page = await pdfDoc.getPage(i);
+        const viewport = page.getViewport({ scale: 0.3 });
+        const canvas = document.createElement('canvas');
+        canvas.width = Math.round(viewport.width);
+        canvas.height = Math.round(viewport.height);
         const ctx = canvas.getContext('2d');
-        await page.render({
-          canvasContext: ctx,
-          viewport: viewport
-        }).promise;
-      } catch (e) {
-        // Fallback if rendering fails
-        const ctx = canvas.getContext('2d');
-        ctx.fillStyle = '#f5f5f5';
-        ctx.fillRect(0, 0, 120, 160);
-        ctx.fillStyle = '#666';
-        ctx.font = '14px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(`Page ${i + 1}`, 60, 80);
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        thumbs.push(canvas.toDataURL('image/jpeg', 0.82));
       }
 
-      container.innerHTML = `
-        <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-transparent hover:border-red-500 transition-all" style="width:120px;height:160px;display:flex;align-items:center;justify-content:center;">
-        </div>
-        <input type="checkbox" class="absolute top-2 left-2 w-5 h-5 cursor-pointer page-checkbox" data-page="${i}" />
-        <p class="text-xs text-slate-400 mt-1 text-center">Page ${i + 1}</p>
-      `;
-
-      container.querySelector('div').appendChild(canvas);
-
-      const checkbox = container.querySelector('.page-checkbox');
-      checkbox.addEventListener('change', () => {
-        if (checkbox.checked) {
-          selectedPages.add(i);
-          container.querySelector('div').classList.add('border-red-500', 'bg-red-500/10');
-        } else {
-          selectedPages.delete(i);
-          container.querySelector('div').classList.remove('border-red-500', 'bg-red-500/10');
-        }
-      });
-
-      container.addEventListener('click', (e) => {
-        if (e.target !== checkbox) {
-          checkbox.checked = !checkbox.checked;
-          checkbox.dispatchEvent(new Event('change'));
-        }
-      });
-
-      grid.appendChild(container);
+      document.getElementById('ep-name').textContent = file.name;
+      document.getElementById('ep-info').textContent = `${pageCount} pages · ${(file.size / 1024).toFixed(0)} KB`;
+      loading.classList.add('hidden');
+      panel.classList.remove('hidden');
+      renderGrid();
+    } catch(e) {
+      loading.classList.add('hidden');
+      drop.classList.remove('hidden');
+      showStatus('Could not read PDF: ' + e.message, 'error');
     }
   }
 
-  document.getElementById('select-all-btn').addEventListener('click', () => {
-    const checkboxes = document.querySelectorAll('.page-checkbox');
-    const allSelected = selectedPages.size === pdfDoc.getPageCount();
+  function renderGrid() {
+    grid.innerHTML = pageStates.map((selected, i) => {
+      const thumb = thumbs[i] || '';
+      return `
+        <button class="ep-card group relative cursor-pointer select-none rounded-2xl border-2 ${selected ? 'border-red-600' : 'border-slate-700/60'} hover:border-red-400/70 bg-[var(--bg-surface)] overflow-hidden"
+                data-page="${i}">
+          <!-- thumbnail -->
+          <div class="ep-thumb-wrap w-full flex items-center justify-center overflow-hidden">
+            ${thumb
+              ? `<img src="${thumb}" class="w-full h-auto block" alt="Page ${i + 1}" draggable="false" />`
+              : `<div class="w-full flex items-center justify-center py-12 text-slate-500 text-xs">Page ${i + 1}</div>`
+            }
+          </div>
+          <!-- label row -->
+          <div class="flex items-center justify-between px-3 py-2 border-t ${selected ? 'border-red-600 bg-red-900/20' : 'border-slate-800'}">
+            <span class="text-sm font-semibold ${selected ? 'text-red-300' : 'text-slate-300'}">Page ${i + 1}</span>
+            <span class="text-xs ${selected ? 'text-red-400 bg-red-600 text-white px-2 py-1 rounded-full font-medium' : 'text-slate-500'}">
+              ${selected ? '✓ Extract' : ''}
+            </span>
+          </div>
+        </button>`;
+    }).join('');
 
-    checkboxes.forEach((cb, i) => {
-      cb.checked = !allSelected;
-      cb.dispatchEvent(new Event('change'));
+    grid.querySelectorAll('.ep-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const idx = +card.dataset.page;
+        pageStates[idx] = !pageStates[idx];
+        card.classList.toggle('selected', pageStates[idx]);
+        renderGrid(); // re-render to update visual
+        updateSummary();
+      });
     });
-  });
+    updateSummary();
+  }
 
-  document.getElementById('extract-btn').addEventListener('click', extractPages);
-  document.getElementById('clear-btn').addEventListener('click', () => {
-    document.getElementById('pdf-file-input').value = '';
-    document.getElementById('page-selection-area').style.display = 'none';
-    selectedPages.clear();
-    pdfDoc = null;
-  });
-
-  async function extractPages() {
-    if (selectedPages.size === 0) {
-      showStatus('Please select at least one page', 'error');
-      return;
+  function updateSummary() {
+    const selected = pageStates.filter(Boolean).length;
+    if (selected === 0) {
+      summary.textContent = 'No pages selected — click page thumbnails above to mark them for extraction.';
+      extractBtn.disabled = true;
+    } else {
+      summary.textContent = `${selected} page${selected!==1?'s':''} selected for extraction`;
+      extractBtn.disabled = false;
     }
+  }
 
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-qsel]');
+    if (!btn || !pageCount) return;
+    const action = btn.dataset.qsel;
+    if (action === 'first') { pageStates.fill(false); pageStates[0] = true; }
+    else if (action === 'last') { pageStates.fill(false); pageStates[pageCount-1] = true; }
+    else if (action === 'odd') pageStates = pageStates.map((_, i) => (i+1) % 2 !== 0);
+    else if (action === 'even') pageStates = pageStates.map((_, i) => (i+1) % 2 === 0);
+    else if (action === 'all') pageStates.fill(true);
+    else pageStates.fill(false);
+    renderGrid();
+  });
+
+  extractBtn.addEventListener('click', async () => {
+    const selectedIndices = pageStates.map((s,i) => s ? i : -1).filter(i => i >= 0);
+    const selectedCount = pageStates.filter(Boolean).length;
+    if (!selectedCount) return;
+
+    showStatus('Extracting pages…', 'info');
     try {
-      showProgress(true);
-      const newPdf = await PDFLib.PDFDocument.create();
-      const sortedPages = Array.from(selectedPages).sort((a, b) => a - b);
-
-      for (let i = 0; i < sortedPages.length; i++) {
-        const pageIndex = sortedPages[i];
-        const [copiedPage] = await newPdf.copyPages(pdfDoc, [pageIndex]);
-        newPdf.addPage(copiedPage);
-
-        const progress = ((i + 1) / sortedPages.length) * 100;
-        document.getElementById('progress-bar').style.width = progress + '%';
-        document.getElementById('progress-text').textContent = `Processing page ${i + 1} of ${sortedPages.length}...`;
-        document.getElementById('progress-percent').textContent = Math.round(progress) + '%';
-      }
-
-      const pdfBytes = await newPdf.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
+      await loadScript(PDFLIB_CDN);
+      const { PDFDocument } = window.PDFLib;
+      const src = await PDFDocument.load(pdfBytes, { ignoreEncryption: true });
+      const out = await PDFDocument.create();
+      const copied = await out.copyPages(src, selectedIndices);
+      copied.forEach(p => out.addPage(p));
+      const bytes = await out.save();
 
       // Get custom filename and ensure .pdf extension
-      let filename = document.getElementById('pdf-filename').value.trim() || 'extracted-pages.pdf';
+      let filename = filenameInput.value.trim() || 'extracted-pages.pdf';
       if (!filename.toLowerCase().endsWith('.pdf')) {
         filename += '.pdf';
       }
-      link.download = filename;
-      link.click();
-      URL.revokeObjectURL(url);
+      downloadBytes(bytes, filename);
+      showStatus(`✅ Downloaded "${filename}" with ${selectedCount} page${selectedCount!==1?'s':''}. Check your Downloads folder.`, 'success');
+      pageStates.fill(false);
+      renderGrid();
+    } catch(e) { showStatus('Error: ' + e.message, 'error'); }
+  });
 
-      showStatus(`✓ Downloaded "${filename}" with ${sortedPages.length} page(s). Check your Downloads folder.`, 'success');
-      showProgress(false);
-    } catch (error) {
-      showStatus('Error extracting pages: ' + error.message, 'error');
-      showProgress(false);
-    }
+  document.getElementById('ep-change').addEventListener('click', () => {
+    currentFile = null; pageCount = 0; pdfBytes = null; pageStates = []; thumbs = [];
+    panel.classList.add('hidden');
+    drop.classList.remove('hidden');
+    status.classList.add('hidden');
+    loading.classList.add('hidden');
+    grid.innerHTML = '';
+  });
+
+  function showStatus(msg, type) {
+    status.textContent = msg;
+    status.className = 'text-sm py-2 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.classList.remove('hidden');
   }
 
-  function showProgress(show) {
-    document.getElementById('progress-container').style.display = show ? 'block' : 'none';
+  function downloadBytes(bytes, name) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
   }
 
-  function showStatus(message, type) {
-    const statusEl = document.getElementById('status-message');
-    statusEl.textContent = message;
-    statusEl.className = type === 'error' ? 'p-4 bg-red-900/30 border border-red-700 rounded-lg text-red-400 hidden' : 'p-4 bg-green-900/30 border border-green-700 rounded-lg text-green-400';
-    statusEl.classList.remove('hidden');
-    setTimeout(() => statusEl.classList.add('hidden'), 5000);
+  function loadScript(src) {
+    return new Promise((resolve, reject) => {
+      if (window.PDFLib && src.includes('pdf-lib')) resolve();
+      else if (window['pdfjs-dist/build/pdf'] && src.includes('pdf.min')) resolve();
+      else {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      }
+    });
   }
-
-  function hideStatus() {
-    document.getElementById('status-message').classList.add('hidden');
-  }
+})();
 </script>

@@ -234,7 +234,7 @@
       link.click();
       URL.revokeObjectURL(url);
 
-      showStatus(`✓ Successfully extracted ${sortedPages.length} page(s)`, 'success');
+      showStatus(`✓ Downloaded "${filename}" with ${sortedPages.length} page(s). Check your Downloads folder.`, 'success');
       showProgress(false);
     } catch (error) {
       showStatus('Error extracting pages: ' + error.message, 'error');

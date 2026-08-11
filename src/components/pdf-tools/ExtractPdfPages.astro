@@ -1,6 +1,9 @@
 ---
 ---
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
 <div id="pdf-extract-container" class="space-y-6">
   <!-- File Upload -->
   <div class="border-2 border-dashed border-slate-600 rounded-2xl p-8 text-center hover:border-red-400 transition-colors cursor-pointer" onclick="document.getElementById('pdf-file-input').click()">
@@ -49,6 +52,11 @@
 </div>
 
 <script>
+  // Initialize PDF.js worker
+  if (typeof pdfjsLib !== 'undefined') {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  }
+
   let pdfDoc = null;
   let selectedPages = new Set();
 
@@ -85,7 +93,7 @@
     try {
       const arrayBuffer = await file.arrayBuffer();
       pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-      displayPages();
+      await displayPages(arrayBuffer);
       document.getElementById('page-selection-area').style.display = 'block';
       hideStatus();
     } catch (error) {
@@ -93,28 +101,53 @@
     }
   }
 
-  function displayPages() {
+  async function displayPages(arrayBuffer) {
     const grid = document.getElementById('pages-grid');
     grid.innerHTML = '';
     selectedPages.clear();
 
-    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
-      const page = pdfDoc.getPage(i);
-      const { width, height } = page.getSize();
+    // Load PDF for rendering with PDF.js
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
+    for (let i = 0; i < pdfDoc.getPageCount(); i++) {
       const container = document.createElement('div');
       container.className = 'relative cursor-pointer group';
+
+      // Create canvas for thumbnail
+      const canvas = document.createElement('canvas');
+      canvas.width = 120;
+      canvas.height = 160;
+      canvas.style.backgroundColor = '#fff';
+      canvas.style.borderRadius = '4px';
+
+      // Render page thumbnail
+      try {
+        const page = await pdf.getPage(i + 1);
+        const viewport = page.getViewport({ scale: 0.5 });
+        const ctx = canvas.getContext('2d');
+        await page.render({
+          canvasContext: ctx,
+          viewport: viewport
+        }).promise;
+      } catch (e) {
+        // Fallback if rendering fails
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f5f5f5';
+        ctx.fillRect(0, 0, 120, 160);
+        ctx.fillStyle = '#666';
+        ctx.font = '14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Page ${i + 1}`, 60, 80);
+      }
+
       container.innerHTML = `
-        <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-transparent hover:border-red-500 transition-all">
-          <div style="width:120px;height:160px;background:#fff;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-            <div style="background:#f5f5f5;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:14px;color:#666;">
-              Page ${i + 1}
-            </div>
-          </div>
-          <input type="checkbox" class="absolute top-2 left-2 w-5 h-5 cursor-pointer page-checkbox" data-page="${i}" />
+        <div class="bg-slate-800 rounded-lg overflow-hidden border-2 border-transparent hover:border-red-500 transition-all" style="width:120px;height:160px;display:flex;align-items:center;justify-content:center;">
         </div>
+        <input type="checkbox" class="absolute top-2 left-2 w-5 h-5 cursor-pointer page-checkbox" data-page="${i}" />
         <p class="text-xs text-slate-400 mt-1 text-center">Page ${i + 1}</p>
       `;
+
+      container.querySelector('div').appendChild(canvas);
 
       const checkbox = container.querySelector('.page-checkbox');
       checkbox.addEventListener('change', () => {

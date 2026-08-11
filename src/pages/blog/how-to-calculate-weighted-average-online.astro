@@ -1,0 +1,184 @@
+---
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const faqs = [
+  { q: 'What is the weighted average formula?', a: 'Weighted Average = (Sum of Value × Weight) ÷ Sum of Weights. For example: (100×100 + 120×50) ÷ (100+50) = ₹106.67' },
+  { q: 'How do I calculate weighted average for stocks?', a: 'Enter each purchase price as the "Value" and the number of shares as the "Weight". The result is your average cost per share. Example: 100 shares at ₹50 + 200 shares at ₹60 = weighted average ₹56.67 per share.' },
+  { q: 'How is weighted average used for grades?', a: 'Assign each exam/assignment its score as "Value" and its credit hours or weight as "Weight". For example: midterm (85, weight 30) + quiz (78, weight 20) + final (92, weight 50) = weighted average 85.6.' },
+  { q: 'What is the difference between weighted and simple average?', a: 'Simple average treats all values equally. Weighted average lets each value have different importance. If you bought 100 shares at ₹100 and 1 share at ₹500, simple average = ₹300 but weighted average = ₹100.99.' },
+  { q: 'Can I use this for payroll calculations?', a: 'Yes. If you have different employee salaries across departments, enter salary as Value and number of employees as Weight to find the weighted average salary.' },
+  { q: 'Can I calculate weighted average in Excel?', a: 'Yes, use the formula =SUMPRODUCT(values, weights)/SUM(weights). The online calculator provides instant results without needing Excel.' },
+  { q: 'What if all weights are the same?', a: 'If all weights are identical, the weighted average equals the simple average.' },
+];
+---
+
+<BlogLayout
+  title="How to Calculate Weighted Average — Stocks, Grades, Payroll & More"
+  description="Calculate weighted average for stocks, grades, payroll, and inventory cost. Learn the formula and see real examples. Use our free online weighted average calculator."
+  canonical="/blog/how-to-calculate-weighted-average-online"
+  date="2026-08-12"
+  readTime="5 min read"
+  category="Calculators"
+  faqs={faqs}
+>
+  <p>A weighted average is an average where some values matter more than others. It's used across finance, education, and business to make accurate calculations when data points have different importance levels.</p>
+
+  <h2>What is a Weighted Average?</h2>
+  <p>Unlike a simple average (which gives equal weight to all numbers), a weighted average lets each value have a different importance level. The formula is:</p>
+  <p style="text-align: center; font-weight: 600; margin: 1.5em 0;">Weighted Average = (Sum of Value × Weight) ÷ Sum of Weights</p>
+
+  <h3>Quick Example: Stock Purchase Cost</h3>
+  <p>You bought 100 shares at ₹100 and then 50 shares at ₹120.</p>
+  <ul>
+    <li>Value 1 = ₹100, Weight 1 = 100 shares</li>
+    <li>Value 2 = ₹120, Weight 2 = 50 shares</li>
+    <li>Weighted Average = (100×100 + 120×50) ÷ (100+50) = ₹106.67 per share</li>
+  </ul>
+  <p>Your simple average would be (100 + 120) ÷ 2 = ₹110, but the weighted average (₹106.67) is more accurate because you own more shares at the lower price.</p>
+
+  <h2>How to Calculate Weighted Average for Stocks</h2>
+  <ol>
+    <li>Go to <a href="https://textwonder.com/calc/weighted-average-calculator">textwonder.com/calc/weighted-average-calculator</a></li>
+    <li>Click the <strong>"📈 Stocks (Avg Cost)"</strong> preset to load an example.</li>
+    <li>Replace the example values with your own:
+      <ul>
+        <li><strong>Value</strong> = Purchase price per share</li>
+        <li><strong>Weight</strong> = Number of shares purchased at that price</li>
+      </ul>
+    </li>
+    <li>Click <strong>+ Add Row</strong> for each separate purchase.</li>
+    <li>The <strong>Weighted Average</strong> shows your average cost per share instantly.</li>
+  </ol>
+
+  <h3>Real-World Example</h3>
+  <ul>
+    <li>January: Bought 50 shares at ₹200</li>
+    <li>March: Bought 100 shares at ₹180</li>
+    <li>June: Bought 50 shares at ₹220</li>
+  </ul>
+  <p>Weighted Average = (200×50 + 180×100 + 220×50) ÷ (50+100+50) = <strong>₹193.33 per share</strong></p>
+
+  <h2>How to Calculate Weighted Average for Grades (GPA)</h2>
+  <ol>
+    <li>Go to the <a href="https://textwonder.com/calc/weighted-average-calculator">weighted average calculator</a></li>
+    <li>Click the <strong>"📚 Grades (GPA)"</strong> preset.</li>
+    <li>Update each row with:
+      <ul>
+        <li><strong>Value</strong> = Your score/grade (as a percentage or GPA point)</li>
+        <li><strong>Weight</strong> = Credit hours or course weight</li>
+      </ul>
+    </li>
+    <li>The result is your weighted GPA.</li>
+  </ol>
+
+  <h3>Example: Calculating Weighted GPA</h3>
+  <ul>
+    <li>Calculus: Score 85, Credit Hours 3</li>
+    <li>English: Score 92, Credit Hours 2</li>
+    <li>Physics: Score 78, Credit Hours 4</li>
+  </ul>
+  <p>Weighted GPA = (85×3 + 92×2 + 78×4) ÷ (3+2+4) = <strong>82.78</strong></p>
+
+  <h2>How to Calculate Weighted Average for Payroll</h2>
+  <p>HR teams use weighted averages to find the average salary across departments with different team sizes:</p>
+  <ol>
+    <li>Open the <a href="https://textwonder.com/calc/weighted-average-calculator">calculator</a> and click <strong>"💼 Payroll"</strong> preset.</li>
+    <li>For each entry:
+      <ul>
+        <li><strong>Value</strong> = Average salary in that department</li>
+        <li><strong>Weight</strong> = Number of employees in that department</li>
+      </ul>
+    </li>
+    <li>The result is the organization's weighted average salary.</li>
+  </ol>
+
+  <h3>Example: Company-Wide Average Salary</h3>
+  <ul>
+    <li>Engineering: ₹75,000/month (20 employees)</li>
+    <li>Sales: ₹50,000/month (15 employees)</li>
+    <li>Support: ₹35,000/month (10 employees)</li>
+  </ul>
+  <p>Weighted Average = (75000×20 + 50000×15 + 35000×10) ÷ (20+15+10) = <strong>₹56,964</strong> per month</p>
+
+  <h2>How to Calculate Weighted Average for Inventory Cost</h2>
+  <p>Retail and manufacturing businesses use weighted average cost to value inventory:</p>
+  <ol>
+    <li>Click the <strong>"📦 Inventory Cost"</strong> preset.</li>
+    <li>For each batch purchased:
+      <ul>
+        <li><strong>Value</strong> = Cost per unit</li>
+        <li><strong>Weight</strong> = Number of units in that batch</li>
+      </ul>
+    </li>
+    <li>Your weighted average cost per unit appears instantly.</li>
+  </ol>
+
+  <h3>Example: Wholesale Inventory</h3>
+  <ul>
+    <li>Batch 1: ₹100 per unit × 50 units</li>
+    <li>Batch 2: ₹110 per unit × 30 units</li>
+    <li>Batch 3: ₹95 per unit × 20 units</li>
+  </ul>
+  <p>Weighted Average Cost = (100×50 + 110×30 + 95×20) ÷ (50+30+20) = <strong>₹103.75 per unit</strong></p>
+
+  <h2>Weighted Average for Financial Returns</h2>
+  <p>Investors use weighted averages to calculate portfolio performance or investment returns:</p>
+  <ul>
+    <li><strong>Value</strong> = Return percentage or yield</li>
+    <li><strong>Weight</strong> = Amount invested or number of shares</li>
+  </ul>
+  <p>This shows your true average return based on actual capital deployed, not equal-weighted average returns.</p>
+
+  <h2>When to Use Weighted Average</h2>
+  <ul>
+    <li><strong>Stock purchases:</strong> Find your true average cost per share across multiple buys at different prices.</li>
+    <li><strong>Academic performance:</strong> Calculate GPA when courses have different credit hours.</li>
+    <li><strong>Payroll analytics:</strong> Determine company-wide average salary across departments with different sizes.</li>
+    <li><strong>Inventory valuation:</strong> Calculate weighted average cost method (WACOM) for accurate inventory costs.</li>
+    <li><strong>Portfolio performance:</strong> Calculate true average returns based on capital deployed.</li>
+    <li><strong>Quality control:</strong> Measure average quality when batches have different quantities.</li>
+  </ul>
+
+  <h2>Weighted Average vs Simple Average</h2>
+  <table style="width:100%; border-collapse: collapse; margin: 1.5em 0;">
+    <tr style="border-bottom: 2px solid #374151;">
+      <th style="text-align: left; padding: 0.75em; background: #1f2937;">Aspect</th>
+      <th style="text-align: left; padding: 0.75em; background: #1f2937;">Simple Average</th>
+      <th style="text-align: left; padding: 0.75em; background: #1f2937;">Weighted Average</th>
+    </tr>
+    <tr style="border-bottom: 1px solid #374151;">
+      <td style="padding: 0.75em;">Formula</td>
+      <td style="padding: 0.75em;">Sum ÷ Count</td>
+      <td style="padding: 0.75em;">Sum of (Value × Weight) ÷ Sum of Weights</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #374151;">
+      <td style="padding: 0.75em;">Weight</td>
+      <td style="padding: 0.75em;">All values equal</td>
+      <td style="padding: 0.75em;">Each value can differ</td>
+    </tr>
+    <tr style="border-bottom: 1px solid #374151;">
+      <td style="padding: 0.75em;">Best for</td>
+      <td style="padding: 0.75em;">Uniform data</td>
+      <td style="padding: 0.75em;">Data with varying importance</td>
+    </tr>
+    <tr>
+      <td style="padding: 0.75em;">Example</td>
+      <td style="padding: 0.75em;">Average of 3 test scores</td>
+      <td style="padding: 0.75em;">Average cost of stocks bought at different quantities</td>
+    </tr>
+  </table>
+
+  <h2>Key Takeaways</h2>
+  <ul>
+    <li>Weighted average accounts for data points with different importance levels.</li>
+    <li>Use it for stock cost averaging, GPA calculations, payroll analysis, and inventory valuation.</li>
+    <li>Formula: (Sum of Value × Weight) ÷ Sum of Weights.</li>
+    <li>When weights are equal, weighted average equals simple average.</li>
+    <li>Our free calculator handles any number of values and weights instantly.</li>
+  </ul>
+
+  <div class="my-8 p-5 bg-emerald-950/30 border border-emerald-700/40 rounded-xl text-center">
+    <p class="text-white font-semibold mb-2">Calculate Weighted Average Free Online</p>
+    <a href="https://textwonder.com/calc/weighted-average-calculator" class="inline-block px-6 py-2.5 rounded-lg text-white font-semibold" style="background:#10b981">Open Weighted Average Calculator →</a>
+  </div>
+</BlogLayout>

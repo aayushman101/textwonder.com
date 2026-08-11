@@ -1,0 +1,179 @@
+---
+---
+
+<div>
+  <!-- Presets -->
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-2">Quick Examples:</label>
+    <div class="flex flex-wrap gap-2">
+      <button data-preset="stocks" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">📈 Stocks (Avg Cost)</button>
+      <button data-preset="grades" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">📚 Grades (GPA)</button>
+      <button data-preset="payroll" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">💼 Payroll</button>
+      <button data-preset="inventory" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">📦 Inventory Cost</button>
+    </div>
+  </div>
+
+  <!-- Input Rows -->
+  <div class="mb-4 space-y-2">
+    <div class="flex justify-between items-center mb-2">
+      <label class="block text-sm text-slate-400">Values & Weights:</label>
+      <button id="wac-add-row" class="text-xs px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg transition-colors">+ Add Row</button>
+    </div>
+    <div id="wac-rows" class="space-y-2">
+      <!-- Rows inserted here -->
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="wac-result" class="hidden bg-[var(--bg-base)] rounded-xl p-6 border border-slate-700">
+    <div class="grid grid-cols-3 gap-4 text-center">
+      <div>
+        <div class="text-sm text-slate-400 mb-1">Weighted Average</div>
+        <div id="wac-avg" class="text-2xl font-bold" style="color:#10b981"></div>
+      </div>
+      <div>
+        <div class="text-sm text-slate-400 mb-1">Total Weight</div>
+        <div id="wac-weight-sum" class="text-2xl font-bold text-slate-300"></div>
+      </div>
+      <div>
+        <div class="text-sm text-slate-400 mb-1">Sum of Weighted Values</div>
+        <div id="wac-weighted-sum" class="text-2xl font-bold text-slate-300"></div>
+      </div>
+    </div>
+    <button id="wac-copy" class="w-full mt-4 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-lg text-sm font-medium transition-colors">Copy Result</button>
+  </div>
+
+  <!-- Info -->
+  <div class="mt-6 p-4 bg-slate-800/40 rounded-lg border border-slate-700/50 text-sm text-slate-400">
+    <p class="font-medium mb-2 text-slate-300">How it works:</p>
+    <p>Weighted Average = (Sum of Value × Weight) ÷ Sum of Weights</p>
+    <p class="mt-2 text-xs">For example: if you bought stocks at ₹100 (100 shares) and ₹120 (50 shares), your average cost per share is (100×100 + 120×50) ÷ (100+50) = ₹106.67</p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  let rows = [];
+  let rowId = 0;
+
+  const presets = {
+    stocks: [
+      { value: 100, weight: 100, label: 'Cost 1' },
+      { value: 120, weight: 50, label: 'Cost 2' }
+    ],
+    grades: [
+      { value: 85, weight: 30, label: 'Midterm' },
+      { value: 78, weight: 20, label: 'Quiz' },
+      { value: 92, weight: 50, label: 'Final' }
+    ],
+    payroll: [
+      { value: 50000, weight: 4, label: 'Salary Q1' },
+      { value: 55000, weight: 4, label: 'Salary Q2' },
+      { value: 60000, weight: 4, label: 'Salary Q3' }
+    ],
+    inventory: [
+      { value: 100, weight: 50, label: 'Batch 1' },
+      { value: 110, weight: 30, label: 'Batch 2' },
+      { value: 95, weight: 20, label: 'Batch 3' }
+    ]
+  };
+
+  function createRow(value = '', weight = '', id = null) {
+    id = id !== null ? id : rowId++;
+    const row = { id, value, weight };
+    rows.push(row);
+
+    const html = `
+      <div class="flex gap-2 items-end" data-row-id="${id}">
+        <div class="flex-1">
+          <label class="block text-xs text-slate-500 mb-1">Value</label>
+          <input type="number" placeholder="e.g. 100" data-value class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" value="${value}" />
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs text-slate-500 mb-1">Weight</label>
+          <input type="number" placeholder="e.g. 50" data-weight class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" value="${weight}" />
+        </div>
+        <button data-remove-row class="px-3 py-2 bg-red-900/20 hover:bg-red-900/40 text-red-400 rounded-lg text-sm transition-colors shrink-0">✕</button>
+      </div>
+    `;
+
+    const rowsContainer = document.getElementById('wac-rows');
+    const div = document.createElement('div');
+    div.innerHTML = html;
+    rowsContainer.appendChild(div.firstElementChild);
+
+    attachRowListeners(id);
+  }
+
+  function attachRowListeners(id) {
+    const rowEl = document.querySelector(`[data-row-id="${id}"]`);
+    if (!rowEl) return;
+
+    rowEl.querySelector('[data-value]').addEventListener('input', (e) => {
+      const row = rows.find(r => r.id === id);
+      if (row) row.value = e.target.value;
+      calculate();
+    });
+
+    rowEl.querySelector('[data-weight]').addEventListener('input', (e) => {
+      const row = rows.find(r => r.id === id);
+      if (row) row.weight = e.target.value;
+      calculate();
+    });
+
+    rowEl.querySelector('[data-remove-row]').addEventListener('click', () => {
+      rows = rows.filter(r => r.id !== id);
+      rowEl.remove();
+      calculate();
+    });
+  }
+
+  function calculate() {
+    const validRows = rows.filter(r => r.value !== '' && r.weight !== '');
+    if (validRows.length === 0) {
+      document.getElementById('wac-result').classList.add('hidden');
+      return;
+    }
+
+    const weightedSum = validRows.reduce((sum, r) => sum + (parseFloat(r.value) * parseFloat(r.weight)), 0);
+    const weightSum = validRows.reduce((sum, r) => sum + parseFloat(r.weight), 0);
+    const avg = weightSum === 0 ? 0 : weightedSum / weightSum;
+
+    document.getElementById('wac-avg').textContent = avg.toFixed(4).replace(/\.?0+$/, '');
+    document.getElementById('wac-weight-sum').textContent = weightSum.toLocaleString(undefined, {maximumFractionDigits: 2});
+    document.getElementById('wac-weighted-sum').textContent = weightedSum.toLocaleString(undefined, {maximumFractionDigits: 2});
+    document.getElementById('wac-result').classList.remove('hidden');
+  }
+
+  function loadPreset(presetName) {
+    rows = [];
+    document.getElementById('wac-rows').innerHTML = '';
+    rowId = 0;
+    presets[presetName].forEach(p => createRow(p.value, p.weight));
+    calculate();
+  }
+
+  // Event listeners for presets
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => loadPreset(btn.dataset.preset));
+  });
+
+  // Add row button
+  document.getElementById('wac-add-row').addEventListener('click', () => createRow());
+
+  // Copy button
+  document.getElementById('wac-copy').addEventListener('click', () => {
+    const avg = document.getElementById('wac-avg').textContent;
+    navigator.clipboard.writeText(avg).then(() => {
+      const btn = document.getElementById('wac-copy');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  });
+
+  // Initialize with 2 empty rows
+  createRow();
+  createRow();
+})();
+</script>

@@ -199,6 +199,26 @@ export const CALC_TOOLS = [
     icon: '🏷️',
     iconBg: '#9f1239',
   },
+  {
+    slug: 'weighted-average-calculator',
+    name: 'Weighted Average Calculator',
+    tagline: 'Calculate weighted average for grades, stocks, payroll, inventory, and more.',
+    metaTitle: 'Weighted Average Calculator — Calculate Weighted Mean Online Free | CalcWonder',
+    metaDescription: 'Calculate weighted average for stocks, grades, payroll, inventory cost, and financial returns. Add custom values and weights — instant results. Free weighted average calculator.',
+    h1: 'Weighted Average Calculator',
+    descriptionLong: 'Calculate the weighted average of multiple values with different weights. Perfect for finding average stock purchase prices, GPA calculations, payroll averaging, inventory costs, and financial returns. Add as many value-weight pairs as needed and see instant results. Includes presets for common use cases.',
+    useCases: 'Finding average stock purchase price, calculating GPA from weighted courses, averaging employee payroll across departments, computing weighted inventory costs, calculating weighted returns on investments.',
+    howItWorks: 'Weighted Average = (Sum of Value × Weight) ÷ Sum of Weights. For example: stocks at ₹100 (100 shares) and ₹120 (50 shares) = (100×100 + 120×50) ÷ (100+50) = ₹106.67 average cost per share.',
+    faqs: [
+      { q: 'What is a weighted average?', a: 'A weighted average is an average where some values contribute more to the final result than others, based on their assigned weights. It\'s used when not all data points are equally important.' },
+      { q: 'How is it different from a simple average?', a: 'Simple average treats all values equally. Weighted average lets each value have a different importance (weight). If you bought 100 shares at ₹100 and 50 at ₹120, the weighted average (₹106.67) differs from simple average (₹110).' },
+      { q: 'Can I use this for grade calculations?', a: 'Yes. Assign each assignment/exam its grade as the value and credit hours/weight as the weight. It\'ll calculate your weighted GPA.' },
+      { q: 'What if all weights are the same?', a: 'If all weights are identical, the weighted average equals the simple average.' },
+    ],
+    relatedTools: ['percentage-calculator', 'emi-calculator', 'compound-interest-calculator'],
+    icon: '⚖️',
+    iconBg: '#7c3aed',
+  },
 ];
 
 export function getCalcToolBySlug(slug) {

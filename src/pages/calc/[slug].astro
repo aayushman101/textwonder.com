@@ -11,6 +11,7 @@ import DiscountCalculator from '../../components/calc-tools/DiscountCalculator.a
 import FdCalculator from '../../components/calc-tools/FdCalculator.astro';
 import PpfCalculator from '../../components/calc-tools/PpfCalculator.astro';
 import TipCalculator from '../../components/calc-tools/TipCalculator.astro';
+import WeightedAverageCalculator from '../../components/calc-tools/WeightedAverageCalculator.astro';
 import { CALC_TOOLS } from '../../data/calctools.js';
 
 export function getStaticPaths() {
@@ -33,6 +34,7 @@ const componentMap: Record<string, any> = {
   'fd-calculator': FdCalculator,
   'ppf-calculator': PpfCalculator,
   'tip-calculator': TipCalculator,
+  'weighted-average-calculator': WeightedAverageCalculator,
 };
 
 const ToolComponent = componentMap[tool.slug];

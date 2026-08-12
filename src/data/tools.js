@@ -4,7 +4,7 @@ export const SITE = {
   url: 'https://textwonder.com',
   tagline: 'Free Online Text Tools — Fast, Private, No Signup',
   description:
-    'TextWonder offers 100+ free online text tools. Remove emojis, count words, convert case, clean text, and more. No signup, no ads, works on all devices.',
+    'TextWonder offers 100+ free online text tools. Remove emojis, count words, convert case, clean text, and more. No signup required, works on all devices.',
   twitterHandle: '@textwonder',
 };
 

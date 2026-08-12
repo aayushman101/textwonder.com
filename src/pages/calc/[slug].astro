@@ -12,6 +12,9 @@ import FdCalculator from '../../components/calc-tools/FdCalculator.astro';
 import PpfCalculator from '../../components/calc-tools/PpfCalculator.astro';
 import TipCalculator from '../../components/calc-tools/TipCalculator.astro';
 import WeightedAverageCalculator from '../../components/calc-tools/WeightedAverageCalculator.astro';
+import CommissionCalculator from '../../components/calc-tools/CommissionCalculator.astro';
+import SalesTaxCalculator from '../../components/calc-tools/SalesTaxCalculator.astro';
+import RenovationCostCalculator from '../../components/calc-tools/RenovationCostCalculator.astro';
 import { CALC_TOOLS } from '../../data/calctools.js';
 
 export function getStaticPaths() {
@@ -35,6 +38,9 @@ const componentMap: Record<string, any> = {
   'ppf-calculator': PpfCalculator,
   'tip-calculator': TipCalculator,
   'weighted-average-calculator': WeightedAverageCalculator,
+  'commission-calculator': CommissionCalculator,
+  'sales-tax-calculator': SalesTaxCalculator,
+  'renovation-cost-calculator': RenovationCostCalculator,
 };
 
 const ToolComponent = componentMap[tool.slug];

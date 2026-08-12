@@ -1,0 +1,112 @@
+---
+---
+
+<div>
+  <!-- Presets -->
+  <div class="mb-4">
+    <label class="block text-sm text-slate-400 mb-2">Quick Examples:</label>
+    <div class="flex flex-wrap gap-2">
+      <button data-preset="realtor" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🏠 Real Estate</button>
+      <button data-preset="sales" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">💼 Sales Rep</button>
+      <button data-preset="affiliate" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🔗 Affiliate</button>
+      <button data-preset="freelance" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">👨‍💻 Freelance</button>
+    </div>
+  </div>
+
+  <!-- Main Input -->
+  <div class="space-y-3 mb-4">
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Sale/Transaction Amount (₹)</label>
+      <input type="number" id="cc-amount" placeholder="e.g. 100000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Commission Rate (%)</label>
+      <input type="number" id="cc-rate" placeholder="e.g. 5" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+    </div>
+
+    <div>
+      <label class="block text-sm text-slate-400 mb-1">Deductions (optional)</label>
+      <input type="number" id="cc-deductions" placeholder="e.g. 1000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+      <p class="text-xs text-slate-500 mt-1">Taxes, fees, or other deductions</p>
+    </div>
+  </div>
+
+  <!-- Result -->
+  <div id="cc-result" class="hidden bg-[var(--bg-base)] rounded-xl p-6 border border-slate-700">
+    <div class="grid grid-cols-2 gap-4 mb-4">
+      <div class="text-center">
+        <div class="text-sm text-slate-400 mb-1">Gross Commission</div>
+        <div id="cc-gross" class="text-2xl font-bold" style="color:#10b981"></div>
+      </div>
+      <div class="text-center">
+        <div class="text-sm text-slate-400 mb-1">After Deductions</div>
+        <div id="cc-net" class="text-2xl font-bold text-slate-300"></div>
+      </div>
+    </div>
+    <div class="text-center mb-3">
+      <div class="text-xs text-slate-500">Earnings from ₹<span id="cc-amount-display">0</span></div>
+    </div>
+    <button id="cc-copy" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors">Copy Commission Amount</button>
+  </div>
+
+  <!-- Info -->
+  <div class="mt-6 p-4 bg-emerald-950/40 rounded-lg border border-emerald-800/40 text-sm">
+    <p class="font-medium mb-2 text-emerald-200">How it works:</p>
+    <p class="text-emerald-100">Commission = (Sale Amount × Rate%) - Deductions</p>
+    <p class="mt-2 text-xs text-emerald-100/90">Example: Real estate sale of ₹50,00,000 at 5% commission = ₹2,50,000 gross. Minus ₹30,000 taxes = ₹2,20,000 net.</p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const presets = {
+    realtor: { amount: 5000000, rate: 5, label: 'Real Estate' },
+    sales: { amount: 500000, rate: 10, label: 'Sales Rep' },
+    affiliate: { amount: 100000, rate: 7.5, label: 'Affiliate' },
+    freelance: { amount: 50000, rate: 20, label: 'Freelance Project' }
+  };
+
+  function calculate() {
+    const amount = parseFloat(document.getElementById('cc-amount').value) || 0;
+    const rate = parseFloat(document.getElementById('cc-rate').value) || 0;
+    const deductions = parseFloat(document.getElementById('cc-deductions').value) || 0;
+
+    if (amount > 0 && rate > 0) {
+      const gross = (amount * rate) / 100;
+      const net = gross - deductions;
+
+      document.getElementById('cc-gross').textContent = '₹' + gross.toLocaleString(undefined, {maximumFractionDigits: 0});
+      document.getElementById('cc-net').textContent = '₹' + net.toLocaleString(undefined, {maximumFractionDigits: 0});
+      document.getElementById('cc-amount-display').textContent = amount.toLocaleString(undefined, {maximumFractionDigits: 0});
+      document.getElementById('cc-result').classList.remove('hidden');
+    } else {
+      document.getElementById('cc-result').classList.add('hidden');
+    }
+  }
+
+  ['cc-amount', 'cc-rate', 'cc-deductions'].forEach(id => {
+    document.getElementById(id).addEventListener('input', calculate);
+  });
+
+  document.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = presets[btn.dataset.preset];
+      document.getElementById('cc-amount').value = preset.amount;
+      document.getElementById('cc-rate').value = preset.rate;
+      document.getElementById('cc-deductions').value = '';
+      calculate();
+    });
+  });
+
+  document.getElementById('cc-copy').addEventListener('click', () => {
+    const gross = document.getElementById('cc-gross').textContent;
+    navigator.clipboard.writeText(gross).then(() => {
+      const btn = document.getElementById('cc-copy');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  });
+})();
+</script>

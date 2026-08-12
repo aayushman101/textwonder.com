@@ -1,0 +1,171 @@
+---
+---
+
+<div>
+  <!-- Tabs -->
+  <div class="flex gap-1 mb-4 p-1 bg-[var(--bg-base)] rounded-xl border border-slate-700">
+    <button id="st-tab1" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-white" style="background:#10b981" onclick="stTab(1)">Add Tax</button>
+    <button id="st-tab2" class="flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors text-slate-400 hover:text-white" onclick="stTab(2)">Remove Tax</button>
+  </div>
+
+  <!-- Tab 1: Add Tax -->
+  <div id="st-panel1">
+    <div class="mb-3">
+      <label class="block text-sm text-slate-400 mb-2">Quick Region Presets:</label>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <button data-region="india-18" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🇮🇳 India (18% GST)</button>
+        <button data-region="usa-ny" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🇺🇸 NY (8%)</button>
+        <button data-region="usa-ca" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🇺🇸 CA (7.25%)</button>
+        <button data-region="canada" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🇨🇦 Canada (5%)</button>
+        <button data-region="uk" class="px-3 py-1.5 text-xs bg-[var(--bg-base)] border border-slate-700 text-slate-300 hover:text-white hover:border-emerald-500 rounded-lg transition-colors">🇬🇧 UK (20%)</button>
+      </div>
+    </div>
+
+    <div class="space-y-3 mb-4">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Price (before tax)</label>
+        <input type="number" id="st-p1-price" placeholder="e.g. 1000" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Tax Rate (%)</label>
+        <input type="number" id="st-p1-rate" placeholder="e.g. 18" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+      </div>
+    </div>
+
+    <div id="st-r1" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700">
+      <div class="grid grid-cols-3 gap-2 text-center text-xs mb-3">
+        <div>
+          <div class="text-slate-400 mb-1">Tax Amount</div>
+          <div id="st-r1-tax" class="text-lg font-bold" style="color:#10b981"></div>
+        </div>
+        <div>
+          <div class="text-slate-400 mb-1">Subtotal</div>
+          <div id="st-r1-base" class="text-lg font-bold text-slate-300"></div>
+        </div>
+        <div>
+          <div class="text-slate-400 mb-1">Total</div>
+          <div id="st-r1-total" class="text-lg font-bold text-slate-300"></div>
+        </div>
+      </div>
+      <button id="st-copy1" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors">Copy Total</button>
+    </div>
+  </div>
+
+  <!-- Tab 2: Remove Tax -->
+  <div id="st-panel2" class="hidden">
+    <div class="space-y-3 mb-4">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Price (with tax included)</label>
+        <input type="number" id="st-p2-price" placeholder="e.g. 1180" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Tax Rate (%)</label>
+        <input type="number" id="st-p2-rate" placeholder="e.g. 18" step="0.1" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-emerald-500" />
+      </div>
+    </div>
+
+    <div id="st-r2" class="hidden bg-[var(--bg-base)] rounded-xl p-4 border border-slate-700">
+      <div class="grid grid-cols-3 gap-2 text-center text-xs mb-3">
+        <div>
+          <div class="text-slate-400 mb-1">Base Price</div>
+          <div id="st-r2-base" class="text-lg font-bold" style="color:#10b981"></div>
+        </div>
+        <div>
+          <div class="text-slate-400 mb-1">Tax Amount</div>
+          <div id="st-r2-tax" class="text-lg font-bold text-slate-300"></div>
+        </div>
+        <div>
+          <div class="text-slate-400 mb-1">Total</div>
+          <div id="st-r2-total" class="text-lg font-bold text-slate-300"></div>
+        </div>
+      </div>
+      <button id="st-copy2" class="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-medium transition-colors">Copy Base Price</button>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="mt-6 p-4 bg-emerald-950/40 rounded-lg border border-emerald-800/40 text-sm">
+    <p class="font-medium mb-2 text-emerald-200">How it works:</p>
+    <p class="text-emerald-100"><strong>Add Tax:</strong> Total = Price × (1 + Rate/100)</p>
+    <p class="text-emerald-100"><strong>Remove Tax:</strong> Base = Total ÷ (1 + Rate/100)</p>
+    <p class="mt-2 text-xs text-emerald-100/90">Add Tax: ₹1000 + 18% = ₹1180 | Remove Tax: ₹1180 - 18% = ₹1000</p>
+  </div>
+</div>
+
+<script is:inline>
+(function() {
+  const regions = {
+    'india-18': 18,
+    'usa-ny': 8,
+    'usa-ca': 7.25,
+    'canada': 5,
+    'uk': 20
+  };
+
+  window.stTab = function(n) {
+    [1,2].forEach(i => {
+      document.getElementById('st-panel'+i).classList.toggle('hidden', i!==n);
+      const tab = document.getElementById('st-tab'+i);
+      if(i===n){ tab.style.background='#10b981'; tab.classList.remove('text-slate-400'); tab.classList.add('text-white'); }
+      else { tab.style.background=''; tab.classList.add('text-slate-400'); tab.classList.remove('text-white'); }
+    });
+  };
+
+  // Tab 1: Add Tax
+  ['st-p1-price','st-p1-rate'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const price = parseFloat(document.getElementById('st-p1-price').value), rate = parseFloat(document.getElementById('st-p1-rate').value);
+    const r = document.getElementById('st-r1');
+    if(!isNaN(price) && !isNaN(rate) && price > 0 && rate > 0) {
+      const tax = price * rate / 100;
+      const total = price + tax;
+      document.getElementById('st-r1-base').textContent = '₹' + price.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById('st-r1-tax').textContent = '₹' + tax.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById('st-r1-total').textContent = '₹' + total.toLocaleString(undefined,{maximumFractionDigits:2});
+      r.classList.remove('hidden');
+    } else r.classList.add('hidden');
+  }));
+
+  // Tab 2: Remove Tax
+  ['st-p2-price','st-p2-rate'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+    const price = parseFloat(document.getElementById('st-p2-price').value), rate = parseFloat(document.getElementById('st-p2-rate').value);
+    const r = document.getElementById('st-r2');
+    if(!isNaN(price) && !isNaN(rate) && price > 0 && rate > 0) {
+      const base = price / (1 + rate/100);
+      const tax = price - base;
+      document.getElementById('st-r2-base').textContent = '₹' + base.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById('st-r2-tax').textContent = '₹' + tax.toLocaleString(undefined,{maximumFractionDigits:2});
+      document.getElementById('st-r2-total').textContent = '₹' + price.toLocaleString(undefined,{maximumFractionDigits:2});
+      r.classList.remove('hidden');
+    } else r.classList.add('hidden');
+  }));
+
+  // Region presets
+  document.querySelectorAll('[data-region]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rate = regions[btn.dataset.region];
+      document.getElementById('st-p1-rate').value = rate;
+      document.getElementById('st-p1-price').dispatchEvent(new Event('input'));
+    });
+  });
+
+  document.getElementById('st-copy1').addEventListener('click', () => {
+    const total = document.getElementById('st-r1-total').textContent;
+    navigator.clipboard.writeText(total).then(() => {
+      const btn = document.getElementById('st-copy1');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  });
+
+  document.getElementById('st-copy2').addEventListener('click', () => {
+    const base = document.getElementById('st-r2-base').textContent;
+    navigator.clipboard.writeText(base).then(() => {
+      const btn = document.getElementById('st-copy2');
+      const orig = btn.textContent;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => btn.textContent = orig, 2000);
+    });
+  });
+})();
+</script>

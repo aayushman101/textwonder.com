@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout
+  title="About TextWonder — Free Online Tools Platform"
+  description="Learn about TextWonder: a free platform with 230+ browser-based tools for text, PDF, images, development, calculators, and more. No signup, no ads, no tracking."
+  canonical="/about"
+>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">About TextWonder</h1>
+    <p class="text-slate-500 text-sm mb-8">What we're building and why</p>
+
+    <div class="space-y-8 text-slate-400 leading-relaxed">
+      <!-- What is TextWonder -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">What is TextWonder?</h2>
+        <p>
+          TextWonder is a free, browser-based tool suite with <strong class="text-white">230+ utilities</strong> across 11 categories:
+        </p>
+        <ul class="list-disc list-inside mt-3 space-y-1 text-slate-300">
+          <li><strong>Text Tools</strong> — Word counters, case converters, text cleaning, encoding/decoding</li>
+          <li><strong>PDF Tools</strong> — Merge, split, compress, convert, protect, unlock</li>
+          <li><strong>Image Tools</strong> — Resize, compress, crop, convert formats, add watermarks</li>
+          <li><strong>Developer Tools</strong> — JSON formatters, Base64 encoders, QR generators, password generators</li>
+          <li><strong>Calculators</strong> — Financial, weighted average, commission, sales tax, renovation budgets</li>
+          <li><strong>Unit Converters</strong> — Length, weight, temperature, digital storage, time, volume</li>
+          <li><strong>Health Tools</strong> — BMI calculator, calorie counter, pregnancy calculator</li>
+          <li><strong>Student Tools</strong> — GPA calculator, grade tracker, study timer</li>
+          <li><strong>Color Tools</strong> — Color picker, converter, palette generator, contrast checker</li>
+          <li><strong>Data Tools</strong> — JSON to CSV, XML converters, formatters</li>
+          <li><strong>Document Generators</strong> — Invoices, receipts, salary slips, letters</li>
+        </ul>
+      </section>
+
+      <!-- Why We Built It -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Why We Built TextWonder</h2>
+        <p>
+          I was frustrated jumping between 5-10 different websites for basic tasks:
+        </p>
+        <ul class="list-disc list-inside mt-3 space-y-1 text-slate-300">
+          <li>Merge a PDF on one site → Sign up</li>
+          <li>Convert JSON on another → Upload file</li>
+          <li>Count words on a third → Ads everywhere</li>
+          <li>Resize an image → File stored on their servers</li>
+        </ul>
+        <p class="mt-3">
+          There had to be a better way. So I built <strong class="text-white">one place where everything works</strong>:
+        </p>
+        <ul class="list-disc list-inside mt-3 space-y-2 text-slate-300">
+          <li><strong>No signup</strong> — Just use it</li>
+          <li><strong>No servers</strong> — Everything runs in your browser</li>
+          <li><strong>No ads</strong> — Clean, distraction-free</li>
+          <li><strong>No tracking</strong> — Your data never leaves your device</li>
+          <li><strong>100% free</strong> — Forever</li>
+        </ul>
+      </section>
+
+      <!-- Mission -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Our Mission</h2>
+        <p>
+          Make essential digital tools <strong class="text-white">free, private, and accessible to everyone</strong>. No paywalls. No sign-ups. No data mining. Just tools that work.
+        </p>
+        <p class="mt-3">
+          Whether you're a writer, developer, designer, student, or just someone who needs to process text or files — TextWonder should be your first stop.
+        </p>
+      </section>
+
+      <!-- Technology -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">How It Works</h2>
+        <p>
+          Every tool runs entirely in your browser using JavaScript. No file uploads to servers. No cloud processing. No tracking pixels. When you close the tab, your data is gone.
+        </p>
+        <p class="mt-3">
+          This means:
+        </p>
+        <ul class="list-disc list-inside mt-3 space-y-1 text-slate-300">
+          <li><strong>Faster</strong> — No network latency</li>
+          <li><strong>More private</strong> — Nothing leaves your computer</li>
+          <li><strong>Always free</strong> — No infrastructure costs to pass on</li>
+          <li><strong>Works offline</strong> — Most tools work without internet once loaded</li>
+        </ul>
+      </section>
+
+      <!-- Creator -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Who Built This?</h2>
+        <p>
+          Hello! I'm <strong class="text-white">Aayushman</strong>, a developer who got tired of jumping between tools. I built TextWonder to solve a problem I had every day.
+        </p>
+        <p class="mt-3">
+          Now it's grown into a platform used by people worldwide. If you find TextWonder helpful, please share it with someone who might benefit.
+        </p>
+      </section>
+
+      <!-- Connect -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Connect With Us</h2>
+        <p>
+          Have feedback? Found a bug? Want to suggest a tool? We'd love to hear from you.
+        </p>
+        <ul class="list-disc list-inside mt-3 space-y-2 text-slate-300">
+          <li><a href="mailto:hello@textwonder.com" class="text-violet-400 hover:text-violet-300">Email: hello@textwonder.com</a></li>
+          <li><a href="https://github.com/aayushman101/textwonder.com" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300">GitHub: github.com/aayushman101/textwonder.com</a></li>
+          <li><a href="/contact" class="text-violet-400 hover:text-violet-300">Contact Form</a></li>
+        </ul>
+      </section>
+
+      <!-- Values -->
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Our Values</h2>
+        <ul class="space-y-3">
+          <li>
+            <strong class="text-white">Privacy First</strong> — Your data is yours. We don't collect, store, or transmit it.
+          </li>
+          <li>
+            <strong class="text-white">Free Always</strong> — No premium tiers, no paywalls, no subscription tricks.
+          </li>
+          <li>
+            <strong class="text-white">Simple & Fast</strong> — Get in, use the tool, get out. No complicated setup.
+          </li>
+          <li>
+            <strong class="text-white">Open & Transparent</strong> — Code is on GitHub. No hidden agenda.
+          </li>
+        </ul>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

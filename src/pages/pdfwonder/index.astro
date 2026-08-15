@@ -9,7 +9,7 @@ import ToolSearchBar from '../../components/ToolSearchBar.astro';
 <BaseLayout
   title="Free Online PDF Tools — Merge, Split, Convert & More | PDFWonder"
   description="PDFWonder offers 10 free browser-based PDF tools. Merge, split, rotate, compress, watermark and convert PDFs. No upload, no signup, 100% private."
-  canonical="/pdfwonder"
+  canonical="/pdfwonder/"
 >
   <PDFHeader />
 
@@ -41,7 +41,7 @@ import ToolSearchBar from '../../components/ToolSearchBar.astro';
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {PDF_TOOLS.map(tool => (
           <a
-            href={`/pdfwonder/${tool.slug}`}
+            href={`/pdfwonder/${tool.slug}/`}
             data-tool-card
             data-name={tool.name}
             data-tagline={tool.tagline}

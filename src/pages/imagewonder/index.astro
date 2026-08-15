@@ -11,7 +11,7 @@ import { DEV_TOOLS } from '../../data/devtools.js';
 <BaseLayout
   title="Free Image Tools Online — Resize, Compress, Convert & More | ImageWonder"
   description="ImageWonder offers 10 free browser-based image tools. Resize, compress, convert, crop, watermark, pick colors, view metadata — all in your browser. No upload, no signup."
-  canonical="/imagewonder"
+  canonical="/imagewonder/"
 >
   <ImageHeader />
 
@@ -45,7 +45,7 @@ import { DEV_TOOLS } from '../../data/devtools.js';
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {IMAGE_TOOLS.map(tool => (
           <a
-            href={`/imagewonder/${tool.slug}`}
+            href={`/imagewonder/${tool.slug}/`}
             data-tool-card
             data-name={tool.name}
             data-tagline={tool.tagline}
@@ -95,7 +95,7 @@ import { DEV_TOOLS } from '../../data/devtools.js';
           <p class="text-sm text-slate-400">Need dev tools?</p>
           <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">Dev<span class="text-cyan-400">Wonder</span> — {DEV_TOOLS.length} utilities</p>
         </div>
-        <a href="/devwonder" class="shrink-0 px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
+        <a href="/devwonder/" class="shrink-0 px-4 py-2 bg-cyan-700 hover:bg-cyan-600 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
       </div>
     </section>
   </main>

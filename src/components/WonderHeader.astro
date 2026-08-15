@@ -46,7 +46,7 @@ const toolsForSearch = getGlobalSearchIndex();
 
   <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
     <!-- Logo -->
-    <a href={brand.rootPath} class="flex items-center gap-2 group">
+    <a href={`${brand.rootPath}/`} class="flex items-center gap-2 group">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={`background:${brand.accentColor}`}>
         <slot name="icon">
           <span class="text-white font-bold text-xs">{brand.prefix[0]}</span>
@@ -59,7 +59,7 @@ const toolsForSearch = getGlobalSearchIndex();
 
     <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center gap-5">
-      <a href={brand.rootPath} class="text-slate-300 hover:text-white transition-colors text-sm font-medium">All Tools</a>
+      <a href={`${brand.rootPath}/`} class="text-slate-300 hover:text-white transition-colors text-sm font-medium">All Tools</a>
       <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
       
       <!-- Unified Categories Mega-Menu -->
@@ -93,7 +93,7 @@ const toolsForSearch = getGlobalSearchIndex();
           </div>
           <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs">
             <span class="text-slate-500 font-normal">Fast, private, and 100% browser-based tools</span>
-            <a href="/tools" class="flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium transition-colors">
+            <a href="/tools/" class="flex items-center gap-1 text-violet-400 hover:text-violet-300 font-medium transition-colors">
               View all tools ({toolsForSearch.length}) &rarr;
             </a>
           </div>

@@ -10,7 +10,7 @@ const popularTools = TOOLS.filter(t => t.searchVolume === 'very-high' || t.searc
 <BaseLayout
   title="Page Not Found — TextWonder"
   description="The page you're looking for doesn't exist. Browse our free text tools instead."
-  canonical="/404"
+  canonical="/404/"
 >
   <Header />
 
@@ -27,7 +27,7 @@ const popularTools = TOOLS.filter(t => t.searchVolume === 'very-high' || t.searc
       <a href="/" class="px-5 py-2.5 bg-violet-600 hover:bg-violet-500 text-white rounded-lg font-medium transition-colors text-sm">
         Go to Homepage
       </a>
-      <a href="/tools" class="px-5 py-2.5 bg-[var(--bg-surface)] hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-sm border border-slate-700">
+      <a href="/tools/" class="px-5 py-2.5 bg-[var(--bg-surface)] hover:bg-slate-700 text-white rounded-lg font-medium transition-colors text-sm border border-slate-700">
         Browse All Tools
       </a>
     </div>
@@ -38,7 +38,7 @@ const popularTools = TOOLS.filter(t => t.searchVolume === 'very-high' || t.searc
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
         {popularTools.map(tool => (
           <a
-            href={`/tools/${tool.slug}`}
+            href={`/tools/${tool.slug}/`}
             class="bg-[var(--bg-surface)]/60 hover:bg-[var(--bg-surface)] border border-slate-700/50 hover:border-violet-500/40 rounded-xl px-4 py-3 text-left transition-all group"
           >
             <p class="text-white text-sm font-medium group-hover:text-violet-400 transition-colors">{tool.name}</p>

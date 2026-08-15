@@ -11,7 +11,7 @@ import ToolSearchBar from '../../components/ToolSearchBar.astro';
 <BaseLayout
   title="Free Developer Tools Online — JSON, Regex, Hash, UUID & More | DevWonder"
   description="DevWonder offers 14 free browser-based developer tools. JSON formatter, JWT decoder, regex tester, hash generator, UUID, color converter and more. No signup needed."
-  canonical="/devwonder"
+  canonical="/devwonder/"
 >
   <DevHeader />
 
@@ -45,7 +45,7 @@ import ToolSearchBar from '../../components/ToolSearchBar.astro';
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {DEV_TOOLS.map(tool => (
           <a
-            href={`/devwonder/${tool.slug}`}
+            href={`/devwonder/${tool.slug}/`}
             data-tool-card
             data-name={tool.name}
             data-tagline={tool.tagline}
@@ -95,7 +95,7 @@ import ToolSearchBar from '../../components/ToolSearchBar.astro';
           <p class="text-sm text-slate-400">Need PDF tools?</p>
           <p class="text-white font-semibold" style="font-family:'Space Grotesk',sans-serif;">PDF<span class="text-orange-400">Wonder</span> — {PDF_TOOLS.length} tools</p>
         </div>
-        <a href="/pdfwonder" class="shrink-0 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
+        <a href="/pdfwonder/" class="shrink-0 px-4 py-2 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Visit →</a>
       </div>
     </section>
   </main>

@@ -17,13 +17,13 @@ const tools = getToolsByCategory(category.slug);
 <BaseLayout
   title={`${category.name} Tools — Free Online | TextWonder`}
   description={`${tools.length} free ${category.name.toLowerCase()} tools. ${category.description} No signup required.`}
-  canonical={`/categories/${category.slug}`}
+  canonical={`/categories/${category.slug}/`}
 >
   <Header />
 
   <main class="max-w-6xl mx-auto px-4 py-10">
     <Breadcrumb items={[
-      { label: 'Tools', href: '/tools' },
+      { label: 'Tools', href: '/tools/' },
       { label: category.name },
     ]} />
 
@@ -43,7 +43,7 @@ const tools = getToolsByCategory(category.slug);
     </div>
 
     <div class="mt-12 text-center">
-      <a href="/tools" class="inline-flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 hover:text-white font-medium px-5 py-2.5 rounded-xl transition-colors">
+      <a href="/tools/" class="inline-flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 hover:text-white font-medium px-5 py-2.5 rounded-xl transition-colors">
         View all categories
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />

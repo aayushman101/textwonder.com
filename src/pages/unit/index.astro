@@ -11,7 +11,7 @@ const brand = { name: 'UnitWonder', prefix: 'Unit', suffix: 'Wonder', rootPath: 
 <BaseLayout
   title="Free Unit Converter — Length, Weight, Temperature & More | UnitWonder"
   description="Convert any unit instantly. Length, weight, temperature, volume, speed, area, time and digital storage converters. Free, no signup."
-  canonical="/unit"
+  canonical="/unit/"
 >
   <WonderHeader brand={brand} tools={UNIT_TOOLS} />
 
@@ -43,7 +43,7 @@ const brand = { name: 'UnitWonder', prefix: 'Unit', suffix: 'Wonder', rootPath: 
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {UNIT_TOOLS.map(tool => (
           <a
-            href={`/unit/${tool.slug}`}
+            href={`/unit/${tool.slug}/`}
             data-tool-card
             data-name={tool.name}
             data-tagline={tool.tagline}
@@ -77,14 +77,14 @@ const brand = { name: 'UnitWonder', prefix: 'Unit', suffix: 'Wonder', rootPath: 
           </div>
           <span class="text-slate-500 text-sm">→</span>
         </a>
-        <a href="/pdfwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-xl p-4 hover:border-orange-500/50 transition-colors">
+        <a href="/pdfwonder/" class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-xl p-4 hover:border-orange-500/50 transition-colors">
           <div>
             <p class="text-xs text-slate-500 mb-0.5">PDF tools</p>
             <p class="text-white font-semibold text-sm">PDF<span class="text-orange-400">Wonder</span></p>
           </div>
           <span class="text-slate-500 text-sm">→</span>
         </a>
-        <a href="/devwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-sky-800/30 rounded-xl p-4 hover:border-sky-500/50 transition-colors">
+        <a href="/devwonder/" class="flex items-center justify-between bg-[var(--bg-surface)] border border-sky-800/30 rounded-xl p-4 hover:border-sky-500/50 transition-colors">
           <div>
             <p class="text-xs text-slate-500 mb-0.5">Dev tools</p>
             <p class="text-white font-semibold text-sm">Dev<span class="text-sky-400">Wonder</span></p>

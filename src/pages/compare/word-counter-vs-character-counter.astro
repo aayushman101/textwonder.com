@@ -19,8 +19,8 @@ const breadcrumbSchema = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://textwonder.com' },
-    { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://textwonder.com/compare' },
-    { '@type': 'ListItem', position: 3, name: 'Word Counter vs Character Counter', item: 'https://textwonder.com/compare/word-counter-vs-character-counter' },
+    { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://textwonder.com/compare/' },
+    { '@type': 'ListItem', position: 3, name: 'Word Counter vs Character Counter', item: 'https://textwonder.com/compare/word-counter-vs-character-counter/' },
   ],
 };
 ---
@@ -28,7 +28,7 @@ const breadcrumbSchema = {
 <BaseLayout
   title="Word Counter vs Character Counter: Which Should You Use?"
   description="Word counter vs character counter — understand the key differences, when each matters, and which tool to use for essays, social media, SEO, and SMS."
-  canonical="/compare/word-counter-vs-character-counter"
+  canonical="/compare/word-counter-vs-character-counter/"
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
@@ -42,7 +42,7 @@ const breadcrumbSchema = {
     <nav class="flex items-center gap-1 text-sm text-slate-500 mb-8">
       <a href="/" class="hover:text-violet-400 transition-colors">Home</a>
       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-      <a href="/compare" class="hover:text-violet-400 transition-colors">Compare</a>
+      <a href="/compare/" class="hover:text-violet-400 transition-colors">Compare</a>
       <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       <span class="text-slate-400">Word Counter vs Character Counter</span>
     </nav>
@@ -72,7 +72,7 @@ const breadcrumbSchema = {
           <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Does not help with social media limits</li>
           <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Not useful for SMS or form field limits</li>
         </ul>
-        <a href="/tools/word-counter" class="block text-center bg-violet-700 hover:bg-violet-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+        <a href="/tools/word-counter/" class="block text-center bg-violet-700 hover:bg-violet-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
           Use Word Counter →
         </a>
       </div>
@@ -94,7 +94,7 @@ const breadcrumbSchema = {
           <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Not useful for essay length requirements</li>
           <li class="flex items-start gap-2"><span class="text-red-400 mt-0.5">✗</span> Doesn't reflect reading time</li>
         </ul>
-        <a href="/tools/character-counter" class="block text-center bg-pink-700 hover:bg-pink-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
+        <a href="/tools/character-counter/" class="block text-center bg-pink-700 hover:bg-pink-600 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-colors">
           Use Character Counter →
         </a>
       </div>
@@ -142,7 +142,7 @@ const breadcrumbSchema = {
     <section class="mb-12">
       <h2 class="text-2xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">The Best Answer: Use Both Simultaneously</h2>
       <p class="text-slate-400 leading-relaxed mb-4">
-        The cleanest solution is a tool that shows both at the same time. TextWonder's <a href="/tools/word-counter" class="text-violet-400 hover:underline">Word Counter</a> displays word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading time all at once, updating in real time as you type.
+        The cleanest solution is a tool that shows both at the same time. TextWonder's <a href="/tools/word-counter/" class="text-violet-400 hover:underline">Word Counter</a> displays word count, character count (with and without spaces), sentence count, paragraph count, and estimated reading time all at once, updating in real time as you type.
       </p>
       <p class="text-slate-400 leading-relaxed">
         There's no reason to choose one over the other — a good text analysis tool gives you both.

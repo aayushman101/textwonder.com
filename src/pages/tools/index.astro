@@ -9,7 +9,7 @@ import { TOOLS, CATEGORIES, getToolsByCategory } from '../../data/tools.js';
 <BaseLayout
   title="All Free Text Tools — TextWonder"
   description="Browse all 61+ free online text tools on TextWonder. Word counters, case converters, text cleaners, readability analyzers, and more. No signup required."
-  canonical="/tools"
+  canonical="/tools/"
 >
   <Header />
 
@@ -48,7 +48,7 @@ import { TOOLS, CATEGORIES, getToolsByCategory } from '../../data/tools.js';
                 <h2 class="text-lg font-semibold text-white">{cat.name}</h2>
                 <p class="text-slate-400 text-sm">{cat.description}</p>
               </div>
-              <a href={`/categories/${cat.slug}`} class="ml-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
+              <a href={`/categories/${cat.slug}/`} class="ml-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
                 View category &rarr;
               </a>
             </div>

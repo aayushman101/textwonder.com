@@ -11,7 +11,7 @@ const brand = { name: 'ColorWonder', prefix: 'Color', suffix: 'Wonder', rootPath
 <BaseLayout
   title="Free Color Tools — HEX/RGB Converter, Contrast Checker & More | ColorWonder"
   description="Free color tools for designers: HEX/RGB/HSL converter, contrast checker, gradient generator, palette maker, shadow generator, color mixer and more. Free, no signup."
-  canonical="/color"
+  canonical="/color/"
 >
   <WonderHeader brand={brand} tools={COLOR_TOOLS} />
 
@@ -43,7 +43,7 @@ const brand = { name: 'ColorWonder', prefix: 'Color', suffix: 'Wonder', rootPath
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {COLOR_TOOLS.map(tool => (
           <a
-            href={`/color/${tool.slug}`}
+            href={`/color/${tool.slug}/`}
             data-tool-card
             data-name={tool.name}
             data-tagline={tool.tagline}
@@ -77,14 +77,14 @@ const brand = { name: 'ColorWonder', prefix: 'Color', suffix: 'Wonder', rootPath
           </div>
           <span class="text-slate-500 text-sm">→</span>
         </a>
-        <a href="/pdfwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-xl p-4 hover:border-orange-500/50 transition-colors">
+        <a href="/pdfwonder/" class="flex items-center justify-between bg-[var(--bg-surface)] border border-orange-800/30 rounded-xl p-4 hover:border-orange-500/50 transition-colors">
           <div>
             <p class="text-xs text-slate-500 mb-0.5">PDF tools</p>
             <p class="text-white font-semibold text-sm">PDF<span class="text-orange-400">Wonder</span></p>
           </div>
           <span class="text-slate-500 text-sm">→</span>
         </a>
-        <a href="/devwonder" class="flex items-center justify-between bg-[var(--bg-surface)] border border-sky-800/30 rounded-xl p-4 hover:border-sky-500/50 transition-colors">
+        <a href="/devwonder/" class="flex items-center justify-between bg-[var(--bg-surface)] border border-sky-800/30 rounded-xl p-4 hover:border-sky-500/50 transition-colors">
           <div>
             <p class="text-xs text-slate-500 mb-0.5">Dev tools</p>
             <p class="text-white font-semibold text-sm">Dev<span class="text-sky-400">Wonder</span></p>

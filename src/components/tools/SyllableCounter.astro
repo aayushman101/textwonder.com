@@ -1,11 +1,14 @@
 ---
 ---
 
-<div class="space-y-4">
+<div class="space-y-6">
+  <!-- Input Section -->
   <div>
     <label class="text-slate-300 text-sm font-medium mb-2 block">Input Text</label>
     <textarea id="sc-input" rows="6" placeholder="Paste text or type here — syllables will be counted per word..." class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm"></textarea>
   </div>
+
+  <!-- Metrics Grid -->
   <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
     <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
       <div id="sc-total" class="text-2xl font-bold text-violet-400">0</div>
@@ -21,10 +24,52 @@
     </div>
     <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 text-center">
       <div id="sc-poly" class="text-2xl font-bold text-slate-300">0</div>
-      <div class="text-xs text-slate-500 mt-1">Polysyllabic</div>
+      <div class="text-xs text-slate-500 mt-1">Polysyllabic (3+)</div>
     </div>
   </div>
-  <div id="sc-breakdown" class="space-y-1 max-h-60 overflow-y-auto"></div>
+
+  <!-- Poetry Validators -->
+  <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
+    <h3 class="text-slate-200 font-semibold text-sm mb-3">Poetry Format Detector</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
+        <div class="text-xs text-slate-500 mb-1">Haiku (5-7-5)</div>
+        <div id="sc-haiku" class="text-sm font-medium text-slate-400">–</div>
+      </div>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
+        <div class="text-xs text-slate-500 mb-1">Limerick (8-8-5-5-8)</div>
+        <div id="sc-limerick" class="text-sm font-medium text-slate-400">–</div>
+      </div>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
+        <div class="text-xs text-slate-500 mb-1">Sonnet (10 per line)</div>
+        <div id="sc-sonnet" class="text-sm font-medium text-slate-400">–</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex flex-wrap gap-2">
+    <button id="sc-copy" class="px-4 py-2 bg-violet-600 hover:bg-violet-700 text-white rounded-lg text-sm font-medium transition">📋 Copy Results</button>
+    <button id="sc-export-csv" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition">⬇️ CSV</button>
+    <button id="sc-export-json" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition">⬇️ JSON</button>
+    <button id="sc-clear" class="px-4 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg text-sm font-medium transition">🗑️ Clear</button>
+  </div>
+
+  <!-- Word Breakdown -->
+  <div id="sc-breakdown" class="space-y-2">
+    <p class="text-xs text-slate-500">Enter text to see word-by-word syllable breakdown</p>
+  </div>
+
+  <!-- How It Works -->
+  <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+    <h3 class="text-slate-200 font-semibold text-sm mb-2">📚 How Syllable Counting Works</h3>
+    <ul class="text-xs text-slate-400 space-y-1">
+      <li>• <strong>Vowel groups:</strong> Each vowel cluster = 1 syllable</li>
+      <li>• <strong>Silent e:</strong> Words ending in 'e' usually don't add a syllable</li>
+      <li>• <strong>Consonant + y:</strong> 'y' between consonants acts as a vowel</li>
+      <li>• <strong>Exception:</strong> Single-syllable words (3 letters or less) count as 1</li>
+    </ul>
+  </div>
 </div>
 
 <script>
@@ -38,28 +83,103 @@ function countSyllables(word) {
   return m ? m.length : 1;
 }
 
+function getSyllableColor(s) {
+  if (s === 1) return 'bg-blue-900/40 border-blue-700';
+  if (s === 2) return 'bg-purple-900/40 border-purple-700';
+  if (s >= 3) return 'bg-orange-900/40 border-orange-700';
+  return 'bg-slate-700/40 border-slate-600';
+}
+
+let currentBreakdown = [];
+
 function count() {
   const text = document.getElementById('sc-input').value;
+  const lines = text.split('\n').filter(l => l.trim());
   const words = text.match(/[a-zA-Z']+/g) || [];
   let total = 0, poly = 0;
-  const breakdown = words.map(w => {
+
+  currentBreakdown = words.map(w => {
     const s = countSyllables(w);
     total += s;
     if (s >= 3) poly++;
     return { w, s };
   });
+
   document.getElementById('sc-total').textContent = total;
   document.getElementById('sc-words').textContent = words.length;
   document.getElementById('sc-avg').textContent = words.length ? (total / words.length).toFixed(1) : '0.0';
   document.getElementById('sc-poly').textContent = poly;
+
+  // Poetry validators
+  const lineSyllables = lines.map(line => (line.match(/[a-zA-Z']+/g) || []).reduce((sum, w) => sum + countSyllables(w), 0));
+  const isHaiku = lineSyllables.length === 3 && lineSyllables[0] === 5 && lineSyllables[1] === 7 && lineSyllables[2] === 5;
+  const isLimerick = lineSyllables.length === 5 && lineSyllables[0] === 8 && lineSyllables[1] === 8 && lineSyllables[2] === 5 && lineSyllables[3] === 5 && lineSyllables[4] === 8;
+  const isSonnet = lineSyllables.length === 14 && lineSyllables.every(s => s === 10);
+
+  document.getElementById('sc-haiku').textContent = isHaiku ? '✅ Valid!' : '❌ Not a haiku';
+  document.getElementById('sc-limerick').textContent = isLimerick ? '✅ Valid!' : '❌ Not a limerick';
+  document.getElementById('sc-sonnet').textContent = isSonnet ? '✅ Valid!' : '❌ Not a sonnet';
+
+  // Breakdown display
   const bd = document.getElementById('sc-breakdown');
-  if (breakdown.length === 0) { bd.innerHTML = ''; return; }
-  bd.innerHTML = '<p class="text-xs text-slate-500 mb-2">Syllable count per word:</p>' +
-    '<div class="flex flex-wrap gap-1.5">' +
-    breakdown.map(({w,s}) =>
-      `<span class="bg-[var(--bg-surface)] border border-slate-700 rounded-lg px-2 py-0.5 text-xs text-slate-200">${w} <span class="text-violet-400">${s}</span></span>`
-    ).join('') + '</div>';
+  if (currentBreakdown.length === 0) {
+    bd.innerHTML = '<p class="text-xs text-slate-500">Enter text to see word-by-word breakdown</p>';
+    return;
+  }
+
+  bd.innerHTML = '<p class="text-xs text-slate-500 mb-2">Word-by-word syllable count:</p>' +
+    '<div class="flex flex-wrap gap-2">' +
+    currentBreakdown.map(({w,s}) => {
+      const color = getSyllableColor(s);
+      return `<div class="bg-[var(--bg-surface)] border ${color} rounded-lg px-3 py-1.5 text-sm">
+        <span class="text-slate-200">${w}</span>
+        <span class="text-violet-300 font-semibold ml-1">${s}</span>
+      </div>`;
+    }).join('') + '</div>';
 }
 
+// Event listeners
 document.getElementById('sc-input').addEventListener('input', count);
+
+document.getElementById('sc-copy').addEventListener('click', () => {
+  if (currentBreakdown.length === 0) return;
+  const text = currentBreakdown.map(({w,s}) => `${w}: ${s}`).join('\n');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('sc-copy');
+    const orig = btn.textContent;
+    btn.textContent = '✅ Copied!';
+    setTimeout(() => btn.textContent = orig, 2000);
+  });
+});
+
+document.getElementById('sc-export-csv').addEventListener('click', () => {
+  if (currentBreakdown.length === 0) return;
+  const csv = 'Word,Syllables\n' + currentBreakdown.map(({w,s}) => `${w},${s}`).join('\n');
+  const blob = new Blob([csv], {type: 'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'syllables.csv';
+  a.click();
+});
+
+document.getElementById('sc-export-json').addEventListener('click', () => {
+  if (currentBreakdown.length === 0) return;
+  const json = JSON.stringify({
+    total_syllables: currentBreakdown.reduce((sum, {s}) => sum + s, 0),
+    total_words: currentBreakdown.length,
+    words: currentBreakdown
+  }, null, 2);
+  const blob = new Blob([json], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'syllables.json';
+  a.click();
+});
+
+document.getElementById('sc-clear').addEventListener('click', () => {
+  document.getElementById('sc-input').value = '';
+  count();
+});
 </script>

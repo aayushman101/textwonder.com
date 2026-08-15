@@ -1,0 +1,257 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const post = {
+  title: 'How to Count Syllables: Complete Guide + Rules + Examples',
+  description: 'Master syllable counting with English rules, examples, and tips. Includes haiku validation, poetry meter, and pronunciation guide.',
+  publishedDate: new Date('2026-08-14'),
+  readTime: '8 min read',
+  category: 'Text Utilities',
+  author: 'TextWonder',
+};
+
+const faqs = [
+  {
+    q: 'What exactly is a syllable?',
+    a: 'A syllable is a unit of sound within a word that contains a vowel sound. For example, "cat" has 1 syllable, "rab-bit" has 2, and "el-e-phant" has 3. Each syllable is pronounced as one beat when you clap or tap your foot.',
+  },
+  {
+    q: 'How do I count syllables manually?',
+    a: 'Clap once for each vowel sound you hear in a word. Ignore consonants—they don\'t create syllables. For example: "DOG" (1 clap) = 1 syllable, "DOG-GY" (2 claps) = 2 syllables. Consecutive vowels typically count as 1 syllable: "boat" (1), "tree" (1), "beautiful" (3: beau-ti-ful).',
+  },
+  {
+    q: 'What is the silent-e rule?',
+    a: 'When a word ends in silent e, it usually doesn\'t add a syllable. Examples: "hope" (1), "bake" (1), "make" (1). Exceptions: "syllable" (3: syl-la-ble), "bicycle" (3: bi-cy-cle).',
+  },
+  {
+    q: 'Why do consecutive vowels count as 1 syllable?',
+    a: 'Consecutive vowels (vowel digraphs) typically create a single vowel sound. Examples: "rain" (1), "boat" (1), "good" (1), "beautiful" (3: beau-ti-ful, where "eau" = 1).',
+  },
+  {
+    q: 'How accurate is online syllable counting?',
+    a: 'Good syllable counters are 93-95% accurate on standard English. Unusual words, proper nouns, and regional pronunciations may vary. When in doubt, use the clapping method or check a pronunciation guide.',
+  },
+  {
+    q: 'Does Y act as a vowel or consonant?',
+    a: 'Y can be both! At the start of words, it\'s a consonant: "yes" (1). In the middle or end, it\'s often a vowel: "syl-la-ble" (3), "my" (1), "rhythm" (2: rhy-thm).',
+  },
+  {
+    q: 'How do I validate a haiku?',
+    a: 'Haiku follow 5-7-5 syllable structure (3 lines total). Line 1: 5 syllables, Line 2: 7 syllables, Line 3: 5 syllables. Example: "An old silent pond / A frog jumps into the pond / Splash! Silence again" (5-7-5).',
+  },
+  {
+    q: 'How many syllables are in a sonnet line?',
+    a: 'Sonnets typically use iambic pentameter = 10 syllables per line. This creates the meter and rhythm of Shakespearean sonnets. Example: "Shall I compare thee to a summer\'s day" (10 syllables).',
+  },
+  {
+    q: 'How do syllables affect readability?',
+    a: 'The Flesch-Kincaid Grade Level uses average syllables per word. More syllables = harder to read. Simple words (1-2 syllables) = easier reading. Complex words (3+ syllables) = harder reading. Professional writers watch syllable counts to maintain clarity.',
+  },
+  {
+    q: 'How do rappers use syllable counting?',
+    a: 'Rappers count syllables to ensure consistent flow and rhythm across bars (lines). Equal syllable counts per bar = better cadence and punch. Syllable patterns also control emphasis and rhyme placement in lyrics.',
+  },
+];
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.description}
+  canonical="/blog/how-to-count-syllables-complete-guide"
+>
+  <BlogLayout title={post.title} publishedDate={post.publishedDate} readTime={post.readTime} category={post.category}>
+    <div class="prose prose-invert max-w-none space-y-6 text-slate-300">
+      <!-- Introduction -->
+      <section>
+        <p class="text-lg leading-relaxed">
+          Syllables are the building blocks of pronunciation. Whether you're writing a haiku, analyzing text readability, or perfecting rap lyrics, understanding how to count syllables is essential. This guide covers syllable counting rules, examples, and practical applications.
+        </p>
+      </section>
+
+      <!-- What is a Syllable -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">What is a Syllable?</h2>
+        <p>
+          A syllable is a unit of sound that contains exactly one vowel sound. When you pronounce a word, each syllable is one "beat" or pulse of air you push out. Think of it like clapping—one clap = one syllable.
+        </p>
+        <ul class="list-disc list-inside space-y-2 mt-4">
+          <li><strong>1 syllable:</strong> cat, dog, sun, run, make</li>
+          <li><strong>2 syllables:</strong> rab-bit, sis-ter, wa-ter, ba-by</li>
+          <li><strong>3 syllables:</strong> el-e-phant, but-ter-fly, beau-ti-ful</li>
+          <li><strong>4+ syllables:</strong> com-plex-i-ty, ed-u-ca-tion-al</li>
+        </ul>
+      </section>
+
+      <!-- How to Count Syllables -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">How to Count Syllables: Step-by-Step</h2>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-4 mb-2">Method 1: The Clapping Method</h3>
+        <ol class="list-decimal list-inside space-y-2">
+          <li>Say the word out loud slowly</li>
+          <li>Clap once for each vowel sound you hear</li>
+          <li>Count your claps—that's your syllable count</li>
+        </ol>
+        <p class="mt-3 text-sm bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+          <strong>Example:</strong> Say "beautiful" (beau-ti-ful). Clap 3 times = 3 syllables
+        </p>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-2">Method 2: Vowel Counting</h3>
+        <ol class="list-decimal list-inside space-y-2">
+          <li>Identify all vowels in the word (A, E, I, O, U, Y)</li>
+          <li>Consecutive vowels = 1 syllable (vowel digraph)</li>
+          <li>Apply syllable rules (see below)</li>
+        </ol>
+        <p class="mt-3 text-sm bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+          <strong>Example:</strong> "beautiful" = b-**eau**-t-**i**-f-**u**-l = 3 vowel groups = 3 syllables
+        </p>
+      </section>
+
+      <!-- Syllable Rules -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Core Syllable Counting Rules</h2>
+
+        <div class="space-y-4">
+          <div class="bg-slate-900/50 border-l-4 border-blue-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">1. Every syllable contains ONE vowel sound</h4>
+            <p class="text-sm">More vowel sounds = more syllables.</p>
+            <p class="text-sm text-slate-400 mt-2">Examples: "dog" (1), "cats" (1), "water" (2: wa-ter)</p>
+          </div>
+
+          <div class="bg-slate-900/50 border-l-4 border-green-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">2. Consecutive vowels = 1 syllable (vowel digraph)</h4>
+            <p class="text-sm">Vowels next to each other typically make ONE sound.</p>
+            <p class="text-sm text-slate-400 mt-2">Examples: "boat" (1), "rain" (1), "beautiful" (3: beau-ti-ful)</p>
+          </div>
+
+          <div class="bg-slate-900/50 border-l-4 border-purple-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">3. Silent e rule (usually)</h4>
+            <p class="text-sm">Words ending in silent 'e' don't add a syllable.</p>
+            <p class="text-sm text-slate-400 mt-2">Examples: "hope" (1), "make" (1), "plate" (1)</p>
+            <p class="text-sm text-slate-400 mt-1"><strong>Exception:</strong> "syllable" (3), "bicycle" (3)</p>
+          </div>
+
+          <div class="bg-slate-900/50 border-l-4 border-orange-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">4. Y can be a vowel or consonant</h4>
+            <p class="text-sm">At word start: consonant. In middle/end: vowel.</p>
+            <p class="text-sm text-slate-400 mt-2">Examples: "yes" (1), "my" (1), "symbol" (2: sym-bol), "rhythm" (2: rhy-thm)</p>
+          </div>
+
+          <div class="bg-slate-900/50 border-l-4 border-red-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">5. -le and -el ending with consonant = 1 syllable</h4>
+            <p class="text-sm">When preceded by a consonant, add to the count.</p>
+            <p class="text-sm text-slate-400 mt-2">Examples: "table" (2: ta-ble), "apple" (2: ap-ple), "simple" (2: sim-ple)</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Poetry Applications -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Using Syllable Counting in Poetry</h2>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-4 mb-2">Haiku (5-7-5 structure)</h3>
+        <p>Haiku is a Japanese poetry form with three lines following a 5-7-5 syllable pattern:</p>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded mt-3 font-mono text-sm">
+          An old silent pond (5 syllables)<br />
+          A frog jumps into the pond (7 syllables)<br />
+          Splash! Silence again (5 syllables)
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-2">Sonnets (10 syllables per line)</h3>
+        <p>Shakespearean sonnets use iambic pentameter—10 syllables per line, 14 lines total:</p>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded mt-3 font-mono text-sm">
+          Shall I compare thee to a summer's day? (10)<br />
+          Thou art more lovely and more temperate (10)<br />
+          Rough winds do shake the darling buds of May (10)<br />
+          And summer's lease hath all too short a date (10)
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-2">Limerick (8-8-5-5-8 structure)</h3>
+        <p>Limericks follow a specific syllable pattern with rhyming couplets:</p>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded mt-3 font-mono text-sm">
+          There once was a man from Peru (8)<br />
+          Who dreamed he was eating his shoe (8)<br />
+          He woke with a fright (5)<br />
+          To find in the night (5)<br />
+          That his dream had turned into the true (8)
+        </div>
+      </section>
+
+      <!-- Readability Impact -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Syllables & Text Readability</h2>
+        <p>
+          Syllable count directly impacts how easy text is to read. The Flesch-Kincaid Grade Level formula uses average syllables per word to estimate the grade level required to understand text.
+        </p>
+        <ul class="list-disc list-inside space-y-2 mt-4">
+          <li><strong>Simple text (1-2 syllables/word):</strong> Grade 1-3 reading level. Easy to understand.</li>
+          <li><strong>Moderate text (2-3 syllables/word):</strong> Grade 6-9 reading level. Average readability.</li>
+          <li><strong>Complex text (3+ syllables/word):</strong> Grade 10+ reading level. Difficult to understand.</li>
+        </ul>
+        <p class="mt-4 text-sm bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+          <strong>Pro tip:</strong> Professional writers aim for 2-3 syllables per word on average to maintain clarity and engagement.
+        </p>
+      </section>
+
+      <!-- Common Examples -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Syllable Counting Examples</h2>
+        <table class="w-full text-sm mt-4">
+          <thead>
+            <tr class="border-b border-slate-700">
+              <th class="text-left py-2 text-slate-200">Word</th>
+              <th class="text-left py-2 text-slate-200">Breakdown</th>
+              <th class="text-center py-2 text-slate-200">Syllables</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-800"><td class="py-2">Education</td><td class="py-2 text-violet-300">ed-u-ca-tion</td><td class="text-center">4</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Beautiful</td><td class="py-2 text-violet-300">beau-ti-ful</td><td class="text-center">3</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Elephant</td><td class="py-2 text-violet-300">el-e-phant</td><td class="text-center">3</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Happiness</td><td class="py-2 text-violet-300">hap-pi-ness</td><td class="text-center">3</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Photography</td><td class="py-2 text-violet-300">pho-tog-ra-phy</td><td class="text-center">4</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Rhythm</td><td class="py-2 text-violet-300">rhy-thm</td><td class="text-center">2</td></tr>
+            <tr class="border-b border-slate-800"><td class="py-2">Worcestershire</td><td class="py-2 text-violet-300">wor-ces-ter-shire</td><td class="text-center">4</td></tr>
+            <tr><td class="py-2">Onomatopoeia</td><td class="py-2 text-violet-300">on-o-mat-o-poe-ia</td><td class="text-center">6</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Free Tool CTA -->
+      <section class="bg-violet-950/50 border border-violet-800 rounded-xl p-6 mt-8">
+        <h3 class="text-xl font-bold text-white mb-2">Count Syllables Instantly</h3>
+        <p class="text-slate-300 mb-4">
+          Need to count syllables quickly? Use our free <strong>Syllable Counter</strong> tool with word-by-word breakdown, haiku/sonnet validators, and export options.
+        </p>
+        <a href="/tools/syllable-counter" class="inline-block bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-semibold transition">
+          Try the Syllable Counter →
+        </a>
+      </section>
+
+      <!-- FAQs -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-6">Frequently Asked Questions</h2>
+        <div class="space-y-4">
+          {faqs.map(faq => (
+            <div class="bg-slate-900/50 border border-slate-800 rounded-lg p-4">
+              <h3 class="font-semibold text-slate-100 mb-2">{faq.q}</h3>
+              <p class="text-slate-400 text-sm">{faq.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- Related Tools -->
+      <section class="mt-8 pt-6 border-t border-slate-700">
+        <h3 class="text-lg font-semibold text-white mb-4">Related Text Tools</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/tools/word-counter" class="text-violet-400 hover:text-violet-300">Word Counter</a> — Count words, characters, and sentences</li>
+          <li><a href="/tools/readability-score" class="text-violet-400 hover:text-violet-300">Readability Checker</a> — Measure text complexity using Flesch-Kincaid</li>
+          <li><a href="/tools/grade-level-checker" class="text-violet-400 hover:text-violet-300">Grade Level Checker</a> — Determine reading difficulty</li>
+          <li><a href="/tools/reading-time-calculator" class="text-violet-400 hover:text-violet-300">Reading Time Calculator</a> — Estimate how long text takes to read</li>
+        </ul>
+      </section>
+    </div>
+  </BlogLayout>
+</BaseLayout>

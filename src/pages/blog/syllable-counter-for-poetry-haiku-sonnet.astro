@@ -1,0 +1,233 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogLayout from '../../layouts/BlogLayout.astro';
+
+const post = {
+  title: 'Syllable Counter for Poetry: Haiku, Sonnet & Limerick Validation',
+  description: 'Use syllable counters to validate haiku (5-7-5), sonnets (10 per line), and limericks. Free online tool with instant poem structure checking.',
+  publishedDate: new Date('2026-08-14'),
+  readTime: '6 min read',
+  category: 'Text Utilities',
+  author: 'TextWonder',
+};
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.description}
+  canonical="/blog/syllable-counter-for-poetry-haiku-sonnet"
+>
+  <BlogLayout title={post.title} publishedDate={post.publishedDate} readTime={post.readTime} category={post.category}>
+    <div class="prose prose-invert max-w-none space-y-6 text-slate-300">
+      <section>
+        <p class="text-lg leading-relaxed">
+          Poetry structure depends on syllable counts. Whether you're writing haiku, sonnets, or limericks, getting the syllable structure right is crucial for proper meter and rhythm. This guide shows how to use syllable counters to validate poetry forms.
+        </p>
+      </section>
+
+      <!-- Haiku Section -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Haiku: The 5-7-5 Structure</h2>
+        <p>
+          Haiku is a traditional Japanese poetry form with three lines following a specific syllable count:
+        </p>
+        <div class="bg-slate-900/50 border-l-4 border-blue-500 p-4 rounded mt-4">
+          <p class="font-bold text-slate-100">Line 1: 5 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 2: 7 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 3: 5 syllables</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">Classic Haiku Example (Basho)</h3>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded font-mono text-sm">
+          An old silent pond (5 syllables: An-old-si-lent-pond)<br />
+          A frog jumps into the pond (7 syllables: A-frog-jumps-in-to-the-pond)<br />
+          Splash! Silence again (5 syllables: Splash-Si-lence-a-gain)
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">How to Validate Your Haiku</h3>
+        <ol class="list-decimal list-inside space-y-2">
+          <li>Write your 3-line haiku</li>
+          <li>Paste it into a syllable counter</li>
+          <li>The tool shows syllable counts per line</li>
+          <li>Adjust words until you get 5-7-5</li>
+        </ol>
+
+        <p class="mt-4 text-sm bg-slate-900/50 border-l-4 border-blue-500 p-4 rounded">
+          <strong>Tip:</strong> Use our free Syllable Counter with built-in haiku validator. It automatically checks if your poem matches the 5-7-5 structure.
+        </p>
+      </section>
+
+      <!-- Sonnet Section -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Sonnets: Iambic Pentameter (10 Syllables/Line)</h2>
+        <p>
+          A sonnet is a 14-line poem with strict syllable structure. The most common form is Shakespearean (iambic pentameter):
+        </p>
+        <div class="bg-slate-900/50 border-l-4 border-purple-500 p-4 rounded mt-4">
+          <p class="font-bold text-slate-100">14 lines total</p>
+          <p class="font-bold text-slate-100 mt-2">10 syllables per line</p>
+          <p class="font-bold text-slate-100 mt-2">ABAB CDCD EFEF GG rhyme scheme</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">Shakespearean Sonnet 18 (Excerpt)</h3>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded font-mono text-sm space-y-1">
+          <p>Shall I compare thee to a summer's day? (10)</p>
+          <p>Thou art more lovely and more temperate (10)</p>
+          <p>Rough winds do shake the darling buds of May (10)</p>
+          <p>And summer's lease hath all too short a date (10)</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">Why Syllable Counting Matters for Sonnets</h3>
+        <p>
+          The 10-syllable (pentameter) structure creates a rhythm that sounds natural when read aloud. Too many or too few syllables disrupts the meter and makes the poem sound awkward. Sonnets are deceptively hard to write because you must:
+        </p>
+        <ul class="list-disc list-inside space-y-2 mt-4">
+          <li>Maintain exactly 10 syllables per line</li>
+          <li>Follow the stress pattern (unstressed-stressed alternation)</li>
+          <li>Rhyme correctly (ABAB CDCD EFEF GG)</li>
+          <li>Express complete thoughts within 14 lines</li>
+        </ul>
+      </section>
+
+      <!-- Limerick Section -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Limericks: The 8-8-5-5-8 Pattern</h2>
+        <p>
+          Limericks are humorous 5-line poems with a bouncy rhythm and specific syllable structure:
+        </p>
+        <div class="bg-slate-900/50 border-l-4 border-orange-500 p-4 rounded mt-4">
+          <p class="font-bold text-slate-100">Line 1: 8 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 2: 8 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 3: 5 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 4: 5 syllables</p>
+          <p class="font-bold text-slate-100 mt-2">Line 5: 8 syllables</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">Example Limerick</h3>
+        <div class="bg-slate-900/50 border border-slate-700 p-4 rounded font-mono text-sm space-y-1">
+          <p>There once was a man from Peru (8 syllables)</p>
+          <p>Who dreamed he was eating his shoe (8 syllables)</p>
+          <p>He woke with a fright (5 syllables)</p>
+          <p>To find in the night (5 syllables)</p>
+          <p>That his dream had turned into the true (8 syllables)</p>
+        </div>
+
+        <h3 class="text-xl font-semibold text-slate-100 mt-6 mb-3">Limerick Rhyme Scheme</h3>
+        <p>
+          Limericks follow an AABBA rhyme scheme:
+        </p>
+        <ul class="list-disc list-inside space-y-1 mt-2">
+          <li>Lines 1, 2, 5 rhyme (A)</li>
+          <li>Lines 3, 4 rhyme (B)</li>
+        </ul>
+      </section>
+
+      <!-- Comparison Table -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Poetry Forms Comparison</h2>
+        <table class="w-full text-sm mt-4">
+          <thead>
+            <tr class="border-b border-slate-700">
+              <th class="text-left py-2 text-slate-200">Form</th>
+              <th class="text-left py-2 text-slate-200">Lines</th>
+              <th class="text-left py-2 text-slate-200">Syllables</th>
+              <th class="text-left py-2 text-slate-200">Difficulty</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-slate-800">
+              <td class="py-2 font-semibold">Haiku</td>
+              <td class="py-2">3</td>
+              <td class="py-2">5-7-5</td>
+              <td class="py-2">Easy</td>
+            </tr>
+            <tr class="border-b border-slate-800">
+              <td class="py-2 font-semibold">Limerick</td>
+              <td class="py-2">5</td>
+              <td class="py-2">8-8-5-5-8</td>
+              <td class="py-2">Medium</td>
+            </tr>
+            <tr>
+              <td class="py-2 font-semibold">Sonnet</td>
+              <td class="py-2">14</td>
+              <td class="py-2">10 per line</td>
+              <td class="py-2">Hard</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Using Syllable Counter -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">How to Use a Syllable Counter for Poetry</h2>
+        <div class="space-y-4">
+          <div class="bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">Step 1: Write Your Poem</h4>
+            <p class="text-sm">Start with a rough draft of your haiku, sonnet, or limerick.</p>
+          </div>
+          <div class="bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">Step 2: Copy & Paste</h4>
+            <p class="text-sm">Select your poem text and paste it into the syllable counter (one line per line).</p>
+          </div>
+          <div class="bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">Step 3: Check Syllable Counts</h4>
+            <p class="text-sm">The tool shows syllable counts per line and per word. Compare to your target structure (5-7-5 for haiku, 10 per line for sonnet, etc.).</p>
+          </div>
+          <div class="bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
+            <h4 class="font-semibold text-slate-100 mb-2">Step 4: Adjust & Verify</h4>
+            <p class="text-sm">Swap words to hit the exact syllable count. Re-paste to verify. Repeat until perfect.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Pro Tips -->
+      <section>
+        <h2 class="text-2xl font-bold text-white mb-4">Pro Tips for Poetry Writing</h2>
+        <ul class="space-y-3">
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">💡</span>
+            <span><strong>Know your rhyming words:</strong> Before writing, brainstorm words that rhyme with your chosen end word. This helps you hit syllable targets more easily.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">💡</span>
+            <span><strong>Use a thesaurus:</strong> When you need different syllables, thesauruses help find synonyms with the right count.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">💡</span>
+            <span><strong>Read aloud:</strong> Syllable counts are mathematical, but poetry should sound natural. Always read your work aloud.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">💡</span>
+            <span><strong>Build a word library:</strong> Keep lists of 1-syllable, 2-syllable, and 3-syllable words you like. It speeds up writing.</span>
+          </li>
+          <li class="flex gap-3">
+            <span class="text-violet-400 font-bold flex-shrink-0">💡</span>
+            <span><strong>Use our free tool:</strong> Our Syllable Counter includes haiku/sonnet/limerick validators to check your work instantly.</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- CTA -->
+      <section class="bg-violet-950/50 border border-violet-800 rounded-xl p-6 mt-8">
+        <h3 class="text-xl font-bold text-white mb-2">Perfect Your Poetry Structure</h3>
+        <p class="text-slate-300 mb-4">
+          Our free Syllable Counter includes built-in validators for haiku, sonnets, and limericks. Paste your poem and instantly see if your syllable structure is correct.
+        </p>
+        <a href="/tools/syllable-counter" class="inline-block bg-violet-600 hover:bg-violet-700 text-white px-6 py-2 rounded-lg font-semibold transition">
+          Check Your Poem Now →
+        </a>
+      </section>
+
+      <!-- Related Links -->
+      <section class="mt-8 pt-6 border-t border-slate-700">
+        <h3 class="text-lg font-semibold text-white mb-4">Learn More About Syllables</h3>
+        <ul class="space-y-2 text-sm">
+          <li><a href="/blog/how-to-count-syllables-complete-guide" class="text-violet-400 hover:text-violet-300">Complete Syllable Counting Guide</a></li>
+          <li><a href="/tools/syllable-counter" class="text-violet-400 hover:text-violet-300">Free Syllable Counter Tool</a></li>
+          <li><a href="/tools/word-counter" class="text-violet-400 hover:text-violet-300">Word Counter</a></li>
+          <li><a href="/tools/readability-score" class="text-violet-400 hover:text-violet-300">Readability Checker</a></li>
+        </ul>
+      </section>
+    </div>
+  </BlogLayout>
+</BaseLayout>

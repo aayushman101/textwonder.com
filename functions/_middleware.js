@@ -3,10 +3,14 @@ export async function onRequest(context) {
   const isPagesDev = host.includes('pages.dev');
   const { pathname } = new URL(context.request.url);
 
-  // Redirect www → non-www with 301
+  // Redirect www → non-www with 301, normalizing the trailing slash in the
+  // same hop so www requests don't chain into a second Pages-issued redirect
   if (host.startsWith('www.') && !isPagesDev) {
     const url = new URL(context.request.url);
     url.hostname = url.hostname.replace(/^www\./, '');
+    if (!url.pathname.endsWith('/') && !/\.[a-zA-Z0-9]+$/.test(url.pathname)) {
+      url.pathname += '/';
+    }
     return Response.redirect(url.toString(), 301);
   }
 

@@ -67,7 +67,7 @@ export const STUDENT_TOOLS = [
       { q: 'Can I calculate aggregate for multiple subjects?', a: 'Yes. Add each subject with its marks and max marks. The calculator shows individual and overall percentage.' },
       { q: 'What is the difference between percentage and percentile?', a: 'Percentage = your marks relative to maximum marks. Percentile = your rank relative to other students (used in JEE, CAT, NEET).' },
     ],
-    relatedTools: ['cgpa-calculator', 'gpa-calculator', 'percentage-calculator'],
+    relatedTools: ['cgpa-calculator', 'gpa-calculator', 'exam-countdown'],
     icon: '📝',
     iconBg: '#15803d',
   },

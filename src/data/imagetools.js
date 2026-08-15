@@ -371,7 +371,7 @@ export const IMAGE_TOOLS = [
       { q: 'What CSS features are supported?', a: 'Most common CSS properties are supported including colors, fonts, backgrounds, borders, shadows, and gradients. Some advanced CSS like animations or pseudo-elements may have limited support.' },
       { q: 'Can I customize the image dimensions?', a: 'Yes. Set the width and the height will auto-adjust based on the content. You can also adjust the width to change how content flows.' },
     ],
-    relatedTools: ['image-screenshot', 'image-effects', 'image-converter'],
+    relatedTools: ['image-compressor', 'image-effects', 'image-converter'],
     longTailKeywords: ['html to image converter online free', 'convert html to png', 'html to jpg converter', 'code snippet to image', 'html screenshot tool'],
     searchVolume: 'medium',
     icon: '✨',

@@ -66,6 +66,7 @@
   <div style="color: #0f172a !important; font-weight: bold; font-size: 1rem; margin-bottom: 0.75rem;" class="dark:!text-white">How Syllable Counting Works</div>
   <div class="rounded-xl p-4">
     <ul class="text-sm text-slate-300 space-y-2">
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Exceptions dictionary first:</strong> ~150 commonly mis-counted irregular words (business, colonel, create, science) are checked against a curated list before falling back to rules</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Vowel groups:</strong> Each vowel cluster = 1 syllable</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Silent e:</strong> Words ending in 'e' usually don't add a syllable</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Consonant + y:</strong> 'y' between consonants acts as a vowel</span></li>
@@ -75,13 +76,47 @@
 </div>
 
 <script>
+// Curated exceptions for words the vowel-group heuristic commonly miscounts:
+// hiatus words (adjacent vowel letters split across a syllable boundary),
+// silent-letter irregulars, and "-eous"/"-uous" endings.
+const SYLLABLE_EXCEPTIONS = {
+  create: 2, science: 2, business: 2, colonel: 2, idea: 3, area: 3,
+  video: 3, radio: 3, poet: 2, poem: 2, being: 2, react: 2, chaos: 2,
+  theatre: 2, theater: 2, aorta: 3, naive: 2, museum: 3, cocoa: 2,
+  ideal: 3, real: 1, oasis: 3, chaotic: 3, meteor: 3, violin: 3,
+  dial: 1, diet: 2, riot: 2, quiet: 2, patient: 2, ancient: 2, audio: 3,
+  studio: 3, ruin: 2, fluid: 2, duet: 2, cruel: 1, poetic: 3,
+  conscience: 2, patience: 2, quotient: 2, client: 2, giant: 2, diary: 3,
+  triumph: 2, recreate: 3, reactor: 3, poetry: 3, variety: 4, society: 4,
+  anxiety: 4, sobriety: 4, notoriety: 5,
+  wednesday: 2, chocolate: 3, vegetable: 4, comfortable: 4,
+  interesting: 4, family: 3, camera: 3, different: 3, evening: 2,
+  every: 2, several: 3, general: 3, federal: 3, average: 3,
+  restaurant: 3, temperature: 4, favorite: 3, memory: 3, history: 3,
+  mystery: 3, factory: 3, laboratory: 5, secretary: 4, dictionary: 4,
+  february: 3, library: 3, literature: 4, miserable: 4, reasonable: 4,
+  medicine: 3, marriage: 2, jewelry: 2, mischievous: 3, aspirin: 3,
+  choir: 1, iron: 2, aisle: 1, isle: 1, bureau: 2, buffet: 2, ballet: 2,
+  chef: 1, corps: 1, debris: 2, genre: 2, rendezvous: 3, cache: 1,
+  clothes: 1, months: 1, sixths: 1, twelfths: 1, world: 1, thoughts: 1,
+  fire: 1, hour: 1, our: 1, flower: 2, power: 2, tower: 2, hire: 1,
+  tire: 1, wire: 1, higher: 2, prayer: 1, layer: 2, player: 2, mayor: 2,
+  fuel: 2, jewel: 2, trial: 2, loyal: 2, royal: 2, dryer: 2, buyer: 2,
+  beauteous: 3, continuous: 4, courteous: 3, righteous: 2,
+  spontaneous: 4, simultaneous: 5, instantaneous: 5, extraneous: 4,
+  cutaneous: 4, advantageous: 4, outrageous: 3, courageous: 3,
+  contiguous: 4, ambiguous: 4, strenuous: 3, tenuous: 3, sensuous: 3,
+  arduous: 3,
+};
+
 function countSyllables(word) {
-  word = word.toLowerCase().replace(/[^a-z]/g, '');
-  if (!word) return 0;
-  if (word.length <= 3) return 1;
-  word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
-  word = word.replace(/^y/, '');
-  const m = word.match(/[aeiouy]{1,2}/g);
+  const key = word.toLowerCase().replace(/[^a-z]/g, '');
+  if (!key) return 0;
+  if (Object.prototype.hasOwnProperty.call(SYLLABLE_EXCEPTIONS, key)) return SYLLABLE_EXCEPTIONS[key];
+  if (key.length <= 3) return 1;
+  let w = key.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+  w = w.replace(/^y/, '');
+  const m = w.match(/[aeiouy]+/g);
   return m ? m.length : 1;
 }
 

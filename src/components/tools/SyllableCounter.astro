@@ -66,7 +66,7 @@
   <div class="text-white font-bold text-base mb-3">How Syllable Counting Works</div>
   <div class="rounded-xl p-4">
     <ul class="text-sm text-slate-300 space-y-2">
-      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Exceptions dictionary first:</strong> ~150 commonly mis-counted irregular words (business, colonel, create, science) are checked against a curated list before falling back to rules</span></li>
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Exceptions dictionary first:</strong> ~150 commonly mis-counted irregular words (business, colonel, create, science) are checked against a curated list before falling back to rules — look for the <span class="text-emerald-400">✓</span> mark in the breakdown below to see which words were dictionary-verified</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Vowel groups:</strong> Each vowel cluster = 1 syllable</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Silent e:</strong> Words ending in 'e' usually don't add a syllable</span></li>
       <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Consonant + y:</strong> 'y' between consonants acts as a vowel</span></li>
@@ -109,15 +109,19 @@ const SYLLABLE_EXCEPTIONS = {
   arduous: 3,
 };
 
+// Returns { count, source } where source is 'dictionary' (exact match in the
+// curated exceptions list) or 'algorithm' (vowel-group heuristic fallback).
 function countSyllables(word) {
   const key = word.toLowerCase().replace(/[^a-z]/g, '');
-  if (!key) return 0;
-  if (Object.prototype.hasOwnProperty.call(SYLLABLE_EXCEPTIONS, key)) return SYLLABLE_EXCEPTIONS[key];
-  if (key.length <= 3) return 1;
+  if (!key) return { count: 0, source: 'algorithm' };
+  if (Object.prototype.hasOwnProperty.call(SYLLABLE_EXCEPTIONS, key)) {
+    return { count: SYLLABLE_EXCEPTIONS[key], source: 'dictionary' };
+  }
+  if (key.length <= 3) return { count: 1, source: 'algorithm' };
   let w = key.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
   w = w.replace(/^y/, '');
   const m = w.match(/[aeiouy]+/g);
-  return m ? m.length : 1;
+  return { count: m ? m.length : 1, source: 'algorithm' };
 }
 
 function getSyllableColor(s) {
@@ -136,10 +140,10 @@ function count() {
   let total = 0, poly = 0;
 
   currentBreakdown = words.map(w => {
-    const s = countSyllables(w);
+    const { count: s, source } = countSyllables(w);
     total += s;
     if (s >= 3) poly++;
-    return { w, s };
+    return { w, s, source };
   });
 
   document.getElementById('sc-total').textContent = total;
@@ -148,7 +152,7 @@ function count() {
   document.getElementById('sc-poly').textContent = poly;
 
   // Poetry validators
-  const lineSyllables = lines.map(line => (line.match(/[a-zA-Z']+/g) || []).reduce((sum, w) => sum + countSyllables(w), 0));
+  const lineSyllables = lines.map(line => (line.match(/[a-zA-Z']+/g) || []).reduce((sum, w) => sum + countSyllables(w).count, 0));
   const isHaiku = lineSyllables.length === 3 && lineSyllables[0] === 5 && lineSyllables[1] === 7 && lineSyllables[2] === 5;
   const isLimerick = lineSyllables.length === 5 && lineSyllables[0] === 8 && lineSyllables[1] === 8 && lineSyllables[2] === 5 && lineSyllables[3] === 5 && lineSyllables[4] === 8;
   const isSonnet = lineSyllables.length === 14 && lineSyllables.every(s => s === 10);
@@ -166,9 +170,11 @@ function count() {
 
   bd.innerHTML = '<p class="text-xs text-slate-500 mb-2">Syllable count per word:</p>' +
     '<div class="flex flex-wrap gap-1.5">' +
-    currentBreakdown.map(({w,s}) =>
-      `<span class="bg-[var(--bg-surface)] border ${getSyllableColor(s)} rounded-lg px-2 py-0.5 text-xs text-slate-200">${w} <span class="text-violet-400">${s}</span></span>`
-    ).join('') + '</div>';
+    currentBreakdown.map(({w,s,source}) =>
+      `<span class="bg-[var(--bg-surface)] border ${getSyllableColor(s)} rounded-lg px-2 py-0.5 text-xs text-slate-200" title="${source === 'dictionary' ? 'Verified in exceptions dictionary' : 'Estimated by vowel-group algorithm'}">${w} <span class="text-violet-400">${s}</span>${source === 'dictionary' ? '<span class="text-emerald-400">✓</span>' : ''}</span>`
+    ).join('') +
+    '</div>' +
+    '<p class="text-[11px] text-slate-500 mt-2"><span class="text-emerald-400">✓</span> = verified in exceptions dictionary &nbsp;·&nbsp; no mark = estimated by algorithm</p>';
 }
 
 // Event listeners
@@ -187,7 +193,7 @@ document.getElementById('sc-copy').addEventListener('click', () => {
 
 document.getElementById('sc-export-csv').addEventListener('click', () => {
   if (currentBreakdown.length === 0) return;
-  const csv = 'Word,Syllables\n' + currentBreakdown.map(({w,s}) => `${w},${s}`).join('\n');
+  const csv = 'Word,Syllables,Source\n' + currentBreakdown.map(({w,s,source}) => `${w},${s},${source}`).join('\n');
   const blob = new Blob([csv], {type: 'text/csv'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

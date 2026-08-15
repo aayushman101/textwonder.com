@@ -33,40 +33,43 @@
     </div>
   </div>
 
-  <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
-    <h3 class="text-slate-200 font-semibold text-sm mb-3">Poetry Format Detector</h3>
+  <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+    <h3 class="text-slate-900 dark:text-black font-bold text-base mb-3">Poetry Format Detector</h3>
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
-        <div class="text-xs text-slate-500 mb-1">Haiku (5-7-5)</div>
-        <div id="sc-haiku" class="text-sm font-medium text-slate-400">–</div>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-4 text-center">
+        <div class="text-sm font-medium text-slate-300 mb-2">Haiku</div>
+        <div class="text-xs text-slate-500 mb-2">(5-7-5)</div>
+        <div id="sc-haiku" class="text-sm font-bold text-violet-400">–</div>
       </div>
-      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
-        <div class="text-xs text-slate-500 mb-1">Limerick (8-8-5-5-8)</div>
-        <div id="sc-limerick" class="text-sm font-medium text-slate-400">–</div>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-4 text-center">
+        <div class="text-sm font-medium text-slate-300 mb-2">Limerick</div>
+        <div class="text-xs text-slate-500 mb-2">(8-8-5-5-8)</div>
+        <div id="sc-limerick" class="text-sm font-bold text-violet-400">–</div>
       </div>
-      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-3 text-center">
-        <div class="text-xs text-slate-500 mb-1">Sonnet (10 per line)</div>
-        <div id="sc-sonnet" class="text-sm font-medium text-slate-400">–</div>
+      <div class="bg-[var(--bg-base)] border border-slate-700 rounded-lg p-4 text-center">
+        <div class="text-sm font-medium text-slate-300 mb-2">Sonnet</div>
+        <div class="text-xs text-slate-500 mb-2">(10 per line)</div>
+        <div id="sc-sonnet" class="text-sm font-bold text-violet-400">–</div>
       </div>
     </div>
   </div>
 
   <div class="flex items-center gap-3">
     <button id="sc-copy" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Copy Results</button>
-    <button id="sc-export-csv" class="bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">CSV</button>
-    <button id="sc-export-json" class="bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">JSON</button>
-    <button id="sc-clear" class="bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">Clear</button>
+    <button id="sc-export-csv" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">CSV</button>
+    <button id="sc-export-json" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">JSON</button>
+    <button id="sc-clear" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">Clear</button>
   </div>
 
   <div id="sc-breakdown" class="space-y-1 max-h-60 overflow-y-auto"></div>
 
-  <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4">
-    <h3 class="text-slate-200 font-semibold text-sm mb-2">How Syllable Counting Works</h3>
-    <ul class="text-xs text-slate-400 space-y-1">
-      <li>• <strong>Vowel groups:</strong> Each vowel cluster = 1 syllable</li>
-      <li>• <strong>Silent e:</strong> Words ending in 'e' usually don't add a syllable</li>
-      <li>• <strong>Consonant + y:</strong> 'y' between consonants acts as a vowel</li>
-      <li>• <strong>Exception:</strong> Single-syllable words (3 letters or less) count as 1</li>
+  <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4">
+    <h3 class="text-slate-900 dark:text-black font-bold text-base mb-3">How Syllable Counting Works</h3>
+    <ul class="text-sm text-slate-300 space-y-2">
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Vowel groups:</strong> Each vowel cluster = 1 syllable</span></li>
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Silent e:</strong> Words ending in 'e' usually don't add a syllable</span></li>
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Consonant + y:</strong> 'y' between consonants acts as a vowel</span></li>
+      <li class="flex gap-2"><span class="text-violet-400 font-bold">•</span> <span><strong>Exception:</strong> Single-syllable words (3 letters or less) count as 1</span></li>
     </ul>
   </div>
 </div>

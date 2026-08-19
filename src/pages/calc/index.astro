@@ -1,19 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import WonderHeader from '../../components/WonderHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { CALC_TOOLS } from '../../data/calctools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
 
 const brand = { name: 'CalcWonder', prefix: 'Calc', suffix: 'Wonder', rootPath: '/calc', accentColor: '#10b981', idPrefix: 'calc' };
+const alternates = alternatesForSection('calc');
+
 ---
 
 <BaseLayout
   title="Free Online Calculators — Finance, Health & Education | CalcWonder"
   description="CalcWonder offers 15 free online calculators for finance, education, and everyday life. Commission, sales tax, renovation costs, weighted average, EMI, SIP, GST, and more. Instant, free, no signup."
   canonical="/calc/"
+  alternates={alternates}
 >
-  <WonderHeader brand={brand} tools={CALC_TOOLS} />
+  <WonderHeader alternates={alternates} brand={brand} tools={CALC_TOOLS} />
 
   <main>
     <!-- Hero -->

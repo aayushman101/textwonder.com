@@ -1,0 +1,89 @@
+---
+import { switcherLinks } from '../i18n/index.js';
+import { t } from '../i18n/index.js';
+
+const { alternates = [], locale = 'en' } = Astro.props;
+const links = switcherLinks(alternates, locale);
+const current = links.find((l) => l.current);
+---
+
+{links.length > 1 && (
+  <div class="relative" data-lang-switcher>
+    <button
+      type="button"
+      data-lang-btn
+      class="flex items-center gap-1.5 px-2.5 py-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors text-sm"
+      aria-label={t(locale, 'lang.label')}
+      aria-expanded="false"
+      aria-haspopup="true"
+    >
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-9a13.5 13.5 0 000 18m0-18a13.5 13.5 0 010 18M3.6 9h16.8M3.6 15h16.8" />
+      </svg>
+      <span class="hidden sm:inline font-medium">{current?.nativeName || 'English'}</span>
+    </button>
+
+    <div
+      data-lang-menu
+      class="hidden absolute end-0 top-full mt-2 w-52 bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50"
+    >
+      <div class="px-3 py-2 text-[11px] uppercase tracking-wide text-slate-500 border-b border-slate-800">
+        {t(locale, 'lang.heading')}
+      </div>
+      <ul class="max-h-80 overflow-y-auto py-1">
+        {links.map((l) => (
+          <li>
+            <a
+              href={l.path}
+              hreflang={l.hreflang}
+              lang={l.code}
+              class={`flex items-center gap-2.5 px-3 py-2 text-sm transition-colors ${
+                l.current
+                  ? 'text-white bg-[var(--bg-surface-hover)] font-semibold'
+                  : 'text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)]'
+              }`}
+              aria-current={l.current ? 'true' : undefined}
+            >
+              <span class="text-base leading-none">{l.flag}</span>
+              <span>{l.nativeName}</span>
+              {l.current && (
+                <svg class="w-4 h-4 ms-auto text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+              )}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+)}
+
+<script>
+  // Delegated so the switcher works wherever it is mounted, and so multiple
+  // instances (header + mobile) never fight over a shared element id.
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const btn = target.closest('[data-lang-btn]');
+
+    document.querySelectorAll('[data-lang-switcher]').forEach((wrap) => {
+      const menu = wrap.querySelector('[data-lang-menu]');
+      const ownBtn = wrap.querySelector('[data-lang-btn]');
+      if (!menu || !ownBtn) return;
+      if (btn && ownBtn === btn) {
+        const open = menu.classList.toggle('hidden');
+        ownBtn.setAttribute('aria-expanded', String(!open));
+      } else if (!wrap.contains(target)) {
+        menu.classList.add('hidden');
+        ownBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    document.querySelectorAll('[data-lang-menu]').forEach((m) => m.classList.add('hidden'));
+    document.querySelectorAll('[data-lang-btn]').forEach((b) => b.setAttribute('aria-expanded', 'false'));
+  });
+</script>

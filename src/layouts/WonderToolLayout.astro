@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { alternatesForTool } from '../i18n/index.js';
 import WonderHeader from '../components/WonderHeader.astro';
 import Footer from '../components/Footer.astro';
 
@@ -49,12 +50,17 @@ const faqSchema = (tool.faqs && tool.faqs.length > 0) ? {
     acceptedAnswer: { '@type': 'Answer', text: f.a },
   })),
 } : null;
+// hreflang cluster — the English page must list every translated version,
+// otherwise Google discards the whole cluster as one-directional.
+const alternates = alternatesForTool(brand.rootPath.replace('/', ''), tool.slug);
+
 ---
 
 <BaseLayout
   title={tool.metaTitle}
   description={tool.metaDescription}
   canonical={`${brand.rootPath}/${tool.slug}/`}
+  alternates={alternates}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
@@ -62,7 +68,7 @@ const faqSchema = (tool.faqs && tool.faqs.length > 0) ? {
     {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
   </Fragment>
 
-  <WonderHeader brand={brand} tools={tools}>
+  <WonderHeader alternates={alternates} brand={brand} tools={tools}>
     <slot name="header-icon" slot="icon" />
   </WonderHeader>
 

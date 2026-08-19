@@ -1,0 +1,195 @@
+---
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import {
+  t, sectionsForLocale, sectionPath, toolsForLocale, toolPath,
+  sectionMeta, SECTION_BRANDS, toolCountForLocale, homePath,
+} from '../i18n/index.js';
+
+const { locale, alternates = [] } = Astro.props;
+
+const sections = sectionsForLocale(locale).map((key) => ({
+  key,
+  ...SECTION_BRANDS[key],
+  path: sectionPath(locale, key),
+  ...sectionMeta(locale, key),
+}));
+
+// Search index is locale-scoped: only tools that actually exist in this
+// language, linking to their localized URLs.
+const toolsForSearch = sectionsForLocale(locale).flatMap((key) =>
+  toolsForLocale(locale, key).map((tool) => ({
+    name: tool.name,
+    path: toolPath(locale, key, tool.slug),
+    category: sectionMeta(locale, key).name,
+    color: SECTION_BRANDS[key].color,
+    icon: SECTION_BRANDS[key].icon,
+  })),
+);
+
+const total = toolCountForLocale(locale);
+---
+
+<header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
+
+  <!-- Mobile: horizontally scrolling section pills -->
+  <div class="md:hidden flex items-center gap-2 overflow-x-auto px-4 py-2.5 border-b border-slate-800/60 bg-[var(--bg-surface)] scrollbar-none">
+    {sections.map((s) => (
+      <a href={s.path}
+        class="flex items-center gap-1.5 shrink-0 px-3 py-1 rounded-full text-xs font-semibold text-white border transition-all"
+        style={`background:rgba(${s.accentRgb},0.04);border-color:rgba(${s.accentRgb},0.15);`}>
+        <span class="text-xs leading-none">{s.icon}</span>
+        <span class="leading-none">{s.name}</span>
+      </a>
+    ))}
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+    <a href={homePath(locale)} class="flex items-center gap-2 group shrink-0">
+      <span class="text-2xl font-bold text-white transition-opacity group-hover:opacity-85" style="font-family: 'Space Grotesk', sans-serif;">
+        Text<span style="background: linear-gradient(to right, #2563eb, #4f46e5, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Wonder</span>
+      </span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-5">
+      <a href={homePath(locale)} class="text-slate-300 hover:text-white transition-colors text-sm font-medium">
+        {t(locale, 'nav.home')}
+      </a>
+
+      <div class="relative" id="i18n-categories-wrapper">
+        <button id="i18n-categories-btn" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          {t(locale, 'nav.categories')}
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <div id="i18n-categories-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[600px] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
+            {sections.map((s) => (
+              <a href={s.path} class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-slate-800 transition-all group">
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105"
+                  style={`background:rgba(${s.accentRgb},0.15); border: 1px solid rgba(${s.accentRgb},0.35)`}>
+                  {s.icon}
+                </div>
+                <div class="min-w-0">
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-bold text-white">{s.name}</span>
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
+                      style={`background:rgba(${s.accentRgb},0.1); color:${s.color};`}>
+                      {s.count}
+                    </span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+          <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs gap-3">
+            <span class="text-slate-500">{t(locale, 'nav.tagline')}</span>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="flex items-center gap-1 sm:gap-2">
+      <LanguageSwitcher alternates={alternates} locale={locale} />
+
+      <button id="i18n-theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors" aria-label={t(locale, 'theme.toggle')}>
+        <svg id="i18n-icon-sun" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/>
+        </svg>
+        <svg id="i18n-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+      </button>
+
+      <button id="i18n-search-open" class="flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-400 hover:text-white px-3 py-2 rounded-lg transition-colors text-sm" aria-label={t(locale, 'search.aria')}>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <span class="hidden sm:inline">{t(locale, 'search.open')}</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div id="i18n-search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
+  <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="i18n-search-backdrop"></div>
+  <div class="relative max-w-lg mx-auto mt-20 mx-4">
+    <div class="bg-[var(--bg-surface)] border border-slate-700 rounded-2xl shadow-2xl overflow-hidden">
+      <div class="flex items-center gap-3 px-4 py-3 border-b border-slate-700">
+        <svg class="w-5 h-5 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input id="i18n-search-input" type="text" placeholder={t(locale, 'search.placeholder', { count: total })} class="flex-1 bg-transparent text-white placeholder-slate-500 outline-none text-base" autocomplete="off"/>
+        <button id="i18n-search-close" class="text-slate-400 hover:text-white transition-colors text-sm">{t(locale, 'search.close')}</button>
+      </div>
+      <ul id="i18n-search-results" class="max-h-72 overflow-y-auto py-2"></ul>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+</style>
+
+<script define:vars={{ toolsForSearch, noResultsText: t(locale, 'search.none') }}>
+(function () {
+  const modal = document.getElementById('i18n-search-modal');
+  const input = document.getElementById('i18n-search-input');
+  const results = document.getElementById('i18n-search-results');
+  const openBtn = document.getElementById('i18n-search-open');
+  const closeBtn = document.getElementById('i18n-search-close');
+  const backdrop = document.getElementById('i18n-search-backdrop');
+
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  }
+
+  function renderResults(query) {
+    const q = query.toLowerCase().trim();
+    const filtered = q
+      ? toolsForSearch.filter((t) => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q))
+      : toolsForSearch.slice(0, 8);
+    results.innerHTML = filtered.length
+      ? filtered.map((t) => `<li><a href="${esc(t.path)}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${esc(t.color)}15;color:${esc(t.color)}">${esc(t.icon || '⚙️')}</div><span class="text-white text-sm font-medium">${esc(t.name)}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-medium ms-auto" style="background:${esc(t.color)}15;color:${esc(t.color)}">${esc(t.category)}</span></a></li>`).join('')
+      : `<li class="px-4 py-4 text-slate-500 text-sm text-center">${esc(noResultsText)}</li>`;
+  }
+
+  function openModal() { modal.classList.remove('hidden'); setTimeout(() => input.focus(), 50); renderResults(''); }
+  function closeModal() { modal.classList.add('hidden'); input.value = ''; }
+
+  openBtn && openBtn.addEventListener('click', openModal);
+  closeBtn && closeBtn.addEventListener('click', closeModal);
+  backdrop && backdrop.addEventListener('click', closeModal);
+  input && input.addEventListener('input', (e) => renderResults(e.target.value));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { closeModal(); closeCategories(); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
+  });
+
+  // Theme
+  const themeToggle = document.getElementById('i18n-theme-toggle');
+  const iconSun = document.getElementById('i18n-icon-sun');
+  const iconMoon = document.getElementById('i18n-icon-moon');
+  function applyTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    localStorage.setItem('tw-theme', t);
+    if (t === 'dark') { iconSun.classList.remove('hidden'); iconMoon.classList.add('hidden'); }
+    else { iconSun.classList.add('hidden'); iconMoon.classList.remove('hidden'); }
+  }
+  applyTheme(document.documentElement.getAttribute('data-theme') || 'dark');
+  themeToggle && themeToggle.addEventListener('click', () =>
+    applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+
+  // Categories dropdown
+  const catBtn = document.getElementById('i18n-categories-btn');
+  const catDrop = document.getElementById('i18n-categories-dropdown');
+  function closeCategories() { catDrop && catDrop.classList.add('hidden'); }
+  if (catBtn && catDrop) {
+    catBtn.addEventListener('click', (e) => { e.stopPropagation(); catDrop.classList.toggle('hidden'); });
+    document.addEventListener('click', (e) => {
+      if (!catBtn.contains(e.target) && !catDrop.contains(e.target)) closeCategories();
+    });
+  }
+})();
+</script>

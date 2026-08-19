@@ -1,19 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import ImageHeader from '../../components/ImageHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { IMAGE_TOOLS } from '../../data/imagetools.js';
 import { TOOLS } from '../../data/tools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
 import { DEV_TOOLS } from '../../data/devtools.js';
+const alternates = alternatesForSection('imagewonder');
+
 ---
 
 <BaseLayout
   title="Free Image Tools Online — Resize, Compress, Convert & More | ImageWonder"
   description="ImageWonder offers 10 free browser-based image tools. Resize, compress, convert, crop, watermark, pick colors, view metadata — all in your browser. No upload, no signup."
   canonical="/imagewonder/"
+  alternates={alternates}
 >
-  <ImageHeader />
+  <ImageHeader alternates={alternates} />
 
   <main>
     <!-- Hero -->

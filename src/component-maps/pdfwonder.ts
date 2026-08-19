@@ -1,0 +1,61 @@
+// Auto-extracted from src/pages/pdfwonder/[slug].astro so English and localized
+// routes render the exact same tool UI components from one source of truth.
+import PdfMerger from '../components/pdf-tools/PdfMerger.astro';
+import ExtractPdfPages from '../components/pdf-tools/ExtractPdfPages.astro';
+import PdfSplitter from '../components/pdf-tools/PdfSplitter.astro';
+import PdfToText from '../components/pdf-tools/PdfToText.astro';
+import TextToPdf from '../components/pdf-tools/TextToPdf.astro';
+import PdfRotatePages from '../components/pdf-tools/PdfRotatePages.astro';
+import PdfRemovePages from '../components/pdf-tools/PdfRemovePages.astro';
+import PdfWatermark from '../components/pdf-tools/PdfWatermark.astro';
+import PdfMetadataViewer from '../components/pdf-tools/PdfMetadataViewer.astro';
+import PdfReorderPages from '../components/pdf-tools/PdfReorderPages.astro';
+import PdfCompress from '../components/pdf-tools/PdfCompress.astro';
+import PdfToJpg from '../components/pdf-tools/PdfToJpg.astro';
+import JpgToPdf from '../components/pdf-tools/JpgToPdf.astro';
+import PdfPageNumbers from '../components/pdf-tools/PdfPageNumbers.astro';
+import PdfPasswordProtect from '../components/pdf-tools/PdfPasswordProtect.astro';
+import PdfSign from '../components/pdf-tools/PdfSign.astro';
+import PdfWordCount from '../components/pdf-tools/PdfWordCount.astro';
+import PdfUnlock from '../components/pdf-tools/PdfUnlock.astro';
+import PdfToPng from '../components/pdf-tools/PdfToPng.astro';
+import PdfDarkMode from '../components/pdf-tools/PdfDarkMode.astro';
+import PdfGrayscale from '../components/pdf-tools/PdfGrayscale.astro';
+import PdfRemoveBlankPages from '../components/pdf-tools/PdfRemoveBlankPages.astro';
+import PdfHeaderFooter from '../components/pdf-tools/PdfHeaderFooter.astro';
+import PdfCrop from '../components/pdf-tools/PdfCrop.astro';
+import PdfResize from '../components/pdf-tools/PdfResize.astro';
+import TextToWord from '../components/pdf-tools/TextToWord.astro';
+import PdfScanEnhance from '../components/pdf-tools/PdfScanEnhance.astro';
+import MarkdownToPdf from '../components/pdf-tools/MarkdownToPdf.astro';
+
+export const componentMap: Record<string, any> = {
+  'pdf-merger': PdfMerger,
+  'pdf-extract-pages': ExtractPdfPages,
+  'pdf-splitter': PdfSplitter,
+  'pdf-to-text': PdfToText,
+  'text-to-pdf': TextToPdf,
+  'pdf-rotate-pages': PdfRotatePages,
+  'pdf-remove-pages': PdfRemovePages,
+  'pdf-watermark': PdfWatermark,
+  'pdf-metadata-viewer': PdfMetadataViewer,
+  'pdf-reorder-pages': PdfReorderPages,
+  'pdf-compress': PdfCompress,
+  'pdf-to-jpg': PdfToJpg,
+  'jpg-to-pdf': JpgToPdf,
+  'pdf-page-numbers': PdfPageNumbers,
+  'pdf-password-protect': PdfPasswordProtect,
+  'pdf-sign': PdfSign,
+  'pdf-word-count': PdfWordCount,
+  'pdf-unlock': PdfUnlock,
+  'pdf-to-png': PdfToPng,
+  'pdf-dark-mode': PdfDarkMode,
+  'pdf-grayscale': PdfGrayscale,
+  'pdf-remove-blank-pages': PdfRemoveBlankPages,
+  'pdf-header-footer': PdfHeaderFooter,
+  'pdf-crop': PdfCrop,
+  'pdf-resize': PdfResize,
+  'text-to-word': TextToWord,
+  'pdf-scan-enhance': PdfScanEnhance,
+  'markdown-to-pdf': MarkdownToPdf,
+};

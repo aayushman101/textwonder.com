@@ -1,0 +1,48 @@
+---
+// Every localized tool page, for every locale and every section, in one route.
+// getStaticPaths only emits (locale, section, slug) triples that have a real
+// translation, so no English content ever gets published under a locale prefix.
+import I18nToolLayout from '../../../layouts/I18nToolLayout.astro';
+import { allLocalizedToolRoutes, resolveTool, alternatesForTool } from '../../../i18n/index.js';
+
+import { componentMap as toolsMap } from '../../../component-maps/tools';
+import { componentMap as pdfMap } from '../../../component-maps/pdfwonder';
+import { componentMap as devMap } from '../../../component-maps/devwonder';
+import { componentMap as imageMap } from '../../../component-maps/imagewonder';
+import { componentMap as calcMap } from '../../../component-maps/calc';
+import { componentMap as unitMap } from '../../../component-maps/unit';
+import { componentMap as healthMap } from '../../../component-maps/health';
+import { componentMap as studentMap } from '../../../component-maps/student';
+import { componentMap as colorMap } from '../../../component-maps/color';
+import { componentMap as dataMap } from '../../../component-maps/data';
+
+const MAPS: Record<string, Record<string, any>> = {
+  tools: toolsMap,
+  pdfwonder: pdfMap,
+  devwonder: devMap,
+  imagewonder: imageMap,
+  calc: calcMap,
+  unit: unitMap,
+  health: healthMap,
+  student: studentMap,
+  color: colorMap,
+  data: dataMap,
+};
+
+export function getStaticPaths() {
+  return allLocalizedToolRoutes();
+}
+
+const { locale, sectionKey, slug } = Astro.props;
+
+const tool = resolveTool(locale, sectionKey, slug);
+const alternates = alternatesForTool(sectionKey, slug);
+
+// The English slug is preserved on the merged tool precisely so the shared
+// component maps keep resolving regardless of the localized URL.
+const ToolComponent = MAPS[sectionKey]?.[slug];
+---
+
+<I18nToolLayout tool={tool} locale={locale} sectionKey={sectionKey} alternates={alternates}>
+  {ToolComponent ? <ToolComponent tool={tool} /> : <p class="text-slate-400">{tool.tagline}</p>}
+</I18nToolLayout>

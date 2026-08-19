@@ -1,0 +1,39 @@
+// Auto-extracted from src/pages/imagewonder/[slug].astro so English and localized
+// routes render the exact same tool UI components from one source of truth.
+import ImageResizer from '../components/image-tools/ImageResizer.astro';
+import ImageCompressor from '../components/image-tools/ImageCompressor.astro';
+import ImageConverter from '../components/image-tools/ImageConverter.astro';
+import ImageCropper from '../components/image-tools/ImageCropper.astro';
+import ImageToBase64 from '../components/image-tools/ImageToBase64.astro';
+import Base64ToImage from '../components/image-tools/Base64ToImage.astro';
+import ImageColorPicker from '../components/image-tools/ImageColorPicker.astro';
+import ImageRotateFlip from '../components/image-tools/ImageRotateFlip.astro';
+import ImageWatermark from '../components/image-tools/ImageWatermark.astro';
+import ImageMetadata from '../components/image-tools/ImageMetadata.astro';
+import ImageScanner from '../components/image-tools/ImageScanner.astro';
+import ImageToPdf from '../components/image-tools/ImageToPdf.astro';
+import ImageBrightness from '../components/image-tools/ImageBrightness.astro';
+import ImageEffects from '../components/image-tools/ImageEffects.astro';
+import MemeGenerator from '../components/image-tools/MemeGenerator.astro';
+import BlurFace from '../components/image-tools/BlurFace.astro';
+import HtmlToImage from '../components/image-tools/HtmlToImage.astro';
+
+export const componentMap: Record<string, any> = {
+  'image-resizer': ImageResizer,
+  'image-compressor': ImageCompressor,
+  'image-converter': ImageConverter,
+  'image-cropper': ImageCropper,
+  'image-to-base64': ImageToBase64,
+  'base64-to-image': Base64ToImage,
+  'image-color-picker': ImageColorPicker,
+  'image-rotate-flip': ImageRotateFlip,
+  'image-watermark': ImageWatermark,
+  'image-metadata': ImageMetadata,
+  'image-scanner': ImageScanner,
+  'image-to-pdf': ImageToPdf,
+  'image-brightness': ImageBrightness,
+  'image-effects': ImageEffects,
+  'meme-generator': MemeGenerator,
+  'blur-face': BlurFace,
+  'html-to-image': HtmlToImage,
+};

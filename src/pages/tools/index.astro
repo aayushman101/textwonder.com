@@ -1,17 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ToolCard from '../../components/ToolCard.astro';
 import { TOOLS, CATEGORIES, getToolsByCategory } from '../../data/tools.js';
+const alternates = alternatesForSection('tools');
+
 ---
 
 <BaseLayout
   title="All Free Text Tools — TextWonder"
   description="Browse all 61+ free online text tools on TextWonder. Word counters, case converters, text cleaners, readability analyzers, and more. No signup required."
   canonical="/tools/"
+  alternates={alternates}
 >
-  <Header />
+  <Header alternates={alternates} />
 
   <main class="max-w-6xl mx-auto px-4 py-10">
     <div class="mb-8">

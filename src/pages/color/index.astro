@@ -1,19 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import WonderHeader from '../../components/WonderHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { COLOR_TOOLS } from '../../data/colortools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
 
 const brand = { name: 'ColorWonder', prefix: 'Color', suffix: 'Wonder', rootPath: '/color', accentColor: '#ec4899', idPrefix: 'color' };
+const alternates = alternatesForSection('color');
+
 ---
 
 <BaseLayout
   title="Free Color Tools — HEX/RGB Converter, Contrast Checker & More | ColorWonder"
   description="Free color tools for designers: HEX/RGB/HSL converter, contrast checker, gradient generator, palette maker, shadow generator, color mixer and more. Free, no signup."
   canonical="/color/"
+  alternates={alternates}
 >
-  <WonderHeader brand={brand} tools={COLOR_TOOLS} />
+  <WonderHeader alternates={alternates} brand={brand} tools={COLOR_TOOLS} />
 
   <main>
     <!-- Hero -->

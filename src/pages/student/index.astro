@@ -1,19 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import WonderHeader from '../../components/WonderHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { STUDENT_TOOLS } from '../../data/studenttools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
 
 const brand = { name: 'StudentWonder', prefix: 'Student', suffix: 'Wonder', rootPath: '/student', accentColor: '#3b82f6', idPrefix: 'student' };
+const alternates = alternatesForSection('student');
+
 ---
 
 <BaseLayout
   title="Free Student Calculators — CGPA, GPA, Attendance & More | StudentWonder"
   description="Free calculators for students: CGPA, GPA, attendance tracker, marks percentage, exam countdown, study planner, Pomodoro timer, and GPA goal calculator. Instant results, no signup."
   canonical="/student/"
+  alternates={alternates}
 >
-  <WonderHeader brand={brand} tools={STUDENT_TOOLS} />
+  <WonderHeader alternates={alternates} brand={brand} tools={STUDENT_TOOLS} />
 
   <main>
     <!-- Hero -->

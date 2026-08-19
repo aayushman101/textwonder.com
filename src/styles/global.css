@@ -87,3 +87,47 @@
   border-color: #ede9fe;
   box-shadow: 0 1px 3px rgba(109, 40, 217, 0.08);
 }
+
+/* ── RTL (Arabic) ───────────────────────────────────────────────────────────
+   The layout is mostly centred flex, so only directionally-anchored bits need
+   mirroring. Localized components use logical properties (ms-/me-/ps-/pe-/
+   start-/end-) which Tailwind already flips; these rules cover the shared
+   English components that still use physical left/right utilities. */
+
+[dir="rtl"] { text-align: right; }
+
+/* Text inputs and code output stay LTR — user content is usually not Arabic
+   and mirroring it would scramble URLs, JSON, and code. */
+[dir="rtl"] textarea,
+[dir="rtl"] input[type="text"],
+[dir="rtl"] input[type="url"],
+[dir="rtl"] input[type="email"],
+[dir="rtl"] input[type="number"],
+[dir="rtl"] pre,
+[dir="rtl"] code {
+  direction: ltr;
+  text-align: left;
+}
+
+/* …but the search box should follow the reading direction. */
+[dir="rtl"] #i18n-search-input,
+[dir="rtl"] #section-tool-search {
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] .text-left  { text-align: right; }
+[dir="rtl"] .text-right { text-align: left; }
+
+/* Mirror the icon-in-field padding used by search bars */
+[dir="rtl"] .pl-10 { padding-left: 1rem; padding-right: 2.5rem; }
+[dir="rtl"] .pr-4  { padding-right: 1rem; padding-left: 1rem; }
+
+/* Flip absolute anchors that assume LTR */
+[dir="rtl"] .left-4  { left: auto; right: 1rem; }
+[dir="rtl"] .right-4 { right: auto; left: 1rem; }
+[dir="rtl"] .ml-auto { margin-left: 0; margin-right: auto; }
+[dir="rtl"] .mr-auto { margin-right: 0; margin-left: auto; }
+
+/* Arrow glyphs point the other way when reading right-to-left */
+[dir="rtl"] .rtl-flip { display: inline-block; transform: scaleX(-1); }

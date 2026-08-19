@@ -1,0 +1,223 @@
+// Auto-extracted from src/pages/tools/[slug].astro so English and localized
+// routes render the exact same tool UI components from one source of truth.
+import RemoveEmojis from '../components/tools/RemoveEmojis.astro';
+import RemoveDuplicateLines from '../components/tools/RemoveDuplicateLines.astro';
+import RemoveExtraSpaces from '../components/tools/RemoveExtraSpaces.astro';
+import TitleCaseConverter from '../components/tools/TitleCaseConverter.astro';
+import UppercaseConverter from '../components/tools/UppercaseConverter.astro';
+import LowercaseConverter from '../components/tools/LowercaseConverter.astro';
+import WordCounter from '../components/tools/WordCounter.astro';
+import CharacterCounter from '../components/tools/CharacterCounter.astro';
+import SortLines from '../components/tools/SortLines.astro';
+import ReverseText from '../components/tools/ReverseText.astro';
+import SentenceCounter from '../components/tools/SentenceCounter.astro';
+import ParagraphCounter from '../components/tools/ParagraphCounter.astro';
+import LineCounter from '../components/tools/LineCounter.astro';
+import UniqueWordCounter from '../components/tools/UniqueWordCounter.astro';
+import DuplicateWordCounter from '../components/tools/DuplicateWordCounter.astro';
+import AverageWordLength from '../components/tools/AverageWordLength.astro';
+import ReadingTimeCalculator from '../components/tools/ReadingTimeCalculator.astro';
+import SpeakingTimeCalculator from '../components/tools/SpeakingTimeCalculator.astro';
+import PresentationTimeEstimator from '../components/tools/PresentationTimeEstimator.astro';
+import AudiobookDurationEstimator from '../components/tools/AudiobookDurationEstimator.astro';
+import MostFrequentWords from '../components/tools/MostFrequentWords.astro';
+import LeastFrequentWords from '../components/tools/LeastFrequentWords.astro';
+import LongestWordFinder from '../components/tools/LongestWordFinder.astro';
+import ShortestWordFinder from '../components/tools/ShortestWordFinder.astro';
+import VocabularyRichness from '../components/tools/VocabularyRichness.astro';
+import TextDensity from '../components/tools/TextDensity.astro';
+import KeywordDensityChecker from '../components/tools/KeywordDensityChecker.astro';
+import StopWordPercentage from '../components/tools/StopWordPercentage.astro';
+import RepeatedPhraseDetector from '../components/tools/RepeatedPhraseDetector.astro';
+import NGramAnalyzer from '../components/tools/NGramAnalyzer.astro';
+import LexicalDiversity from '../components/tools/LexicalDiversity.astro';
+import ReadabilityScore from '../components/tools/ReadabilityScore.astro';
+import GradeLevelChecker from '../components/tools/GradeLevelChecker.astro';
+import PalindromeChecker from '../components/tools/PalindromeChecker.astro';
+import PangramChecker from '../components/tools/PangramChecker.astro';
+import TextEntropy from '../components/tools/TextEntropy.astro';
+import CharacterFrequency from '../components/tools/CharacterFrequency.astro';
+import VowelCounter from '../components/tools/VowelCounter.astro';
+import NumberCounter from '../components/tools/NumberCounter.astro';
+import EmojiCounter from '../components/tools/EmojiCounter.astro';
+import SymbolCounter from '../components/tools/SymbolCounter.astro';
+import SentenceCaseConverter from '../components/tools/SentenceCaseConverter.astro';
+import CamelCaseConverter from '../components/tools/CamelCaseConverter.astro';
+import SnakeCaseConverter from '../components/tools/SnakeCaseConverter.astro';
+import KebabCaseConverter from '../components/tools/KebabCaseConverter.astro';
+import UrlSlugGenerator from '../components/tools/UrlSlugGenerator.astro';
+import Base64EncoderDecoder from '../components/tools/Base64EncoderDecoder.astro';
+import UrlEncoderDecoder from '../components/tools/UrlEncoderDecoder.astro';
+import HtmlEntityEncoder from '../components/tools/HtmlEntityEncoder.astro';
+import MorseCodeConverter from '../components/tools/MorseCodeConverter.astro';
+import Rot13Encoder from '../components/tools/Rot13Encoder.astro';
+import BinaryTextConverter from '../components/tools/BinaryTextConverter.astro';
+import RemoveHtmlTags from '../components/tools/RemoveHtmlTags.astro';
+import FindAndReplace from '../components/tools/FindAndReplace.astro';
+import TextRepeater from '../components/tools/TextRepeater.astro';
+import AddLineNumbers from '../components/tools/AddLineNumbers.astro';
+import LoremIpsumGenerator from '../components/tools/LoremIpsumGenerator.astro';
+import TextWrapper from '../components/tools/TextWrapper.astro';
+import TextDiffChecker from '../components/tools/TextDiffChecker.astro';
+import ExtractEmails from '../components/tools/ExtractEmails.astro';
+import ExtractUrls from '../components/tools/ExtractUrls.astro';
+import RentReceiptGenerator from '../components/tools/RentReceiptGenerator.astro';
+import ExperienceLetterGenerator from '../components/tools/ExperienceLetterGenerator.astro';
+import RelievingLetterGenerator from '../components/tools/RelievingLetterGenerator.astro';
+import SalarySlipGenerator from '../components/tools/SalarySlipGenerator.astro';
+import ProformaInvoiceGenerator from '../components/tools/ProformaInvoiceGenerator.astro';
+import TextToVoice from '../components/tools/TextToVoice.astro';
+import LeaveApplicationGenerator from '../components/tools/LeaveApplicationGenerator.astro';
+import NocGenerator from '../components/tools/NocGenerator.astro';
+import FancyTextGenerator from '../components/tools/FancyTextGenerator.astro';
+import AlternatingCaseConverter from '../components/tools/AlternatingCaseConverter.astro';
+import UpsideDownText from '../components/tools/UpsideDownText.astro';
+import ZalgoTextGenerator from '../components/tools/ZalgoTextGenerator.astro';
+import LeetSpeakConverter from '../components/tools/LeetSpeakConverter.astro';
+import PigLatinConverter from '../components/tools/PigLatinConverter.astro';
+import TextToHex from '../components/tools/TextToHex.astro';
+import NumbersToWords from '../components/tools/NumbersToWords.astro';
+import RemovePunctuation from '../components/tools/RemovePunctuation.astro';
+import RemoveNumbers from '../components/tools/RemoveNumbers.astro';
+import RemoveSpecialCharacters from '../components/tools/RemoveSpecialCharacters.astro';
+import RemoveBlankLines from '../components/tools/RemoveBlankLines.astro';
+import AddPrefixSuffix from '../components/tools/AddPrefixSuffix.astro';
+import ShuffleLines from '../components/tools/ShuffleLines.astro';
+import LinesToCsv from '../components/tools/LinesToCsv.astro';
+import WordScrambler from '../components/tools/WordScrambler.astro';
+import SyllableCounter from '../components/tools/SyllableCounter.astro';
+import ExtractPhoneNumbers from '../components/tools/ExtractPhoneNumbers.astro';
+import TextToAsciiArt from '../components/tools/TextToAsciiArt.astro';
+import SmallCapsGenerator from '../components/tools/SmallCapsGenerator.astro';
+import SplitText from '../components/tools/SplitText.astro';
+import JoinLines from '../components/tools/JoinLines.astro';
+import TruncateText from '../components/tools/TruncateText.astro';
+import ReverseWords from '../components/tools/ReverseWords.astro';
+import InvertCase from '../components/tools/InvertCase.astro';
+import RemoveVowels from '../components/tools/RemoveVowels.astro';
+import RemoveConsonants from '../components/tools/RemoveConsonants.astro';
+import RemoveLineBreaks from '../components/tools/RemoveLineBreaks.astro';
+import RemoveWhitespace from '../components/tools/RemoveWhitespace.astro';
+import RemoveDiacritics from '../components/tools/RemoveDiacritics.astro';
+import SortWords from '../components/tools/SortWords.astro';
+import RemoveDuplicateWords from '../components/tools/RemoveDuplicateWords.astro';
+import FilterLines from '../components/tools/FilterLines.astro';
+import AddQuotes from '../components/tools/AddQuotes.astro';
+import TextToOctal from '../components/tools/TextToOctal.astro';
+import TextToDecimal from '../components/tools/TextToDecimal.astro';
+import Rot47Encoder from '../components/tools/Rot47Encoder.astro';
+import CensorWords from '../components/tools/CensorWords.astro';
+import DuplicateWords from '../components/tools/DuplicateWords.astro';
+import SpacesToTabs from '../components/tools/SpacesToTabs.astro';
+
+export const componentMap: Record<string, any> = {
+  'remove-emojis': RemoveEmojis,
+  'remove-duplicate-lines': RemoveDuplicateLines,
+  'remove-extra-spaces': RemoveExtraSpaces,
+  'title-case-converter': TitleCaseConverter,
+  'uppercase-converter': UppercaseConverter,
+  'lowercase-converter': LowercaseConverter,
+  'word-counter': WordCounter,
+  'character-counter': CharacterCounter,
+  'sort-lines': SortLines,
+  'reverse-text': ReverseText,
+  'sentence-counter': SentenceCounter,
+  'paragraph-counter': ParagraphCounter,
+  'line-counter': LineCounter,
+  'unique-word-counter': UniqueWordCounter,
+  'duplicate-word-counter': DuplicateWordCounter,
+  'average-word-length': AverageWordLength,
+  'reading-time-calculator': ReadingTimeCalculator,
+  'speaking-time-calculator': SpeakingTimeCalculator,
+  'presentation-time-estimator': PresentationTimeEstimator,
+  'audiobook-duration-estimator': AudiobookDurationEstimator,
+  'most-frequent-words': MostFrequentWords,
+  'least-frequent-words': LeastFrequentWords,
+  'longest-word-finder': LongestWordFinder,
+  'shortest-word-finder': ShortestWordFinder,
+  'vocabulary-richness': VocabularyRichness,
+  'text-density': TextDensity,
+  'keyword-density-checker': KeywordDensityChecker,
+  'stop-word-percentage': StopWordPercentage,
+  'repeated-phrase-detector': RepeatedPhraseDetector,
+  'n-gram-analyzer': NGramAnalyzer,
+  'lexical-diversity': LexicalDiversity,
+  'readability-score': ReadabilityScore,
+  'grade-level-checker': GradeLevelChecker,
+  'palindrome-checker': PalindromeChecker,
+  'pangram-checker': PangramChecker,
+  'text-entropy': TextEntropy,
+  'character-frequency': CharacterFrequency,
+  'vowel-counter': VowelCounter,
+  'number-counter': NumberCounter,
+  'emoji-counter': EmojiCounter,
+  'symbol-counter': SymbolCounter,
+  'sentence-case-converter': SentenceCaseConverter,
+  'camel-case-converter': CamelCaseConverter,
+  'snake-case-converter': SnakeCaseConverter,
+  'kebab-case-converter': KebabCaseConverter,
+  'url-slug-generator': UrlSlugGenerator,
+  'base64-encoder-decoder': Base64EncoderDecoder,
+  'url-encoder-decoder': UrlEncoderDecoder,
+  'html-entity-encoder': HtmlEntityEncoder,
+  'morse-code-converter': MorseCodeConverter,
+  'rot13-encoder': Rot13Encoder,
+  'binary-text-converter': BinaryTextConverter,
+  'remove-html-tags': RemoveHtmlTags,
+  'find-and-replace': FindAndReplace,
+  'text-repeater': TextRepeater,
+  'add-line-numbers': AddLineNumbers,
+  'lorem-ipsum-generator': LoremIpsumGenerator,
+  'text-wrapper': TextWrapper,
+  'text-diff-checker': TextDiffChecker,
+  'extract-emails': ExtractEmails,
+  'extract-urls': ExtractUrls,
+  'rent-receipt-generator': RentReceiptGenerator,
+  'experience-letter-generator': ExperienceLetterGenerator,
+  'relieving-letter-generator': RelievingLetterGenerator,
+  'salary-slip-generator': SalarySlipGenerator,
+  'proforma-invoice-generator': ProformaInvoiceGenerator,
+  'text-to-voice': TextToVoice,
+  'leave-application-generator': LeaveApplicationGenerator,
+  'noc-generator': NocGenerator,
+  'fancy-text-generator': FancyTextGenerator,
+  'alternating-case-converter': AlternatingCaseConverter,
+  'upside-down-text': UpsideDownText,
+  'zalgo-text-generator': ZalgoTextGenerator,
+  'leet-speak-converter': LeetSpeakConverter,
+  'pig-latin-converter': PigLatinConverter,
+  'text-to-hex': TextToHex,
+  'numbers-to-words': NumbersToWords,
+  'remove-punctuation': RemovePunctuation,
+  'remove-numbers': RemoveNumbers,
+  'remove-special-characters': RemoveSpecialCharacters,
+  'remove-blank-lines': RemoveBlankLines,
+  'add-prefix-suffix': AddPrefixSuffix,
+  'shuffle-lines': ShuffleLines,
+  'lines-to-csv': LinesToCsv,
+  'word-scrambler': WordScrambler,
+  'syllable-counter': SyllableCounter,
+  'extract-phone-numbers': ExtractPhoneNumbers,
+  'text-to-ascii-art': TextToAsciiArt,
+  'small-caps-generator': SmallCapsGenerator,
+  'split-text': SplitText,
+  'join-lines': JoinLines,
+  'truncate-text': TruncateText,
+  'reverse-words': ReverseWords,
+  'invert-case': InvertCase,
+  'remove-vowels': RemoveVowels,
+  'remove-consonants': RemoveConsonants,
+  'remove-line-breaks': RemoveLineBreaks,
+  'remove-whitespace': RemoveWhitespace,
+  'remove-diacritics': RemoveDiacritics,
+  'sort-words': SortWords,
+  'remove-duplicate-words': RemoveDuplicateWords,
+  'filter-lines': FilterLines,
+  'add-quotes': AddQuotes,
+  'text-to-octal': TextToOctal,
+  'text-to-decimal': TextToDecimal,
+  'rot47-encoder': Rot47Encoder,
+  'censor-words': CensorWords,
+  'duplicate-words': DuplicateWords,
+  'spaces-to-tabs': SpacesToTabs,
+};

@@ -94,3 +94,63 @@ Whenever you add any new tool (PDF, text, dev, calc, color, health, student, dat
 - **PDF processing:** pdf-lib (CDN) + PDF.js (CDN) — all browser-based, no server
 - **Hosting:** Cloudflare Pages (`textwonder` project)
 - **Analytics:** Google Analytics G-C7Q4Q1J205
+
+## Internationalisation (i18n)
+
+The site ships in 10 languages. English lives at the root; the other nine sit
+under a locale prefix with **fully translated URL slugs**.
+
+```
+EN  /tools/word-counter/
+ES  /es/herramientas-texto/contador-de-palabras/
+DE  /de/text-werkzeuge/woerter-zaehlen/
+RU  /ru/tekstovye-instrumenty/schetchik-slov/
+```
+
+### Where things live
+| File | Purpose |
+|---|---|
+| `src/i18n/config.js` | Locale registry (codes, hreflang, dir, native names) + section URL segment per locale |
+| `src/i18n/ui.js` | Site chrome strings (header, footer, section headings) — 37 keys × 10 locales |
+| `src/i18n/tools/<locale>.js` | Per-locale tool translations, keyed by section then **English slug** |
+| `src/i18n/index.js` | Registry: resolves tools, builds URLs, builds hreflang clusters, feeds `getStaticPaths` |
+| `src/component-maps/<section>.ts` | Shared slug → component maps, used by BOTH English and localized routes |
+| `src/pages/[locale]/…` | The three localized routes: home, section index, tool page |
+
+### Hard rules — do not break these
+1. **No English fallback pages.** A localized page is generated *only* when a
+   real translation exists. Publishing English copy under `/es/` is duplicate
+   thin content and can suppress the whole locale. `resolveTool()` returns
+   `null` when untranslated, and `getStaticPaths` skips it.
+2. **hreflang must be bidirectional.** Every page in a cluster lists every
+   other version plus one `x-default`. English layouts call
+   `alternatesForTool()` / `alternatesForSection()` for exactly this reason —
+   if the English page stops listing the translations, Google discards the
+   whole cluster.
+3. **Translation records keep the English slug as their key.** The localized
+   URL segment goes in the `slug` field. This is what lets the shared
+   component maps keep resolving the right tool UI.
+4. **Slug script policy.** Latin-script locales (es, pt, fr, de, id) get native
+   slugs; de transliterates umlauts (ö→oe). hi and ru use ASCII
+   transliteration; ja and ar use English-descriptive slugs. Non-ASCII paths
+   break on Windows checkouts and wrangler uploads — the native keywords
+   belong in the title, H1 and body instead.
+
+### Adding a translation
+Add a record to `src/i18n/tools/<locale>.js` under the right section, keyed by
+the English slug. Provide at minimum: `slug`, `name`, `tagline`, `metaTitle`,
+`metaDescription`, `h1`, `descriptionLong`, `useCases`, `howItWorks`, `faqs`.
+The page, its hreflang entries, sitemap row and nav links appear on next build.
+
+Research the term the market **actually searches** — "unir pdf", not a literal
+translation of "PDF merger". That choice is most of the SEO value.
+
+### Coverage
+Wave 1 covers 20 tools × 9 languages (180 pages). Remaining tools are
+English-only until translated — which is correct and safe, not a bug.
+
+### Known gap
+Tool **UI** components (`src/components/*/`) still hardcode English labels
+("Your Text", "Words", "Clear"). All SEO-bearing copy is translated; the
+in-widget labels are not. Translating them means threading a `locale` prop
+through ~223 components.

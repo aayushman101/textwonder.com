@@ -1,0 +1,95 @@
+---
+// Localized home page (e.g. /es/). Acts as the hub that passes internal link
+// equity down to every translated tool page in that language.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import I18nHeader from '../../components/I18nHeader.astro';
+import I18nFooter from '../../components/I18nFooter.astro';
+import {
+  allLocaleHomeRoutes, sectionsForLocale, sectionMeta, sectionPath,
+  toolsForLocale, toolPath, alternatesForHome, toolCountForLocale,
+  homePath, absolute, t, SECTION_BRANDS, LOCALES,
+} from '../../i18n/index.js';
+
+export function getStaticPaths() {
+  return allLocaleHomeRoutes();
+}
+
+const { locale } = Astro.props;
+
+const total = toolCountForLocale(locale);
+const alternates = alternatesForHome();
+const canonical = homePath(locale);
+
+const sections = sectionsForLocale(locale).map((key) => ({
+  key,
+  ...SECTION_BRANDS[key],
+  ...sectionMeta(locale, key),
+  path: sectionPath(locale, key),
+  tools: toolsForLocale(locale, key).slice(0, 6).map((tool) => ({
+    name: tool.name,
+    path: toolPath(locale, key, tool.slug),
+  })),
+}));
+
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'TextWonder',
+  url: absolute(canonical),
+  inLanguage: LOCALES[locale].hreflang,
+};
+---
+
+<BaseLayout
+  title={`TextWonder — ${t(locale, 'nav.tagline')}`}
+  description={t(locale, 'footer.brandDesc')}
+  canonical={canonical}
+  lang={locale}
+  alternates={alternates}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(siteSchema)} />
+  </Fragment>
+
+  <I18nHeader locale={locale} alternates={alternates} />
+
+  <main class="max-w-6xl mx-auto px-4 py-12">
+    <section class="text-center mb-14">
+      <h1 class="text-4xl md:text-5xl font-bold text-white mb-4" style="font-family: 'Space Grotesk', sans-serif;">
+        Text<span style="background: linear-gradient(to right, #2563eb, #4f46e5, #9333ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Wonder</span>
+      </h1>
+      <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+        {t(locale, 'section.subtitle', { count: total })}
+      </p>
+    </section>
+
+    <div class="space-y-12">
+      {sections.map((s) => (
+        <section>
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center text-xl shrink-0"
+              style={`background:rgba(${s.accentRgb},0.12); border:1px solid rgba(${s.accentRgb},0.3)`}>
+              {s.icon}
+            </span>
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold text-white">{s.name}</h2>
+              <p class="text-slate-500 text-sm">{s.count}</p>
+            </div>
+            <a href={s.path} class="ms-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
+              {t(locale, 'section.viewCategory')} &rarr;
+            </a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {s.tools.map((tool) => (
+              <a href={tool.path} class="block bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-4 py-3 hover:border-slate-700 transition-colors group">
+                <span class="text-white text-sm font-medium group-hover:text-violet-400 transition-colors">{tool.name}</span>
+              </a>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+  </main>
+
+  <I18nFooter locale={locale} />
+</BaseLayout>

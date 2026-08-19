@@ -1,0 +1,35 @@
+// Auto-extracted from src/pages/calc/[slug].astro so English and localized
+// routes render the exact same tool UI components from one source of truth.
+import AgeCalculator from '../components/calc-tools/AgeCalculator.astro';
+import PercentageCalculator from '../components/calc-tools/PercentageCalculator.astro';
+import EmiCalculator from '../components/calc-tools/EmiCalculator.astro';
+import SipCalculator from '../components/calc-tools/SipCalculator.astro';
+import CompoundInterestCalculator from '../components/calc-tools/CompoundInterestCalculator.astro';
+import SimpleInterestCalculator from '../components/calc-tools/SimpleInterestCalculator.astro';
+import GstCalculator from '../components/calc-tools/GstCalculator.astro';
+import DiscountCalculator from '../components/calc-tools/DiscountCalculator.astro';
+import FdCalculator from '../components/calc-tools/FdCalculator.astro';
+import PpfCalculator from '../components/calc-tools/PpfCalculator.astro';
+import TipCalculator from '../components/calc-tools/TipCalculator.astro';
+import WeightedAverageCalculator from '../components/calc-tools/WeightedAverageCalculator.astro';
+import CommissionCalculator from '../components/calc-tools/CommissionCalculator.astro';
+import SalesTaxCalculator from '../components/calc-tools/SalesTaxCalculator.astro';
+import RenovationCostCalculator from '../components/calc-tools/RenovationCostCalculator.astro';
+
+export const componentMap: Record<string, any> = {
+  'age-calculator': AgeCalculator,
+  'percentage-calculator': PercentageCalculator,
+  'emi-calculator': EmiCalculator,
+  'sip-calculator': SipCalculator,
+  'compound-interest-calculator': CompoundInterestCalculator,
+  'simple-interest-calculator': SimpleInterestCalculator,
+  'gst-calculator': GstCalculator,
+  'discount-calculator': DiscountCalculator,
+  'fd-calculator': FdCalculator,
+  'ppf-calculator': PpfCalculator,
+  'tip-calculator': TipCalculator,
+  'weighted-average-calculator': WeightedAverageCalculator,
+  'commission-calculator': CommissionCalculator,
+  'sales-tax-calculator': SalesTaxCalculator,
+  'renovation-cost-calculator': RenovationCostCalculator,
+};

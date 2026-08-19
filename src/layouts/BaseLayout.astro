@@ -1,13 +1,26 @@
 ---
 import '../styles/global.css';
 
-const { title, description, canonical, ogImage } = Astro.props;
+import { LOCALES, DEFAULT_LOCALE } from '../i18n/config.js';
+
+const {
+  title, description, canonical, ogImage,
+  lang = DEFAULT_LOCALE,
+  alternates = [],
+  noindex = false,
+} = Astro.props;
+
 const siteUrl = 'https://textwonder.com';
 const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
 const ogImg = `${siteUrl}${ogImage || '/og-default.svg'}`;
+
+const locale = LOCALES[lang] || LOCALES[DEFAULT_LOCALE];
+// Only emit an hreflang cluster when a page genuinely exists in more than one
+// language — a lone self-referencing alternate is noise Google ignores.
+const hreflangs = alternates.length > 1 ? alternates : [];
 ---
 <!DOCTYPE html>
-<html lang="en">
+<html lang={locale.code} dir={locale.dir}>
 <head>
   <script is:inline>
     (function(){var t=localStorage.getItem('tw-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();
@@ -17,6 +30,12 @@ const ogImg = `${siteUrl}${ogImage || '/og-default.svg'}`;
   <title>{title}</title>
   <meta name="description" content={description} />
   <link rel="canonical" href={fullCanonical} />
+  {noindex && <meta name="robots" content="noindex, follow" />}
+
+  <!-- hreflang cluster: every language version points at every other one -->
+  {hreflangs.map((alt) => (
+    <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+  ))}
 
   <!-- Open Graph -->
   <meta property="og:title" content={title} />
@@ -24,6 +43,10 @@ const ogImg = `${siteUrl}${ogImage || '/og-default.svg'}`;
   <meta property="og:url" content={fullCanonical} />
   <meta property="og:site_name" content="TextWonder" />
   <meta property="og:type" content="website" />
+  <meta property="og:locale" content={locale.ogLocale} />
+  {hreflangs
+    .filter((alt) => alt.hreflang !== 'x-default' && alt.locale !== lang)
+    .map((alt) => <meta property="og:locale:alternate" content={LOCALES[alt.locale].ogLocale} />)}
   <meta property="og:image" content={ogImg} />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />

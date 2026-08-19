@@ -1,19 +1,23 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import WonderHeader from '../../components/WonderHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { HEALTH_TOOLS } from '../../data/healthtools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
 
 const brand = { name: 'HealthWonder', prefix: 'Health', suffix: 'Wonder', rootPath: '/health', accentColor: '#22c55e', idPrefix: 'health' };
+const alternates = alternatesForSection('health');
+
 ---
 
 <BaseLayout
   title="Free Health Calculators — BMI, BMR, Calorie & More | HealthWonder"
   description="Free health calculators: BMI, BMR, TDEE, ideal weight, body fat, water intake, protein, and macros. Instant results based on science-backed formulas."
   canonical="/health/"
+  alternates={alternates}
 >
-  <WonderHeader brand={brand} tools={HEALTH_TOOLS} />
+  <WonderHeader alternates={alternates} brand={brand} tools={HEALTH_TOOLS} />
 
   <main>
     <!-- Hero -->

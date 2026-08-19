@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import { alternatesForTool } from '../i18n/index.js';
 import ImageHeader from '../components/ImageHeader.astro';
 import Footer from '../components/Footer.astro';
 
@@ -36,12 +37,17 @@ const faqSchema = (tool.faqs && tool.faqs.length > 0) ? {
     acceptedAnswer: { '@type': 'Answer', text: f.a },
   })),
 } : null;
+// hreflang cluster — the English page must list every translated version,
+// otherwise Google discards the whole cluster as one-directional.
+const alternates = alternatesForTool('imagewonder', tool.slug);
+
 ---
 
 <BaseLayout
   title={tool.metaTitle}
   description={tool.metaDescription}
   canonical={`/imagewonder/${tool.slug}/`}
+  alternates={alternates}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(schema)} />
@@ -49,7 +55,7 @@ const faqSchema = (tool.faqs && tool.faqs.length > 0) ? {
     {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
   </Fragment>
 
-  <ImageHeader />
+  <ImageHeader alternates={alternates} />
 
   <main class="max-w-4xl mx-auto px-4 py-10">
     <!-- Breadcrumb -->

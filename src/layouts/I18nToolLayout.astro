@@ -1,0 +1,153 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import I18nHeader from '../components/I18nHeader.astro';
+import I18nFooter from '../components/I18nFooter.astro';
+import AdSlot from '../components/AdSlot.astro';
+import {
+  t, LOCALES, homePath, sectionPath, sectionMeta, toolPath,
+  relatedForLocale, absolute, SECTION_BRANDS,
+} from '../i18n/index.js';
+
+const { tool, locale, sectionKey, alternates } = Astro.props;
+
+const brand = SECTION_BRANDS[sectionKey];
+const section = sectionMeta(locale, sectionKey);
+const canonical = toolPath(locale, sectionKey, tool.slug);
+const related = relatedForLocale(locale, sectionKey, tool.relatedTools);
+const hreflang = LOCALES[locale].hreflang;
+
+const appSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: tool.name,
+  url: absolute(canonical),
+  applicationCategory: 'UtilitiesApplication',
+  operatingSystem: 'Web',
+  inLanguage: hreflang,
+  description: tool.metaDescription,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  provider: { '@type': 'Organization', name: 'TextWonder', url: absolute('/') },
+};
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t(locale, 'nav.home'), item: absolute(homePath(locale)) },
+    { '@type': 'ListItem', position: 2, name: section.name, item: absolute(sectionPath(locale, sectionKey)) },
+    { '@type': 'ListItem', position: 3, name: tool.name, item: absolute(canonical) },
+  ],
+};
+
+const faqSchema = tool.faqs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      inLanguage: hreflang,
+      mainEntity: tool.faqs.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+---
+
+<BaseLayout
+  title={tool.metaTitle}
+  description={tool.metaDescription}
+  canonical={canonical}
+  lang={locale}
+  alternates={alternates}
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(appSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    {faqSchema && <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />}
+  </Fragment>
+
+  <I18nHeader locale={locale} alternates={alternates} />
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+    <nav aria-label="Breadcrumb" class="text-sm text-slate-500 flex flex-wrap items-center gap-1.5">
+      <a href={homePath(locale)} class="hover:text-violet-400 transition-colors">{t(locale, 'nav.home')}</a>
+      <span class="text-slate-700">/</span>
+      <a href={sectionPath(locale, sectionKey)} class="hover:text-violet-400 transition-colors">{section.name}</a>
+      <span class="text-slate-700">/</span>
+      <span class="text-slate-400">{tool.name}</span>
+    </nav>
+
+    <h1 class="text-3xl md:text-4xl font-bold text-white mt-4 mb-2" style="font-family: 'Space Grotesk', sans-serif;">
+      {tool.h1}
+    </h1>
+    <p class="text-slate-400 text-lg mb-8">{tool.tagline}</p>
+
+    <div class="bg-[var(--bg-surface)] border border-slate-800 rounded-2xl p-6 mb-10">
+      <slot />
+    </div>
+
+    <div class="mb-10">
+      <AdSlot slot="1234567890" format="rectangle" />
+    </div>
+
+    <section class="mb-10 space-y-6">
+      {tool.descriptionLong && (
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-2">{t(locale, 'tool.whatIs', { name: tool.name })}</h2>
+          <p class="text-slate-400 leading-relaxed">{tool.descriptionLong}</p>
+        </div>
+      )}
+      {tool.useCases && (
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-2">{t(locale, 'tool.useCases')}</h2>
+          <p class="text-slate-400 leading-relaxed">{tool.useCases}</p>
+        </div>
+      )}
+      {tool.howItWorks && (
+        <div>
+          <h2 class="text-xl font-semibold text-white mb-2">{t(locale, 'tool.howItWorks')}</h2>
+          <p class="text-slate-400 leading-relaxed">{tool.howItWorks}</p>
+        </div>
+      )}
+    </section>
+
+    <div class="mb-10">
+      <AdSlot slot="2345678901" format="rectangle" />
+    </div>
+
+    {tool.faqs?.length > 0 && (
+      <section class="mb-10">
+        <h2 class="text-xl font-semibold text-white mb-4">{t(locale, 'tool.faq')}</h2>
+        <div class="space-y-3">
+          {tool.faqs.map((faq) => (
+            <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl px-5 py-4 group">
+              <summary class="text-slate-200 font-medium cursor-pointer list-none flex items-center justify-between gap-4">
+                {faq.q}
+                <svg class="w-4 h-4 text-slate-500 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </summary>
+              <p class="text-slate-400 text-sm leading-relaxed mt-3">{faq.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="mb-10">
+        <h2 class="text-xl font-semibold text-white mb-4">{t(locale, 'tool.related')}</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {related.map((rel) => (
+            <a href={rel.path} class="block bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition-colors group">
+              <div class="text-white font-medium text-sm mb-1 group-hover:text-violet-400 transition-colors">{rel.name}</div>
+              <p class="text-slate-500 text-xs leading-relaxed line-clamp-2">{rel.tagline}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+  </main>
+
+  <I18nFooter locale={locale} />
+</BaseLayout>

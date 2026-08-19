@@ -1,17 +1,21 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { alternatesForSection } from '../../i18n/index.js';
 import PDFHeader from '../../components/PDFHeader.astro';
 import Footer from '../../components/Footer.astro';
 import { PDF_TOOLS } from '../../data/pdftools.js';
 import ToolSearchBar from '../../components/ToolSearchBar.astro';
+const alternates = alternatesForSection('pdfwonder');
+
 ---
 
 <BaseLayout
   title="Free Online PDF Tools — Merge, Split, Convert & More | PDFWonder"
   description="PDFWonder offers 10 free browser-based PDF tools. Merge, split, rotate, compress, watermark and convert PDFs. No upload, no signup, 100% private."
   canonical="/pdfwonder/"
+  alternates={alternates}
 >
-  <PDFHeader />
+  <PDFHeader alternates={alternates} />
 
   <main>
     <!-- Hero -->

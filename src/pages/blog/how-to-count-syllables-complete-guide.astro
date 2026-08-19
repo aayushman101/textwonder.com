@@ -1,11 +1,10 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogLayout from '../../layouts/BlogLayout.astro';
 
 const post = {
   title: 'How to Count Syllables: Complete Guide + Rules + Examples',
   description: 'Master syllable counting with English rules, examples, and tips. Includes haiku validation, poetry meter, and pronunciation guide.',
-  publishedDate: new Date('2026-08-14'),
+  date: '2026-08-14',
   readTime: '8 min read',
   category: 'Text Utilities',
   author: 'TextWonder',
@@ -55,13 +54,16 @@ const faqs = [
 ];
 ---
 
-<BaseLayout
+<BlogLayout
   title={post.title}
   description={post.description}
   canonical="/blog/how-to-count-syllables-complete-guide/"
+  date={post.date}
+  readTime={post.readTime}
+  category={post.category}
+  faqs={faqs}
 >
-  <BlogLayout title={post.title} publishedDate={post.publishedDate} readTime={post.readTime} category={post.category}>
-    <div class="prose prose-invert max-w-none space-y-6 text-slate-300">
+    <div>
       <!-- Introduction -->
       <section>
         <p class="text-lg leading-relaxed">
@@ -104,7 +106,7 @@ const faqs = [
           <li>Apply syllable rules (see below)</li>
         </ol>
         <p class="mt-3 text-sm bg-slate-900/50 border-l-4 border-violet-500 p-4 rounded">
-          <strong>Example:</strong> "beautiful" = b-**eau**-t-**i**-f-**u**-l = 3 vowel groups = 3 syllables
+          <strong>Example:</strong> "beautiful" = b-<strong>eau</strong>-t-<strong>i</strong>-f-<strong>u</strong>-l = 3 vowel groups = 3 syllables
         </p>
       </section>
 
@@ -253,5 +255,4 @@ const faqs = [
         </ul>
       </section>
     </div>
-  </BlogLayout>
-</BaseLayout>
+</BlogLayout>

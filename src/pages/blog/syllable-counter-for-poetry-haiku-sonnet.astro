@@ -1,24 +1,25 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
 import BlogLayout from '../../layouts/BlogLayout.astro';
 
 const post = {
   title: 'Syllable Counter for Poetry: Haiku, Sonnet & Limerick Validation',
   description: 'Use syllable counters to validate haiku (5-7-5), sonnets (10 per line), and limericks. Free online tool with instant poem structure checking.',
-  publishedDate: new Date('2026-08-14'),
+  date: '2026-08-14',
   readTime: '6 min read',
   category: 'Text Utilities',
   author: 'TextWonder',
 };
 ---
 
-<BaseLayout
+<BlogLayout
   title={post.title}
   description={post.description}
   canonical="/blog/syllable-counter-for-poetry-haiku-sonnet/"
+  date={post.date}
+  readTime={post.readTime}
+  category={post.category}
 >
-  <BlogLayout title={post.title} publishedDate={post.publishedDate} readTime={post.readTime} category={post.category}>
-    <div class="prose prose-invert max-w-none space-y-6 text-slate-300">
+    <div>
       <section>
         <p class="text-lg leading-relaxed">
           Poetry structure depends on syllable counts. Whether you're writing haiku, sonnets, or limericks, getting the syllable structure right is crucial for proper meter and rhythm. This guide shows how to use syllable counters to validate poetry forms.
@@ -229,5 +230,4 @@ const post = {
         </ul>
       </section>
     </div>
-  </BlogLayout>
-</BaseLayout>
+</BlogLayout>

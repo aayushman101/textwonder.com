@@ -118,10 +118,15 @@ RU  /ru/tekstovye-instrumenty/schetchik-slov/
 | `src/pages/[locale]/…` | The three localized routes: home, section index, tool page |
 
 ### Hard rules — do not break these
-1. **No English fallback pages.** A localized page is generated *only* when a
-   real translation exists. Publishing English copy under `/es/` is duplicate
-   thin content and can suppress the whole locale. `resolveTool()` returns
-   `null` when untranslated, and `getStaticPaths` skips it.
+1. **The full catalogue builds in every language; only translated pages are
+   indexable.** All 226 tools resolve in all 10 locales, so no language ever
+   looks half-empty. A tool with no translation yet still gets a localized page
+   (localized chrome, English tool copy) flagged `translated: false`. That flag
+   drives three things which must always agree: `noindex, follow` on the page,
+   exclusion from the sitemap (`noindexPaths()` feeds the sitemap `filter`), and
+   exclusion from every hreflang cluster. Together they stop a fallback page
+   from competing with the English original as duplicate thin content. Never
+   index a fallback page, and never let those three signals disagree.
 2. **hreflang must be bidirectional.** Every page in a cluster lists every
    other version plus one `x-default`. English layouts call
    `alternatesForTool()` / `alternatesForSection()` for exactly this reason —
@@ -146,8 +151,14 @@ Research the term the market **actually searches** — "unir pdf", not a literal
 translation of "PDF merger". That choice is most of the SEO value.
 
 ### Coverage
-Wave 1 covers 20 tools × 9 languages (180 pages). Remaining tools are
-English-only until translated — which is correct and safe, not a bug.
+Wave 1 translates 20 tools × 9 languages. Every other tool is still browsable
+in every language through the English-fallback path in rule 1 — by design, not
+a gap. `translatedCountForLocale(locale)` reports real translation coverage;
+`toolCountForLocale(locale)` is always the full catalogue.
+
+A section index is indexable only when the section has translated copy AND at
+least one translated tool (`isSectionIndexable`). Locale home pages are always
+indexable — their chrome is fully translated.
 
 ### Known gap
 Tool **UI** components (`src/components/*/`) still hardcode English labels

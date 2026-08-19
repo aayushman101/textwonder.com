@@ -1,13 +1,13 @@
 ---
-// Localized section index (e.g. /es/herramientas-texto/). Only generated for
-// locales that actually have translated tools in that section.
+// Localized section index (e.g. /es/herramientas-texto/). Built for every
+// section in every locale and lists the complete tool set for that section.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import I18nHeader from '../../../components/I18nHeader.astro';
 import I18nFooter from '../../../components/I18nFooter.astro';
 import {
   allLocalizedSectionRoutes, toolsForLocale, toolPath, sectionMeta,
   sectionPath, alternatesForSection, homePath, absolute, t, SECTION_BRANDS,
-  LOCALES,
+  LOCALES, isSectionIndexable,
 } from '../../../i18n/index.js';
 
 export function getStaticPaths() {
@@ -21,6 +21,10 @@ const brand = SECTION_BRANDS[sectionKey];
 const tools = toolsForLocale(locale, sectionKey);
 const canonical = sectionPath(locale, sectionKey);
 const alternates = alternatesForSection(sectionKey);
+
+// Listing every tool keeps the section complete, but a section whose own copy
+// is still English-only is not worth indexing.
+const indexable = isSectionIndexable(locale, sectionKey);
 
 const listSchema = {
   '@context': 'https://schema.org',
@@ -48,6 +52,7 @@ const listSchema = {
   canonical={canonical}
   lang={locale}
   alternates={alternates}
+  noindex={!indexable}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(listSchema)} />

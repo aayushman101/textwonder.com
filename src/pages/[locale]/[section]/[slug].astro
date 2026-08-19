@@ -1,9 +1,11 @@
 ---
 // Every localized tool page, for every locale and every section, in one route.
-// getStaticPaths only emits (locale, section, slug) triples that have a real
-// translation, so no English content ever gets published under a locale prefix.
+// The whole catalogue builds in every language so the site is never half-empty;
+// pages without a translation yet fall back to English copy and carry noindex.
 import I18nToolLayout from '../../../layouts/I18nToolLayout.astro';
-import { allLocalizedToolRoutes, resolveTool, alternatesForTool } from '../../../i18n/index.js';
+import {
+  allLocalizedToolRoutes, resolveTool, alternatesForTool, isToolIndexable,
+} from '../../../i18n/index.js';
 
 import { componentMap as toolsMap } from '../../../component-maps/tools';
 import { componentMap as pdfMap } from '../../../component-maps/pdfwonder';
@@ -38,11 +40,22 @@ const { locale, sectionKey, slug } = Astro.props;
 const tool = resolveTool(locale, sectionKey, slug);
 const alternates = alternatesForTool(sectionKey, slug);
 
+// Untranslated tools still get a page so the catalogue is complete in every
+// language, but it is marked noindex so it can never compete with the English
+// original, and the reader is told why the copy below is in English.
+const indexable = isToolIndexable(locale, sectionKey, slug);
+
 // The English slug is preserved on the merged tool precisely so the shared
 // component maps keep resolving regardless of the localized URL.
 const ToolComponent = MAPS[sectionKey]?.[slug];
 ---
 
-<I18nToolLayout tool={tool} locale={locale} sectionKey={sectionKey} alternates={alternates}>
+<I18nToolLayout
+  tool={tool}
+  locale={locale}
+  sectionKey={sectionKey}
+  alternates={alternates}
+  noindex={!indexable}
+>
   {ToolComponent ? <ToolComponent tool={tool} /> : <p class="text-slate-400">{tool.tagline}</p>}
 </I18nToolLayout>

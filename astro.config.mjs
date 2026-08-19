@@ -3,9 +3,14 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import { SECTION_PATHS } from './src/i18n/config.js';
+import { noindexPaths } from './src/i18n/index.js';
 
 // Every URL segment that identifies a tool section, in every language.
 const SECTION_SEGMENTS = [...new Set(Object.values(SECTION_PATHS).flatMap(Object.values))];
+
+// Localized pages that fall back to English copy are noindex, so they must not
+// appear in the sitemap either — the two signals have to agree.
+const NOINDEX = noindexPaths();
 
 export default defineConfig({
   site: 'https://textwonder.com',
@@ -14,6 +19,7 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       lastmod: new Date(),
+      filter: (page) => !NOINDEX.has(page.replace('https://textwonder.com', '')),
       serialize(item) {
         const path = item.url.replace('https://textwonder.com', '');
 

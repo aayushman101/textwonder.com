@@ -2,6 +2,34 @@
 // Slugs follow how Indonesians search ("gabung pdf", "kompres gambar").
 export default {
   sections: {
+    unit: {
+      name: 'Konversi Satuan',
+      h1: 'Konversi Satuan Online Gratis',
+      metaTitle: 'Konversi Satuan Online Gratis — Tanpa Daftar',
+      metaDescription: 'Konversi Satuan gratis yang berjalan di browser Anda. Tanpa pendaftaran, tanpa instalasi, dan tanpa mengirim data ke server mana pun.',
+      subtitle: 'Semua berjalan di browser Anda. Tanpa daftar, hasil seketika.',
+    },
+    student: {
+      name: 'Alat Pelajar',
+      h1: 'Alat Pelajar Online Gratis',
+      metaTitle: 'Alat Pelajar Online Gratis — Tanpa Daftar',
+      metaDescription: 'Alat Pelajar gratis yang berjalan di browser Anda. Tanpa pendaftaran, tanpa instalasi, dan tanpa mengirim data ke server mana pun.',
+      subtitle: 'Semua berjalan di browser Anda. Tanpa daftar, hasil seketika.',
+    },
+    color: {
+      name: 'Alat Warna',
+      h1: 'Alat Warna Online Gratis',
+      metaTitle: 'Alat Warna Online Gratis — Tanpa Daftar',
+      metaDescription: 'Alat Warna gratis yang berjalan di browser Anda. Tanpa pendaftaran, tanpa instalasi, dan tanpa mengirim data ke server mana pun.',
+      subtitle: 'Semua berjalan di browser Anda. Tanpa daftar, hasil seketika.',
+    },
+    data: {
+      name: 'Konverter Data',
+      h1: 'Konverter Data Online Gratis',
+      metaTitle: 'Konverter Data Online Gratis — Tanpa Daftar',
+      metaDescription: 'Konverter Data gratis yang berjalan di browser Anda. Tanpa pendaftaran, tanpa instalasi, dan tanpa mengirim data ke server mana pun.',
+      subtitle: 'Semua berjalan di browser Anda. Tanpa daftar, hasil seketika.',
+    },
     tools: {
       name: 'Alat Teks',
       h1: 'Alat Teks Online Gratis',

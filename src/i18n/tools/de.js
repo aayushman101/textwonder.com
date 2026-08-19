@@ -3,6 +3,34 @@
 // practice and safe across filesystems and CDNs.
 export default {
   sections: {
+    unit: {
+      name: 'Einheiten-Umrechner',
+      h1: 'Kostenlose Einheiten-Umrechner Online',
+      metaTitle: 'Kostenlose Einheiten-Umrechner Online — Ohne Anmeldung',
+      metaDescription: 'Kostenlose Einheiten-Umrechner, die in Ihrem Browser laufen. Ohne Anmeldung, ohne Installation und ohne dass Ihre Daten an einen Server gehen.',
+      subtitle: 'Alles läuft in Ihrem Browser. Ohne Anmeldung, Ergebnis sofort.',
+    },
+    student: {
+      name: 'Werkzeuge für Studierende',
+      h1: 'Kostenlose Werkzeuge für Studierende Online',
+      metaTitle: 'Kostenlose Werkzeuge für Studierende Online — Ohne Anmeldung',
+      metaDescription: 'Kostenlose Werkzeuge für Studierende, die in Ihrem Browser laufen. Ohne Anmeldung, ohne Installation und ohne dass Ihre Daten an einen Server gehen.',
+      subtitle: 'Alles läuft in Ihrem Browser. Ohne Anmeldung, Ergebnis sofort.',
+    },
+    color: {
+      name: 'Farb-Werkzeuge',
+      h1: 'Kostenlose Farb-Werkzeuge Online',
+      metaTitle: 'Kostenlose Farb-Werkzeuge Online — Ohne Anmeldung',
+      metaDescription: 'Kostenlose Farb-Werkzeuge, die in Ihrem Browser laufen. Ohne Anmeldung, ohne Installation und ohne dass Ihre Daten an einen Server gehen.',
+      subtitle: 'Alles läuft in Ihrem Browser. Ohne Anmeldung, Ergebnis sofort.',
+    },
+    data: {
+      name: 'Daten-Konverter',
+      h1: 'Kostenlose Daten-Konverter Online',
+      metaTitle: 'Kostenlose Daten-Konverter Online — Ohne Anmeldung',
+      metaDescription: 'Kostenlose Daten-Konverter, die in Ihrem Browser laufen. Ohne Anmeldung, ohne Installation und ohne dass Ihre Daten an einen Server gehen.',
+      subtitle: 'Alles läuft in Ihrem Browser. Ohne Anmeldung, Ergebnis sofort.',
+    },
     tools: {
       name: 'Text-Werkzeuge',
       h1: 'Kostenlose Online-Textwerkzeuge',

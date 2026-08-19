@@ -2,6 +2,34 @@
 // Slugs follow Brazilian search phrasing ("juntar pdf", not "fundir pdf").
 export default {
   sections: {
+    unit: {
+      name: 'Conversores de Unidades',
+      h1: 'Conversores de Unidades Online Grátis',
+      metaTitle: 'Conversores de Unidades Online Grátis — Sem Cadastro',
+      metaDescription: 'Conversores de Unidades gratuitas que rodam no seu navegador. Sem cadastro, sem instalação e sem enviar seus dados para nenhum servidor.',
+      subtitle: 'Tudo roda no seu navegador. Sem cadastro e com resultado na hora.',
+    },
+    student: {
+      name: 'Ferramentas para Estudantes',
+      h1: 'Ferramentas para Estudantes Online Grátis',
+      metaTitle: 'Ferramentas para Estudantes Online Grátis — Sem Cadastro',
+      metaDescription: 'Ferramentas para Estudantes gratuitas que rodam no seu navegador. Sem cadastro, sem instalação e sem enviar seus dados para nenhum servidor.',
+      subtitle: 'Tudo roda no seu navegador. Sem cadastro e com resultado na hora.',
+    },
+    color: {
+      name: 'Ferramentas de Cor',
+      h1: 'Ferramentas de Cor Online Grátis',
+      metaTitle: 'Ferramentas de Cor Online Grátis — Sem Cadastro',
+      metaDescription: 'Ferramentas de Cor gratuitas que rodam no seu navegador. Sem cadastro, sem instalação e sem enviar seus dados para nenhum servidor.',
+      subtitle: 'Tudo roda no seu navegador. Sem cadastro e com resultado na hora.',
+    },
+    data: {
+      name: 'Conversores de Dados',
+      h1: 'Conversores de Dados Online Grátis',
+      metaTitle: 'Conversores de Dados Online Grátis — Sem Cadastro',
+      metaDescription: 'Conversores de Dados gratuitas que rodam no seu navegador. Sem cadastro, sem instalação e sem enviar seus dados para nenhum servidor.',
+      subtitle: 'Tudo roda no seu navegador. Sem cadastro e com resultado na hora.',
+    },
     tools: {
       name: 'Ferramentas de Texto',
       h1: 'Ferramentas de Texto Online Grátis',

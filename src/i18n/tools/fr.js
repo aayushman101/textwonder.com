@@ -2,6 +2,34 @@
 // Slugs use the phrasing French speakers actually search ("fusionner pdf").
 export default {
   sections: {
+    unit: {
+      name: 'Convertisseurs d\'Unités',
+      h1: 'Convertisseurs d\'Unités en Ligne Gratuits',
+      metaTitle: 'Convertisseurs d\'Unités en Ligne Gratuits — Sans Inscription',
+      metaDescription: 'Convertisseurs d\'Unités gratuits qui fonctionnent dans votre navigateur. Sans inscription, sans installation et sans envoyer vos données sur un serveur.',
+      subtitle: 'Tout fonctionne dans votre navigateur. Sans inscription, résultat immédiat.',
+    },
+    student: {
+      name: 'Outils pour Étudiants',
+      h1: 'Outils pour Étudiants en Ligne Gratuits',
+      metaTitle: 'Outils pour Étudiants en Ligne Gratuits — Sans Inscription',
+      metaDescription: 'Outils pour Étudiants gratuits qui fonctionnent dans votre navigateur. Sans inscription, sans installation et sans envoyer vos données sur un serveur.',
+      subtitle: 'Tout fonctionne dans votre navigateur. Sans inscription, résultat immédiat.',
+    },
+    color: {
+      name: 'Outils de Couleur',
+      h1: 'Outils de Couleur en Ligne Gratuits',
+      metaTitle: 'Outils de Couleur en Ligne Gratuits — Sans Inscription',
+      metaDescription: 'Outils de Couleur gratuits qui fonctionnent dans votre navigateur. Sans inscription, sans installation et sans envoyer vos données sur un serveur.',
+      subtitle: 'Tout fonctionne dans votre navigateur. Sans inscription, résultat immédiat.',
+    },
+    data: {
+      name: 'Convertisseurs de Données',
+      h1: 'Convertisseurs de Données en Ligne Gratuits',
+      metaTitle: 'Convertisseurs de Données en Ligne Gratuits — Sans Inscription',
+      metaDescription: 'Convertisseurs de Données gratuits qui fonctionnent dans votre navigateur. Sans inscription, sans installation et sans envoyer vos données sur un serveur.',
+      subtitle: 'Tout fonctionne dans votre navigateur. Sans inscription, résultat immédiat.',
+    },
     tools: {
       name: 'Outils de Texte',
       h1: 'Outils de Texte en Ligne Gratuits',

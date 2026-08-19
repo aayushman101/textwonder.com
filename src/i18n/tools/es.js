@@ -3,6 +3,34 @@
 // "fusionador de pdf"). Any tool absent here gets no /es/ page — by design.
 export default {
   sections: {
+    unit: {
+      name: 'Conversores de Unidades',
+      h1: 'Conversores de Unidades Online Gratis',
+      metaTitle: 'Conversores de Unidades Online Gratis — Sin Registro',
+      metaDescription: 'Conversores de Unidades gratuitas que funcionan en tu navegador. Sin registro, sin instalación y sin enviar tus datos a ningún servidor.',
+      subtitle: 'Todo funciona en tu navegador. Sin registro y con resultados al instante.',
+    },
+    student: {
+      name: 'Herramientas para Estudiantes',
+      h1: 'Herramientas para Estudiantes Online Gratis',
+      metaTitle: 'Herramientas para Estudiantes Online Gratis — Sin Registro',
+      metaDescription: 'Herramientas para Estudiantes gratuitas que funcionan en tu navegador. Sin registro, sin instalación y sin enviar tus datos a ningún servidor.',
+      subtitle: 'Todo funciona en tu navegador. Sin registro y con resultados al instante.',
+    },
+    color: {
+      name: 'Herramientas de Color',
+      h1: 'Herramientas de Color Online Gratis',
+      metaTitle: 'Herramientas de Color Online Gratis — Sin Registro',
+      metaDescription: 'Herramientas de Color gratuitas que funcionan en tu navegador. Sin registro, sin instalación y sin enviar tus datos a ningún servidor.',
+      subtitle: 'Todo funciona en tu navegador. Sin registro y con resultados al instante.',
+    },
+    data: {
+      name: 'Conversores de Datos',
+      h1: 'Conversores de Datos Online Gratis',
+      metaTitle: 'Conversores de Datos Online Gratis — Sin Registro',
+      metaDescription: 'Conversores de Datos gratuitas que funcionan en tu navegador. Sin registro, sin instalación y sin enviar tus datos a ningún servidor.',
+      subtitle: 'Todo funciona en tu navegador. Sin registro y con resultados al instante.',
+    },
     tools: {
       name: 'Herramientas de Texto',
       h1: 'Herramientas de Texto Online Gratis',

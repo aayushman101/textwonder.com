@@ -1,8 +1,12 @@
 ---
-import { TOOLS } from '../data/tools.js';
-import { SECTIONS } from '../data/categories.js';
+import { SECTIONS, FEATURED_TOOLS } from '../data/categories.js';
+import { getSourceTool } from '../i18n/index.js';
 
-const popularTools = TOOLS.filter(t => t.searchVolume === 'high' || t.searchVolume === 'very-high').slice(0, 6);
+// Names come from the source data so a rename in the tool dataset flows here
+// automatically and the footer can never drift out of sync with the tool page.
+const popularTools = FEATURED_TOOLS
+  .map((f) => ({ ...f, name: getSourceTool(f.section, f.slug)?.name }))
+  .filter((f) => f.name);
 ---
 
 <footer class="border-t border-slate-800 bg-[var(--bg-base)] mt-16">
@@ -52,7 +56,7 @@ const popularTools = TOOLS.filter(t => t.searchVolume === 'high' || t.searchVolu
         <ul class="space-y-2">
           {popularTools.map(tool => (
             <li>
-              <a href={`/tools/${tool.slug}/`} class="text-slate-400 hover:text-violet-400 text-sm transition-colors">
+              <a href={tool.path} class="text-slate-400 hover:text-violet-400 text-sm transition-colors">
                 {tool.name}
               </a>
             </li>

@@ -144,6 +144,20 @@ export const SECTIONS = [
   },
 ];
 
+// The handful of tools people actually arrive for, one per major category.
+// Deliberately hand-picked rather than derived: `searchVolume` only exists on
+// the text, dev and image datasets, so any filter over it returns a text-heavy
+// list and silently ignores PDF, calculator, health, unit, colour and data.
+// Keep this at 5-7 entries — it is a shortlist, not a directory.
+export const FEATURED_TOOLS = [
+  { section: 'tools',       slug: 'word-counter',     path: '/tools/word-counter/' },
+  { section: 'pdfwonder',   slug: 'pdf-merger',       path: '/pdfwonder/pdf-merger/' },
+  { section: 'imagewonder', slug: 'image-compressor', path: '/imagewonder/image-compressor/' },
+  { section: 'devwonder',   slug: 'json-formatter',   path: '/devwonder/json-formatter/' },
+  { section: 'calc',        slug: 'emi-calculator',   path: '/calc/emi-calculator/' },
+  { section: 'health',      slug: 'bmi-calculator',   path: '/health/bmi-calculator/' },
+];
+
 // Helper to construct a global search index across all categories
 export const getGlobalSearchIndex = () => {
   const searchIndex = [];

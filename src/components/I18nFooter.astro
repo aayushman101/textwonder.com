@@ -3,6 +3,7 @@ import {
   t, sectionsForLocale, sectionPath, sectionMeta,
   toolsForLocale, toolPath, homePath, SECTION_BRANDS,
 } from '../i18n/index.js';
+import { FEATURED_TOOLS } from '../data/categories.js';
 
 const { locale } = Astro.props;
 
@@ -13,21 +14,28 @@ const sections = sectionsForLocale(locale).map((key) => ({
   icon: SECTION_BRANDS[key].icon,
 }));
 
-// Popular tools, locale-scoped: prefer high-volume ones that are translated.
-const allTranslated = sectionsForLocale(locale).flatMap((key) =>
-  toolsForLocale(locale, key).map((tool) => ({ ...tool, key })),
+// Same curated shortlist as the English footer, but only entries that are
+// actually translated — a footer link reading "EMI Calculator" on a Spanish
+// page would undo the localization. Any shortfall is topped up with other
+// translated tools so the column always holds six native names.
+const translatedTools = sectionsForLocale().flatMap((key) =>
+  toolsForLocale(locale, key).filter((tool) => tool.translated).map((tool) => ({ ...tool, key })),
 );
-const popular = [
-  ...allTranslated.filter((tool) => tool.searchVolume === 'very-high' || tool.searchVolume === 'high'),
-  ...allTranslated,
-].slice(0, 6);
-const seen = new Set();
-const popularTools = popular.filter((tool) => {
-  const id = `${tool.key}:${tool.slug}`;
-  if (seen.has(id)) return false;
-  seen.add(id);
-  return true;
-}).slice(0, 6);
+
+const shortlist = FEATURED_TOOLS
+  .map((f) => translatedTools.find((tool) => tool.key === f.section && tool.slug === f.slug))
+  .filter(Boolean);
+
+// Top up from a section not already represented, so the column stays spread
+// across categories rather than filling up with a second text tool.
+const seen = new Set(shortlist.map((tool) => `${tool.key}:${tool.slug}`));
+const covered = new Set(shortlist.map((tool) => tool.key));
+const remaining = translatedTools.filter((tool) => !seen.has(`${tool.key}:${tool.slug}`));
+const topUp = [
+  ...remaining.filter((tool) => !covered.has(tool.key)),
+  ...remaining.filter((tool) => covered.has(tool.key)),
+];
+const popularTools = [...shortlist, ...topUp].slice(0, 6);
 ---
 
 <footer class="border-t border-slate-800 bg-[var(--bg-base)] mt-16">

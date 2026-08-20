@@ -1,0 +1,177 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const UPDATED = '20 August 2026';
+---
+
+<BaseLayout
+  title="Terms of Service — TextWonder"
+  description="The terms for using TextWonder's free browser-based tools: what you may do with them, what we promise, what we don't, and where liability ends. Plain English, no signup required."
+  canonical="/terms/"
+>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Terms of Service</h1>
+    <p class="text-slate-500 text-sm mb-8">Last updated: {UPDATED}</p>
+
+    <div class="space-y-8 text-slate-400 leading-relaxed">
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Agreement</h2>
+        <p>
+          These terms govern your use of textwonder.com and every tool, page and article on it
+          (together, "the Service"). By using the Service you accept them. If you do not, please
+          stop using the site.
+        </p>
+        <p class="mt-3">
+          There is no account to create and nothing to sign. Using a tool is the agreement.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">What the Service is</h2>
+        <p>
+          TextWonder is a collection of free utilities — text, PDF, image, developer, calculator,
+          health, student, colour, data and unit tools — that run as JavaScript inside your own
+          browser. Nothing you process is uploaded to us. There is no server-side processing, no
+          storage of your files, and no queue your work sits in.
+        </p>
+        <p class="mt-3">
+          Because of that architecture, a few ordinary consequences follow: the tools depend on
+          your device's memory and speed, very large files may fail on modest hardware, and
+          results are not recoverable once you close the tab. Nothing is saved for you.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Acceptable use</h2>
+        <p>You may use TextWonder for personal, educational, and commercial work, free of charge. You may not:</p>
+        <ul class="list-disc list-outside ml-5 mt-3 space-y-2 text-slate-300">
+          <li>Use the Service to process content you have no legal right to process — for example, documents you obtained unlawfully.</li>
+          <li>Use it to produce material that is unlawful, defamatory, or infringes someone else's intellectual property.</li>
+          <li>Attempt to disrupt the site, probe it for vulnerabilities without permission, or interfere with other people's use of it.</li>
+          <li>Scrape, mirror or automatically re-host the site's pages in bulk, or present its content as your own.</li>
+          <li>Interfere with the advertising that funds the site, or generate invalid ad traffic of any kind.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Your content stays yours</h2>
+        <p>
+          You keep every right in whatever you put through a tool. We claim no licence over it,
+          because we never receive it in the first place — see the
+          <a href="/privacy-policy/" class="text-violet-400 hover:text-violet-300 underline">Privacy Policy</a>
+          for how that works.
+        </p>
+        <p class="mt-3">
+          Output produced by a tool is yours to use as you wish, including commercially.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Our content</h2>
+        <p>
+          The site's design, written guides, tool copy and code are owned by TextWonder and
+          protected by copyright. You are welcome to link to any page and to quote from an article
+          with attribution. Republishing whole pages, or reproducing the tool suite as a
+          competing site, is not permitted.
+        </p>
+        <p class="mt-3">
+          Third-party libraries used by the tools — such as <code class="text-violet-400">pdf-lib</code>
+          and <code class="text-violet-400">PDF.js</code> — remain under their own open-source licences.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">No warranty</h2>
+        <p>
+          The Service is provided "as is" and "as available", without warranty of any kind, express
+          or implied, including merchantability, fitness for a particular purpose, and
+          non-infringement.
+        </p>
+        <p class="mt-3">
+          We do not warrant that a tool will be error-free, that results will be accurate for your
+          particular case, or that the site will be uninterrupted. Calculators and converters are
+          built carefully and tested, but they are informational aids — check anything that
+          matters before you rely on it. See the
+          <a href="/disclaimer/" class="text-violet-400 hover:text-violet-300 underline">Disclaimer</a>,
+          which matters especially for the financial, health and academic tools.
+        </p>
+        <p class="mt-3">
+          <strong class="text-white">Keep your originals.</strong> Before using a tool that
+          modifies a file, keep a copy. Browser-based processing can fail on an unusual file or a
+          low-memory device, and we cannot recover anything for you.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Limitation of liability</h2>
+        <p>
+          To the fullest extent permitted by law, TextWonder and its operator are not liable for
+          any indirect, incidental, special, consequential or punitive damages, or for any loss of
+          data, profits, or business, arising from your use of or inability to use the Service.
+        </p>
+        <p class="mt-3">
+          Since the Service is free, our total aggregate liability for any claim relating to it is
+          limited to zero. Some jurisdictions do not allow certain exclusions, so parts of this
+          section may not apply to you; nothing here limits liability that cannot lawfully be
+          limited.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Advertising and third-party links</h2>
+        <p>
+          The site displays advertising through Google AdSense, which is what keeps every tool
+          free. Ads are selected by Google, not by us, and their appearance here is not an
+          endorsement.
+        </p>
+        <p class="mt-3">
+          Articles sometimes link to external sites. We do not control those sites and are not
+          responsible for their content, accuracy or privacy practices.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Availability and changes</h2>
+        <p>
+          We may add, change, or remove tools and pages at any time, and may suspend the site for
+          maintenance without notice. We may update these terms; the date at the top of this page
+          reflects the current version, and continuing to use the site after a change means you
+          accept it.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Governing law</h2>
+        <p>
+          These terms are governed by the laws of India, and the courts of India have jurisdiction
+          over any dispute arising from them — without affecting any mandatory consumer protection
+          rights you have where you live.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Contact</h2>
+        <p>
+          Questions about these terms: <span class="text-violet-400">aayushman6139@gmail.com</span>,
+          or via the
+          <a href="/contact/" class="text-violet-400 hover:text-violet-300 underline">contact page</a>.
+        </p>
+      </section>
+
+      <section class="border-t border-slate-800 pt-6">
+        <p class="text-sm">
+          See also:
+          <a href="/privacy-policy/" class="text-violet-400 hover:text-violet-300 underline">Privacy Policy</a> ·
+          <a href="/cookie-policy/" class="text-violet-400 hover:text-violet-300 underline">Cookie Policy</a> ·
+          <a href="/disclaimer/" class="text-violet-400 hover:text-violet-300 underline">Disclaimer</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

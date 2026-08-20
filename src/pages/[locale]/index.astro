@@ -23,7 +23,7 @@ const alternates = alternatesForHome();
 const canonical = homePath(locale);
 
 // Every section, with its full tool list — the catalogue is never truncated.
-const sections = sectionsForLocale().map((key) => {
+const sections = sectionsForLocale(locale).map((key) => {
   const brand = SECTION_BRANDS[key];
   const meta = sectionMeta(locale, key);
   return {
@@ -47,7 +47,7 @@ const searchIndex = sections.flatMap((s) =>
 );
 
 // Suggestion pills: the first few translated tools, so they read natively.
-const suggestions = sectionsForLocale()
+const suggestions = sectionsForLocale(locale)
   .flatMap((key) => toolsForLocale(locale, key).filter((tl) => tl.translated).map((tl) => tl.name))
   .slice(0, 4);
 

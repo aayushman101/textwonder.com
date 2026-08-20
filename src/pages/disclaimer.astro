@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const UPDATED = '20 August 2026';
+---
+
+<BaseLayout
+  title="Disclaimer — TextWonder"
+  description="Where TextWonder's calculators and converters should and shouldn't be relied on: financial, health, academic and legal-document tools are informational aids, not professional advice."
+  canonical="/disclaimer/"
+>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Disclaimer</h1>
+    <p class="text-slate-500 text-sm mb-8">Last updated: {UPDATED}</p>
+
+    <div class="space-y-8 text-slate-400 leading-relaxed">
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">General</h2>
+        <p>
+          Everything on TextWonder — the tools, the articles, the worked examples — is provided
+          for general information and convenience. It is written carefully and tested, but it is
+          not professional advice, and it does not know anything about your particular situation.
+        </p>
+        <p class="mt-3">
+          The sections below are not boilerplate. They cover the specific categories on this site
+          where acting on a number without checking it could actually cost you something.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Financial calculators</h2>
+        <p>
+          The EMI, compound interest, FD, PPF, GST, sales tax, discount, commission and related
+          calculators use standard published formulas. They are useful for estimating and for
+          comparing options.
+        </p>
+        <p class="mt-3">
+          They are <strong class="text-white">not</strong> quotes, and they will not match a
+          lender's or tax authority's figure exactly. Real institutions apply processing fees,
+          insurance, rounding conventions, day-count rules, compounding dates, prepayment
+          penalties and rate revisions that a general calculator cannot know about. Statutory
+          rates — GST slabs, tax brackets, PPF and FD rates — change, and a page may reflect a
+          rate that has since moved.
+        </p>
+        <p class="mt-3">
+          Use these to get oriented. Confirm anything you will sign with your bank, lender, or a
+          qualified financial adviser or chartered accountant. We are not registered financial
+          advisers and nothing here is investment, tax or legal advice.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Health and fitness tools</h2>
+        <p>
+          BMI, calorie, body-fat, water-intake, ideal-weight and similar tools apply population-level
+          formulas. Those formulas are averages, and averages describe groups rather than people.
+          BMI in particular does not distinguish muscle from fat and misreads athletes, older
+          adults, pregnant people and children.
+        </p>
+        <p class="mt-3">
+          <strong class="text-white">This is not medical advice, diagnosis or treatment.</strong>
+          Nothing here substitutes for a doctor, dietitian or other qualified clinician. Do not
+          start, stop or change any diet, exercise programme or medication because of a number on
+          this site, and do not delay seeking medical advice because of one. If you may be having
+          a medical emergency, contact your local emergency service now.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Academic and student tools</h2>
+        <p>
+          CGPA, GPA, percentage and attendance calculators follow the conversion rules commonly
+          used by Indian and international institutions. Grading schemes vary enormously between
+          universities, and many apply their own weighting, rounding, credit rules and moderation.
+        </p>
+        <p class="mt-3">
+          Your institution's official result is the only one that counts. Verify against your
+          university's own rules before relying on a figure for eligibility, applications or
+          admissions.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Document generators</h2>
+        <p>
+          Rent receipts, salary slips, experience letters, relieving letters and proforma invoices
+          produce correctly formatted documents from the information you enter. They do not verify
+          that information, and formatting is not legality.
+        </p>
+        <p class="mt-3">
+          These templates are not legal advice and may not satisfy the requirements of your
+          jurisdiction, employer or tax authority. You are responsible for the accuracy and
+          legitimacy of what you enter and what you do with the result. Creating a document that
+          misrepresents facts — to a landlord, an employer, a tax authority or anyone else — may
+          be an offence. Have anything with legal or tax consequence reviewed by a qualified
+          professional.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">File and conversion tools</h2>
+        <p>
+          PDF, image, text and data tools run in your browser. Conversion between formats is
+          sometimes lossy by nature, unusual or corrupt files may not process correctly, and very
+          large files can exhaust the memory your browser is allowed.
+        </p>
+        <p class="mt-3">
+          <strong class="text-white">Always keep your original file.</strong> Because processing is
+          local and nothing is uploaded, we hold no copy and cannot recover anything for you if a
+          conversion goes wrong or a tab closes mid-operation.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Accuracy and availability</h2>
+        <p>
+          We correct errors when we find them, but we do not warrant that every tool, formula, rate
+          or article is accurate, complete or current. Tools may be changed or withdrawn, and the
+          site may be unavailable at times.
+        </p>
+        <p class="mt-3">
+          If you spot something wrong, please tell us — corrections from readers are genuinely
+          useful and we act on them. The
+          <a href="/contact/" class="text-violet-400 hover:text-violet-300 underline">contact page</a>
+          is the fastest route.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">External links and advertising</h2>
+        <p>
+          Articles sometimes link to other sites for reference. We do not control them and are not
+          responsible for their content or accuracy. Advertising is served by Google AdSense and
+          selected by Google; an ad appearing on this site is not a recommendation from us.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Limitation of liability</h2>
+        <p>
+          To the fullest extent permitted by law, TextWonder accepts no liability for any loss or
+          damage arising from reliance on any tool, result or article on this site. Your use of
+          the Service is at your own risk, on the terms set out in our
+          <a href="/terms/" class="text-violet-400 hover:text-violet-300 underline">Terms of Service</a>.
+        </p>
+      </section>
+
+      <section class="border-t border-slate-800 pt-6">
+        <p class="text-sm">
+          See also:
+          <a href="/privacy-policy/" class="text-violet-400 hover:text-violet-300 underline">Privacy Policy</a> ·
+          <a href="/cookie-policy/" class="text-violet-400 hover:text-violet-300 underline">Cookie Policy</a> ·
+          <a href="/terms/" class="text-violet-400 hover:text-violet-300 underline">Terms of Service</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

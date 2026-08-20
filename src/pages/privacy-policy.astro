@@ -2,54 +2,278 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+
+const UPDATED = '20 August 2026';
 ---
 
 <BaseLayout
   title="Privacy Policy — TextWonder"
-  description="TextWonder's privacy policy. All tools run in your browser. We do not store, collect, or transmit your text."
+  description="How TextWonder handles your data: tools run entirely in your browser, your text never reaches a server. Full detail on cookies, Google Analytics, AdSense, GDPR and CCPA rights."
   canonical="/privacy-policy/"
 >
   <Header />
 
   <main class="max-w-3xl mx-auto px-4 py-12">
-    <h1 class="text-3xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Privacy Policy</h1>
-    <p class="text-slate-500 text-sm mb-8">Last updated: June 2025</p>
+    <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Privacy Policy</h1>
+    <p class="text-slate-500 text-sm mb-8">Last updated: {UPDATED}</p>
 
     <div class="space-y-8 text-slate-400 leading-relaxed">
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">The Short Version</h2>
-        <p>TextWonder does not collect, store, or transmit your text. Ever. All processing happens locally in your browser using JavaScript. When you close the tab, your data is gone.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">The short version</h2>
+        <p>
+          The content you put into a TextWonder tool — your text, your PDF, your image — never
+          leaves your device. Every tool on this site is JavaScript that runs inside your own
+          browser. There is no upload step and no server that could receive your files.
+        </p>
+        <p class="mt-3">
+          Separately from the tools, this website is funded by advertising and uses standard
+          web analytics. Those two things — Google AdSense and Google Analytics — <strong class="text-white">do</strong>
+          set cookies and <strong class="text-white">do</strong> collect data about your visit. That is
+          described in full below, because a policy that quietly omits it is worthless.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">No Server Processing</h2>
-        <p>TextWonder is a static website. The tools on this site are JavaScript functions that run inside your web browser. Your text is never uploaded to any server or third-party service. We have no infrastructure capable of receiving your text.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Who we are</h2>
+        <p>
+          TextWonder (textwonder.com) is an independent website operated by Aayushman. It is not
+          a company with staff or a customer database. Questions about this policy, or any request
+          about your data, go to
+          <a href="/contact/" class="text-violet-400 hover:text-violet-300 underline">our contact page</a>
+          or directly to <span class="text-violet-400">aayushman6139@gmail.com</span>.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">Local Storage</h2>
-        <p>Some tools save your last input in your browser's <code class="text-violet-400">localStorage</code> so you don't lose your work if you navigate away. This data stays on your device and is never transmitted. You can clear it using your browser's developer tools or by using the "Clear" button in each tool.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Your tool content is never collected</h2>
+        <p>
+          This is the part that matters most, so it is worth being precise about the mechanism
+          rather than just asserting it.
+        </p>
+        <p class="mt-3">
+          TextWonder is a static site. When you open a tool, your browser downloads a JavaScript
+          file and then runs it locally. Counting your words, merging your PDF, resizing your
+          image — all of it happens in memory on your own machine. PDF and image tools use
+          <code class="text-violet-400">pdf-lib</code>, <code class="text-violet-400">PDF.js</code>
+          and the browser's own Canvas API, again entirely client-side.
+        </p>
+        <p class="mt-3">
+          We do not operate an application server, an upload endpoint, or a database. There is no
+          infrastructure on our side capable of receiving your text or files, which means there is
+          nothing for us to store, sell, leak, or hand over. You can verify this yourself: open
+          your browser's developer tools, switch to the Network tab, and use any tool on the site.
+          No request carries your content.
+        </p>
+        <p class="mt-3">
+          When you close the tab, your content is gone.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">Cookies and Analytics</h2>
-        <p>We do not use advertising cookies or behavioral tracking. We may use a privacy-respecting analytics tool (such as Plausible Analytics) to count page visits. This collects only aggregate data (page views, country-level location, browser type) — never individual user data or text content.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Local storage on your device</h2>
+        <p>
+          Some tools save your most recent input in your browser's
+          <code class="text-violet-400">localStorage</code> so you do not lose work by navigating
+          away. Your theme preference (dark or light) is stored the same way. This data sits on
+          your device only and is never transmitted anywhere.
+        </p>
+        <p class="mt-3">
+          You can remove it at any time with the <strong class="text-white">Clear</strong> button
+          inside a tool, or by clearing site data for textwonder.com in your browser settings.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">Google AdSense</h2>
-        <p>TextWonder displays ads through Google AdSense. Google AdSense may use cookies and other technologies to serve ads based on your prior visits to our website or other websites. This helps Google deliver personalized ads. You can opt out of personalized advertising by visiting <code class="text-violet-400">https://adssettings.google.com</code>.</p>
-        <p class="mt-2">We never provide your personal information to Google AdSense. Ad serving is handled entirely by Google according to their privacy policy at <code class="text-violet-400">https://policies.google.com/privacy</code>.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Cookies and similar technologies</h2>
+        <p>
+          We use cookies in two places, both from Google. We do not set advertising or tracking
+          cookies of our own.
+        </p>
+        <ul class="list-disc list-outside ml-5 mt-3 space-y-2 text-slate-300">
+          <li>
+            <strong class="text-white">Analytics cookies</strong> — set by Google Analytics 4 to
+            tell repeat visits apart from new ones and to measure which pages get used.
+          </li>
+          <li>
+            <strong class="text-white">Advertising cookies</strong> — set by Google AdSense and
+            its partners to select ads, cap how often you see the same one, and detect click
+            fraud.
+          </li>
+        </ul>
+        <p class="mt-3">
+          Our
+          <a href="/cookie-policy/" class="text-violet-400 hover:text-violet-300 underline">Cookie Policy</a>
+          covers each category in more detail, including how to refuse them.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">Third-Party Services</h2>
-        <p>We use Google Fonts to load typefaces. This causes your browser to make a request to Google's servers, which may log your IP address per Google's privacy policy. No text content is ever sent to Google.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Google Analytics</h2>
+        <p>
+          We use Google Analytics 4 (measurement ID <code class="text-violet-400">G-C7Q4Q1J205</code>)
+          to understand which tools people actually use, so we know what to improve. It records
+          things like the pages you view, approximate location derived from your IP address,
+          device and browser type, and how you arrived at the site.
+        </p>
+        <p class="mt-3">
+          It never receives the content you type into a tool. We look at this data in aggregate;
+          we are not trying to identify individual visitors and have no ability to do so.
+        </p>
+        <p class="mt-3">
+          You can opt out across all sites with Google's
+          <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Analytics Opt-out Browser Add-on</a>.
+        </p>
       </section>
 
       <section>
-        <h2 class="text-white font-semibold text-lg mb-2">Contact</h2>
-        <p>If you have questions about this privacy policy, you can reach us at <span class="text-violet-400">aayushman6139@gmail.com</span>.</p>
+        <h2 class="text-white font-semibold text-2xl mb-3">Advertising and Google AdSense</h2>
+        <p>
+          TextWonder is free and carries no paywall, no signup and no usage limits. Advertising is
+          what pays for it. Ads are served by Google AdSense (publisher ID
+          <code class="text-violet-400">ca-pub-4076619037767871</code>).
+        </p>
+        <ul class="list-disc list-outside ml-5 mt-3 space-y-2 text-slate-300">
+          <li>
+            Google, as a third-party vendor, uses cookies to serve ads on this site.
+          </li>
+          <li>
+            Google's use of advertising cookies enables it and its partners to serve ads to you
+            based on your visit to this site and/or other sites on the internet.
+          </li>
+          <li>
+            You may opt out of personalised advertising by visiting
+            <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Google Ads Settings</a>.
+            You can also opt out of a third-party vendor's use of cookies for personalised
+            advertising at
+            <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">aboutads.info</a>.
+          </li>
+          <li>
+            Third-party vendors and ad networks may serve ads on this site and may themselves use
+            cookies to do so.
+          </li>
+        </ul>
+        <p class="mt-3">
+          We never pass your personal information or your tool content to Google or to any
+          advertiser. Ad selection is handled entirely by Google under
+          <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">its own policy for partner sites</a>.
+        </p>
+        <p class="mt-3">
+          Opting out of personalised ads does not remove ads — it means the ones you see are
+          chosen without a profile of your browsing.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Other third parties</h2>
+        <ul class="list-disc list-outside ml-5 space-y-2 text-slate-300">
+          <li>
+            <strong class="text-white">Google Fonts</strong> — typefaces load from Google's
+            servers, so your browser makes a request that may log your IP address. No tool content
+            is involved.
+          </li>
+          <li>
+            <strong class="text-white">Cloudflare Pages</strong> — hosts this site and serves the
+            files. Cloudflare processes standard server request logs for delivery and security.
+          </li>
+          <li>
+            <strong class="text-white">CDN-delivered libraries</strong> — PDF and image tools load
+            <code class="text-violet-400">pdf-lib</code> and <code class="text-violet-400">PDF.js</code>
+            from a public CDN. Your files are processed by that code locally; they are not sent to
+            the CDN.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">What we do not do</h2>
+        <ul class="list-disc list-outside ml-5 space-y-2 text-slate-300">
+          <li>We do not ask you to create an account, and we have no user database.</li>
+          <li>We do not collect names, email addresses or payment details anywhere on this site.</li>
+          <li>We do not sell or share personal information for money or for cross-context behavioural advertising.</li>
+          <li>We do not read, retain or transmit anything you paste into a tool.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Your rights (GDPR, UK GDPR)</h2>
+        <p>
+          If you are in the European Economic Area or the United Kingdom, you have the right to
+          access, correct, erase, restrict or object to the processing of your personal data, and
+          the right to data portability.
+        </p>
+        <p class="mt-3">
+          In practice, we hold no personal data about you that we could act on — there is no
+          account and no database. The data described on this page sits with Google as an
+          independent controller, so requests about analytics or advertising data are made through
+          <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Google's privacy tools</a>.
+          Where we do rely on cookies for analytics and advertising, our legal basis is your
+          consent, which you can withdraw at any time via your browser settings or the opt-out
+          links above. You also have the right to complain to your local data protection authority.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Your rights (CCPA / CPRA)</h2>
+        <p>
+          California residents have the right to know what personal information is collected, to
+          delete it, to correct it, and to opt out of its sale or sharing.
+        </p>
+        <p class="mt-3">
+          We do not sell personal information. We do not knowingly share it for cross-context
+          behavioural advertising beyond the Google AdSense cookies described above, which you can
+          switch off through
+          <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Google Ads Settings</a>.
+          Exercising these rights will never result in a worse experience on this site — every
+          tool works identically either way.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Children's privacy</h2>
+        <p>
+          TextWonder is a general-audience site and is not directed at children under 13. We do
+          not knowingly collect personal information from children. If you believe a child has
+          provided personal information through this site, contact us and we will look into it.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Data retention and international transfers</h2>
+        <p>
+          We keep no personal data ourselves, so there is nothing on our side to retain or delete.
+          Google Analytics data is retained under the retention period configured in that product;
+          Google's advertising cookies expire on their own schedules. Because Google and Cloudflare
+          operate globally, data they process may be handled on servers outside your country,
+          under their own safeguards for international transfers.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Changes to this policy</h2>
+        <p>
+          If this policy changes we will update the date at the top of the page. Material changes
+          — a new category of data, or a new third party — will be described here rather than
+          slipped in quietly.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Contact</h2>
+        <p>
+          Questions about privacy, or a request about your data, go to
+          <span class="text-violet-400">aayushman6139@gmail.com</span> or through the
+          <a href="/contact/" class="text-violet-400 hover:text-violet-300 underline">contact page</a>.
+          We aim to reply within a few days.
+        </p>
+      </section>
+
+      <section class="border-t border-slate-800 pt-6">
+        <p class="text-sm">
+          See also:
+          <a href="/cookie-policy/" class="text-violet-400 hover:text-violet-300 underline">Cookie Policy</a> ·
+          <a href="/terms/" class="text-violet-400 hover:text-violet-300 underline">Terms of Service</a> ·
+          <a href="/disclaimer/" class="text-violet-400 hover:text-violet-300 underline">Disclaimer</a>
+        </p>
       </section>
     </div>
   </main>

@@ -1,6 +1,6 @@
 ---
-// Localized section index (e.g. /es/herramientas-texto/). Built for every
-// section in every locale and lists the complete tool set for that section.
+// Localized section index (e.g. /es/herramientas-texto/). Built only for
+// sections that have translated tools, and lists exactly those.
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import I18nHeader from '../../../components/I18nHeader.astro';
 import I18nFooter from '../../../components/I18nFooter.astro';
@@ -22,8 +22,8 @@ const tools = toolsForLocale(locale, sectionKey);
 const canonical = sectionPath(locale, sectionKey);
 const alternates = alternatesForSection(sectionKey);
 
-// Listing every tool keeps the section complete, but a section whose own copy
-// is still English-only is not worth indexing.
+// A section whose own heading copy is still English-only is not worth
+// indexing even when its tools are translated.
 const indexable = isSectionIndexable(locale, sectionKey);
 
 const listSchema = {

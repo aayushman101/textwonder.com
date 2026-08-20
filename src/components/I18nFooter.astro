@@ -18,7 +18,7 @@ const sections = sectionsForLocale(locale).map((key) => ({
 // actually translated — a footer link reading "EMI Calculator" on a Spanish
 // page would undo the localization. Any shortfall is topped up with other
 // translated tools so the column always holds six native names.
-const translatedTools = sectionsForLocale().flatMap((key) =>
+const translatedTools = sectionsForLocale(locale).flatMap((key) =>
   toolsForLocale(locale, key).filter((tool) => tool.translated).map((tool) => ({ ...tool, key })),
 );
 
@@ -91,7 +91,16 @@ const popularTools = [...shortlist, ...topUp].slice(0, 6);
           <li><a href="/about/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">{t(locale, 'footer.about')}</a></li>
           <li><a href="/contact/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">{t(locale, 'footer.contact')}</a></li>
           <li><a href="/blog/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">{t(locale, 'nav.blog')}</a></li>
+        </ul>
+        <!-- The legal pages exist only in English, so their labels stay in
+             English too — a translated label pointing at English copy would
+             promise more than the page delivers. -->
+        <h3 class="text-white font-semibold text-sm mt-5 mb-3">Legal</h3>
+        <ul class="space-y-2">
           <li><a href="/privacy-policy/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">{t(locale, 'footer.privacy')}</a></li>
+          <li><a href="/cookie-policy/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Cookie Policy</a></li>
+          <li><a href="/terms/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Terms of Service</a></li>
+          <li><a href="/disclaimer/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Disclaimer</a></li>
         </ul>
         <h3 class="text-white font-semibold text-sm mt-5 mb-3">{t(locale, 'footer.otherSites')}</h3>
         <ul class="space-y-2">

@@ -1,0 +1,198 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const UPDATED = '20 August 2026';
+
+// One row per thing that actually stores something on your device. Keeping the
+// table generated from data makes it obvious when a new script is added
+// without a matching disclosure.
+const COOKIES = [
+  {
+    name: '_ga',
+    party: 'Google Analytics',
+    type: 'Analytics',
+    life: '2 years',
+    purpose: 'Distinguishes one visitor from another so repeat visits are not counted as new people.',
+  },
+  {
+    name: '_ga_C7Q4Q1J205',
+    party: 'Google Analytics',
+    type: 'Analytics',
+    life: '2 years',
+    purpose: 'Keeps session state for this specific property (measurement ID G-C7Q4Q1J205).',
+  },
+  {
+    name: 'IDE / DSID',
+    party: 'Google AdSense & DoubleClick',
+    type: 'Advertising',
+    life: 'Up to 13 months',
+    purpose: 'Selects ads, limits how often you see the same one, and measures whether an ad led anywhere.',
+  },
+  {
+    name: '__gads / __gpi',
+    party: 'Google AdSense',
+    type: 'Advertising',
+    life: 'Up to 13 months',
+    purpose: 'Ad delivery and frequency capping on this site, plus detection of invalid traffic.',
+  },
+  {
+    name: 'tw-theme',
+    party: 'TextWonder (first-party)',
+    type: 'Preference',
+    life: 'Until cleared',
+    purpose: 'Remembers whether you chose the dark or light theme. Local storage, not sent anywhere.',
+  },
+  {
+    name: 'Tool drafts',
+    party: 'TextWonder (first-party)',
+    type: 'Preference',
+    life: 'Until cleared',
+    purpose: "Saves your last input in a tool so you don't lose it. Local storage, never transmitted.",
+  },
+];
+---
+
+<BaseLayout
+  title="Cookie Policy — TextWonder"
+  description="Exactly which cookies TextWonder sets, who sets them, how long they last and what each one does — plus how to refuse analytics and advertising cookies in any browser."
+  canonical="/cookie-policy/"
+>
+  <Header />
+
+  <main class="max-w-3xl mx-auto px-4 py-12">
+    <h1 class="text-4xl font-bold text-white mb-2" style="font-family: 'Space Grotesk', sans-serif;">Cookie Policy</h1>
+    <p class="text-slate-500 text-sm mb-8">Last updated: {UPDATED}</p>
+
+    <div class="space-y-8 text-slate-400 leading-relaxed">
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Why this page exists</h2>
+        <p>
+          A cookie is a small file a site asks your browser to keep, so that something can be
+          remembered between page loads. Some are genuinely useful; some exist to sell
+          advertising. This page lists every one TextWonder is responsible for, in both categories,
+          rather than describing them in the abstract.
+        </p>
+        <p class="mt-3">
+          Note that the tools themselves use no cookies at all. Your text and files are processed
+          in your browser and never stored — see the
+          <a href="/privacy-policy/" class="text-violet-400 hover:text-violet-300 underline">Privacy Policy</a>.
+          The cookies below relate to running the site, not to what you put into it.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">What we set</h2>
+        <div class="overflow-x-auto -mx-4 px-4">
+          <table class="w-full text-sm border-collapse min-w-[640px]">
+            <thead>
+              <tr class="border-b border-slate-700">
+                <th class="text-left py-2 pr-4 text-white font-semibold">Name</th>
+                <th class="text-left py-2 pr-4 text-white font-semibold">Set by</th>
+                <th class="text-left py-2 pr-4 text-white font-semibold">Type</th>
+                <th class="text-left py-2 pr-4 text-white font-semibold">Lifetime</th>
+                <th class="text-left py-2 text-white font-semibold">Purpose</th>
+              </tr>
+            </thead>
+            <tbody>
+              {COOKIES.map((c) => (
+                <tr class="border-b border-slate-800 align-top">
+                  <td class="py-3 pr-4"><code class="text-violet-400">{c.name}</code></td>
+                  <td class="py-3 pr-4 text-slate-300">{c.party}</td>
+                  <td class="py-3 pr-4 text-slate-300">{c.type}</td>
+                  <td class="py-3 pr-4 text-slate-300 whitespace-nowrap">{c.life}</td>
+                  <td class="py-3">{c.purpose}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4 text-sm">
+          Google may set additional cookies from its own domains as part of ad delivery. We do not
+          control that list; Google documents it in
+          <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">its cookie policy</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">The three categories</h2>
+        <ul class="list-disc list-outside ml-5 space-y-3 text-slate-300">
+          <li>
+            <strong class="text-white">Preference (first-party).</strong> Your theme choice and any
+            saved tool draft. These live in <code class="text-violet-400">localStorage</code> on
+            your device and are never sent to us or anyone else. Blocking them costs you nothing
+            except that the site forgets your theme.
+          </li>
+          <li>
+            <strong class="text-white">Analytics.</strong> Google Analytics 4, used to see which
+            tools get used and which pages are broken or ignored. Aggregate only — we cannot
+            identify you from it.
+          </li>
+          <li>
+            <strong class="text-white">Advertising.</strong> Google AdSense, which pays for the
+            site. These are the cookies that make ads personalised, and they are the ones most
+            people want control over.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">How to refuse them</h2>
+        <p>Every tool on this site works fully with all cookies blocked. Nothing is gated behind consent.</p>
+        <ul class="list-disc list-outside ml-5 mt-3 space-y-2 text-slate-300">
+          <li>
+            <strong class="text-white">Personalised ads</strong> — switch them off at
+            <a href="https://www.google.com/settings/ads" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Google Ads Settings</a>,
+            or opt out across many networks at
+            <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">aboutads.info</a>
+            and
+            <a href="https://www.youronlinechoices.com/" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Your Online Choices</a> (EU).
+          </li>
+          <li>
+            <strong class="text-white">Analytics</strong> — install Google's
+            <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener" class="text-violet-400 hover:text-violet-300 underline">Analytics Opt-out Add-on</a>,
+            which applies everywhere, not just here.
+          </li>
+          <li>
+            <strong class="text-white">Everything</strong> — block third-party cookies in your
+            browser: Chrome and Edge under <em>Settings → Privacy and security</em>, Firefox under
+            <em>Settings → Privacy &amp; Security</em>, Safari under <em>Preferences → Privacy</em>.
+            Most browsers also offer a private window that discards cookies on close.
+          </li>
+          <li>
+            <strong class="text-white">Local storage</strong> — clear site data for textwonder.com,
+            or use the <strong class="text-white">Clear</strong> button inside any tool.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Changes</h2>
+        <p>
+          If we add a script that sets a cookie, it gets a row in the table above and the date at
+          the top changes. That is the whole process.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-white font-semibold text-2xl mb-3">Questions</h2>
+        <p>
+          Write to <span class="text-violet-400">aayushman6139@gmail.com</span> or use the
+          <a href="/contact/" class="text-violet-400 hover:text-violet-300 underline">contact page</a>.
+        </p>
+      </section>
+
+      <section class="border-t border-slate-800 pt-6">
+        <p class="text-sm">
+          See also:
+          <a href="/privacy-policy/" class="text-violet-400 hover:text-violet-300 underline">Privacy Policy</a> ·
+          <a href="/terms/" class="text-violet-400 hover:text-violet-300 underline">Terms of Service</a> ·
+          <a href="/disclaimer/" class="text-violet-400 hover:text-violet-300 underline">Disclaimer</a>
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

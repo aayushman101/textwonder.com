@@ -44,17 +44,36 @@ You have full autonomy to:
 
 ## Adding New Tools
 
-**RULE: Every new tool MUST also get a blog post. No exceptions.**
+**RULE: a new tool gets a blog post only if there is a real article to write —
+and a blog post means 800+ words of substance. No stubs.**
+
+This rule used to read "every new tool MUST also get a blog post, no
+exceptions", and that is how the site ended up with 183 posts under 400 words
+(36 of them under 150) — pages that restated the tool page and added nothing.
+All 183 were deleted in August 2026 and 301'd to their tool (see
+`public/_redirects`) after AdSense flagged the site for **Low value content**.
+
+A post earns its URL only if it says something the tool page does not: real
+comparisons, alternative methods (Acrobat/Word/Mac as well as the browser
+tool), worked examples, edge cases, troubleshooting. If all you have is "what
+it does, how to use it, three FAQs" — that belongs on the tool page, which
+already has those sections. Ship the tool without a post.
 
 Whenever you add any new tool (PDF, text, dev, calc, color, health, student, data, unit):
 1. Build the tool itself (steps below per section)
-2. Create a blog post in `src/pages/blog/your-tool-name.astro` using `BlogLayout`
-   - Title: "How to Use [Tool Name] — Free Online [Category] Tool"
+2. Fill in `descriptionLong`, `useCases`, `howItWorks` and FAQs on the tool
+   record — this is the tool's own content and it is not optional
+3. *If* you have 800+ words of genuinely additional material, create
+   `src/pages/blog/your-tool-name.astro` using `BlogLayout`
    - Include FAQs, a tool CTA block linking to the tool, and a proper description
    - Set `category` to match the correct blog category (see Blog Categories below)
-3. Add the blog post entry to the `manualPosts` array in `src/pages/blog/index.astro`
+4. Add that post to the `manualPosts` array in `src/pages/blog/index.astro`
    - Add it under the correct category section comment
    - Include: slug, title, description, date (today's date), readTime, category
+
+**Never** mass-generate posts from a data file, and never print a list of
+target keywords onto a page — both were live on this site and both are
+policy violations.
 
 ### Blog Categories (use exactly these strings)
 | Tool Section | Blog Category |
@@ -118,15 +137,19 @@ RU  /ru/tekstovye-instrumenty/schetchik-slov/
 | `src/pages/[locale]/…` | The three localized routes: home, section index, tool page |
 
 ### Hard rules — do not break these
-1. **The full catalogue builds in every language; only translated pages are
-   indexable.** All 226 tools resolve in all 10 locales, so no language ever
-   looks half-empty. A tool with no translation yet still gets a localized page
-   (localized chrome, English tool copy) flagged `translated: false`. That flag
-   drives three things which must always agree: `noindex, follow` on the page,
-   exclusion from the sitemap (`noindexPaths()` feeds the sitemap `filter`), and
-   exclusion from every hreflang cluster. Together they stop a fallback page
-   from competing with the English original as duplicate thin content. Never
-   index a fallback page, and never let those three signals disagree.
+1. **A locale publishes only what has been translated for it.** A tool with no
+   translation yet gets NO localized page at all. `toolsForLocale()` filters
+   untranslated tools out for every non-English locale, and that one filter
+   cascades to nav, search, related links, hreflang and every `getStaticPaths`.
+   **Never grow a locale by cloning English copy under a localized URL.**
+
+   This replaced the original design, which built all 226 tools in all 10
+   locales and used `noindex` to stop the English-copy fallbacks competing with
+   the originals. It protected Search rankings but left 1,890 of 2,638 built
+   pages (72%) as machine-multiplied English — and in August 2026 Google
+   AdSense flagged the site for **Low value content**. `noindex` keeps a page
+   out of Search; it does not stop a policy reviewer seeing that most of the
+   site is duplicated filler. Fewer real pages beat many thin ones.
 2. **hreflang must be bidirectional.** Every page in a cluster lists every
    other version plus one `x-default`. English layouts call
    `alternatesForTool()` / `alternatesForSection()` for exactly this reason —
@@ -151,10 +174,14 @@ Research the term the market **actually searches** — "unir pdf", not a literal
 translation of "PDF merger". That choice is most of the SEO value.
 
 ### Coverage
-Wave 1 translates 20 tools × 9 languages. Every other tool is still browsable
-in every language through the English-fallback path in rule 1 — by design, not
-a gap. `translatedCountForLocale(locale)` reports real translation coverage;
-`toolCountForLocale(locale)` is always the full catalogue.
+Wave 1 translates 20 tools × 9 languages, so each locale publishes 20 tool
+pages plus its section indexes and home — 27 pages per locale. Untranslated
+tools are simply absent from that locale; visitors reach the English page
+through the language switcher. `toolCountForLocale(locale)` and
+`translatedCountForLocale(locale)` now return the same number by definition.
+
+Grow a locale by adding records to `src/i18n/tools/<locale>.js`. Every new
+record adds a real page automatically.
 
 A section index is indexable only when the section has translated copy AND at
 least one translated tool (`isSectionIndexable`). Locale home pages are always

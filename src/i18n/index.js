@@ -2,12 +2,14 @@
 // Single source of truth for: which tools exist in which language, what their
 // localized URL is, and which hreflang alternates each page should declare.
 //
-// Design rule: the FULL catalogue is browsable in every language, but only
-// genuinely translated pages are indexable. A tool without a translation yet
-// still gets a localized page (localized chrome, English tool copy) so the
-// site never looks broken or half-empty — that page carries noindex and is
-// kept out of the sitemap and out of every hreflang cluster, so it can never
-// compete with the English original as duplicate thin content.
+// Design rule: a locale publishes exactly what has been translated for it.
+// A tool with no translation yet gets NO localized page — not an English-copy
+// page under a localized URL. The earlier design built the full catalogue in
+// every language and leaned on `noindex` to stop the fallbacks competing with
+// the English originals. That protected Search rankings but left ~72% of the
+// built site as machine-multiplied English, which is what a publisher-policy
+// review reads as scaled, low-value content. Fewer real pages beat many thin
+// ones; grow a locale by adding translations, never by cloning English.
 
 import { TOOLS } from '../data/tools.js';
 import { PDF_TOOLS } from '../data/pdftools.js';
@@ -105,11 +107,9 @@ export const hasTranslation = (locale, sectionKey, slug) =>
 /**
  * Merge English source data with its translation.
  *
- * Every tool resolves in every locale so the whole catalogue stays browsable.
- * When no translation exists yet, the English copy is used as the fallback and
- * `translated: false` is set. That flag drives noindex, sitemap exclusion and
- * hreflang exclusion, so a fallback page serves users without ever competing
- * with the English original in search.
+ * Resolution still succeeds for an untranslated tool, flagged
+ * `translated: false`, because callers need to ask "does this exist here?"
+ * — but `toolsForLocale` filters those out, so no page is ever built from one.
  *
  * `slug` stays the English slug so component maps keep resolving; the
  * localized URL segment is exposed separately as `localizedSlug`.
@@ -135,25 +135,34 @@ export function resolveTool(locale, sectionKey, slug) {
   };
 }
 
-/** Every tool in a section for a locale, in source order. */
+/**
+ * Every tool a locale can actually show, in source order.
+ *
+ * English gets the full catalogue. A localized locale gets only the tools that
+ * carry real translated copy. Publishing English copy under a Spanish URL is
+ * duplicate filler, and a site built mostly of those pages reads as scaled
+ * low-value content to a policy reviewer no matter how the pages are tagged —
+ * `noindex` keeps them out of Search, but it does not keep a crawler from
+ * seeing that most of the site is machine-multiplied English.
+ *
+ * Filtering here is what stops that content being generated at all, and it
+ * cascades from this one place to nav, search, related links and every
+ * getStaticPaths.
+ */
 export function toolsForLocale(locale, sectionKey) {
-  return (SOURCE_TOOLS[sectionKey] || [])
+  const all = (SOURCE_TOOLS[sectionKey] || [])
     .map((s) => resolveTool(locale, sectionKey, s.slug))
     .filter(Boolean);
+  return locale === DEFAULT_LOCALE ? all : all.filter((tool) => tool.translated);
 }
 
-/** Full catalogue size — identical in every locale. */
+/** How many tools this locale actually publishes. */
 export function toolCountForLocale(locale) {
   return SECTION_KEYS.reduce((n, key) => n + toolsForLocale(locale, key).length, 0);
 }
 
-/** How many tools carry real translated copy in this locale. */
-export function translatedCountForLocale(locale) {
-  return SECTION_KEYS.reduce(
-    (n, key) => n + toolsForLocale(locale, key).filter((t) => t.translated).length,
-    0,
-  );
-}
+/** Every published localized tool is translated now, so these two agree. */
+export const translatedCountForLocale = toolCountForLocale;
 
 /** Does this locale have translated copy for the section itself? */
 export const hasSectionTranslation = (locale, sectionKey) =>
@@ -169,8 +178,9 @@ export const isSectionIndexable = (locale, sectionKey) =>
   (hasSectionTranslation(locale, sectionKey) &&
     toolsForLocale(locale, sectionKey).some((t) => t.translated));
 
-/** All sections exist in every locale — the catalogue is never truncated. */
-export const sectionsForLocale = () => SECTION_KEYS;
+/** Sections a locale can actually show — i.e. ones with translated tools. */
+export const sectionsForLocale = (locale) =>
+  SECTION_KEYS.filter((key) => toolsForLocale(locale, key).length > 0);
 
 // ── Section metadata ───────────────────────────────────────────────────────
 
@@ -274,11 +284,14 @@ export function allLocalizedToolRoutes() {
   return routes;
 }
 
-/** Every localized section index to build — only where tools exist. */
+/**
+ * Every localized section index to build. A section with no translated tools
+ * would be an empty localized shell, so it is not built at all.
+ */
 export function allLocalizedSectionRoutes() {
   const routes = [];
   for (const locale of TRANSLATED_LOCALES) {
-    for (const sectionKey of SECTION_KEYS) {
+    for (const sectionKey of sectionsForLocale(locale)) {
       routes.push({
         params: { locale, section: sectionSegment(sectionKey, locale) },
         props: { locale, sectionKey },
@@ -292,11 +305,11 @@ export function allLocalizedSectionRoutes() {
 export const allLocaleHomeRoutes = () =>
   TRANSLATED_LOCALES.map((locale) => ({ params: { locale }, props: { locale } }));
 
-/** Related tools for a locale, dropping any that aren't translated yet. */
+/** Related tools for a locale. Untranslated ones have no page, so they go. */
 export function relatedForLocale(locale, sectionKey, slugs = []) {
   return slugs
     .map((slug) => resolveTool(locale, sectionKey, slug))
-    .filter(Boolean)
+    .filter((tool) => tool && tool.translated)
     .map((tool) => ({ ...tool, path: toolPath(locale, sectionKey, tool.slug) }));
 }
 
@@ -323,13 +336,22 @@ export function localizedSearchIndex(locale) {
   return out;
 }
 
-/** Locale-prefixed paths that must stay out of the sitemap (noindex pages). */
+/**
+ * Locale-prefixed paths that must stay out of the sitemap.
+ *
+ * Untranslated pages are no longer built, so in normal operation this is
+ * empty. It stays as a backstop: if a section ever regains copy-less tools,
+ * they are still kept out of the sitemap rather than silently indexed.
+ */
 export function noindexPaths() {
   const paths = [];
   for (const locale of TRANSLATED_LOCALES) {
     for (const sectionKey of SECTION_KEYS) {
-      if (!isSectionIndexable(locale, sectionKey)) paths.push(sectionPath(locale, sectionKey));
-      for (const tool of toolsForLocale(locale, sectionKey)) {
+      const tools = toolsForLocale(locale, sectionKey);
+      if (tools.length && !isSectionIndexable(locale, sectionKey)) {
+        paths.push(sectionPath(locale, sectionKey));
+      }
+      for (const tool of tools) {
         if (!tool.translated) paths.push(toolPath(locale, sectionKey, tool.slug));
       }
     }

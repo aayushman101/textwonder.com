@@ -15,6 +15,13 @@ const NOINDEX = noindexPaths();
 export default defineConfig({
   site: 'https://textwonder.com',
   output: 'static',
+
+  // Pages are emitted as /path/index.html, so /path (no slash) 308-redirects
+  // to /path/. Declaring the convention makes Astro's own link handling and
+  // the dev server agree with production, so a slash-less internal link is a
+  // build-time inconsistency rather than a redirect Google reports later.
+  trailingSlash: 'always',
+  build: { format: 'directory' },
   integrations: [
     sitemap({
       changefreq: 'weekly',

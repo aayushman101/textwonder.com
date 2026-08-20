@@ -11,10 +11,9 @@ import { getGlobalSearchIndex } from '../data/categories.js';
 export function GET() {
   return new Response(JSON.stringify(getGlobalSearchIndex()), {
     headers: {
+      // NOTE: with static output these headers are discarded — the endpoint
+      // only writes a file at build time. Caching is set in public/_headers.
       'Content-Type': 'application/json; charset=utf-8',
-      // Changes only when the tool catalogue changes. Serve stale while
-      // revalidating so a rebuild propagates without ever blocking a search.
-      'Cache-Control': 'public, max-age=3600, stale-while-revalidate=604800',
     },
   });
 }

@@ -2,3 +2,13 @@
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
+
+# The search index is a build artefact that only changes when the tool
+# catalogue does. Cache it hard so it is fetched once per visitor rather than
+# revalidated on every page. Cloudflare Pages ignores Cache-Control set on the
+# Response inside a static endpoint, so it has to be declared here.
+/search-index.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=604800
+
+/*/search-index.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=604800

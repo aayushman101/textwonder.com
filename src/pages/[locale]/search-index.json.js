@@ -8,8 +8,9 @@ export function getStaticPaths() {
 export function GET({ props }) {
   return new Response(JSON.stringify(localizedSearchIndex(props.locale)), {
     headers: {
+      // NOTE: with static output these headers are discarded — the endpoint
+      // only writes a file at build time. Caching is set in public/_headers.
       'Content-Type': 'application/json; charset=utf-8',
-      'Cache-Control': 'public, max-age=3600, stale-while-revalidate=604800',
     },
   });
 }

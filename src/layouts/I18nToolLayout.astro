@@ -5,7 +5,7 @@ import I18nFooter from '../components/I18nFooter.astro';
 import AdSlot from '../components/AdSlot.astro';
 import {
   t, LOCALES, homePath, sectionPath, sectionMeta, toolPath,
-  relatedForLocale, absolute, SECTION_BRANDS,
+  relatedForLocale, absolute, SECTION_BRANDS, localizedSearchIndex,
 } from '../i18n/index.js';
 
 const { tool, locale, sectionKey, alternates, noindex = false } = Astro.props;
@@ -60,6 +60,7 @@ const faqSchema = tool.faqs?.length
   lang={locale}
   alternates={alternates}
   noindex={noindex}
+  searchIndex={localizedSearchIndex(locale)}
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(appSchema)} />

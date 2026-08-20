@@ -25,6 +25,7 @@ import {
   SECTION_KEYS, sectionSegment,
 } from './config.js';
 import { UI } from './ui.js';
+import { buildTokens } from '../lib/search.js';
 import { HOME_UI } from './ui-home.js';
 
 import es from './tools/es.js';
@@ -297,6 +298,29 @@ export function relatedForLocale(locale, sectionKey, slugs = []) {
     .map((slug) => resolveTool(locale, sectionKey, slug))
     .filter(Boolean)
     .map((tool) => ({ ...tool, path: toolPath(locale, sectionKey, tool.slug) }));
+}
+
+/**
+ * Search index for one locale: localized names and URLs, plus the token blob
+ * src/lib/search.js ranks against. BaseLayout emits this once per page.
+ */
+export function localizedSearchIndex(locale) {
+  const out = [];
+  for (const sectionKey of SECTION_KEYS) {
+    const meta = sectionMeta(locale, sectionKey);
+    const brand = SECTION_BRANDS[sectionKey];
+    for (const tool of toolsForLocale(locale, sectionKey)) {
+      out.push({
+        name: tool.name,
+        path: toolPath(locale, sectionKey, tool.slug),
+        category: meta.name,
+        color: brand.color,
+        icon: brand.icon,
+        k: buildTokens(tool),
+      });
+    }
+  }
+  return out;
 }
 
 /** Locale-prefixed paths that must stay out of the sitemap (noindex pages). */

@@ -125,8 +125,11 @@ const { alternates = [] } = Astro.props;
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 
-<script is:inline define:vars={{ toolsForSearch }}>
+<script>
+import { searchTools } from '../lib/search.js';
   (function() {
+    const toolsForSearch = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
+
     const toggle = document.getElementById('img-theme-toggle');
     const sun = document.getElementById('img-icon-sun');
     const moon = document.getElementById('img-icon-moon');
@@ -162,7 +165,7 @@ const { alternates = [] } = Astro.props;
     function renderResults(query) {
       const q = query.toLowerCase().trim();
       const filtered = q
-        ? toolsForSearch.filter(t => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q))
+        ? searchTools(toolsForSearch, q, 8)
         : toolsForSearch.slice(0, 8);
       results.innerHTML = filtered.length
         ? filtered.map(t => `<li><a href="${t.path}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${t.color}15;color:${t.color}">${t.icon || '🖼️'}</div><span class="text-white text-sm font-medium">${t.name}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-medium ml-auto" style="background:${t.color}15;color:${t.color}">${t.category}</span></a></li>`).join('')

@@ -131,7 +131,11 @@ const total = toolCountForLocale(locale);
   .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 
-<script define:vars={{ toolsForSearch, noResultsText: t(locale, 'search.none') }}>
+<script type="application/json" id="i18n-search-cfg" set:html={JSON.stringify({ noResultsText: t(locale, 'search.none') })}></script>
+<script>
+import { searchTools } from '../lib/search.js';
+const toolsForSearch = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
+const { noResultsText } = JSON.parse(document.getElementById('i18n-search-cfg')?.textContent || '{}');
 (function () {
   const modal = document.getElementById('i18n-search-modal');
   const input = document.getElementById('i18n-search-input');
@@ -148,7 +152,7 @@ const total = toolCountForLocale(locale);
   function renderResults(query) {
     const q = query.toLowerCase().trim();
     const filtered = q
-      ? toolsForSearch.filter((t) => t.name.toLowerCase().includes(q) || t.category.toLowerCase().includes(q))
+      ? searchTools(toolsForSearch, q, 8)
       : toolsForSearch.slice(0, 8);
     results.innerHTML = filtered.length
       ? filtered.map((t) => `<li><a href="${esc(t.path)}" class="flex items-center gap-3 px-4 py-2.5 hover:bg-[var(--bg-surface-hover)] transition-colors"><div class="w-6 h-6 rounded flex items-center justify-center text-xs" style="background:${esc(t.color)}15;color:${esc(t.color)}">${esc(t.icon || '⚙️')}</div><span class="text-white text-sm font-medium">${esc(t.name)}</span><span class="text-[10px] px-2 py-0.5 rounded-full font-medium ms-auto" style="background:${esc(t.color)}15;color:${esc(t.color)}">${esc(t.category)}</span></a></li>`).join('')

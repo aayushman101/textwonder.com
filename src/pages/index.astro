@@ -393,7 +393,9 @@ const alternates = alternatesForHome();
   <Footer />
 </BaseLayout>
 
-<script define:vars={{ toolsForSearch }}>
+<script>
+import { searchTools } from '../lib/search.js';
+const toolsForSearch = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
 (function() {
   // Hero Search Input & Dropdown
   const searchInput = document.getElementById('hero-search-input');
@@ -407,10 +409,7 @@ const alternates = alternatesForHome();
       return;
     }
     
-    const filtered = toolsForSearch.filter(t => 
-      t.name.toLowerCase().includes(q) || 
-      t.category.toLowerCase().includes(q)
-    );
+    const filtered = searchTools(toolsForSearch, q, 10);
     
     if (filtered.length > 0) {
       searchResults.innerHTML = filtered.slice(0, 10).map(t => `

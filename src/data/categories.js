@@ -8,6 +8,7 @@ import { STUDENT_TOOLS } from './studenttools.js';
 import { COLOR_TOOLS } from './colortools.js';
 import { DATA_TOOLS } from './datatools.js';
 import { IMAGE_TOOLS } from './imagetools.js';
+import { buildTokens } from '../lib/search.js';
 
 export const SECTIONS = [
   // Row 1: Text, PDF, Doc, Image
@@ -158,17 +159,33 @@ export const FEATURED_TOOLS = [
   { section: 'health',      slug: 'bmi-calculator',   path: '/health/bmi-calculator/' },
 ];
 
-// Helper to construct a global search index across all categories
+// Path -> source tool, so the search index can pull each tool's tagline and
+// curated keywords. SECTIONS.toolsList only carries { name, path }.
+const SOURCE_BY_PATH = new Map();
+for (const [prefix, list] of [
+  ['/tools', TOOLS], ['/pdfwonder', PDF_TOOLS], ['/devwonder', DEV_TOOLS],
+  ['/imagewonder', IMAGE_TOOLS], ['/calc', CALC_TOOLS], ['/unit', UNIT_TOOLS],
+  ['/health', HEALTH_TOOLS], ['/student', STUDENT_TOOLS], ['/color', COLOR_TOOLS],
+  ['/data', DATA_TOOLS],
+]) {
+  for (const tool of list) SOURCE_BY_PATH.set(`${prefix}/${tool.slug}/`, tool);
+}
+
+// Helper to construct a global search index across all categories.
+// `k` is the searchable token blob (tagline + curated keywords, minus anything
+// already in the name) that src/lib/search.js ranks against at runtime.
 export const getGlobalSearchIndex = () => {
   const searchIndex = [];
   SECTIONS.forEach(section => {
     section.toolsList.forEach(tool => {
+      const source = SOURCE_BY_PATH.get(tool.path);
       searchIndex.push({
         name: tool.name,
         path: tool.path,
         category: `${section.prefix}${section.suffix}`,
         color: section.color,
-        icon: section.icon
+        icon: section.icon,
+        k: source ? buildTokens(source) : ''
       });
     });
   });

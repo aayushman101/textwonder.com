@@ -132,9 +132,14 @@ const { alternates = [] } = Astro.props;
 </style>
 
 <script>
-import { searchTools } from '../lib/search.js';
+import { searchTools, loadSearchIndex } from '../lib/search.js';
   (function() {
-    const toolsForSearch = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
+    // Fetched on first use; see loadSearchIndex() in src/lib/search.js.
+    let toolsForSearch = [];
+    let searchIndexReady = false;
+    function primeSearchIndex() {
+      return loadSearchIndex().then((data) => { toolsForSearch = data; searchIndexReady = true; return data; });
+    }
 
     // Theme
     const toggle = document.getElementById('dev-theme-toggle');
@@ -163,6 +168,8 @@ import { searchTools } from '../lib/search.js';
     function closeModal() { modal.classList.add('hidden'); input.value = ''; }
 
     openBtn.addEventListener('click', openModal);
+
+    openBtn && openBtn.addEventListener('mouseenter', primeSearchIndex, { once: true });
     closeBtn.addEventListener('click', closeModal);
     backdrop.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => {
@@ -171,6 +178,8 @@ import { searchTools } from '../lib/search.js';
     });
 
     function renderResults(query) {
+
+      if (!searchIndexReady) { primeSearchIndex().then(() => renderResults(query)); return; }
       const q = query.toLowerCase().trim();
       const filtered = q 
         ? searchTools(toolsForSearch, q, 8)

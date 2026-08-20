@@ -394,15 +394,26 @@ const alternates = alternatesForHome();
 </BaseLayout>
 
 <script>
-import { searchTools } from '../lib/search.js';
-const toolsForSearch = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
+import { searchTools, loadSearchIndex } from '../lib/search.js';
+// Fetched on first use; see loadSearchIndex() in src/lib/search.js.
+let toolsForSearch = [];
+let searchIndexReady = false;
+function primeSearchIndex() {
+  return loadSearchIndex().then((data) => { toolsForSearch = data; searchIndexReady = true; return data; });
+}
 (function() {
   // Hero Search Input & Dropdown
   const searchInput = document.getElementById('hero-search-input');
   const searchDropdown = document.getElementById('hero-search-dropdown');
   const searchResults = document.getElementById('hero-search-results');
+
+  // Start fetching as soon as the box is focused, so the request overlaps
+  // with the user typing rather than delaying the first result.
+  searchInput && searchInput.addEventListener('focus', primeSearchIndex, { once: true });
   
   function renderHeroSearch(query) {
+  
+    if (!searchIndexReady) { primeSearchIndex().then(() => renderHeroSearch(query)); return; }
     const q = query.toLowerCase().trim();
     if (!q) {
       searchDropdown.classList.add('hidden');

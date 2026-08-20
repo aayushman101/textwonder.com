@@ -248,8 +248,13 @@ const siteSchema = {
 
 <script type="application/json" id="locale-home-cfg" set:html={JSON.stringify({ noneText: t(locale, 'search.none') })}></script>
 <script>
-import { searchTools } from '../../lib/search.js';
-const searchIndex = JSON.parse(document.getElementById('tw-search-data')?.textContent || '[]');
+import { searchTools, loadSearchIndex } from '../../lib/search.js';
+// Fetched on first use; see loadSearchIndex() in src/lib/search.js.
+let searchIndex = [];
+let searchIndexReady = false;
+function primeSearchIndex() {
+  return loadSearchIndex().then((data) => { searchIndex = data; searchIndexReady = true; return data; });
+}
 const { noneText } = JSON.parse(document.getElementById('locale-home-cfg')?.textContent || '{}');
 (function () {
   const esc = (v) => String(v).replace(/[&<>"']/g, (c) =>
@@ -260,7 +265,12 @@ const { noneText } = JSON.parse(document.getElementById('locale-home-cfg')?.text
   const dropdown = document.getElementById('hero-search-dropdown');
   const results = document.getElementById('hero-search-results');
 
+  // Prime on focus so the fetch overlaps with typing.
+  input && input.addEventListener('focus', primeSearchIndex, { once: true });
+
   function render(query) {
+
+    if (!searchIndexReady) { primeSearchIndex().then(() => render(query)); return; }
     const q = query.toLowerCase().trim();
     if (!q) { dropdown.classList.add('hidden'); return; }
     const hits = searchTools(searchIndex, q, 12);

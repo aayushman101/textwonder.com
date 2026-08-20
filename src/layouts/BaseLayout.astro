@@ -2,19 +2,13 @@
 import '../styles/global.css';
 
 import { LOCALES, DEFAULT_LOCALE } from '../i18n/config.js';
-import { getGlobalSearchIndex } from '../data/categories.js';
 
 const {
   title, description, canonical, ogImage,
   lang = DEFAULT_LOCALE,
   alternates = [],
   noindex = false,
-  // Emitted once per page and read by every search box on it. Localized
-  // routes pass their own index so results stay in the page's language.
-  searchIndex = null,
 } = Astro.props;
-
-const pageSearchIndex = searchIndex || getGlobalSearchIndex();
 
 const siteUrl = 'https://textwonder.com';
 const fullCanonical = canonical ? `${siteUrl}${canonical}` : siteUrl;
@@ -94,7 +88,6 @@ const hreflangs = alternates.length > 1 ? alternates : [];
   <slot name="head" />
 </head>
 <body class="bg-[var(--bg-base)] text-slate-100 antialiased" style="font-family: 'Inter', system-ui, sans-serif;">
-  <script type="application/json" id="tw-search-data" set:html={JSON.stringify(pageSearchIndex)}></script>
   <slot />
 </body>
 </html>

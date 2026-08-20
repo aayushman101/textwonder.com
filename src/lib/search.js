@@ -129,3 +129,30 @@ export function searchTools(index, query, limit = 8) {
     .slice(0, limit)
     .map((s) => s.entry);
 }
+
+
+// ── Lazy index loading (browser only) ──────────────────────────────────────
+// The index is a standalone file rather than inline page markup, so it is
+// fetched once on first search interaction and then cached by the browser for
+// every subsequent page. Callers should fire this on focus/open so the request
+// overlaps with the user still typing.
+
+let cached = null;
+let inflight = null;
+
+/** URL of the index for the current page's language. */
+export function searchIndexUrl() {
+  const lang = (document.documentElement.lang || 'en').toLowerCase();
+  return lang === 'en' ? '/search-index.json' : `/${lang}/search-index.json`;
+}
+
+/** Resolve the search index, fetching it at most once per page. */
+export function loadSearchIndex() {
+  if (cached) return Promise.resolve(cached);
+  if (inflight) return inflight;
+  inflight = fetch(searchIndexUrl())
+    .then((r) => (r.ok ? r.json() : []))
+    .then((data) => { cached = Array.isArray(data) ? data : []; return cached; })
+    .catch(() => { cached = []; return cached; });
+  return inflight;
+}

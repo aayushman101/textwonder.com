@@ -86,6 +86,7 @@ import ShuffleLines from '../components/tools/ShuffleLines.astro';
 import LinesToCsv from '../components/tools/LinesToCsv.astro';
 import WordScrambler from '../components/tools/WordScrambler.astro';
 import SyllableCounter from '../components/tools/SyllableCounter.astro';
+import HaikuSyllableCounter from '../components/tools/HaikuSyllableCounter.astro';
 import ExtractPhoneNumbers from '../components/tools/ExtractPhoneNumbers.astro';
 import TextToAsciiArt from '../components/tools/TextToAsciiArt.astro';
 import SmallCapsGenerator from '../components/tools/SmallCapsGenerator.astro';
@@ -197,6 +198,7 @@ export const componentMap: Record<string, any> = {
   'lines-to-csv': LinesToCsv,
   'word-scrambler': WordScrambler,
   'syllable-counter': SyllableCounter,
+  'haiku-syllable-counter': HaikuSyllableCounter,
   'extract-phone-numbers': ExtractPhoneNumbers,
   'text-to-ascii-art': TextToAsciiArt,
   'small-caps-generator': SmallCapsGenerator,

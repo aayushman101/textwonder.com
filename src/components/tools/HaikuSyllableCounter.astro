@@ -1,0 +1,394 @@
+---
+// Haiku syllable counter.
+//
+// Every competitor prints one number per line and a tick or a cross. The two
+// things that actually block a haiku poet are missing everywhere:
+//
+//   1. Words that can honestly be counted two ways. "fire", "hour", "flower"
+//      are one syllable for most speakers and two for others, and that single
+//      choice decides whether a line is 5 or 6. Giving one number and calling
+//      it correct is wrong, so this tool flags them and lets you choose.
+//   2. Japanese haiku does not count syllables at all. It counts on (morae),
+//      where a long vowel is two and n is its own beat. "Japanese syllable
+//      counter" and "haiku checker Japanese" are real searches with no good
+//      answer in the results.
+//
+// Both are handled below. Everything runs in the browser.
+---
+
+<div class="space-y-5" data-haiku>
+  <!-- Mode + form -->
+  <div class="flex flex-wrap gap-3">
+    <div>
+      <label class="block text-xs text-slate-500 mb-1.5">Language</label>
+      <div class="inline-flex rounded-xl border border-slate-700 overflow-hidden">
+        <button data-mode="en" class="hk-mode bg-violet-700 text-white text-sm px-4 py-2 transition-colors">English</button>
+        <button data-mode="ja" class="hk-mode bg-[var(--bg-base)] text-slate-300 text-sm px-4 py-2 transition-colors">Japanese (on)</button>
+      </div>
+    </div>
+    <div class="flex-1 min-w-[200px]">
+      <label for="hk-form" class="block text-xs text-slate-500 mb-1.5">Form</label>
+      <select id="hk-form" class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-3 py-2 text-slate-100 text-sm outline-none focus:ring-2 focus:ring-violet-600">
+        <option value="5,7,5">Haiku — 5-7-5 (traditional)</option>
+        <option value="3,5,3">Haiku — 3-5-3 (short form)</option>
+        <option value="5,7,5,7,7">Tanka — 5-7-5-7-7</option>
+        <option value="5,7,5|senryu">Senryū — 5-7-5</option>
+        <option value="free">Free form — just count</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div>
+    <div class="flex items-center justify-between mb-2">
+      <label for="hk-input" class="text-slate-300 text-sm font-medium">Your poem — one line per line</label>
+      <button id="hk-example" class="text-xs text-violet-400 hover:text-violet-300 underline">Load an example</button>
+    </div>
+    <textarea
+      id="hk-input"
+      rows="4"
+      spellcheck="false"
+      placeholder={'An old silent pond\nA frog jumps into the pond—\nSplash! Silence again.'}
+      class="w-full bg-[var(--bg-base)] border border-slate-700 rounded-xl px-4 py-3 text-slate-100 placeholder-slate-600 resize-y outline-none focus:ring-2 focus:ring-violet-600 text-sm leading-relaxed font-mono"
+    ></textarea>
+  </div>
+
+  <!-- Verdict -->
+  <div id="hk-verdict" class="rounded-xl border border-slate-800 bg-[var(--bg-surface)] px-4 py-3 text-sm text-slate-400">
+    Type or paste a poem above.
+  </div>
+
+  <!-- Per-line -->
+  <div id="hk-lines" class="space-y-2"></div>
+
+  <!-- Disputed words — the feature nobody else has -->
+  <div id="hk-disputed" class="hidden">
+    <div class="rounded-xl border border-amber-800/60 bg-amber-950/20 p-4">
+      <div class="flex items-start gap-2 mb-3">
+        <span class="text-amber-400 text-lg leading-none">⚠</span>
+        <div>
+          <div class="text-amber-200 font-semibold text-sm">Words that can be counted two ways</div>
+          <p class="text-slate-400 text-xs mt-1 leading-relaxed">
+            English pronunciation genuinely differs here, and your choice changes the line count.
+            Pick how <em>you</em> say each word — the totals update instantly.
+          </p>
+        </div>
+      </div>
+      <div id="hk-disputed-list" class="flex flex-wrap gap-2"></div>
+    </div>
+  </div>
+
+  <!-- Word breakdown -->
+  <div id="hk-breakdown-wrap" class="hidden">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-slate-300 text-sm font-medium">Word breakdown</span>
+      <span class="text-[11px] text-slate-500">click any word to correct its count</span>
+    </div>
+    <div id="hk-breakdown" class="space-y-2"></div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap items-center gap-2">
+    <button id="hk-copy" class="bg-violet-700 hover:bg-violet-600 text-white font-medium px-5 py-2.5 rounded-xl transition-colors text-sm">Copy result</button>
+    <button id="hk-reset" class="bg-[var(--bg-surface)] border border-slate-700 hover:border-slate-600 text-slate-300 font-medium px-4 py-2.5 rounded-xl transition-colors text-sm">Clear</button>
+    <span id="hk-overrides-note" class="text-xs text-slate-500 hidden">
+      <button id="hk-clear-overrides" class="text-violet-400 hover:text-violet-300 underline">reset corrections</button>
+    </span>
+  </div>
+</div>
+
+<script>
+// ── Disputed words ─────────────────────────────────────────────────────────
+// Words where two counts are both defensible. `d` is the default (the more
+// common reading), `alt` the other one, `note` explains the split.
+const DISPUTED = {
+  fire:    { d: 1, alt: 2, note: 'one beat in most speech, two if drawn out' },
+  hour:    { d: 1, alt: 2, note: '"our" vs "ow-er"' },
+  our:     { d: 1, alt: 2, note: '"are" vs "ow-er"' },
+  flower:  { d: 2, alt: 1, note: '"flow-er" vs "flour"' },
+  power:   { d: 2, alt: 1, note: 'often compressed in verse' },
+  tower:   { d: 2, alt: 1, note: 'often compressed in verse' },
+  shower:  { d: 2, alt: 1, note: 'often compressed in verse' },
+  sour:    { d: 1, alt: 2, note: 'regional' },
+  hire:    { d: 1, alt: 2, note: 'regional' },
+  tire:    { d: 1, alt: 2, note: 'regional' },
+  wire:    { d: 1, alt: 2, note: 'regional' },
+  prayer:  { d: 1, alt: 2, note: 'the act (1) vs one who prays (2)' },
+  layer:   { d: 2, alt: 1, note: 'regional' },
+  fluid:   { d: 2, alt: 1, note: 'careful vs casual speech' },
+  cruel:   { d: 1, alt: 2, note: '"crool" vs "cru-el"' },
+  real:    { d: 1, alt: 2, note: '"reel" vs "re-al"' },
+  dial:    { d: 1, alt: 2, note: '"dile" vs "di-al"' },
+  quiet:   { d: 2, alt: 1, note: 'usually two, sometimes clipped' },
+  poem:    { d: 2, alt: 1, note: '"po-em" vs "pome"' },
+  every:   { d: 2, alt: 3, note: '"ev-ry" vs "ev-er-y"' },
+  family:  { d: 3, alt: 2, note: '"fam-i-ly" vs "fam-ly"' },
+  evening: { d: 2, alt: 3, note: 'time of day (2) vs making even (3)' },
+  heaven:  { d: 2, alt: 1, note: 'often compressed in verse' },
+  chocolate: { d: 3, alt: 2, note: '"choc-o-late" vs "choc-late"' },
+  different: { d: 3, alt: 2, note: '"dif-fer-ent" vs "dif-frent"' },
+  camera:  { d: 3, alt: 2, note: '"cam-er-a" vs "cam-ra"' },
+  memory:  { d: 3, alt: 2, note: '"mem-o-ry" vs "mem-ry"' },
+  favorite:{ d: 3, alt: 2, note: '"fav-o-rite" vs "fav-rite"' },
+  diamond: { d: 2, alt: 3, note: '"di-mond" vs "di-a-mond"' },
+  science: { d: 2, alt: 1, note: 'usually two' },
+  towards: { d: 2, alt: 1, note: 'British vs American' },
+  interesting: { d: 3, alt: 4, note: '"in-tres-ting" vs "in-ter-est-ing"' },
+  comfortable: { d: 3, alt: 4, note: '"comf-ta-ble" vs "com-fort-a-ble"' },
+  vegetable:   { d: 3, alt: 4, note: '"veg-ta-ble" vs "veg-e-ta-ble"' },
+};
+
+// ── Exceptions the vowel-group rule gets wrong ─────────────────────────────
+const EXCEPTIONS = {
+  create: 2, business: 2, colonel: 2, idea: 3, area: 3, video: 3, radio: 3,
+  poet: 2, being: 2, react: 2, chaos: 2, theatre: 2, theater: 2, naive: 2,
+  museum: 3, cocoa: 2, ideal: 3, oasis: 3, chaotic: 3, meteor: 3, violin: 3,
+  diet: 2, riot: 2, patient: 2, ancient: 2, audio: 3, studio: 3, ruin: 2,
+  duet: 2, poetic: 3, conscience: 2, patience: 2, client: 2, giant: 2,
+  diary: 3, triumph: 2, poetry: 3, variety: 4, society: 4, anxiety: 4,
+  wednesday: 2, several: 3, general: 3, federal: 3, average: 3,
+  restaurant: 3, temperature: 4, history: 3, mystery: 3, factory: 3,
+  february: 3, library: 3, literature: 4, medicine: 3, marriage: 2,
+  jewelry: 2, mischievous: 3, choir: 1, iron: 2, aisle: 1, isle: 1,
+  bureau: 2, buffet: 2, ballet: 2, chef: 1, corps: 1, debris: 2, genre: 2,
+  cache: 1, clothes: 1, months: 1, world: 1, thoughts: 1, higher: 2,
+  player: 2, mayor: 2, fuel: 2, jewel: 2, trial: 2, loyal: 2, royal: 2,
+  dryer: 2, buyer: 2, courteous: 3, righteous: 2, spontaneous: 4,
+  outrageous: 3, courageous: 3, ambiguous: 4, strenuous: 3,
+};
+
+const EXAMPLES = [
+  'An old silent pond\nA frog jumps into the pond—\nSplash! Silence again.',
+  'Over the wintry\nforest, winds howl in rage\nwith no leaves to blow.',
+  'The light of a candle\nis transferred to another candle—\nspring twilight.',
+];
+
+const root = document.querySelector('[data-haiku]');
+if (root) {
+  const $ = (id) => root.querySelector('#' + id);
+  const input = $('hk-input');
+
+  let mode = 'en';
+  let overrides = {};   // lowercased word -> chosen count
+  let exampleIdx = 0;
+
+  // ── Counting ─────────────────────────────────────────────────────────────
+  function baseSyllables(word) {
+    const k = word.toLowerCase().replace(/[^a-z']/g, '').replace(/'/g, '');
+    if (!k) return { n: 0, src: 'none' };
+    if (DISPUTED[k]) return { n: DISPUTED[k].d, src: 'disputed' };
+    if (EXCEPTIONS[k]) return { n: EXCEPTIONS[k], src: 'dict' };
+    if (k.length <= 3) return { n: 1, src: 'rule' };
+    let w = k.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+    const m = w.match(/[aeiouy]+/g);
+    return { n: m ? m.length : 1, src: 'rule' };
+  }
+
+  function syllables(word) {
+    const k = word.toLowerCase().replace(/[^a-z']/g, '').replace(/'/g, '');
+    if (Object.prototype.hasOwnProperty.call(overrides, k)) {
+      return { n: overrides[k], src: 'you' };
+    }
+    return baseSyllables(word);
+  }
+
+  // Japanese on (morae). Small ya/yu/yo and small vowels bind to the kana
+  // before them and add nothing; everything else — including n and the long
+  // vowel mark — is its own beat.
+  const SMALL = 'ゃゅょャュョぁぃぅぇぉァィゥェォ';
+  function countOn(line) {
+    const kana = line.match(/[ぁ-ゖァ-ヺー々]/g) || [];
+    let n = 0;
+    for (const ch of kana) if (!SMALL.includes(ch)) n++;
+    if (n > 0) return n;
+    // No kana at all — fall back to romaji vowel groups so romanised haiku
+    // still gets a sensible number rather than zero.
+    const v = line.toLowerCase().match(/[aeiou]+|n(?![aeiouy])/g);
+    return v ? v.length : 0;
+  }
+
+  function lineCount(line) {
+    if (mode === 'ja') return countOn(line);
+    return (line.match(/[a-zA-Z']+/g) || []).reduce((s, w) => s + syllables(w).n, 0);
+  }
+
+  // ── Render ───────────────────────────────────────────────────────────────
+  function render() {
+    const raw = input.value;
+    const lines = raw.split('\n').filter((l) => l.trim());
+    const formVal = $('hk-form').value;
+    const isFree = formVal === 'free';
+    const pattern = isFree ? [] : formVal.split('|')[0].split(',').map(Number);
+    const formName = $('hk-form').selectedOptions[0].textContent.split('—')[0].trim();
+
+    const counts = lines.map(lineCount);
+    const total = counts.reduce((a, b) => a + b, 0);
+    const unit = mode === 'ja' ? 'on' : 'syllables';
+
+    // Per-line rows
+    const rows = lines.map((line, i) => {
+      const want = pattern[i];
+      const got = counts[i];
+      const ok = want === undefined ? null : got === want;
+      const diff = want === undefined ? 0 : got - want;
+      const colour = ok === null ? 'border-slate-800' : ok ? 'border-emerald-700/70' : 'border-rose-800/70';
+      const badge = ok === null
+        ? `<span class="text-slate-400">${got}</span>`
+        : ok
+          ? `<span class="text-emerald-400 font-semibold">${got}/${want} ✓</span>`
+          : `<span class="text-rose-400 font-semibold">${got}/${want}</span>
+             <span class="text-slate-500 text-xs ml-1">${diff > 0 ? diff + ' too many' : Math.abs(diff) + ' short'}</span>`;
+      return `<div class="flex items-start gap-3 rounded-xl border ${colour} bg-[var(--bg-surface)] px-4 py-2.5">
+        <span class="text-[11px] text-slate-600 mt-0.5 w-10 shrink-0">line ${i + 1}</span>
+        <span class="flex-1 text-slate-200 text-sm break-words">${escapeHtml(line)}</span>
+        <span class="text-sm shrink-0 text-right">${badge}</span>
+      </div>`;
+    });
+
+    // Extra or missing lines
+    if (!isFree && lines.length !== pattern.length && lines.length > 0) {
+      const d = lines.length - pattern.length;
+      rows.push(`<div class="rounded-xl border border-rose-800/70 bg-[var(--bg-surface)] px-4 py-2.5 text-sm text-rose-300">
+        ${d > 0 ? `${d} line${d > 1 ? 's' : ''} too many` : `${-d} line${-d < -1 ? 's' : ''} missing`} — ${formName} needs ${pattern.length} lines
+      </div>`);
+    }
+    $('hk-lines').innerHTML = rows.join('');
+
+    // Verdict
+    const v = $('hk-verdict');
+    if (!lines.length) {
+      v.className = 'rounded-xl border border-slate-800 bg-[var(--bg-surface)] px-4 py-3 text-sm text-slate-400';
+      v.textContent = 'Type or paste a poem above.';
+    } else if (isFree) {
+      v.className = 'rounded-xl border border-slate-800 bg-[var(--bg-surface)] px-4 py-3 text-sm text-slate-300';
+      v.innerHTML = `<strong class="text-white">${total}</strong> ${unit} across ${lines.length} line${lines.length > 1 ? 's' : ''} — <span class="text-slate-500">${counts.join(' · ')}</span>`;
+    } else {
+      const valid = lines.length === pattern.length && counts.every((c, i) => c === pattern[i]);
+      v.className = `rounded-xl border px-4 py-3 text-sm ${valid ? 'border-emerald-700/70 bg-emerald-950/20 text-emerald-200' : 'border-slate-800 bg-[var(--bg-surface)] text-slate-300'}`;
+      v.innerHTML = valid
+        ? `<strong>✓ This is a valid ${formName}.</strong> ${pattern.join('-')} — ${total} ${unit} in total.`
+        : `Not a ${formName} yet. Needs <strong class="text-white">${pattern.join('-')}</strong>, you have <strong class="text-white">${counts.join('-') || '0'}</strong>.`;
+    }
+
+    renderDisputed(raw);
+    renderBreakdown(lines);
+    $('hk-overrides-note').classList.toggle('hidden', !Object.keys(overrides).length);
+  }
+
+  function renderDisputed(raw) {
+    const wrap = $('hk-disputed');
+    if (mode === 'ja') { wrap.classList.add('hidden'); return; }
+    const words = (raw.match(/[a-zA-Z']+/g) || []).map((w) => w.toLowerCase().replace(/'/g, ''));
+    const found = [...new Set(words.filter((w) => DISPUTED[w]))];
+    if (!found.length) { wrap.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden');
+    $('hk-disputed-list').innerHTML = found.map((w) => {
+      const d = DISPUTED[w];
+      const cur = Object.prototype.hasOwnProperty.call(overrides, w) ? overrides[w] : d.d;
+      const opts = [d.d, d.alt].sort((a, b) => a - b);
+      return `<div class="rounded-lg border border-slate-700 bg-[var(--bg-base)] px-3 py-2">
+        <div class="text-slate-200 text-sm font-medium">${w}</div>
+        <div class="text-[11px] text-slate-500 mb-1.5">${d.note}</div>
+        <div class="inline-flex rounded-md overflow-hidden border border-slate-700">
+          ${opts.map((n) => `<button data-word="${w}" data-n="${n}"
+            class="hk-dispute px-2.5 py-1 text-xs transition-colors ${n === cur ? 'bg-violet-700 text-white' : 'bg-transparent text-slate-400 hover:text-slate-200'}">${n}</button>`).join('')}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderBreakdown(lines) {
+    const wrap = $('hk-breakdown-wrap');
+    if (mode === 'ja' || !lines.length) { wrap.classList.add('hidden'); return; }
+    wrap.classList.remove('hidden');
+    $('hk-breakdown').innerHTML = lines.map((line, i) => {
+      const words = line.match(/[a-zA-Z']+/g) || [];
+      if (!words.length) return '';
+      return `<div class="flex flex-wrap items-center gap-1.5">
+        <span class="text-[11px] text-slate-600 w-10 shrink-0">line ${i + 1}</span>
+        ${words.map((w) => {
+          const { n, src } = syllables(w);
+          const tone = src === 'you' ? 'border-violet-600 bg-violet-950/40'
+            : src === 'disputed' ? 'border-amber-700/70 bg-amber-950/20'
+            : src === 'dict' ? 'border-emerald-800/70 bg-[var(--bg-surface)]'
+            : 'border-slate-700 bg-[var(--bg-surface)]';
+          return `<button data-word="${w.toLowerCase().replace(/'/g,'')}"
+            class="hk-word rounded-lg border ${tone} px-2 py-0.5 text-xs text-slate-200 hover:border-violet-500 transition-colors"
+            title="click to change">${escapeHtml(w)} <span class="text-violet-400 font-semibold">${n}</span></button>`;
+        }).join('')}
+      </div>`;
+    }).join('');
+  }
+
+  function escapeHtml(s) {
+    return s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  }
+
+  // ── Events ───────────────────────────────────────────────────────────────
+  input.addEventListener('input', render);
+  $('hk-form').addEventListener('change', render);
+
+  root.querySelectorAll('.hk-mode').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      mode = btn.dataset.mode;
+      root.querySelectorAll('.hk-mode').forEach((b) => {
+        const on = b.dataset.mode === mode;
+        b.className = `hk-mode text-sm px-4 py-2 transition-colors ${on ? 'bg-violet-700 text-white' : 'bg-[var(--bg-base)] text-slate-300'}`;
+      });
+      render();
+    });
+  });
+
+  // Disputed-word toggle
+  root.addEventListener('click', (e) => {
+    const b = e.target.closest('.hk-dispute');
+    if (!b) return;
+    overrides[b.dataset.word] = Number(b.dataset.n);
+    render();
+  });
+
+  // Click a word in the breakdown to correct it
+  root.addEventListener('click', (e) => {
+    const b = e.target.closest('.hk-word');
+    if (!b) return;
+    const w = b.dataset.word;
+    const cur = syllables(w).n;
+    const next = prompt(`How many syllables in "${w}"?`, String(cur));
+    if (next === null) return;
+    const n = parseInt(next, 10);
+    if (Number.isFinite(n) && n >= 0 && n <= 12) { overrides[w] = n; render(); }
+  });
+
+  $('hk-clear-overrides').addEventListener('click', () => { overrides = {}; render(); });
+
+  $('hk-example').addEventListener('click', () => {
+    input.value = EXAMPLES[exampleIdx % EXAMPLES.length];
+    exampleIdx++;
+    mode = 'en';
+    root.querySelectorAll('.hk-mode').forEach((b) => {
+      const on = b.dataset.mode === 'en';
+      b.className = `hk-mode text-sm px-4 py2 transition-colors ${on ? 'bg-violet-700 text-white' : 'bg-[var(--bg-base)] text-slate-300'}`.replace('py2', 'py-2');
+    });
+    render();
+  });
+
+  $('hk-reset').addEventListener('click', () => {
+    input.value = ''; overrides = {}; render();
+  });
+
+  $('hk-copy').addEventListener('click', () => {
+    const lines = input.value.split('\n').filter((l) => l.trim());
+    if (!lines.length) return;
+    const unit = mode === 'ja' ? 'on' : 'syllables';
+    const body = lines.map((l, i) => `${l}  — ${lineCount(l)} ${unit}`).join('\n');
+    const totals = lines.map(lineCount).join('-');
+    navigator.clipboard.writeText(`${body}\n\nPattern: ${totals}`).then(() => {
+      const btn = $('hk-copy'), o = btn.textContent;
+      btn.textContent = '✓ Copied';
+      setTimeout(() => { btn.textContent = o; }, 1800);
+    });
+  });
+
+  render();
+}
+</script>

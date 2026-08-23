@@ -65,8 +65,8 @@
 
   <!-- Controls -->
   <aside id="jtp-side" class="mt-5 lg:mt-0 space-y-4">
-  <div id="jtp-opts" class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+  <div id="jtp-opts" class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-3">
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
       <label class="block">
         <span class="jtp-lbl">Page size</span>
         <select id="jtp-size" class="jtp-inp">
@@ -106,7 +106,7 @@
       </label>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
       <label class="block">
         <span class="jtp-lbl">Quality</span>
         <select id="jtp-quality" class="jtp-inp">
@@ -120,20 +120,15 @@
         <span class="jtp-lbl">Output file name</span>
         <input id="jtp-name" type="text" value="images" class="jtp-inp" />
       </label>
-      <label class="flex items-center gap-2 self-end pb-2">
-        <input id="jtp-pagenums" type="checkbox" class="accent-orange-500 w-4 h-4" />
+      <label class="flex items-center gap-2 self-end lg:pb-0 pb-2">
+        <input id="jtp-pagenums" type="checkbox" class="accent-orange-500 w-4 h-4 shrink-0" />
         <span class="text-sm text-slate-300">Add page numbers</span>
       </label>
-      <label class="flex items-center gap-2 self-end pb-2">
-        <input id="jtp-separate" type="checkbox" class="accent-orange-500 w-4 h-4" />
+      <label class="flex items-center gap-2 self-end lg:pb-0 pb-2">
+        <input id="jtp-separate" type="checkbox" class="accent-orange-500 w-4 h-4 shrink-0" />
         <span class="text-sm text-slate-300">One PDF per image</span>
       </label>
     </div>
-
-    <p class="text-xs text-slate-500 border-t border-slate-800 pt-3">
-      Rotation is stored per image — use ⟲ ⟳ on a selection to fix only the ones
-      that need it. Everything above applies to every page.
-    </p>
   </div>
 
   <!-- Actions. `sticky bottom-0` keeps Convert reachable on a phone once the
@@ -187,7 +182,7 @@
     font-size: .8125rem; color: var(--jtp-text);
   }
   .jtp-menu:hover { background: var(--bg-surface-hover); color: var(--jtp-text-strong); }
-  .jtp-lbl { display: block; font-size: .75rem; color: var(--jtp-text-dim); margin-bottom: .3rem; }
+  .jtp-lbl { display: block; font-size: .75rem; color: var(--jtp-text-dim); margin-bottom: .2rem; }
   .jtp-inp {
     width: 100%; padding: .45rem .6rem; font-size: .8125rem; border-radius: .5rem;
     background: var(--bg-base); border: 1px solid var(--jtp-border);
@@ -206,20 +201,18 @@
       gap: 1.5rem;
       align-items: start;
     }
-    /* The sidebar is a column that never exceeds the viewport. Only the
-       options scroll; the action block is a flex item that cannot shrink, so
-       Convert stays on screen no matter how tall the settings get. Making the
-       whole sidebar scroll instead would push Convert below its own fold. */
-    #jtp-side {
-      position: sticky;
-      top: 1rem;
-      max-height: calc(100vh - 2rem);
-      display: flex;
-      flex-direction: column;
-      overscroll-behavior: contain;
-    }
-    #jtp-side > #jtp-opts { overflow-y: auto; min-height: 0; }
-    #jtp-side > #jtp-actions { flex-shrink: 0; }
+    /* No inner scrolling: every control is visible at once. The panel is
+       compact enough to fit alongside the canvas, so capping its height and
+       scrolling it only ever hid options behind a scrollbar. */
+    #jtp-side { position: sticky; top: 1rem; }
+  }
+
+  /* Sticky only when the viewport is tall enough to hold the whole panel.
+     A sticky element taller than the screen pins at the top and leaves its
+     bottom permanently out of reach, so on short windows it scrolls with the
+     page instead. */
+  @media (min-width: 1024px) and (max-height: 700px) {
+    #jtp-side { position: static; }
   }
 
   /* Thumbnail size grows with the viewport. A fixed 140px minimum left the

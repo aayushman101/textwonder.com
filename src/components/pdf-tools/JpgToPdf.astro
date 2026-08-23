@@ -222,9 +222,34 @@
   @media (min-width: 1024px) { #jtp-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
   @media (min-width: 1536px) { #jtp-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
 
-  .jtp-card { position: relative; border-radius: .6rem; overflow: hidden; cursor: grab; }
-  .jtp-card.dragging { opacity: .35; }
-  .jtp-card.over { outline: 2px solid #f97316; outline-offset: 2px; }
+  /* `:global` is required here, not decorative. Astro scopes component styles
+     by appending a data-astro-cid attribute to the selector, and it can only
+     stamp that attribute on elements it renders. The cards are built in JS
+     with innerHTML, so they never carry it — every unscoped .jtp-card rule
+     below silently matched nothing, which is why the cards had no rounded
+     corners, no grab cursor and no drag dimming. Elements that exist in the
+     template (#jtp-grid, .jtp-btn, .jtp-inp) do not need this. */
+  :global(.jtp-card) { position: relative; border-radius: .6rem; overflow: hidden; cursor: grab; }
+  :global(.jtp-card:active) { cursor: grabbing; }
+  :global(.jtp-card.dragging) { opacity: .35; }
+
+  /* Insertion marker: a bar on the edge the item will land against, rather
+     than a box around the card it happens to be hovering. */
+  :global(.jtp-card.over-before)::before,
+  :global(.jtp-card.over-after)::after {
+    content: '';
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    width: 3px;
+    background: #f97316;
+    border-radius: 2px;
+    z-index: 5;
+  }
+  /* Inside the card, not outside it: the card sets `overflow: hidden` for its
+     rounded corners, which was clipping a marker positioned at -2px. */
+  :global(.jtp-card.over-before)::before { left: 0; }
+  :global(.jtp-card.over-after)::after { right: 0; }
 </style>
 
 <script is:inline>
@@ -363,31 +388,61 @@
     if (cb) { items[+cb.dataset.sel].sel = cb.checked; render(); }
   });
 
-  // Drag to reorder
+  // Drag to reorder.
+  //
+  // The browser snapshots the drag source *after* the dragstart handler
+  // returns, so dimming the card inside that handler bakes the dimming into
+  // the ghost — which is what made the dragged page look washed out. The
+  // class is therefore deferred a frame, and setDragImage pins the ghost to
+  // the card under the cursor so the browser never falls back to snapshotting
+  // a larger ancestor.
   let dragFrom = null;
   grid.addEventListener('dragstart', (e) => {
     const card = e.target.closest('.jtp-card'); if (!card) return;
-    dragFrom = +card.dataset.i; card.classList.add('dragging');
+    dragFrom = +card.dataset.i;
     e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/plain', String(dragFrom));  // Firefox needs data present
+    const r = card.getBoundingClientRect();
+    e.dataTransfer.setDragImage(card, e.clientX - r.left, e.clientY - r.top);
+    requestAnimationFrame(() => card.classList.add('dragging'));
   });
-  grid.addEventListener('dragend', () => {
+  grid.addEventListener('dragend', clearDrag);
+  function clearDrag() {
     dragFrom = null;
-    grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('dragging', 'over'));
-  });
+    grid.querySelectorAll('.jtp-card').forEach((c) =>
+      c.classList.remove('dragging', 'over-before', 'over-after'));
+  }
   grid.addEventListener('dragover', (e) => {
     e.preventDefault();
-    const card = e.target.closest('.jtp-card'); if (!card) return;
-    grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('over'));
-    card.classList.add('over');
+    e.dataTransfer.dropEffect = 'move';
+    const card = e.target.closest('.jtp-card');
+    if (!card || dragFrom === null) return;
+    // Which half of the card the cursor is over decides whether the item lands
+    // before or after it, so the marker shows the real insertion point rather
+    // than just highlighting a target.
+    const r = card.getBoundingClientRect();
+    const after = (e.clientX - r.left) > r.width / 2;
+    grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('over-before', 'over-after'));
+    if (+card.dataset.i !== dragFrom) card.classList.add(after ? 'over-after' : 'over-before');
+  });
+  grid.addEventListener('dragleave', (e) => {
+    if (!grid.contains(e.relatedTarget)) {
+      grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('over-before', 'over-after'));
+    }
   });
   grid.addEventListener('drop', (e) => {
     e.preventDefault();
     const card = e.target.closest('.jtp-card');
-    if (!card || dragFrom === null) return;
-    const to = +card.dataset.i;
-    if (to === dragFrom) return;
+    if (!card || dragFrom === null) { clearDrag(); return; }
+    const over = +card.dataset.i;
+    const r = card.getBoundingClientRect();
+    const after = (e.clientX - r.left) > r.width / 2;
+    let to = after ? over + 1 : over;
+    if (dragFrom < to) to--;             // removing the source shifts later indices left
+    if (to === dragFrom) { clearDrag(); return; }
     snapshot();
     items.splice(to, 0, items.splice(dragFrom, 1)[0]);
+    clearDrag();
     render();
   });
 

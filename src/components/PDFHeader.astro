@@ -45,7 +45,7 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
        sat visibly inset from the tool card once the pages went full width. -->
   <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3">
     <!-- Logo -->
-    <a href="/pdfwonder/" class="flex items-center gap-2 group min-w-0 shrink">
+    <a href="/pdfwonder/" class="flex items-center gap-2 group min-w-0 shrink md:shrink-0">
       <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
         <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 17h8v1H8v-1zm0-3h8v1H8v-1zm0-3h5v1H8v-1z"/>
@@ -56,17 +56,21 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
            wordmark could not fit beside it - but "PDFWond…" reads as broken,
            whereas the icon alone reads as deliberate, and the pill row
            directly above still names the section. -->
-      <span class="hidden min-[375px]:inline text-xl sm:text-2xl font-bold text-white group-hover:text-orange-400 transition-colors whitespace-nowrap" style="font-family: 'Space Grotesk', sans-serif;">
+      <span class="hidden min-[375px]:inline text-xl sm:text-2xl md:text-xl lg:text-2xl font-bold text-white group-hover:text-orange-400 transition-colors whitespace-nowrap" style="font-family: 'Space Grotesk', sans-serif;">
         PDF<span class="text-orange-500">Wonder</span>
       </span>
     </a>
 
     <!-- Desktop Nav -->
     <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+      <!-- Points at the main site, not /pdfwonder/ — the logo already covers
+           the section index, so a second link to it would be dead weight. -->
+      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap shrink-0">Home</a>
+
       <!-- All PDF tools: the route between tools that the header was missing -->
       <div class="relative" id="pdf-tools-menu-wrapper">
         <button id="pdf-tools-menu-btn" aria-haspopup="true" aria-expanded="false"
-          class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
           All PDF Tools
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
@@ -104,10 +108,14 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
         </div>
       </div>
 
-      <!-- Shortcuts to the jobs people arrive wanting -->
+      <!-- Shortcuts to the jobs people arrive wanting.
+           1360px, not Tailwind's xl: measured on a translated tool (worst case,
+           it also renders the language switcher) the full bar needs 1271px, so
+           xl/1280 leaves 9px of slack — inside the margin that font rendering
+           can move. 1360 leaves ~90px. -->
       {QUICK.map((slug) => (
         <a href={`/pdfwonder/${slug}/`}
-          class="hidden lg:inline-block text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
+          class="hidden min-[1360px]:inline-block text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
           {NAME[slug]}
         </a>
       ))}
@@ -116,7 +124,7 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
 
       <!-- Other sections of the site -->
       <div class="relative" id="pdf-categories-menu-wrapper">
-        <button id="pdf-categories-menu-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+        <button id="pdf-categories-menu-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
           More Tools
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
@@ -152,7 +160,7 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
         </div>
       </div>
 
-      <a href="/blog/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Blog</a>
+      <a href="/blog/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium whitespace-nowrap px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">Blog</a>
     </nav>
 
     <div class="flex items-center gap-1 sm:gap-2 shrink-0">
@@ -185,7 +193,7 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
-        <span class="hidden sm:inline">Search tools…</span>
+        <span class="hidden lg:inline">Search tools…</span>
       </button>
     </div>
   </div>
@@ -215,9 +223,12 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
         </ul>
       </div>
     ))}
-    <div class="pt-1 grid grid-cols-2 gap-1.5">
+    <div class="pt-1 space-y-1.5">
       <a href="/pdfwonder/" class="block px-3 py-2 rounded-lg text-[13px] font-medium text-white bg-orange-600 text-center">All {PDF_TOOLS.length} PDF tools</a>
-      <a href="/blog/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Blog</a>
+      <div class="grid grid-cols-2 gap-1.5">
+        <a href="/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Home</a>
+        <a href="/blog/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Blog</a>
+      </div>
     </div>
   </div>
 </div>

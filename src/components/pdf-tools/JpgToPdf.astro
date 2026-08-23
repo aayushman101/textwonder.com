@@ -1,109 +1,580 @@
 ---
+// Image → PDF.
+//
+// Two things the previous version got wrong, both worth naming because they
+// are the same mistakes the competition makes:
+//
+// 1. WebP was advertised and could not work. Non-JPEG bytes were handed to
+//    pdf-lib's embedPng, which parses a PNG signature and throws. Everything
+//    now decodes through createImageBitmap first, so whatever the browser can
+//    read (WebP, AVIF, GIF, BMP, HEIC on Safari) becomes a page.
+//
+// 2. EXIF orientation was ignored, so portrait phone photos came out sideways.
+//    `imageOrientation: 'from-image'` applies the EXIF transform at decode
+//    time. iLovePDF and Smallpdf both get this wrong on some files; it is the
+//    single most common complaint about tools in this category.
 ---
-<div class="space-y-5">
+
+<div class="space-y-5" id="jtp-root">
+  <!-- Drop zone -->
   <div id="jtp-drop" class="border-2 border-dashed border-slate-700 hover:border-orange-500/60 rounded-xl p-8 text-center cursor-pointer transition-colors">
-    <input type="file" id="jtp-file" accept="image/jpeg,image/png,image/webp" multiple class="hidden" />
+    <input type="file" id="jtp-file" accept="image/*,.heic,.heif" multiple class="hidden" />
     <div class="text-4xl mb-2">📷</div>
     <p class="text-slate-300 font-medium mb-1">Drop images here or click to select</p>
-    <p class="text-slate-500 text-sm">JPG, PNG, WebP supported · each image becomes one PDF page</p>
+    <p class="text-slate-500 text-sm">JPG, PNG, WebP, AVIF, GIF, BMP · each image becomes one page</p>
   </div>
 
-  <div id="jtp-list" class="hidden space-y-2"></div>
+  <!-- Toolbar -->
+  <div id="jtp-toolbar" class="hidden flex-wrap items-center gap-2">
+    <span id="jtp-count" class="text-sm text-slate-400 mr-1"></span>
+    <button id="jtp-add" class="jtp-btn">+ Add more</button>
+    <div class="relative">
+      <button id="jtp-sort-btn" class="jtp-btn">Sort ▾</button>
+      <div id="jtp-sort-menu" class="hidden absolute z-20 mt-1 w-52 bg-[var(--bg-surface)] border border-slate-700 rounded-lg shadow-xl py-1">
+        <button data-sort="name-asc"  class="jtp-menu">Name A → Z</button>
+        <button data-sort="name-desc" class="jtp-menu">Name Z → A</button>
+        <button data-sort="natural"   class="jtp-menu">Name, numbers in order</button>
+        <button data-sort="size-asc"  class="jtp-menu">Size, smallest first</button>
+        <button data-sort="size-desc" class="jtp-menu">Size, largest first</button>
+        <button data-sort="date-asc"  class="jtp-menu">Date modified</button>
+        <button data-sort="reverse"   class="jtp-menu">Reverse current order</button>
+      </div>
+    </div>
+    <span class="w-px h-5 bg-slate-700 mx-1"></span>
+    <button id="jtp-selall" class="jtp-btn">Select all</button>
+    <button id="jtp-rotl" class="jtp-btn" title="Rotate selected left">⟲</button>
+    <button id="jtp-rotr" class="jtp-btn" title="Rotate selected right">⟳</button>
+    <button id="jtp-del" class="jtp-btn jtp-danger">Delete selected</button>
+    <span class="w-px h-5 bg-slate-700 mx-1"></span>
+    <button id="jtp-undo" class="jtp-btn" disabled>↩ Undo</button>
+  </div>
 
-  <div id="jtp-actions" class="hidden flex gap-2">
+  <!-- Thumbnail grid -->
+  <!-- `grid` is added by JS, not here: it and `hidden` both set `display`, so
+       having both in the static class list makes the resolved value depend on
+       Tailwind's output order rather than on state. -->
+  <div id="jtp-grid" class="hidden gap-3" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))"></div>
+
+  <!-- Options -->
+  <div id="jtp-opts" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <label class="block">
+        <span class="jtp-lbl">Page size</span>
+        <select id="jtp-size" class="jtp-inp">
+          <option value="a4">A4 — 210 × 297 mm</option>
+          <option value="letter">Letter — 8.5 × 11 in</option>
+          <option value="legal">Legal — 8.5 × 14 in</option>
+          <option value="a3">A3 — 297 × 420 mm</option>
+          <option value="a5">A5 — 148 × 210 mm</option>
+          <option value="fit">Fit page to image</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="jtp-lbl">Orientation</span>
+        <select id="jtp-orient" class="jtp-inp">
+          <option value="auto">Auto — match each image</option>
+          <option value="portrait">Portrait</option>
+          <option value="landscape">Landscape</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="jtp-lbl">Margin</span>
+        <select id="jtp-margin" class="jtp-inp">
+          <option value="0">None</option>
+          <option value="18">Small — 6 mm</option>
+          <option value="36">Medium — 13 mm</option>
+          <option value="72">Large — 25 mm</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="jtp-lbl">Image fit</span>
+        <select id="jtp-fit" class="jtp-inp">
+          <option value="contain">Fit — whole image, may letterbox</option>
+          <option value="cover">Fill — crop to page edges</option>
+          <option value="actual">Actual size — no scaling up</option>
+          <option value="stretch">Stretch — distorts image</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <label class="block">
+        <span class="jtp-lbl">Quality</span>
+        <select id="jtp-quality" class="jtp-inp">
+          <option value="original">Original — no re-encoding</option>
+          <option value="0.92" selected>High — smaller file</option>
+          <option value="0.8">Medium</option>
+          <option value="0.6">Small — most compression</option>
+        </select>
+      </label>
+      <label class="block">
+        <span class="jtp-lbl">Output file name</span>
+        <input id="jtp-name" type="text" value="images" class="jtp-inp" />
+      </label>
+      <label class="flex items-center gap-2 self-end pb-2">
+        <input id="jtp-pagenums" type="checkbox" class="accent-orange-500 w-4 h-4" />
+        <span class="text-sm text-slate-300">Add page numbers</span>
+      </label>
+      <label class="flex items-center gap-2 self-end pb-2">
+        <input id="jtp-separate" type="checkbox" class="accent-orange-500 w-4 h-4" />
+        <span class="text-sm text-slate-300">One PDF per image</span>
+      </label>
+    </div>
+
+    <p class="text-xs text-slate-500 border-t border-slate-800 pt-3">
+      Rotation is stored per image — use ⟲ ⟳ on a selection to fix only the ones
+      that need it. Everything above applies to every page.
+    </p>
+  </div>
+
+  <!-- Actions -->
+  <div id="jtp-actions" class="hidden flex-wrap gap-2 items-center">
     <button id="jtp-convert" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Convert to PDF</button>
     <button id="jtp-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear all</button>
+    <span id="jtp-est" class="text-xs text-slate-500"></span>
+  </div>
+
+  <div id="jtp-bar" class="hidden h-1.5 bg-slate-800 rounded-full overflow-hidden">
+    <div id="jtp-bar-fill" class="h-full bg-orange-500 transition-all" style="width:0%"></div>
   </div>
 
   <div id="jtp-status" class="hidden text-sm py-1"></div>
 </div>
 
+<style>
+  .jtp-btn {
+    padding: 0.4rem 0.7rem; font-size: 0.8125rem; border-radius: 0.5rem;
+    background: var(--bg-surface); border: 1px solid rgb(51 65 85);
+    color: rgb(203 213 225); transition: all .15s;
+  }
+  .jtp-btn:hover:not(:disabled) { background: var(--bg-surface-hover); color: #fff; }
+  .jtp-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .jtp-danger:hover:not(:disabled) { color: #f87171; border-color: #b91c1c; }
+  .jtp-menu {
+    display: block; width: 100%; text-align: left; padding: .45rem .8rem;
+    font-size: .8125rem; color: rgb(203 213 225);
+  }
+  .jtp-menu:hover { background: var(--bg-surface-hover); color: #fff; }
+  .jtp-lbl { display: block; font-size: .75rem; color: rgb(148 163 184); margin-bottom: .3rem; }
+  .jtp-inp {
+    width: 100%; padding: .45rem .6rem; font-size: .8125rem; border-radius: .5rem;
+    background: var(--bg-base); border: 1px solid rgb(51 65 85); color: rgb(226 232 240);
+  }
+  .jtp-inp:focus { outline: none; border-color: #f97316; }
+  .jtp-card { position: relative; border-radius: .6rem; overflow: hidden; cursor: grab; }
+  .jtp-card.dragging { opacity: .35; }
+  .jtp-card.over { outline: 2px solid #f97316; outline-offset: 2px; }
+</style>
+
 <script is:inline>
 (function () {
-  const drop = document.getElementById('jtp-drop');
-  const fileInput = document.getElementById('jtp-file');
-  const listEl = document.getElementById('jtp-list');
-  const actionsEl = document.getElementById('jtp-actions');
-  const status = document.getElementById('jtp-status');
-  let images = [];
+  const $ = (id) => document.getElementById(id);
+  const drop = $('jtp-drop'), fileInput = $('jtp-file'), grid = $('jtp-grid');
+  const toolbar = $('jtp-toolbar'), opts = $('jtp-opts'), actions = $('jtp-actions');
+  const status = $('jtp-status'), bar = $('jtp-bar'), barFill = $('jtp-bar-fill');
 
+  // Points, at 72 per inch.
+  const SIZES = {
+    a4:     [595.28, 841.89],
+    letter: [612, 792],
+    legal:  [612, 1008],
+    a3:     [841.89, 1190.55],
+    a5:     [419.53, 595.28],
+  };
+  const RASTER_DPI = 150;   // enough for print, well short of absurd file sizes
+
+  let items = [];           // { id, file, name, w, h, rot, sel, thumb }
+  let history = [];         // snapshots for undo
+  let seq = 0;
+
+  // ── state helpers ────────────────────────────────────────────────────────
+  function snapshot() {
+    history.push(items.map((it) => ({ ...it })));
+    if (history.length > 30) history.shift();
+    $('jtp-undo').disabled = false;
+  }
+  function undo() {
+    if (!history.length) return;
+    items = history.pop();
+    $('jtp-undo').disabled = !history.length;
+    render();
+  }
+
+  // ── loading ──────────────────────────────────────────────────────────────
   drop.addEventListener('click', () => fileInput.click());
-  drop.addEventListener('dragover', e => { e.preventDefault(); drop.classList.add('border-orange-500'); });
+  $('jtp-add').addEventListener('click', () => fileInput.click());
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('border-orange-500'); });
   drop.addEventListener('dragleave', () => drop.classList.remove('border-orange-500'));
-  drop.addEventListener('drop', e => { e.preventDefault(); drop.classList.remove('border-orange-500'); addImages([...e.dataTransfer.files]); });
-  fileInput.addEventListener('change', () => { addImages([...fileInput.files]); fileInput.value = ''; });
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault(); drop.classList.remove('border-orange-500');
+    addFiles([...e.dataTransfer.files]);
+  });
+  fileInput.addEventListener('change', () => { addFiles([...fileInput.files]); fileInput.value = ''; });
 
-  function addImages(files) {
-    files.filter(f => f.type.startsWith('image/')).forEach(f => images.push(f));
-    renderList();
+  async function addFiles(files) {
+    const imgs = files.filter((f) => f.type.startsWith('image/') || /\.(heic|heif)$/i.test(f.name));
+    if (!imgs.length) return;
+    if (items.length) snapshot();
+    showStatus(`Reading ${imgs.length} image${imgs.length !== 1 ? 's' : ''}…`, 'info');
+
+    let failed = 0;
+    for (const file of imgs) {
+      try {
+        // EXIF-aware decode. Also the reason WebP/AVIF/GIF/BMP/HEIC work at
+        // all — pdf-lib itself only understands JPEG and PNG.
+        const bmp = await createImageBitmap(file, { imageOrientation: 'from-image' });
+        items.push({
+          id: ++seq, file, name: file.name,
+          w: bmp.width, h: bmp.height, rot: 0, sel: false,
+          thumb: thumbOf(bmp),
+        });
+        bmp.close();
+      } catch (err) {
+        failed++;
+      }
+    }
+    render();
+    if (failed) showStatus(`${failed} file${failed !== 1 ? 's' : ''} could not be read and were skipped.`, 'error');
+    else hideStatus();
   }
 
-  function renderList() {
-    if (!images.length) { listEl.classList.add('hidden'); actionsEl.classList.add('hidden'); return; }
-    listEl.classList.remove('hidden'); actionsEl.classList.remove('hidden');
-    listEl.innerHTML = images.map((f, i) => `
-      <div class="flex items-center gap-3 bg-[var(--bg-surface)] border border-slate-800 rounded-lg px-4 py-2.5">
-        <span class="text-purple-400 text-lg">🖼️</span>
-        <span class="text-slate-300 text-sm flex-1 truncate">${f.name}</span>
-        <span class="text-slate-500 text-xs">${(f.size / 1024).toFixed(0)} KB</span>
-        <button onclick="jtpRemove(${i})" class="text-slate-600 hover:text-red-400 transition-colors text-sm ml-1">✕</button>
+  function thumbOf(bmp) {
+    const max = 260;
+    const s = Math.min(max / bmp.width, max / bmp.height, 1);
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(bmp.width * s));
+    c.height = Math.max(1, Math.round(bmp.height * s));
+    c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', 0.7);
+  }
+
+  // ── rendering ────────────────────────────────────────────────────────────
+  function render() {
+    const has = items.length > 0;
+    [toolbar, grid, opts, actions].forEach((el) => el.classList.toggle('hidden', !has));
+    toolbar.classList.toggle('flex', has);
+    actions.classList.toggle('flex', has);
+    grid.classList.toggle('grid', has);
+    if (!has) { drop.classList.remove('hidden'); return; }
+    drop.classList.add('hidden');
+
+    const selCount = items.filter((i) => i.sel).length;
+    $('jtp-count').textContent = `${items.length} image${items.length !== 1 ? 's' : ''}` +
+      (selCount ? ` · ${selCount} selected` : '');
+    ['jtp-rotl', 'jtp-rotr', 'jtp-del'].forEach((id) => { $(id).disabled = selCount === 0; });
+    $('jtp-selall').textContent = selCount === items.length ? 'Clear selection' : 'Select all';
+
+    grid.innerHTML = items.map((it, i) => `
+      <div class="jtp-card bg-[var(--bg-surface)] border ${it.sel ? 'border-orange-500' : 'border-slate-800'}"
+           draggable="true" data-i="${i}">
+        <div class="aspect-square flex items-center justify-center bg-[var(--bg-base)] overflow-hidden">
+          <img src="${it.thumb}" alt="" class="max-w-full max-h-full object-contain pointer-events-none"
+               style="transform:rotate(${it.rot}deg)" />
+        </div>
+        <div class="absolute top-1.5 left-1.5 bg-black/70 text-white text-[11px] rounded px-1.5 py-0.5">${i + 1}</div>
+        <label class="absolute top-1.5 right-1.5">
+          <input type="checkbox" data-sel="${i}" ${it.sel ? 'checked' : ''} class="accent-orange-500 w-4 h-4" />
+        </label>
+        <div class="absolute bottom-8 right-1.5 flex gap-1">
+          <button data-rot="${i}" class="bg-black/70 hover:bg-black text-white text-xs rounded px-1.5 py-0.5" title="Rotate right">⟳</button>
+          <button data-rm="${i}" class="bg-black/70 hover:bg-red-600 text-white text-xs rounded px-1.5 py-0.5" title="Remove">✕</button>
+        </div>
+        <div class="px-2 py-1.5 border-t border-slate-800">
+          <p class="text-[11px] text-slate-400 truncate" title="${esc(it.name)}">${esc(it.name)}</p>
+          <p class="text-[10px] text-slate-600">${dims(it)} · ${(it.file.size / 1024).toFixed(0)} KB</p>
+        </div>
       </div>`).join('');
+
+    estimate();
   }
 
-  window.jtpRemove = (i) => { images.splice(i, 1); renderList(); };
+  const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const dims = (it) => (it.rot % 180 ? `${it.h}×${it.w}` : `${it.w}×${it.h}`);
 
-  document.getElementById('jtp-convert').addEventListener('click', async () => {
-    if (!images.length) return;
-    showStatus('Loading pdf-lib…', 'info');
-    await loadPdfLib();
-    showStatus('Building PDF…', 'info');
+  // Delegated grid events
+  grid.addEventListener('click', (e) => {
+    const rot = e.target.closest('[data-rot]'), rm = e.target.closest('[data-rm]');
+    if (rot) { snapshot(); const i = +rot.dataset.rot; items[i].rot = (items[i].rot + 90) % 360; render(); }
+    else if (rm) { snapshot(); items.splice(+rm.dataset.rm, 1); render(); }
+  });
+  grid.addEventListener('change', (e) => {
+    const cb = e.target.closest('[data-sel]');
+    if (cb) { items[+cb.dataset.sel].sel = cb.checked; render(); }
+  });
+
+  // Drag to reorder
+  let dragFrom = null;
+  grid.addEventListener('dragstart', (e) => {
+    const card = e.target.closest('.jtp-card'); if (!card) return;
+    dragFrom = +card.dataset.i; card.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  grid.addEventListener('dragend', () => {
+    dragFrom = null;
+    grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('dragging', 'over'));
+  });
+  grid.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const card = e.target.closest('.jtp-card'); if (!card) return;
+    grid.querySelectorAll('.jtp-card').forEach((c) => c.classList.remove('over'));
+    card.classList.add('over');
+  });
+  grid.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const card = e.target.closest('.jtp-card');
+    if (!card || dragFrom === null) return;
+    const to = +card.dataset.i;
+    if (to === dragFrom) return;
+    snapshot();
+    items.splice(to, 0, items.splice(dragFrom, 1)[0]);
+    render();
+  });
+
+  // ── toolbar ──────────────────────────────────────────────────────────────
+  $('jtp-selall').addEventListener('click', () => {
+    const all = items.every((i) => i.sel);
+    items.forEach((i) => { i.sel = !all; });
+    render();
+  });
+  $('jtp-rotl').addEventListener('click', () => rotateSel(-90));
+  $('jtp-rotr').addEventListener('click', () => rotateSel(90));
+  function rotateSel(d) {
+    snapshot();
+    items.forEach((i) => { if (i.sel) i.rot = ((i.rot + d) % 360 + 360) % 360; });
+    render();
+  }
+  $('jtp-del').addEventListener('click', () => {
+    snapshot(); items = items.filter((i) => !i.sel); render();
+  });
+  $('jtp-undo').addEventListener('click', undo);
+
+  const sortBtn = $('jtp-sort-btn'), sortMenu = $('jtp-sort-menu');
+  sortBtn.addEventListener('click', (e) => { e.stopPropagation(); sortMenu.classList.toggle('hidden'); });
+  document.addEventListener('click', () => sortMenu.classList.add('hidden'));
+  sortMenu.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-sort]'); if (!b) return;
+    snapshot();
+    const k = b.dataset.sort;
+    const coll = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
+    if (k === 'name-asc') items.sort((a, b2) => a.name.localeCompare(b2.name));
+    else if (k === 'name-desc') items.sort((a, b2) => b2.name.localeCompare(a.name));
+    else if (k === 'natural') items.sort((a, b2) => coll.compare(a.name, b2.name));
+    else if (k === 'size-asc') items.sort((a, b2) => a.file.size - b2.file.size);
+    else if (k === 'size-desc') items.sort((a, b2) => b2.file.size - a.file.size);
+    else if (k === 'date-asc') items.sort((a, b2) => a.file.lastModified - b2.file.lastModified);
+    else if (k === 'reverse') items.reverse();
+    sortMenu.classList.add('hidden');
+    render();
+  });
+
+  $('jtp-clear').addEventListener('click', () => {
+    items = []; history = []; $('jtp-undo').disabled = true;
+    render(); hideStatus(); bar.classList.add('hidden');
+  });
+
+  ['jtp-size', 'jtp-orient', 'jtp-margin', 'jtp-fit', 'jtp-quality', 'jtp-separate']
+    .forEach((id) => $(id).addEventListener('change', estimate));
+
+  // ── geometry ─────────────────────────────────────────────────────────────
+  // Returns the page box and the rect the image occupies inside it.
+  function layout(it) {
+    const sizeKey = $('jtp-size').value;
+    const orient = $('jtp-orient').value;
+    const margin = +$('jtp-margin').value;
+    const fit = $('jtp-fit').value;
+
+    // Rotation of 90 or 270 swaps the effective image dimensions.
+    const iw = it.rot % 180 ? it.h : it.w;
+    const ih = it.rot % 180 ? it.w : it.h;
+
+    let pw, ph;
+    if (sizeKey === 'fit') {
+      // Page follows the image, at 72dpi, plus the margin on each side.
+      pw = iw * 0.72 + margin * 2;
+      ph = ih * 0.72 + margin * 2;
+    } else {
+      [pw, ph] = SIZES[sizeKey];
+      const wantLandscape = orient === 'landscape' || (orient === 'auto' && iw > ih);
+      if (wantLandscape) [pw, ph] = [ph, pw];
+    }
+
+    const cw = Math.max(1, pw - margin * 2);
+    const ch = Math.max(1, ph - margin * 2);
+
+    let dw, dh;
+    if (fit === 'stretch') { dw = cw; dh = ch; }
+    else if (fit === 'actual') {
+      const s = Math.min(cw / (iw * 0.72), ch / (ih * 0.72), 1);  // never scale up
+      dw = iw * 0.72 * s; dh = ih * 0.72 * s;
+    } else {
+      const s = fit === 'cover'
+        ? Math.max(cw / iw, ch / ih)
+        : Math.min(cw / iw, ch / ih);
+      dw = iw * s; dh = ih * s;
+    }
+
+    return {
+      pw, ph, cw, ch, margin, fit,
+      x: margin + (cw - dw) / 2,
+      y: margin + (ch - dh) / 2,
+      dw, dh,
+    };
+  }
+
+  // ── estimate ─────────────────────────────────────────────────────────────
+  function estimate() {
+    if (!items.length) { $('jtp-est').textContent = ''; return; }
+    const q = $('jtp-quality').value;
+    let bytes = 0;
+    for (const it of items) {
+      if (q === 'original') { bytes += it.file.size; continue; }
+      const L = layout(it);
+      // Rasterised pixel count at RASTER_DPI, then a rough bytes-per-pixel for
+      // JPEG at this quality. Deliberately approximate — it is a hint, not a
+      // promise, and it is labelled as one.
+      const px = (L.dw / 72 * RASTER_DPI) * (L.dh / 72 * RASTER_DPI);
+      bytes += px * (0.10 + (+q - 0.6) * 0.22);
+    }
+    bytes += 2000 + items.length * 400;
+    const sep = $('jtp-separate').checked;
+    $('jtp-est').textContent = `≈ ${fmt(bytes)} ${sep ? `across ${items.length} files` : 'total'} (estimate)`;
+  }
+  const fmt = (b) => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB';
+
+  // ── convert ──────────────────────────────────────────────────────────────
+  $('jtp-convert').addEventListener('click', async () => {
+    if (!items.length) return;
+    const btn = $('jtp-convert');
+    btn.disabled = true;
+    bar.classList.remove('hidden');
     try {
-      const { PDFDocument } = window.PDFLib;
-      const doc = await PDFDocument.create();
-      const A4_W = 595.28, A4_H = 841.89;
+      showStatus('Loading PDF engine…', 'info');
+      await loadPdfLib();
+      const { PDFDocument, rgb, StandardFonts } = window.PDFLib;
 
-      for (const file of images) {
-        const bytes = await file.arrayBuffer();
-        let img;
-        if (file.type === 'image/jpeg' || file.name.match(/\.jpe?g$/i)) {
-          img = await doc.embedJpg(bytes);
-        } else {
-          img = await doc.embedPng(bytes);
+      const separate = $('jtp-separate').checked;
+      const wantNums = $('jtp-pagenums').checked;
+      const base = ($('jtp-name').value || 'images').replace(/[\\/:*?"<>|]/g, '').trim() || 'images';
+
+      const docs = [];
+      let doc = null, font = null;
+      if (!separate) { doc = await PDFDocument.create(); if (wantNums) font = await doc.embedFont(StandardFonts.Helvetica); }
+
+      for (let i = 0; i < items.length; i++) {
+        const it = items[i];
+        showStatus(`Rendering page ${i + 1} of ${items.length}…`, 'info');
+        barFill.style.width = ((i / items.length) * 100).toFixed(0) + '%';
+        await new Promise((r) => requestAnimationFrame(r));   // let the bar paint
+
+        if (separate) { doc = await PDFDocument.create(); if (wantNums) font = await doc.embedFont(StandardFonts.Helvetica); }
+
+        const L = layout(it);
+        const { bytes, kind } = await rasterise(it, L);
+        const img = kind === 'jpg' ? await doc.embedJpg(bytes) : await doc.embedPng(bytes);
+
+        const page = doc.addPage([L.pw, L.ph]);
+        if (L.fit === 'cover') {
+          // Cover overflows the content box by design; clip it to the box so
+          // it cannot bleed into the margin.
+          page.drawRectangle({ x: L.margin, y: L.margin, width: L.cw, height: L.ch, color: rgb(1, 1, 1) });
         }
-        const { width: iw, height: ih } = img;
-        const scale = Math.min(A4_W / iw, A4_H / ih);
-        const w = iw * scale, h = ih * scale;
-        const page = doc.addPage([A4_W, A4_H]);
-        page.drawImage(img, { x: (A4_W - w) / 2, y: (A4_H - h) / 2, width: w, height: h });
+        page.drawImage(img, { x: L.x, y: L.y, width: L.dw, height: L.dh });
+
+        if (wantNums) {
+          const label = separate ? '1' : String(i + 1);
+          page.drawText(label, {
+            x: L.pw / 2 - 4, y: Math.max(8, L.margin / 2 - 4),
+            size: 10, font, color: rgb(0.45, 0.45, 0.45),
+          });
+        }
+        if (separate) docs.push({ doc, name: `${base}-${String(i + 1).padStart(2, '0')}.pdf` });
       }
 
-      const pdfBytes = await doc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a'); a.href = url; a.download = 'images.pdf'; a.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-      showStatus(`✅ PDF created with ${images.length} page${images.length !== 1 ? 's' : ''} (${(pdfBytes.length / 1024).toFixed(0)} KB)`, 'success');
+      barFill.style.width = '100%';
+      if (separate) {
+        for (const d of docs) await save(await d.doc.save(), d.name);
+        showStatus(`✅ ${docs.length} PDF files created and downloaded.`, 'success');
+      } else {
+        const out = await doc.save();
+        await save(out, `${base}.pdf`);
+        showStatus(`✅ PDF created — ${items.length} page${items.length !== 1 ? 's' : ''}, ${fmt(out.length)}.`, 'success');
+      }
     } catch (err) {
-      showStatus('Error: ' + err.message, 'error');
+      showStatus('Could not build the PDF: ' + (err && err.message ? err.message : err), 'error');
+    } finally {
+      btn.disabled = false;
+      setTimeout(() => { bar.classList.add('hidden'); barFill.style.width = '0%'; }, 800);
     }
   });
 
-  document.getElementById('jtp-clear').addEventListener('click', () => {
-    images = []; renderList(); status.classList.add('hidden');
-  });
+  // Draw the image into the page rect at RASTER_DPI, honouring rotation and
+  // cropping for 'cover'. Returns encoded bytes ready for pdf-lib.
+  async function rasterise(it, L) {
+    const q = $('jtp-quality').value;
+    const isJpeg = it.file.type === 'image/jpeg' || /\.jpe?g$/i.test(it.name);
+    const isPng = it.file.type === 'image/png' || /\.png$/i.test(it.name);
+
+    // Untouched JPEG/PNG can go straight in — no re-encode, no quality loss.
+    if (q === 'original' && it.rot === 0 && L.fit !== 'cover' && (isJpeg || isPng)) {
+      return { bytes: new Uint8Array(await it.file.arrayBuffer()), kind: isJpeg ? 'jpg' : 'png' };
+    }
+
+    const bmp = await createImageBitmap(it.file, { imageOrientation: 'from-image' });
+    const cw = Math.max(1, Math.round(L.dw / 72 * RASTER_DPI));
+    const ch = Math.max(1, Math.round(L.dh / 72 * RASTER_DPI));
+    const canvas = document.createElement('canvas');
+    canvas.width = cw; canvas.height = ch;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, cw, ch);
+    ctx.imageSmoothingQuality = 'high';
+
+    // For 'cover' the source is cropped centrally to the target aspect ratio.
+    let sx = 0, sy = 0, sw = bmp.width, sh = bmp.height;
+    if (L.fit === 'cover') {
+      const target = (it.rot % 180 ? ch / cw : cw / ch);
+      const srcAspect = bmp.width / bmp.height;
+      if (srcAspect > target) { sw = bmp.height * target; sx = (bmp.width - sw) / 2; }
+      else { sh = bmp.width / target; sy = (bmp.height - sh) / 2; }
+    }
+
+    ctx.translate(cw / 2, ch / 2);
+    ctx.rotate(it.rot * Math.PI / 180);
+    // After rotating by 90/270 the drawing box swaps axes.
+    const bw = it.rot % 180 ? ch : cw;
+    const bh = it.rot % 180 ? cw : ch;
+    ctx.drawImage(bmp, sx, sy, sw, sh, -bw / 2, -bh / 2, bw, bh);
+    bmp.close();
+
+    const quality = q === 'original' ? 0.95 : +q;
+    const blob = await new Promise((r) => canvas.toBlob(r, 'image/jpeg', quality));
+    return { bytes: new Uint8Array(await blob.arrayBuffer()), kind: 'jpg' };
+  }
+
+  async function save(bytes, filename) {
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    await new Promise((r) => setTimeout(r, 120));
+    URL.revokeObjectURL(url);
+  }
 
   function showStatus(msg, type) {
     status.textContent = msg;
-    status.className = 'text-sm py-1 ' + (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
+    status.className = 'text-sm py-1 ' +
+      (type === 'error' ? 'text-red-400' : type === 'success' ? 'text-green-400' : 'text-slate-400');
     status.classList.remove('hidden');
   }
+  const hideStatus = () => status.classList.add('hidden');
 
   function loadPdfLib() {
     if (window.PDFLib) return Promise.resolve();
     return new Promise((resolve, reject) => {
       const s = document.createElement('script');
       s.src = 'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js';
-      s.onload = resolve; s.onerror = reject;
+      s.onload = resolve;
+      s.onerror = () => reject(new Error('could not load the PDF engine — check your connection'));
       document.head.appendChild(s);
     });
   }

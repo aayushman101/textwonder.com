@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="384" viewBox="0 0 1920 384">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="45%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#9333ea"/>
+    </linearGradient>
+    <linearGradient id="word" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/><stop offset="100%" stop-color="#a855f7"/>
+    </linearGradient>
+    <linearGradient id="field" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0b0f1a"/><stop offset="50%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0b0f1a"/>
+    </linearGradient>
+    <radialGradient id="g1">
+      <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.34"/>
+      <stop offset="55%" stop-color="#4f46e5" stop-opacity="0.11"/>
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2">
+      <stop offset="0%" stop-color="#9333ea" stop-opacity="0.30"/>
+      <stop offset="55%" stop-color="#9333ea" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#9333ea" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1920" height="384" fill="url(#field)"/>
+  <ellipse cx="1560" cy="70" rx="520" ry="360" fill="url(#g2)"/>
+  <ellipse cx="360" cy="340" rx="480" ry="330" fill="url(#g1)"/>
+  <g transform="translate(624,126) scale(2.0625)">
+    <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+    <rect x="7" y="13" width="20" height="6" fill="white" rx="1"/>
+    <rect x="13" y="13" width="8" height="26" fill="white" rx="1"/>
+    <polyline points="30,13 38,43 44,25 50,43 58,13" fill="none" stroke="white"
+      stroke-width="7" stroke-linejoin="miter" stroke-linecap="butt"/>
+  </g>
+  <g transform="translate(792,168)">
+    <text font-family="'Space Grotesk','Segoe UI',Arial,sans-serif" font-size="82" font-weight="700">
+      <tspan fill="#ffffff">Text</tspan><tspan fill="url(#word)">Wonder</tspan>
+    </text>
+    <text y="56" font-family="Inter,'Segoe UI',Arial,sans-serif" font-size="28" fill="#94a3b8">
+      Free browser-based tools · nothing uploaded · no signup
+    </text>
+  </g>
+</svg>

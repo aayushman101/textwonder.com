@@ -24,6 +24,13 @@
     <p class="text-slate-500 text-sm">JPG, PNG, WebP, AVIF, GIF, BMP · each image becomes one page</p>
   </div>
 
+  <!-- Work area: preview on the left, controls pinned on the right.
+       With a large batch the controls used to sit below every thumbnail, so
+       Convert was several screens down. The sidebar sticks to the viewport
+       instead, which is the pattern iLovePDF and Smallpdf both use.
+       Below `lg` it collapses back to a single column. -->
+  <div id="jtp-work" class="hidden">
+  <div class="min-w-0 space-y-4">
   <!-- Toolbar -->
   <div id="jtp-toolbar" class="hidden flex-wrap items-center gap-2">
     <span id="jtp-count" class="text-sm text-slate-400 mr-1"></span>
@@ -54,10 +61,12 @@
        having both in the static class list makes the resolved value depend on
        Tailwind's output order rather than on state. -->
   <div id="jtp-grid" class="hidden gap-3"></div>
+  </div><!-- /left pane -->
 
-  <!-- Options -->
-  <div id="jtp-opts" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+  <!-- Controls -->
+  <aside id="jtp-side" class="mt-5 lg:mt-0 space-y-4">
+  <div id="jtp-opts" class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       <label class="block">
         <span class="jtp-lbl">Page size</span>
         <select id="jtp-size" class="jtp-inp">
@@ -97,7 +106,7 @@
       </label>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
       <label class="block">
         <span class="jtp-lbl">Quality</span>
         <select id="jtp-quality" class="jtp-inp">
@@ -127,18 +136,24 @@
     </p>
   </div>
 
-  <!-- Actions -->
-  <div id="jtp-actions" class="hidden flex-wrap gap-2 items-center">
-    <button id="jtp-convert" class="px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Convert to PDF</button>
-    <button id="jtp-clear" class="px-4 py-2 bg-[var(--bg-surface)] hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-sm border border-slate-700 transition-colors">Clear all</button>
-    <span id="jtp-est" class="text-xs text-slate-500"></span>
-  </div>
+  <!-- Actions. `sticky bottom-0` keeps Convert reachable on a phone once the
+       thumbnail list is longer than the screen; on `lg` it is already inside
+       the pinned sidebar so the sticky offset does nothing. -->
+  <div id="jtp-actions" class="sticky bottom-0 z-10 bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-3">
+    <button id="jtp-convert" class="w-full px-6 py-2.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-sm font-medium transition-colors">Convert to PDF</button>
+    <div class="flex items-center justify-between gap-2">
+      <button id="jtp-clear" class="px-3 py-1.5 hover:bg-[var(--bg-surface-hover)] text-slate-400 rounded-lg text-xs border border-slate-700 transition-colors">Clear all</button>
+      <span id="jtp-est" class="text-xs text-slate-500 text-right"></span>
+    </div>
 
-  <div id="jtp-bar" class="hidden h-1.5 bg-slate-800 rounded-full overflow-hidden">
-    <div id="jtp-bar-fill" class="h-full bg-orange-500 transition-all" style="width:0%"></div>
-  </div>
+    <div id="jtp-bar" class="hidden h-1.5 bg-slate-800 rounded-full overflow-hidden">
+      <div id="jtp-bar-fill" class="h-full bg-orange-500 transition-all" style="width:0%"></div>
+    </div>
 
-  <div id="jtp-status" class="hidden text-sm py-1"></div>
+    <div id="jtp-status" class="hidden text-sm"></div>
+  </div>
+  </aside><!-- /controls -->
+  </div><!-- /work -->
 </div>
 
 <style>
@@ -180,6 +195,33 @@
   }
   .jtp-inp:focus { outline: none; border-color: #f97316; }
   .jtp-inp option { background: var(--bg-surface); color: var(--jtp-text-strong); }
+  /* Two-pane work area. Driven from CSS rather than Tailwind display classes
+     because `hidden` and `grid` both set `display`, and which one wins would
+     otherwise depend on stylesheet order instead of on state. */
+  #jtp-work:not(.hidden) { display: block; }
+  @media (min-width: 1024px) {
+    #jtp-work:not(.hidden) {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    /* The sidebar is a column that never exceeds the viewport. Only the
+       options scroll; the action block is a flex item that cannot shrink, so
+       Convert stays on screen no matter how tall the settings get. Making the
+       whole sidebar scroll instead would push Convert below its own fold. */
+    #jtp-side {
+      position: sticky;
+      top: 1rem;
+      max-height: calc(100vh - 2rem);
+      display: flex;
+      flex-direction: column;
+      overscroll-behavior: contain;
+    }
+    #jtp-side > #jtp-opts { overflow-y: auto; min-height: 0; }
+    #jtp-side > #jtp-actions { flex-shrink: 0; }
+  }
+
   /* Thumbnail size grows with the viewport. A fixed 140px minimum left the
      cards looking like stamps once the layout went full width, so the floor
      steps up on larger screens instead of just adding more columns. */
@@ -196,7 +238,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
   const drop = $('jtp-drop'), fileInput = $('jtp-file'), grid = $('jtp-grid');
-  const toolbar = $('jtp-toolbar'), opts = $('jtp-opts'), actions = $('jtp-actions');
+  const toolbar = $('jtp-toolbar'), work = $('jtp-work');
   const status = $('jtp-status'), bar = $('jtp-bar'), barFill = $('jtp-bar-fill');
 
   // Points, at 72 per inch.
@@ -277,9 +319,9 @@
   // ── rendering ────────────────────────────────────────────────────────────
   function render() {
     const has = items.length > 0;
-    [toolbar, grid, opts, actions].forEach((el) => el.classList.toggle('hidden', !has));
+    work.classList.toggle('hidden', !has);
+    [toolbar, grid].forEach((el) => el.classList.toggle('hidden', !has));
     toolbar.classList.toggle('flex', has);
-    actions.classList.toggle('flex', has);
     grid.classList.toggle('grid', has);
     if (!has) { drop.classList.remove('hidden'); return; }
     drop.classList.add('hidden');

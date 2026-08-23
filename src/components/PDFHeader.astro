@@ -2,6 +2,7 @@
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
 import { PDF_TOOLS } from '../data/pdftools.js';
+import { PDF_ICONS, PDF_ICON_GROUPS } from '../data/pdf-icons.js';
 
 const toolsForSearch = getGlobalSearchIndex();
 const { alternates = [] } = Astro.props;
@@ -70,17 +71,25 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
 
-        <div id="pdf-tools-menu-dropdown" class="hidden absolute left-0 top-full mt-2 w-[860px] max-w-[92vw] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+        <!-- Width is clamped to the viewport, and JS nudges `left` on open so
+             the panel cannot hang off the right edge. Anchoring it to the
+             button alone pushed the page into horizontal overflow between 768
+             and 1024, where the button sits far enough in that a fixed-width
+             panel no longer fits. -->
+        <div id="pdf-tools-menu-dropdown" class="hidden absolute left-0 top-full mt-2 w-[940px] max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
           <div class="p-4 grid grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-1">
             {GROUPS.map((g) => (
               <div>
-                <p class="text-[11px] font-semibold uppercase tracking-wide text-orange-400/90 px-2 pb-1.5 pt-1">{g.title}</p>
+                <p class="text-[11px] font-semibold uppercase tracking-wide px-2 pb-1.5 pt-1" style={`color:${PDF_ICON_GROUPS[g.title]}`}>{g.title}</p>
                 <ul>
                   {g.slugs.map((slug) => (
                     <li>
                       <a href={`/pdfwonder/${slug}/`}
-                        class="block px-2 py-1.5 rounded-md text-[13px] text-slate-300 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors">
-                        {NAME[slug]}
+                        class="flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] text-slate-300 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors">
+                        <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke={PDF_ICON_GROUPS[g.title]}
+                          stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                          set:html={PDF_ICONS[slug]} />
+                        <span>{NAME[slug]}</span>
                       </a>
                     </li>
                   ))}
@@ -190,13 +199,16 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
   <div class="px-4 py-4 space-y-5">
     {GROUPS.map((g) => (
       <div>
-        <p class="text-[11px] font-semibold uppercase tracking-wide text-orange-400/90 mb-1.5">{g.title}</p>
+        <p class="text-[11px] font-semibold uppercase tracking-wide mb-1.5" style={`color:${PDF_ICON_GROUPS[g.title]}`}>{g.title}</p>
         <ul class="grid grid-cols-2 gap-1.5">
           {g.slugs.map((slug) => (
             <li>
               <a href={`/pdfwonder/${slug}/`}
-                class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 active:bg-[var(--bg-surface-hover)]">
-                {NAME[slug]}
+                class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 active:bg-[var(--bg-surface-hover)]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke={PDF_ICON_GROUPS[g.title]}
+                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                  set:html={PDF_ICONS[slug]} />
+                <span class="leading-tight">{NAME[slug]}</span>
               </a>
             </li>
           ))}
@@ -325,6 +337,14 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
         }
         m.panel.classList.toggle('hidden', !willOpen);
         m.btn.setAttribute('aria-expanded', String(willOpen));
+        // Keep an absolutely-positioned panel inside the viewport. Measured
+        // after it is shown, since a hidden element has no box to measure.
+        if (willOpen && getComputedStyle(m.panel).position === 'absolute') {
+          m.panel.style.left = '0px';
+          const r = m.panel.getBoundingClientRect();
+          const spill = r.right - (window.innerWidth - 16);
+          if (spill > 0) m.panel.style.left = -spill + 'px';
+        }
       });
     });
     document.addEventListener('click', (e) => {

@@ -1,10 +1,29 @@
 ---
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
+import { PDF_TOOLS } from '../data/pdftools.js';
 
 const toolsForSearch = getGlobalSearchIndex();
 const { alternates = [] } = Astro.props;
 
+// Grouped by the job someone came to do, not by anything in the data - the
+// tool records carry no category. Previously the header offered no route to a
+// second PDF tool at all: "Categories" lists the site's other sections, so
+// finishing a merge and wanting to compress meant going back to the index.
+const NAME = Object.fromEntries(PDF_TOOLS.map((t) => [t.slug, t.name]));
+const GROUPS: Array<{ title: string; slugs: string[] }> = [
+  { title: 'Organise', slugs: ['pdf-merger', 'pdf-splitter', 'pdf-extract-pages', 'pdf-remove-pages', 'pdf-reorder-pages', 'pdf-rotate-pages', 'pdf-remove-blank-pages'] },
+  { title: 'Convert',  slugs: ['jpg-to-pdf', 'pdf-to-jpg', 'pdf-to-png', 'pdf-to-text', 'text-to-pdf', 'text-to-word', 'markdown-to-pdf'] },
+  { title: 'Optimise', slugs: ['pdf-compress', 'pdf-resize', 'pdf-crop', 'pdf-grayscale', 'pdf-scan-enhance', 'pdf-dark-mode'] },
+  { title: 'Edit',     slugs: ['pdf-watermark', 'pdf-page-numbers', 'pdf-header-footer', 'pdf-sign'] },
+  { title: 'Secure & inspect', slugs: ['pdf-password-protect', 'pdf-unlock', 'pdf-metadata-viewer', 'pdf-word-count'] },
+];
+
+// Shortcuts in the bar itself. Merge and Compress because every PDF site puts
+// them there and visitors look for them by habit; Word Counter because Search
+// Console shows it drawing 1,158 impressions - roughly four times any other
+// PDF page here - so it is the one worth a sitewide internal link.
+const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
 ---
 
 <header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
@@ -21,31 +40,79 @@ const { alternates = [] } = Astro.props;
     ))}
   </div>
 
-  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+  <!-- Matches the content container in PDFToolLayout; at max-w-6xl the header
+       sat visibly inset from the tool card once the pages went full width. -->
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3">
     <!-- Logo -->
-    <a href="/pdfwonder/" class="flex items-center gap-2 group">
+    <a href="/pdfwonder/" class="flex items-center gap-2 group min-w-0 shrink">
       <div class="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center shrink-0">
         <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
           <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 17h8v1H8v-1zm0-3h8v1H8v-1zm0-3h5v1H8v-1z"/>
         </svg>
       </div>
-      <span class="text-2xl font-bold text-white group-hover:text-orange-400 transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+      <!-- Hidden below 400px rather than truncated. On translated tools the
+           right-hand cluster also carries a language switcher, and the
+           wordmark could not fit beside it - but "PDFWond…" reads as broken,
+           whereas the icon alone reads as deliberate, and the pill row
+           directly above still names the section. -->
+      <span class="hidden min-[375px]:inline text-xl sm:text-2xl font-bold text-white group-hover:text-orange-400 transition-colors whitespace-nowrap" style="font-family: 'Space Grotesk', sans-serif;">
         PDF<span class="text-orange-500">Wonder</span>
       </span>
     </a>
 
     <!-- Desktop Nav -->
-    <nav class="hidden md:flex items-center gap-5">
-      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
-      
-      <!-- Unified Categories Mega-Menu -->
+    <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+      <!-- All PDF tools: the route between tools that the header was missing -->
+      <div class="relative" id="pdf-tools-menu-wrapper">
+        <button id="pdf-tools-menu-btn" aria-haspopup="true" aria-expanded="false"
+          class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          All PDF Tools
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </button>
+
+        <div id="pdf-tools-menu-dropdown" class="hidden absolute left-0 top-full mt-2 w-[860px] max-w-[92vw] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+          <div class="p-4 grid grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-1">
+            {GROUPS.map((g) => (
+              <div>
+                <p class="text-[11px] font-semibold uppercase tracking-wide text-orange-400/90 px-2 pb-1.5 pt-1">{g.title}</p>
+                <ul>
+                  {g.slugs.map((slug) => (
+                    <li>
+                      <a href={`/pdfwonder/${slug}/`}
+                        class="block px-2 py-1.5 rounded-md text-[13px] text-slate-300 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors">
+                        {NAME[slug]}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs">
+            <span class="text-slate-500">All {PDF_TOOLS.length} run in your browser — nothing is uploaded</span>
+            <a href="/pdfwonder/" class="text-orange-400 hover:text-orange-300 font-medium transition-colors">Browse all {PDF_TOOLS.length} &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shortcuts to the jobs people arrive wanting -->
+      {QUICK.map((slug) => (
+        <a href={`/pdfwonder/${slug}/`}
+          class="hidden lg:inline-block text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
+          {NAME[slug]}
+        </a>
+      ))}
+
+      <span class="w-px h-5 bg-slate-800 mx-1"></span>
+
+      <!-- Other sections of the site -->
       <div class="relative" id="pdf-categories-menu-wrapper">
-        <button id="pdf-categories-menu-btn" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
-          Categories
+        <button id="pdf-categories-menu-btn" aria-haspopup="true" aria-expanded="false" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
+          More Tools
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         
-        <div id="pdf-categories-menu-dropdown" class="hidden absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[600px] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+        <div id="pdf-categories-menu-dropdown" class="hidden absolute right-0 top-full mt-2 w-[600px] max-w-[92vw] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
           <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
             {SECTIONS.map(s => (
               <a href={s.path}
@@ -79,8 +146,7 @@ const { alternates = [] } = Astro.props;
       <a href="/blog/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Blog</a>
     </nav>
 
-    <div class="flex items-center gap-2">
-      <!-- Theme toggle -->
+    <div class="flex items-center gap-1 sm:gap-2 shrink-0">
       <LanguageSwitcher alternates={alternates} locale="en" />
 
       <button id="pdf-theme-toggle" class="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors" aria-label="Toggle theme">
@@ -90,6 +156,19 @@ const { alternates = [] } = Astro.props;
         <svg id="pdf-icon-moon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
         </svg>
+      </button>
+
+      <!-- Mobile tool browser. Search finds a tool if you know its name; this
+           is for the far more common case of not knowing it exists. Opens as a
+           sheet so it costs no height in the sticky header. -->
+      <button id="pdf-mobile-tools-btn" aria-haspopup="true" aria-expanded="false"
+        class="md:hidden flex items-center gap-1 shrink-0 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 hover:text-white px-2.5 py-2 rounded-lg transition-colors text-sm font-medium"
+        aria-label="Browse PDF tools">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h6v6H4V6zm10 0h6v6h-6V6zM4 16h6v4H4v-4zm10 0h6v4h-6v-4z"/></svg>
+        <!-- Label drops below 400px so the wordmark keeps its full width; the
+             icon plus aria-label still identify the control. -->
+        <span class="hidden min-[400px]:inline">Tools</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
       </button>
 
       <!-- Search -->
@@ -102,6 +181,34 @@ const { alternates = [] } = Astro.props;
     </div>
   </div>
 </header>
+
+<!-- Mobile tool sheet -->
+<!-- `top` is set from the measured header height on open; the rem fallback is
+     only for the first paint, since the mobile header's pill row makes its
+     height depend on content rather than being a fixed number. -->
+<div id="pdf-mobile-tools-panel" class="hidden md:hidden fixed inset-x-0 bottom-0 z-40 bg-[var(--bg-base)] border-t border-slate-800 overflow-y-auto overscroll-contain" style="top:6.75rem">
+  <div class="px-4 py-4 space-y-5">
+    {GROUPS.map((g) => (
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-wide text-orange-400/90 mb-1.5">{g.title}</p>
+        <ul class="grid grid-cols-2 gap-1.5">
+          {g.slugs.map((slug) => (
+            <li>
+              <a href={`/pdfwonder/${slug}/`}
+                class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 active:bg-[var(--bg-surface-hover)]">
+                {NAME[slug]}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+    <div class="pt-1 grid grid-cols-2 gap-1.5">
+      <a href="/pdfwonder/" class="block px-3 py-2 rounded-lg text-[13px] font-medium text-white bg-orange-600 text-center">All {PDF_TOOLS.length} PDF tools</a>
+      <a href="/blog/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Blog</a>
+    </div>
+  </div>
+</div>
 
 <!-- Search Modal -->
 <div id="pdf-search-modal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
@@ -173,7 +280,7 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
     closeBtn.addEventListener('click', closeModal);
     backdrop.addEventListener('click', closeModal);
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') { closeModal(); closeCategoriesMenu(); }
+      if (e.key === 'Escape') closeModal();   // menus close via their own handler
       if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
     });
 
@@ -190,14 +297,40 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
     }
     input.addEventListener('input', e => renderResults(e.target.value));
 
-    // Categories Dropdown
-    const categoriesBtn = document.getElementById('pdf-categories-menu-btn');
-    const categoriesDropdown = document.getElementById('pdf-categories-menu-dropdown');
+    // Dropdowns. Opening one closes the other, Escape closes both, and the
+    // button's aria-expanded tracks state for screen readers.
+    const MENUS = [
+      ['pdf-tools-menu-btn', 'pdf-tools-menu-dropdown'],
+      ['pdf-categories-menu-btn', 'pdf-categories-menu-dropdown'],
+      ['pdf-mobile-tools-btn', 'pdf-mobile-tools-panel'],
+    ].map(([b, d]) => ({ btn: document.getElementById(b), panel: document.getElementById(d) }))
+     .filter((m) => m.btn && m.panel);
 
-    function closeCategoriesMenu() { categoriesDropdown && categoriesDropdown.classList.add('hidden'); }
-    if (categoriesBtn && categoriesDropdown) {
-      categoriesBtn.addEventListener('click', e => { e.stopPropagation(); categoriesDropdown.classList.toggle('hidden'); });
-      document.addEventListener('click', e => { if (!categoriesBtn.contains(e.target) && !categoriesDropdown.contains(e.target)) closeCategoriesMenu(); });
+    function closeMenus(except) {
+      MENUS.forEach((m) => {
+        if (m === except) return;
+        m.panel.classList.add('hidden');
+        m.btn.setAttribute('aria-expanded', 'false');
+      });
     }
+    const header = document.querySelector('header');
+    MENUS.forEach((m) => {
+      m.btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const willOpen = m.panel.classList.contains('hidden');
+        closeMenus(m);
+        // Pin the mobile sheet to the real header height rather than guessing.
+        if (willOpen && m.panel.id === 'pdf-mobile-tools-panel' && header) {
+          m.panel.style.top = header.getBoundingClientRect().bottom + 'px';
+        }
+        m.panel.classList.toggle('hidden', !willOpen);
+        m.btn.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+    document.addEventListener('click', (e) => {
+      const inside = MENUS.some((m) => m.btn.contains(e.target) || m.panel.contains(e.target));
+      if (!inside) closeMenus();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenus(); });
   })();
 </script>

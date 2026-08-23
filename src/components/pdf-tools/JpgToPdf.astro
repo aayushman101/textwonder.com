@@ -53,7 +53,7 @@
   <!-- `grid` is added by JS, not here: it and `hidden` both set `display`, so
        having both in the static class list makes the resolved value depend on
        Tailwind's output order rather than on state. -->
-  <div id="jtp-grid" class="hidden gap-3" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))"></div>
+  <div id="jtp-grid" class="hidden gap-3"></div>
 
   <!-- Options -->
   <div id="jtp-opts" class="hidden bg-[var(--bg-surface)] border border-slate-800 rounded-xl p-4 space-y-4">
@@ -180,6 +180,13 @@
   }
   .jtp-inp:focus { outline: none; border-color: #f97316; }
   .jtp-inp option { background: var(--bg-surface); color: var(--jtp-text-strong); }
+  /* Thumbnail size grows with the viewport. A fixed 140px minimum left the
+     cards looking like stamps once the layout went full width, so the floor
+     steps up on larger screens instead of just adding more columns. */
+  #jtp-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  @media (min-width: 1024px) { #jtp-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); } }
+  @media (min-width: 1536px) { #jtp-grid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); } }
+
   .jtp-card { position: relative; border-radius: .6rem; overflow: hidden; cursor: grab; }
   .jtp-card.dragging { opacity: .35; }
   .jtp-card.over { outline: 2px solid #f97316; outline-offset: 2px; }

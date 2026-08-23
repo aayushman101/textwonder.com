@@ -57,7 +57,16 @@ const alternates = alternatesForTool('pdfwonder', tool.slug);
 
   <PDFHeader alternates={alternates} />
 
-  <main class="max-w-4xl mx-auto px-4 py-10">
+  <!-- Wide container. `max-width` only binds once the viewport exceeds it, so
+       everything below `lg` is byte-for-byte what it was: phones and tablets
+       already rendered at 100% width and are untouched by this. The gain is
+       entirely on laptops and desktops, which previously used 62% and 47% of
+       the screen.
+
+       Prose does NOT inherit the full width - long measure is harder to read,
+       not easier. Instead the three description blocks become columns at `lg`,
+       so each one lands near 60ch while the row as a whole fills the screen. -->
+  <main class="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 py-10">
     <!-- Breadcrumb -->
     <nav class="flex items-center gap-1 text-sm text-slate-500 mb-6">
       <a href="/pdfwonder/" class="hover:text-orange-400 transition-colors">PDFWonder</a>
@@ -75,8 +84,10 @@ const alternates = alternatesForTool('pdfwonder', tool.slug);
       <slot />
     </div>
 
-    <!-- SEO Content -->
-    <section class="mb-10 space-y-6">
+    <!-- SEO Content — stacked on small screens, three columns from `lg` so the
+         width is used without stretching any single paragraph past a
+         comfortable measure. -->
+    <section class="mb-10 grid gap-6 lg:grid-cols-3 lg:gap-10">
       <div>
         <h2 class="text-xl font-semibold text-white mb-2">About {tool.name}</h2>
         <p class="text-slate-400 leading-relaxed">{tool.descriptionLong}</p>
@@ -95,7 +106,7 @@ const alternates = alternatesForTool('pdfwonder', tool.slug);
     {tool.faqs && tool.faqs.length > 0 && (
       <section class="mb-10">
         <h2 class="text-xl font-semibold text-white mb-4">FAQs</h2>
-        <div class="space-y-2">
+        <div class="grid gap-2 lg:grid-cols-2 lg:gap-x-6 lg:items-start">
           {tool.faqs.map((faq: { q: string; a: string }) => (
             <details class="bg-[var(--bg-surface)] border border-slate-800 rounded-xl group">
               <summary class="flex items-center justify-between px-5 py-4 cursor-pointer list-none hover:bg-[var(--bg-surface-hover)] rounded-xl transition-colors">
@@ -114,7 +125,7 @@ const alternates = alternatesForTool('pdfwonder', tool.slug);
     <!-- Related tools -->
     <section>
       <h2 class="text-xl font-semibold text-white mb-4">Related PDF Tools</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3">
         {tool.relatedTools.map((slug: string) => {
           const { PDF_TOOLS } = Astro.glob ? {} : { PDF_TOOLS: [] };
           return (

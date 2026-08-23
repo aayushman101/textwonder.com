@@ -19,12 +19,6 @@ const GROUPS: Array<{ title: string; slugs: string[] }> = [
   { title: 'Edit',     slugs: ['pdf-watermark', 'pdf-page-numbers', 'pdf-header-footer', 'pdf-sign'] },
   { title: 'Secure & inspect', slugs: ['pdf-password-protect', 'pdf-unlock', 'pdf-metadata-viewer', 'pdf-word-count'] },
 ];
-
-// Shortcuts in the bar itself. Merge and Compress because every PDF site puts
-// them there and visitors look for them by habit; Word Counter because Search
-// Console shows it drawing 1,158 impressions - roughly four times any other
-// PDF page here - so it is the one worth a sitewide internal link.
-const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
 ---
 
 <header class="sticky top-0 z-50 bg-[var(--bg-base)]/95 backdrop-blur border-b border-slate-800">
@@ -108,18 +102,9 @@ const QUICK = ['pdf-merger', 'pdf-compress', 'pdf-word-count'];
         </div>
       </div>
 
-      <!-- Shortcuts to the jobs people arrive wanting.
-           1360px, not Tailwind's xl: measured on a translated tool (worst case,
-           it also renders the language switcher) the full bar needs 1271px, so
-           xl/1280 leaves 9px of slack — inside the margin that font rendering
-           can move. 1360 leaves ~90px. -->
-      {QUICK.map((slug) => (
-        <a href={`/pdfwonder/${slug}/`}
-          class="hidden min-[1360px]:inline-block text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
-          {NAME[slug]}
-        </a>
-      ))}
-
+      <!-- Divider: everything left of it is PDF, everything right is the wider
+           site. Individual tool shortcuts used to sit here and were removed —
+           the mega-menu already reaches all 28 in one click. -->
       <span class="w-px h-5 bg-slate-800 mx-1"></span>
 
       <!-- Other sections of the site -->

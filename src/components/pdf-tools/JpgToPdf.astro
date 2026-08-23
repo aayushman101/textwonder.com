@@ -72,7 +72,7 @@
       <label class="block">
         <span class="jtp-lbl">Orientation</span>
         <select id="jtp-orient" class="jtp-inp">
-          <option value="auto">Auto — match each image</option>
+          <option value="auto">Auto (match image)</option>
           <option value="portrait">Portrait</option>
           <option value="landscape">Landscape</option>
         </select>
@@ -81,18 +81,18 @@
         <span class="jtp-lbl">Margin</span>
         <select id="jtp-margin" class="jtp-inp">
           <option value="0">None</option>
-          <option value="18">Small — 6 mm</option>
-          <option value="36">Medium — 13 mm</option>
-          <option value="72">Large — 25 mm</option>
+          <option value="18">Small (6 mm)</option>
+          <option value="36">Medium (13 mm)</option>
+          <option value="72">Large (25 mm)</option>
         </select>
       </label>
       <label class="block">
         <span class="jtp-lbl">Image fit</span>
         <select id="jtp-fit" class="jtp-inp">
-          <option value="contain">Fit — whole image, may letterbox</option>
-          <option value="cover">Fill — crop to page edges</option>
-          <option value="actual">Actual size — no scaling up</option>
-          <option value="stretch">Stretch — distorts image</option>
+          <option value="contain">Fit (whole image)</option>
+          <option value="cover">Fill (crop to edges)</option>
+          <option value="actual">Actual size</option>
+          <option value="stretch">Stretch (distorts)</option>
         </select>
       </label>
     </div>
@@ -101,10 +101,10 @@
       <label class="block">
         <span class="jtp-lbl">Quality</span>
         <select id="jtp-quality" class="jtp-inp">
-          <option value="original">Original — no re-encoding</option>
-          <option value="0.92" selected>High — smaller file</option>
+          <option value="original">Original (no re-encode)</option>
+          <option value="0.92" selected>High</option>
           <option value="0.8">Medium</option>
-          <option value="0.6">Small — most compression</option>
+          <option value="0.6">Small (most compression)</option>
         </select>
       </label>
       <label class="block">
@@ -142,25 +142,44 @@
 </div>
 
 <style>
+  /* Colours come from variables rather than literals so they follow the theme.
+     The site flips --bg-* on [data-theme="light"] but has no override for
+     component-local classes, so hardcoding slate text here left the controls
+     as pale grey on white in light mode. */
+  #jtp-root {
+    --jtp-text: rgb(203 213 225);
+    --jtp-text-strong: #ffffff;
+    --jtp-text-dim: rgb(148 163 184);
+    --jtp-border: rgb(51 65 85);
+  }
+  :global([data-theme="light"]) #jtp-root {
+    --jtp-text: #334155;
+    --jtp-text-strong: #0f172a;
+    --jtp-text-dim: #64748b;
+    --jtp-border: #cbd5e1;
+  }
+
   .jtp-btn {
     padding: 0.4rem 0.7rem; font-size: 0.8125rem; border-radius: 0.5rem;
-    background: var(--bg-surface); border: 1px solid rgb(51 65 85);
-    color: rgb(203 213 225); transition: all .15s;
+    background: var(--bg-surface); border: 1px solid var(--jtp-border);
+    color: var(--jtp-text); transition: all .15s;
   }
-  .jtp-btn:hover:not(:disabled) { background: var(--bg-surface-hover); color: #fff; }
+  .jtp-btn:hover:not(:disabled) { background: var(--bg-surface-hover); color: var(--jtp-text-strong); }
   .jtp-btn:disabled { opacity: .4; cursor: not-allowed; }
-  .jtp-danger:hover:not(:disabled) { color: #f87171; border-color: #b91c1c; }
+  .jtp-danger:hover:not(:disabled) { color: #dc2626; border-color: #dc2626; }
   .jtp-menu {
     display: block; width: 100%; text-align: left; padding: .45rem .8rem;
-    font-size: .8125rem; color: rgb(203 213 225);
+    font-size: .8125rem; color: var(--jtp-text);
   }
-  .jtp-menu:hover { background: var(--bg-surface-hover); color: #fff; }
-  .jtp-lbl { display: block; font-size: .75rem; color: rgb(148 163 184); margin-bottom: .3rem; }
+  .jtp-menu:hover { background: var(--bg-surface-hover); color: var(--jtp-text-strong); }
+  .jtp-lbl { display: block; font-size: .75rem; color: var(--jtp-text-dim); margin-bottom: .3rem; }
   .jtp-inp {
     width: 100%; padding: .45rem .6rem; font-size: .8125rem; border-radius: .5rem;
-    background: var(--bg-base); border: 1px solid rgb(51 65 85); color: rgb(226 232 240);
+    background: var(--bg-base); border: 1px solid var(--jtp-border);
+    color: var(--jtp-text-strong);
   }
   .jtp-inp:focus { outline: none; border-color: #f97316; }
+  .jtp-inp option { background: var(--bg-surface); color: var(--jtp-text-strong); }
   .jtp-card { position: relative; border-radius: .6rem; overflow: hidden; cursor: grab; }
   .jtp-card.dragging { opacity: .35; }
   .jtp-card.over { outline: 2px solid #f97316; outline-offset: 2px; }

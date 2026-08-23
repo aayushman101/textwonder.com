@@ -46,6 +46,13 @@ export const CATEGORIES = [
   },
 ];
 
+// Where a category's listing actually lives. Most are the generic
+// /categories/<slug>/ page, but document-generators has its own branded hub at
+// /docwonder/ like every other section, so breadcrumbs and category links go
+// there instead of to a listing that now 301s.
+const CATEGORY_HUBS = { 'document-generators': '/docwonder/' };
+export const categoryHubPath = (slug) => CATEGORY_HUBS[slug] || `/categories/${slug}/`;
+
 export const TOOLS = [
   // ── TEXT CLEANING ─────────────────────────────────────────────
   {

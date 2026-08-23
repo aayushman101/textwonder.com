@@ -4,7 +4,7 @@ import { alternatesForSection } from '../../i18n/index.js';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import ToolCard from '../../components/ToolCard.astro';
-import { TOOLS, CATEGORIES, getToolsByCategory } from '../../data/tools.js';
+import { TOOLS, CATEGORIES, getToolsByCategory, categoryHubPath } from '../../data/tools.js';
 const alternates = alternatesForSection('tools');
 
 ---
@@ -52,7 +52,7 @@ const alternates = alternatesForSection('tools');
                 <h2 class="text-lg font-semibold text-white">{cat.name}</h2>
                 <p class="text-slate-400 text-sm">{cat.description}</p>
               </div>
-              <a href={`/categories/${cat.slug}/`} class="ml-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
+              <a href={categoryHubPath(cat.slug)} class="ml-auto text-violet-400 hover:text-violet-300 text-sm transition-colors shrink-0">
                 View category &rarr;
               </a>
             </div>

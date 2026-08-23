@@ -5,6 +5,9 @@
 # Legacy URL redirects (add as needed)
 # /old-path  /new-path  301
 
+# ── DocWonder moved from the generic category listing to its own hub ───────
+/categories/document-generators/  /docwonder/  301
+
 # ── Retired thin blog posts → the tool each one described ──────────────────
 # These 183 posts averaged well under 400 words and largely restated the tool
 # page they linked to. They were removed rather than padded; a 301 keeps any

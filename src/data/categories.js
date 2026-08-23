@@ -41,21 +41,26 @@ export const SECTIONS = [
   },
   {
     prefix: 'Doc', suffix: 'Wonder',
-    path: '/categories/document-generators/',
+    // Points at the section's own hub now, not the generic category listing.
+    path: '/docwonder/',
     color: '#0d9488', accentRgb: '13,148,136',
-    tagline: 'Rent receipts, salary slips, experience letters, relieving letters, and proforma invoices.',
-    count: 5,
+    tagline: 'Rent receipts, salary slips, experience and relieving letters, NOCs, and proforma invoices.',
+    // Was 5 while the section actually had 7 — leave-application-generator and
+    // noc-generator were never added here, so the nav and homepage undercounted.
+    count: 7,
     icon: '📁',
     featured: [
       { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator/' },
       { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator/' },
       { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator/' },
       { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator/' },
-      { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator/' },
+      { name: 'NOC Generator', path: '/tools/noc-generator/' },
     ],
     toolsList: [
       { name: 'Rent Receipt Generator', path: '/tools/rent-receipt-generator/' },
       { name: 'Salary Slip Generator', path: '/tools/salary-slip-generator/' },
+      { name: 'Leave Application Generator', path: '/tools/leave-application-generator/' },
+      { name: 'NOC Generator', path: '/tools/noc-generator/' },
       { name: 'Experience Letter Generator', path: '/tools/experience-letter-generator/' },
       { name: 'Relieving Letter Generator', path: '/tools/relieving-letter-generator/' },
       { name: 'Proforma Invoice Generator', path: '/tools/proforma-invoice-generator/' },

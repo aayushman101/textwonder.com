@@ -127,6 +127,22 @@ export const TOOL_ICONS = {
   'shadow-generator':      '<rect x="3.5" y="3.5" width="12" height="12" rx="1.5"/><path d="M8.5 20.5h10a2 2 0 0 0 2-2v-10" stroke-dasharray="2 2"/>',
   'random-color-generator': '<rect x="3.5" y="3.5" width="17" height="17" rx="2.5"/><circle cx="8.5" cy="8.5" r="1.2"/><circle cx="15.5" cy="8.5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="8.5" cy="15.5" r="1.2"/><circle cx="15.5" cy="15.5" r="1.2"/>',
 
+  // ── DocWonder ───────────────────────────────────────────────────────────
+  'rent-receipt-generator':
+    '<path d="M5.5 3.5h13v17l-2.2-1.6-2.2 1.6-2.1-1.6-2.2 1.6-2.1-1.6-2.2 1.6z"/><path d="M8.5 10.5L12 8l3.5 2.5"/><path d="M9.8 11.3v3.4h4.4v-3.4"/>',
+  'salary-slip-generator':
+    '<rect x="3.5" y="4" width="17" height="16" rx="1.5"/><path d="M3.5 9h17"/><path d="M7 12.5h4M7 16h6"/><path d="M16.5 12v5M18 13.4c-.4-.5-1-.7-1.6-.7-.9 0-1.5.5-1.5 1.2 0 1.6 3.2.8 3.2 2.4 0 .7-.7 1.2-1.7 1.2-.7 0-1.3-.3-1.6-.8"/>',
+  'experience-letter-generator':
+    '<path d="M6 3.5h9l3.5 3.5v8H6z"/><path d="M15 3.5V7h3.5"/><path d="M8.5 9.5h6M8.5 12h4"/><circle cx="12" cy="18" r="2.5"/><path d="M10.4 19.9L9.8 22.5l2.2-1.2 2.2 1.2-.6-2.6"/>',
+  'relieving-letter-generator':
+    '<path d="M5.5 3.5h8l4 4V17a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M13.5 3.5V7.5h4"/><path d="M7.5 10h6M7.5 13h4"/><path d="M15 21h6"/><path d="M18.5 18.5L21 21l-2.5 2.5"/>',
+  'proforma-invoice-generator':
+    '<path d="M5.5 3.5h13v17l-2.2-1.6-2.2 1.6-2.1-1.6-2.2 1.6-2.1-1.6-2.2 1.6z"/><path d="M8.5 8.5h7M8.5 11.5h7M8.5 14.5h4"/><path d="M13.5 14.5h2"/>',
+  'leave-application-generator':
+    '<rect x="3.5" y="5" width="17" height="16" rx="1.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M9 15.5l2 2 4-4"/>',
+  'noc-generator':
+    '<path d="M6.5 3.5h7l4 4V20a1 1 0 0 1-1 1h-10a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1z"/><path d="M13.5 3.5V7.5h4"/><path d="M8.5 10.5h6"/><circle cx="14.5" cy="15.5" r="3.5"/><path d="M13 15.5l1.2 1.2 2.3-2.4"/>',
+
   'csv-to-json': '<rect x="2.5" y="6" width="12" height="12" rx="1.5"/><path d="M2.5 10h12M8.5 6v12"/><path d="M16.5 12h4.5"/><path d="M19 9.8l2.2 2.2-2.2 2.2"/>',
   'yaml-to-json': '<path d="M2.5 8h2M6 8h6M2.5 12h2M6 12h6M2.5 16h2M6 16h4"/><path d="M15.5 12h5.5"/><path d="M18.8 9.8l2.2 2.2-2.2 2.2"/>',
   'xml-to-json': '<path d="M6.5 8.5L3 12l3.5 3.5"/><path d="M11.5 7l-2.5 10"/><path d="M15.5 12h5.5"/><path d="M18.8 9.8l2.2 2.2-2.2 2.2"/>',
@@ -193,6 +209,16 @@ export const SECTION_MENUS = {
     groups: [
       { title: 'Convert & check', slugs: ['hex-rgb-converter', 'contrast-checker', 'color-mixer'] },
       { title: 'Generate', slugs: ['gradient-generator', 'color-palette-generator', 'tint-shade-generator', 'shadow-generator', 'random-color-generator'] },
+    ],
+  },
+  doc: {
+    accent: '#0d9488',
+    // Tools live under /tools/, not /docwonder/ — the hub is new, the tool
+    // pages predate it and carry search traffic worth not disturbing.
+    basePath: '/tools/',
+    groups: [
+      { title: 'Employment', slugs: ['salary-slip-generator', 'experience-letter-generator', 'relieving-letter-generator', 'leave-application-generator'] },
+      { title: 'Property & billing', slugs: ['rent-receipt-generator', 'proforma-invoice-generator', 'noc-generator'] },
     ],
   },
   data: {

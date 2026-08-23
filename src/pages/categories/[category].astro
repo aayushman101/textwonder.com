@@ -7,7 +7,11 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import { CATEGORIES, getToolsByCategory, getCategoryBySlug } from '../../data/tools.js';
 
 export function getStaticPaths() {
-  return CATEGORIES.map(cat => ({ params: { category: cat.slug }, props: { category: cat } }));
+  // document-generators is skipped: it has its own hub at /docwonder/ and a
+  // 301 pointing there. Building this page too would shadow the redirect.
+  return CATEGORIES
+    .filter((cat) => cat.slug !== 'document-generators')
+    .map(cat => ({ params: { category: cat.slug }, props: { category: cat } }));
 }
 
 const { category } = Astro.props;

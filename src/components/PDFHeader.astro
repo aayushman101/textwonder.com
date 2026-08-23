@@ -69,12 +69,13 @@ const GROUPS: Array<{ title: string; slugs: string[] }> = [
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
 
-        <!-- Width is clamped to the viewport, and JS nudges `left` on open so
-             the panel cannot hang off the right edge. Anchoring it to the
-             button alone pushed the page into horizontal overflow between 768
-             and 1024, where the button sits far enough in that a fixed-width
-             panel no longer fits. -->
-        <div id="pdf-tools-menu-dropdown" class="hidden absolute left-0 top-full mt-2 w-[940px] max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+        <!-- Centred on the viewport, not anchored to the button. The nav sits
+             mid-header, so left-anchoring threw a 940px panel far to the right
+             — at 1920 it spanned 826–1766. `fixed` centring also removes the
+             need to clamp it: with a viewport-relative max-width it cannot
+             reach either edge. `top` is set from the measured header height on
+             open, since a fixed element cannot use `top-full`. -->
+        <div id="pdf-tools-menu-dropdown" class="hidden fixed left-1/2 -translate-x-1/2 w-[940px] max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
           <div class="p-4 grid grid-cols-3 lg:grid-cols-5 gap-x-4 gap-y-1">
             {GROUPS.map((g) => (
               <div>
@@ -114,7 +115,11 @@ const GROUPS: Array<{ title: string; slugs: string[] }> = [
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
         
-        <div id="pdf-categories-menu-dropdown" class="hidden absolute right-0 top-full mt-2 w-[600px] max-w-[92vw] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+        <!-- Centred like the tools menu. Anchored to its button it ran off the
+             LEFT edge at 768 and 1024 (-95px and -8px), which the old clamp
+             missed by only ever checking the right. Centring removes the class
+             of bug rather than adding a second check. -->
+        <div id="pdf-categories-menu-dropdown" class="hidden fixed left-1/2 -translate-x-1/2 w-[600px] max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
           <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
             {SECTIONS.map(s => (
               <a href={s.path}
@@ -327,20 +332,16 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
         e.stopPropagation();
         const willOpen = m.panel.classList.contains('hidden');
         closeMenus(m);
-        // Pin the mobile sheet to the real header height rather than guessing.
-        if (willOpen && m.panel.id === 'pdf-mobile-tools-panel' && header) {
-          m.panel.style.top = header.getBoundingClientRect().bottom + 'px';
+        // Every panel is fixed and centred, so the only thing to compute is
+        // how far down the header currently reaches — it varies with the
+        // mobile pill row, so it is measured rather than assumed. The mobile
+        // sheet butts against the header; the dropdowns clear it by 8px.
+        if (willOpen && header) {
+          const below = header.getBoundingClientRect().bottom;
+          m.panel.style.top = (m.panel.id === 'pdf-mobile-tools-panel' ? below : below + 8) + 'px';
         }
         m.panel.classList.toggle('hidden', !willOpen);
         m.btn.setAttribute('aria-expanded', String(willOpen));
-        // Keep an absolutely-positioned panel inside the viewport. Measured
-        // after it is shown, since a hidden element has no box to measure.
-        if (willOpen && getComputedStyle(m.panel).position === 'absolute') {
-          m.panel.style.left = '0px';
-          const r = m.panel.getBoundingClientRect();
-          const spill = r.right - (window.innerWidth - 16);
-          if (spill > 0) m.panel.style.left = -spill + 'px';
-        }
       });
     });
     document.addEventListener('click', (e) => {

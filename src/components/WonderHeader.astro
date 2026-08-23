@@ -1,6 +1,10 @@
 ---
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { SECTIONS, getGlobalSearchIndex } from '../data/categories.js';
+import ToolMegaMenu from './ToolMegaMenu.astro';
+import ToolMobileSheet from './ToolMobileSheet.astro';
+import MegaMenuScript from './MegaMenuScript.astro';
+import { TOOL_ICONS, SECTION_MENUS } from '../data/tool-icons.js';
 
 interface Props {
   brand: {
@@ -28,6 +32,9 @@ const categoriesWrapperId = `${brand.idPrefix}-categories-menu-wrapper`;
 const categoriesBtnId = `${brand.idPrefix}-categories-menu-btn`;
 const categoriesDropdownId = `${brand.idPrefix}-categories-menu-dropdown`;
 
+const MENU = SECTION_MENUS[brand.idPrefix];
+const NAME = Object.fromEntries((Astro.props.tools || []).map((t) => [t.slug, t.name]));
+
 const toolsForSearch = getGlobalSearchIndex();
 const { alternates = [] } = Astro.props;
 
@@ -47,44 +54,51 @@ const { alternates = [] } = Astro.props;
     ))}
   </div>
 
-  <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-16">
+  <div class="w-full max-w-[1800px] mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 gap-3">
     <!-- Logo -->
-    <a href={`${brand.rootPath}/`} class="flex items-center gap-2 group">
+    <a href={`${brand.rootPath}/`} class="flex items-center gap-2 group min-w-0 shrink md:shrink-0">
       <div class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0" style={`background:${brand.accentColor}`}>
         <slot name="icon">
           <span class="text-white font-bold text-xs">{brand.prefix[0]}</span>
         </slot>
       </div>
-      <span class="text-2xl font-bold text-white transition-colors" style="font-family: 'Space Grotesk', sans-serif;">
+      <span class="hidden min-[375px]:inline text-xl sm:text-2xl md:text-xl lg:text-2xl font-bold text-white transition-colors whitespace-nowrap" style="font-family: 'Space Grotesk', sans-serif;">
         {brand.prefix}<span style={`color:${brand.accentColor}`}>{brand.suffix}</span>
       </span>
     </a>
 
     <!-- Desktop Nav -->
-    <nav class="hidden md:flex items-center gap-5">
-      <a href={`${brand.rootPath}/`} class="text-slate-300 hover:text-white transition-colors text-sm font-medium">All Tools</a>
-      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium">Home</a>
-      
-      <!-- Unified Categories Mega-Menu -->
+    <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+      <!-- Points at the main site, not this section — the logo already covers
+           the section index, so a second link to it would be dead weight. -->
+      <a href="/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap shrink-0">Home</a>
+
+      <ToolMegaMenu idPrefix={brand.idPrefix} label={`All ${brand.prefix} Tools`} accent={MENU.accent}
+        basePath={`${brand.rootPath}/`} groups={MENU.groups} names={NAME} icons={TOOL_ICONS} />
+
+      <!-- Divider: this section on the left, the wider site on the right. -->
+      <span class="w-px h-5 bg-slate-800 mx-1"></span>
+
+      <!-- Other sections of the site -->
       <div class="relative" id={categoriesWrapperId}>
-        <button id={categoriesBtnId} class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">
-          Categories
+        <button id={categoriesBtnId} data-mm-target={categoriesDropdownId} aria-haspopup="true" aria-expanded="false" class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
+          More Tools
           <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
-        
-        <div id={categoriesDropdownId} class="hidden absolute left-1/2 -translate-x-1/2 top-full mt-2 w-[600px] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
+
+        <div id={categoriesDropdownId} class="hidden fixed left-1/2 -translate-x-1/2 w-[600px] max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50">
           <div class="p-4 grid grid-cols-2 gap-3 bg-[var(--bg-surface)]">
             {SECTIONS.map(s => (
               <a href={s.path}
                 class="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[var(--bg-surface-hover)] border border-transparent hover:border-slate-800 transition-all group">
-                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105" 
+                <div class="w-9 h-9 rounded-lg flex items-center justify-center shrink-0 text-lg transition-transform group-hover:scale-105"
                   style={`background:rgba(${s.accentRgb},0.08); border: 1px solid rgba(${s.accentRgb},0.2)`}>
                   {s.icon}
                 </div>
                 <div class="min-w-0">
                   <div class="flex items-center gap-1.5">
                     <span class="text-sm font-bold text-white">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
-                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium" 
+                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-medium"
                       style={`background:rgba(${s.accentRgb},0.1); color:${s.color};`}>
                       {s.count}
                     </span>
@@ -102,9 +116,10 @@ const { alternates = [] } = Astro.props;
           </div>
         </div>
       </div>
+      <a href="/blog/" class="text-slate-300 hover:text-white transition-colors text-sm font-medium whitespace-nowrap px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)]">Blog</a>
     </nav>
 
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-1 sm:gap-2 shrink-0">
       <!-- Theme toggle -->
       <LanguageSwitcher alternates={alternates} locale="en" />
 
@@ -118,17 +133,36 @@ const { alternates = [] } = Astro.props;
       </button>
 
       <!-- Search -->
+      <!-- Mobile tool browser. Search finds a tool if you know its name; this
+           is for the more common case of not knowing it exists. -->
+      <button id={`${brand.idPrefix}-mobile-tools-btn`} data-mm-target={`${brand.idPrefix}-mobile-tools-panel`}
+        aria-haspopup="true" aria-expanded="false" aria-label="Browse tools"
+        class="md:hidden flex items-center gap-1 shrink-0 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-300 hover:text-white px-2.5 py-2 rounded-lg transition-colors text-sm font-medium">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h6v6H4V6zm10 0h6v6h-6V6zM4 16h6v4H4v-4zm10 0h6v4h-6v-4z"/></svg>
+        <span class="hidden min-[400px]:inline">Tools</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+      </button>
+
       <button id={searchOpenId} class="flex items-center gap-2 bg-[var(--bg-surface-hover)] hover:bg-[var(--bg-surface-alt)] text-slate-400 hover:text-white px-3 py-2 rounded-lg transition-colors text-sm" aria-label="Search tools">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
         </svg>
-        <span class="hidden sm:inline">Search…</span>
+        <!-- lg, not sm: with the language switcher and the new Tools button in
+             the cluster, showing this label at 820 pushed the row past the
+             viewport on translated tools. -->
+        <span class="hidden lg:inline">Search…</span>
       </button>
     </div>
   </div>
 </header>
 
 <!-- Search Modal -->
+<ToolMobileSheet idPrefix={brand.idPrefix} accent={MENU.accent} basePath={`${brand.rootPath}/`}
+  groups={MENU.groups} names={NAME} icons={TOOL_ICONS}
+  browseLabel={`All ${brand.prefix} tools`} />
+
+<MegaMenuScript />
+
 <div id={searchModalId} class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true">
   <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id={searchBackdropId}></div>
   <div class="relative max-w-lg mx-auto mt-20 mx-4">
@@ -195,7 +229,7 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
   closeBtn.addEventListener('click', closeModal);
   backdrop.addEventListener('click', closeModal);
   document.addEventListener('keydown', e => {
-    if (e.key === 'Escape') { closeModal(); closeCategoriesMenu(); }
+    if (e.key === 'Escape') closeModal();   // menus close via MegaMenuScript
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); openModal(); }
   });
 
@@ -203,7 +237,7 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
 
     if (!searchIndexReady) { primeSearchIndex().then(() => renderResults(query)); return; }
     const q = query.toLowerCase().trim();
-    const filtered = q 
+    const filtered = q
       ? searchTools(toolsForSearch, q, 8)
       : toolsForSearch.slice(0, 8);
     results.innerHTML = filtered.length
@@ -211,15 +245,5 @@ import { searchTools, loadSearchIndex } from '../lib/search.js';
       : '<li class="px-4 py-4 text-slate-500 text-sm text-center">No tools found</li>';
   }
   input.addEventListener('input', e => renderResults(e.target.value));
-
-  // Categories Dropdown
-  const categoriesBtn = document.getElementById(categoriesBtnId);
-  const categoriesDropdown = document.getElementById(categoriesDropdownId);
-
-  function closeCategoriesMenu() { categoriesDropdown && categoriesDropdown.classList.add('hidden'); }
-  if (categoriesBtn && categoriesDropdown) {
-    categoriesBtn.addEventListener('click', e => { e.stopPropagation(); categoriesDropdown.classList.toggle('hidden'); });
-    document.addEventListener('click', e => { if (!categoriesBtn.contains(e.target) && !categoriesDropdown.contains(e.target)) closeCategoriesMenu(); });
-  }
 })();
 </script>

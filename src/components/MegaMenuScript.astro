@@ -1,0 +1,54 @@
+---
+// Wiring for every header dropdown on the page, discovered by attribute rather
+// than by id, so one copy serves ToolMegaMenu, the section "More Tools" menu
+// and the mobile sheet.
+//
+// Include once per header. Astro bundles this script once no matter how many
+// headers import it.
+---
+
+<script>
+  (function () {
+    const buttons = Array.from(document.querySelectorAll('[data-mm-target]'));
+    if (!buttons.length) return;
+
+    const menus = buttons
+      .map((btn) => ({ btn, panel: document.getElementById(btn.getAttribute('data-mm-target')) }))
+      .filter((m) => m.panel);
+
+    const header = document.querySelector('header');
+
+    function closeAll(except) {
+      menus.forEach((m) => {
+        if (m === except) return;
+        m.panel.classList.add('hidden');
+        m.btn.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    menus.forEach((m) => {
+      m.btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const willOpen = m.panel.classList.contains('hidden');
+        closeAll(m);
+        // Every panel is fixed, so the only thing to compute is how far down
+        // the header currently reaches — it varies with the mobile pill row,
+        // so it is measured rather than assumed. The sheet butts against the
+        // header; dropdowns clear it by 8px.
+        if (willOpen && header) {
+          const below = header.getBoundingClientRect().bottom;
+          const isSheet = m.panel.hasAttribute('data-mm-sheet');
+          m.panel.style.top = (isSheet ? below : below + 8) + 'px';
+        }
+        m.panel.classList.toggle('hidden', !willOpen);
+        m.btn.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      const inside = menus.some((m) => m.btn.contains(e.target) || m.panel.contains(e.target));
+      if (!inside) closeAll();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAll(); });
+  })();
+</script>

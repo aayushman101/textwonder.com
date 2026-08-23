@@ -1,0 +1,80 @@
+---
+// Section tool menu: a desktop dropdown and a mobile sheet listing every tool
+// in the section, grouped by the job the visitor came to do.
+//
+// Extracted from PDFHeader rather than copied into each section header. The
+// positioning here has already been wrong three separate ways — anchored to
+// the button it overflowed right between 768 and 1024, the right-anchored
+// variant overflowed LEFT at the same widths, and a clamp that only checked
+// one edge missed the second case. Keeping one implementation means those
+// fixes cannot silently regress in four other headers.
+
+interface Group { title: string; slugs: string[] }
+interface Props {
+  /** Unique per header, e.g. "dev" — used for element ids. */
+  idPrefix: string;
+  /** Bar label, e.g. "All Dev Tools". */
+  label: string;
+  /** Section accent, used for group headings and icon strokes. */
+  accent: string;
+  /** Where tool pages live, e.g. "/devwonder/". */
+  basePath: string;
+  groups: Group[];
+  /** slug -> display name */
+  names: Record<string, string>;
+  /** slug -> raw inline SVG children */
+  icons: Record<string, string>;
+  /** Link target for the footer, defaults to basePath. */
+  browseHref?: string;
+}
+
+const { idPrefix, label, accent, basePath, groups, names, icons, browseHref } = Astro.props as Props;
+const total = groups.reduce((n, g) => n + g.slugs.length, 0);
+const href = browseHref || basePath;
+
+// Five columns is right for 28 tools; fewer tools look stranded across five,
+// so the column count follows the group count.
+const cols = Math.min(groups.length, 5);
+const colClass = ['', 'lg:grid-cols-1', 'lg:grid-cols-2', 'lg:grid-cols-3', 'lg:grid-cols-4', 'lg:grid-cols-5'][cols];
+const widthClass = ['', 'w-[320px]', 'w-[460px]', 'w-[620px]', 'w-[790px]', 'w-[940px]'][cols];
+---
+
+<div class="relative">
+  <button id={`${idPrefix}-tools-menu-btn`} data-mm-target={`${idPrefix}-tools-menu-dropdown`} aria-haspopup="true" aria-expanded="false"
+    class="flex items-center gap-1 text-slate-300 hover:text-white text-sm font-medium transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[var(--bg-surface-hover)] whitespace-nowrap">
+    {label}
+    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+  </button>
+
+  <!-- Centred on the viewport rather than anchored to the button: the nav sits
+       mid-header, so anchoring throws a wide panel hard against one edge.
+       `top` is set from the measured header height on open, because a fixed
+       element cannot use `top-full`. -->
+  <div id={`${idPrefix}-tools-menu-dropdown`}
+    class:list={['hidden fixed left-1/2 -translate-x-1/2 max-w-[calc(100vw-2rem)] bg-[var(--bg-surface)] border border-slate-800 rounded-xl shadow-2xl overflow-hidden z-50', widthClass]}>
+    <div class:list={['p-4 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1', colClass]}>
+      {groups.map((g) => (
+        <div>
+          <p class="text-[11px] font-semibold uppercase tracking-wide px-2 pb-1.5 pt-1" style={`color:${accent}`}>{g.title}</p>
+          <ul>
+            {g.slugs.map((slug) => (
+              <li>
+                <a href={`${basePath}${slug}/`}
+                  class="flex items-center gap-2 px-2 py-1.5 rounded-md text-[13px] text-slate-300 hover:text-white hover:bg-[var(--bg-surface-hover)] transition-colors">
+                  <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke={accent}
+                    stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                    set:html={icons[slug]} />
+                  <span>{names[slug]}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+    <div class="bg-[var(--bg-surface-hover)] border-t border-slate-800/80 px-4 py-2.5 flex justify-between items-center text-xs">
+      <span class="text-slate-500">All {total} run in your browser — nothing is uploaded</span>
+      <a href={href} class="font-medium transition-colors hover:opacity-80" style={`color:${accent}`}>Browse all {total} &rarr;</a>
+    </div>
+  </div>
+</div>

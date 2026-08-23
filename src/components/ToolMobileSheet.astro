@@ -1,0 +1,61 @@
+---
+// Mobile counterpart to ToolMegaMenu: a full-height sheet listing every tool
+// in the section. Search finds a tool if you already know its name; this is
+// for the far more common case of not knowing it exists.
+//
+// Rendered as a sheet rather than extra rows in the header so it costs no
+// height in a sticky bar.
+
+interface Group { title: string; slugs: string[] }
+interface Props {
+  idPrefix: string;
+  accent: string;
+  basePath: string;
+  groups: Group[];
+  names: Record<string, string>;
+  icons: Record<string, string>;
+  /** Label for the primary footer button, e.g. "All 17 Dev tools". */
+  browseLabel?: string;
+  browseHref?: string;
+}
+
+const { idPrefix, accent, basePath, groups, names, icons, browseLabel, browseHref } = Astro.props as Props;
+const total = groups.reduce((n, g) => n + g.slugs.length, 0);
+const href = browseHref || basePath;
+---
+
+<!-- `top` is set from the measured header height on open; the rem fallback is
+     only for the first paint, since the mobile header's pill row makes its
+     height depend on content rather than being a fixed number. -->
+<div id={`${idPrefix}-mobile-tools-panel`} data-mm-sheet
+  class="hidden md:hidden fixed inset-x-0 bottom-0 z-40 bg-[var(--bg-base)] border-t border-slate-800 overflow-y-auto overscroll-contain"
+  style="top:6.75rem">
+  <div class="px-4 py-4 space-y-5">
+    {groups.map((g) => (
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-wide mb-1.5" style={`color:${accent}`}>{g.title}</p>
+        <ul class="grid grid-cols-2 gap-1.5">
+          {g.slugs.map((slug) => (
+            <li>
+              <a href={`${basePath}${slug}/`}
+                class="flex items-center gap-2 px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 active:bg-[var(--bg-surface-hover)]">
+                <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke={accent}
+                  stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"
+                  set:html={icons[slug]} />
+                <span class="leading-tight">{names[slug]}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+    <div class="pt-1 space-y-1.5">
+      <a href={href} class="block px-3 py-2 rounded-lg text-[13px] font-medium text-white text-center"
+        style={`background:${accent}`}>{browseLabel || `All ${total} tools`}</a>
+      <div class="grid grid-cols-2 gap-1.5">
+        <a href="/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Home</a>
+        <a href="/blog/" class="block px-3 py-2 rounded-lg text-[13px] text-slate-300 bg-[var(--bg-surface)] border border-slate-800 text-center">Blog</a>
+      </div>
+    </div>
+  </div>
+</div>

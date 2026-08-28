@@ -21,18 +21,12 @@ export async function onRequest(context) {
     });
   }
 
-  // Serve favicon.svg for /favicon.ico and /apple-touch-icon.png requests
-  // so all browsers and iOS get the correct icon without needing binary assets
-  if (pathname === '/favicon.ico' || pathname === '/apple-touch-icon.png') {
-    const svgUrl = new URL('/favicon.svg', context.request.url);
-    const svgResponse = await fetch(svgUrl.toString());
-    return new Response(svgResponse.body, {
-      headers: {
-        'Content-Type': pathname === '/favicon.ico' ? 'image/x-icon' : 'image/svg+xml',
-        'Cache-Control': 'public, max-age=86400',
-      },
-    });
-  }
+  // NOTE: /favicon.ico and /apple-touch-icon.png used to be intercepted here
+  // and answered with favicon.svg. That served SVG bytes under
+  // Content-Type: image/x-icon, which no browser can decode as an icon, and
+  // gave iOS an SVG where it requires PNG. Real binaries now exist in
+  // public/ (favicon.ico, apple-touch-icon.png, favicon-48/192.png), so the
+  // static handler serves them correctly and the rewrite is gone.
 
   const response = await context.next();
 

@@ -7,12 +7,49 @@ import { getSourceTool } from '../i18n/index.js';
 const popularTools = FEATURED_TOOLS
   .map((f) => ({ ...f, name: getSourceTool(f.section, f.slug)?.name }))
   .filter((f) => f.name);
+
+// A CSS grid row is as tall as its tallest cell. The old footer put Company,
+// Legal and Our Other Sites in one column — 9 links plus 3 headings — while
+// its neighbours ran ~6 rows, so two thirds of the footer was dead space.
+// Splitting those into their own cells on a 12-column grid levels the columns
+// and cuts the height by roughly a third with no content removed.
+const linkGroups = [
+  {
+    title: 'Company',
+    span: 'lg:col-span-2',
+    links: [
+      { href: '/about/', label: 'About Us' },
+      { href: '/contact/', label: 'Contact' },
+      { href: '/blog/', label: 'Blog' },
+    ],
+    extra: {
+      title: 'Our Other Sites',
+      links: [
+        { href: 'https://aaobanao.com', label: 'AaoBanao.com', external: true },
+        { href: 'https://toolswonder.com', label: 'ToolsWonder.com', external: true },
+      ],
+    },
+  },
+  {
+    title: 'Legal',
+    span: 'lg:col-span-2',
+    links: [
+      { href: '/privacy-policy/', label: 'Privacy Policy' },
+      { href: '/cookie-policy/', label: 'Cookie Policy' },
+      { href: '/terms/', label: 'Terms of Service' },
+      { href: '/disclaimer/', label: 'Disclaimer' },
+    ],
+  },
+];
+
+const MONO = "font-family: var(--font-family-mono); letter-spacing: .14em;";
+const linkCls = 'text-slate-400 hover:text-violet-400 text-sm transition-colors';
 ---
 
 <footer class="border-t border-slate-800 bg-[var(--bg-base)] mt-16">
   <!-- Trust banner -->
   <div class="bg-[var(--bg-surface)] border-b border-slate-800">
-    <div class="max-w-6xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
       <svg class="w-5 h-5 text-emerald-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
       </svg>
@@ -22,28 +59,28 @@ const popularTools = FEATURED_TOOLS
     </div>
   </div>
 
-  <div class="max-w-6xl mx-auto px-4 py-12">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+  <div class="max-w-6xl mx-auto px-4 py-10">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-12 gap-x-8 gap-y-9 mb-9">
+
       <!-- Brand -->
-      <div>
-        <a href="/" class="text-xl font-bold text-white" style="font-family: 'Space Grotesk', sans-serif;">
-          Text<span class="text-violet-500">Wonder</span>
+      <div class="col-span-2 sm:col-span-3 lg:col-span-3">
+        <a href="/" class="text-xl font-bold text-white" style="font-family: var(--font-family-display);">
+          Text<span style="color: var(--accent);">Wonder</span>
         </a>
-        <p class="text-slate-400 text-sm mt-2 leading-relaxed">
+        <p class="text-slate-400 text-sm mt-2 leading-relaxed max-w-xs">
           textwonder.com — free browser-based tools for text, PDF, dev, calculator, and more. Private, fast. No signup ever.
         </p>
       </div>
 
-      <!-- Categories — all 11 site sections, two columns so the list stays
-           the same height as the neighbouring footer columns -->
-      <div>
-        <h3 class="text-white font-semibold text-sm mb-3">Categories</h3>
+      <!-- Categories — 11 sections in two sub-columns -->
+      <div class="col-span-2 sm:col-span-3 lg:col-span-3">
+        <h3 class="text-slate-500 text-[11px] font-medium uppercase mb-3" style={MONO}>Categories</h3>
         <ul class="grid grid-cols-2 gap-x-4 gap-y-2">
           {SECTIONS.map(s => (
             <li>
-              <a href={s.path} class="text-slate-400 hover:text-violet-400 text-sm transition-colors flex items-center gap-1.5">
+              <a href={s.path} class={`${linkCls} flex items-center gap-1.5`}>
                 <span class="shrink-0">{s.icon}</span>
-                <span class="truncate">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
+                <span class="leading-snug">{s.prefix}<span style={`color:${s.color}`}>{s.suffix}</span></span>
               </a>
             </li>
           ))}
@@ -51,51 +88,53 @@ const popularTools = FEATURED_TOOLS
       </div>
 
       <!-- Popular Tools -->
-      <div>
-        <h3 class="text-white font-semibold text-sm mb-3">Popular Tools</h3>
+      <div class="lg:col-span-2">
+        <h3 class="text-slate-500 text-[11px] font-medium uppercase mb-3" style={MONO}>Popular Tools</h3>
         <ul class="space-y-2">
           {popularTools.map(tool => (
-            <li>
-              <a href={tool.path} class="text-slate-400 hover:text-violet-400 text-sm transition-colors">
-                {tool.name}
-              </a>
-            </li>
+            <li><a href={tool.path} class={linkCls}>{tool.name}</a></li>
           ))}
         </ul>
       </div>
 
-      <!-- Links -->
-      <div>
-        <h3 class="text-white font-semibold text-sm mb-3">Company</h3>
-        <ul class="space-y-2">
-          <li><a href="/about/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">About Us</a></li>
-          <li><a href="/contact/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Contact</a></li>
-          <li><a href="/blog/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Blog</a></li>
-        </ul>
-        <h3 class="text-white font-semibold text-sm mt-5 mb-3">Legal</h3>
-        <ul class="space-y-2">
-          <li><a href="/privacy-policy/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Privacy Policy</a></li>
-          <li><a href="/cookie-policy/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Cookie Policy</a></li>
-          <li><a href="/terms/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Terms of Service</a></li>
-          <li><a href="/disclaimer/" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">Disclaimer</a></li>
-        </ul>
-        <h3 class="text-white font-semibold text-sm mt-5 mb-3">Our Other Sites</h3>
-        <ul class="space-y-2">
-          <li>
-            <a href="https://aaobanao.com" target="_blank" rel="noopener" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">
-              AaoBanao.com
-            </a>
-          </li>
-          <li>
-            <a href="https://toolswonder.com" target="_blank" rel="noopener" class="text-slate-400 hover:text-violet-400 text-sm transition-colors">
-              ToolsWonder.com
-            </a>
-          </li>
-        </ul>
-      </div>
+      <!-- Company / Legal, each in their own cell so neither stretches the row -->
+      {linkGroups.map(group => (
+        <div class={group.span}>
+          <h3 class="text-slate-500 text-[11px] font-medium uppercase mb-3" style={MONO}>{group.title}</h3>
+          <ul class="space-y-2">
+            {group.links.map(l => (
+              <li>
+                <a
+                  href={l.href}
+                  class={linkCls}
+                  target={l.external ? '_blank' : undefined}
+                  rel={l.external ? 'noopener' : undefined}
+                >{l.label}</a>
+              </li>
+            ))}
+          </ul>
+          {group.extra && (
+            <>
+              <h3 class="text-slate-500 text-[11px] font-medium uppercase mt-6 mb-3" style={MONO}>{group.extra.title}</h3>
+              <ul class="space-y-2">
+                {group.extra.links.map(l => (
+                  <li>
+                    <a
+                      href={l.href}
+                      class={linkCls}
+                      target={l.external ? '_blank' : undefined}
+                      rel={l.external ? 'noopener' : undefined}
+                    >{l.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      ))}
     </div>
 
-    <div class="border-t border-slate-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-2">
+    <div class="border-t border-slate-800 pt-5 flex flex-col sm:flex-row justify-between items-center gap-2">
       <p class="text-slate-500 text-sm">© {new Date().getFullYear()} TextWonder. All rights reserved.</p>
       <p class="text-slate-500 text-sm">Made with care for people who work with text.</p>
     </div>

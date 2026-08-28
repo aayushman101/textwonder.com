@@ -1,7 +1,6 @@
 # TextWonder — V2 Redesign: Implementation Handoff
 
-**Status:** Stage 0 complete. Stage 1 blocked on one decision (see [Open
-questions](#open-questions)).
+**Status:** Stages 0–1 complete. Stage 2 (chrome) is next.
 **Branch:** `redesign-v2` · **Rollback tag:** `pre-redesign-v2` → `7aa29af`
 **Started:** 2026-08-28
 
@@ -171,11 +170,7 @@ Each stage = one commit. Verify, commit, then move on.
 
 - [x] **Stage 0 — Safety net.** Branch `redesign-v2`, tag `pre-redesign-v2`,
       16 baseline screenshots captured (see [Verification](#7-verification)).
-- [ ] **Stage 1 — Design tokens.** Rewrite the `@theme` block in
-      `src/styles/global.css`: fonts + palette mapped onto `slate`/`violet`.
-      Delete the old light-mode override layer. Resolve the dark-mode
-      decision. **Repaints all 570 pages with no component edits.**
-      → Preview deploy #1.
+- [x] **Stage 1 — Design tokens.** Done in `48413b6`. See §2 and §11.
 - [ ] **Stage 2 — Chrome.** 6 headers, 2 footers, 9 mega-menus, search bar,
       breadcrumb, mobile sheet, language switcher.
 - [ ] **Stage 3 — Homepage.** Port `landing-v2.astro` into `index.astro`,
@@ -331,19 +326,29 @@ grep -rhoE "(bg|text|border|from|to|via|ring|divide|placeholder)-(slate|violet|b
 
 ## 10. Open questions
 
-**BLOCKING Stage 1:**
+**Answered 2026-08-28:**
 
-1. **Dark mode — kill it, or author a dark variant?**
-   V2 is paper-first. The site currently defaults to dark
-   (`BaseLayout.astro` inline script, `tw-theme` in localStorage) with a
-   toggle. Keeping dark means building a full dark variant of the bold-block
-   palette (+4–6 h) and a localStorage migration. Killing it is simpler and
-   truer to the design. **Not yet answered.**
+1. **Dark mode** — light is the default opening; dark stays available via the
+   header toggle. Both palettes are implemented in `global.css`. No
+   localStorage migration was needed: a returning visitor with `tw-theme:dark`
+   simply gets the new dark V2 theme, which is correct behaviour.
+2. **Widget sweep** — ship at Stage 7, sweep the 220 widgets later. See §11:
+   this may barely be needed.
 
-**Not blocking, decide later:**
+**Still open:**
 
-2. Does Stage 8 (220 tool widgets) happen, or do we stop after Stage 7?
-3. Real AdSense slot IDs — only needed if/when ads return.
+3. Real AdSense slot IDs — only needed if/when ads return (see §4).
+4. The homepage `AD_PLACEMENT_STRATEGY.md` traffic figure (10K pageviews/mo)
+   contradicts Search Console (~28 clicks/mo). Unverified.
+
+### Known issues not caused by the redesign
+
+- The homepage throws a JS error (`Y`) on load. Confirmed present with the
+  redesign changes stashed, so it predates this work. Worth a separate fix.
+- The homepage H1 still uses a `from-blue-600 via-indigo-600 to-purple-600`
+  gradient. `blue`/`indigo`/`purple` were deliberately NOT remapped (89 uses,
+  mostly data-driven suite colours). Stage 3 deletes this hero entirely, so it
+  is expected to look off until then.
 
 ---
 
@@ -351,4 +356,27 @@ grep -rhoE "(bg|text|border|from|to|via|ring|divide|placeholder)-(slate|violet|b
 
 | Date | Stage | What happened |
 |---|---|---|
+| 2026-08-28 | 1 | `48413b6` — token layer. All 570 pages repainted with zero component edits. Light default + dark toggle both verified. Build clean. |
 | 2026-08-28 | 0 | Branch `redesign-v2` created, `pre-redesign-v2` tag at `7aa29af`, 16 baselines captured. Ad zones stripped from the v2 preview per user request. Fixed 5 links pointing at the non-existent `/categories/` → `/tools/`. Suite grid switched to the v3 card treatment. |
+
+
+---
+
+## 11. Stage 1 outcome — the half-done window is smaller than feared
+
+The plan warned that between Stage 4 and Stage 8 the site would be V2 shells
+wrapping violet-and-slate widgets, and budgeted 20–35 h to sweep 220 widget
+interiors.
+
+**After Stage 1, that looks largely unnecessary.** The Word Counter widget —
+entirely untouched — already renders as the new theme: orange stat numerals,
+cream panel, warm borders, ink text. This is because every widget was built
+from the same `slate`/`violet` vocabulary that the token layer remaps.
+
+Re-evaluate Stage 8 once Stage 4 lands. The remaining work is likely a short
+list of specific widgets rather than a sweep of all 220. Check the ones with
+unusual colour usage first:
+
+```bash
+grep -rlE "(bg|text|border)-(emerald|red|green|amber|cyan|teal|pink)-[0-9]" src/components/*-tools src/components/tools | head -30
+```

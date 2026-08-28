@@ -26,7 +26,10 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       lastmod: new Date(),
-      filter: (page) => !NOINDEX.has(page.replace('https://textwonder.com', '')),
+      // /preview/* holds unreleased design experiments — noindex, and never
+      // in the sitemap even if a build happens to be deployed.
+      filter: (page) =>
+        !page.includes('/preview/') && !NOINDEX.has(page.replace('https://textwonder.com', '')),
       serialize(item) {
         const path = item.url.replace('https://textwonder.com', '');
 

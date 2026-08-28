@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<!--
+  ────────────────────────────────────────────────────────────────────────────
+  TextWonder — landing page, conservative restyle (v3)
+  ────────────────────────────────────────────────────────────────────────────
+  DESIGN PREVIEW. Plain HTML/CSS/JS, no build step, no Astro, not deployed.
+  Open this file directly in a browser (double-click / file://) to view.
+
+  Brief: keep the CURRENT page structure — header, hero + search, "browse by
+  category" grid, section tabs + tool panel, trust strip, FAQ, footer — and
+  change only theme, colour, type and detailing. No motion: no marquee, no
+  orbiting chips, no typewriter, no scroll reveal, no counting numbers.
+  The only movement is hover and focus feedback, which is UI, not decoration.
+  ────────────────────────────────────────────────────────────────────────────
+-->
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex, nofollow" />
+<title>TextWonder — 234 free online tools (design preview v3)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700;12..96,800&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ── header ──────────────────────────────────────────────────────────────
+     Same items as the live header: wordmark, Home, Categories ▾, Blog,
+     language, theme toggle, search. Restyled, not restructured. -->
+<header class="hdr">
+  <div class="shell hdr-in">
+    <a class="brand" href="/">Text<span>Wonder</span></a>
+
+    <nav class="hdr-nav">
+      <a href="/">Home</a>
+      <div class="dd">
+        <button class="dd-btn" id="ddBtn" aria-expanded="false" aria-controls="ddMenu">
+          Categories <svg viewBox="0 0 12 8" aria-hidden="true"><path d="M1 1.5 6 6.5l5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+        <div class="dd-menu" id="ddMenu" hidden></div>
+      </div>
+      <a href="/blog/">Blog</a>
+    </nav>
+
+    <div class="hdr-right">
+      <button class="icon-btn" type="button" title="Language">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2.6 10h14.8M10 2.6c3.6 3.9 3.6 10.9 0 14.8-3.6-3.9-3.6-10.9 0-14.8" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span>EN</span>
+      </button>
+      <button class="icon-btn" type="button" id="themeBtn" title="Toggle theme" aria-label="Toggle theme">
+        <svg class="ic-moon" viewBox="0 0 20 20" aria-hidden="true"><path d="M16 12.4A7 7 0 0 1 7.6 4a7.2 7.2 0 1 0 8.4 8.4Z" fill="currentColor"/></svg>
+        <svg class="ic-sun" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4" fill="currentColor"/><path d="M10 1v2.2M10 16.8V19M1 10h2.2M16.8 10H19M3.6 3.6l1.6 1.6M14.8 14.8l1.6 1.6M16.4 3.6l-1.6 1.6M5.2 14.8l-1.6 1.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <a class="btn btn-ink" href="#browse">Browse tools</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ── hero ────────────────────────────────────────────────────────────── -->
+<section class="hero">
+  <div class="shell hero-in">
+    <p class="eyebrow">234 tools · 11 categories · nothing uploaded</p>
+    <h1>One platform,<br /><span class="accent">every tool you need</span></h1>
+    <p class="hero-sub">
+      Free, browser-based utilities across 11 categories. No signup required,
+      nothing sent anywhere.
+    </p>
+
+    <!-- search: the page's primary action, so it is the strongest element -->
+    <div class="search-wrap">
+      <div class="search" id="searchBox">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="9" cy="9" r="6.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="m13.6 13.6 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <input id="q" type="text" autocomplete="off" placeholder="Search 234 free tools — pdf merger, emi, word count…" aria-label="Search tools" />
+        <kbd>/</kbd>
+      </div>
+      <ul class="results" id="results" hidden></ul>
+    </div>
+
+    <div class="chips" id="chips">
+      <span class="chips-label">Popular</span>
+      <button type="button" data-q="pdf merger">PDF Merger</button>
+      <button type="button" data-q="json formatter">JSON Formatter</button>
+      <button type="button" data-q="word counter">Word Counter</button>
+      <button type="button" data-q="emi">EMI Calculator</button>
+      <button type="button" data-q="compress image">Compress Image</button>
+    </div>
+
+    <dl class="facts">
+      <div><dt>234</dt><dd>tools</dd></div>
+      <div><dt>11</dt><dd>categories</dd></div>
+      <div><dt>100%</dt><dd>browser-based</dd></div>
+      <div><dt>0</dt><dd>signups</dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- ── ad 1 · leaderboard ──────────────────────────────────────────────── -->
+<div class="shell">
+  <div class="adzone adzone--lb">
+    <span class="adzone-label">Advertisement</span>
+    <div class="adzone-box">&lt;AdSlot format="horizontal" /&gt; · 970×90 / 320×100 · height reserved, no layout shift</div>
+  </div>
+</div>
+
+<!-- ── browse by category ──────────────────────────────────────────────── -->
+<section class="band" id="browse">
+  <div class="shell">
+    <div class="sec-head">
+      <p class="eyebrow">Browse by category</p>
+      <h2>Eleven suites, 234 tools.</h2>
+    </div>
+    <div class="cat-grid" id="catGrid"></div>
+  </div>
+</section>
+
+<!-- ── section tabs + panel ────────────────────────────────────────────── -->
+<section class="sec">
+  <div class="shell">
+    <div class="sec-head">
+      <p class="eyebrow">Jump straight in</p>
+      <h2>Pick a suite, pick a tool.</h2>
+    </div>
+    <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="panel" id="panel"></div>
+  </div>
+</section>
+
+<!-- ── ad 2 · in-content rectangle ─────────────────────────────────────── -->
+<div class="shell">
+  <div class="adzone">
+    <span class="adzone-label">Advertisement</span>
+    <div class="adzone-box">&lt;AdSlot format="rectangle" /&gt; · 970×250 / 336×280 · on paper, never beside a button</div>
+  </div>
+</div>
+
+<!-- ── trust strip ─────────────────────────────────────────────────────── -->
+<section class="band">
+  <div class="shell">
+    <div class="sec-head">
+      <p class="eyebrow">Why it is private</p>
+      <h2>The upload step does not exist.</h2>
+      <p>Every tool is JavaScript running in your own tab. There is no server to send your file to, which is why there is no account, no queue and no retention policy.</p>
+    </div>
+    <div class="trust">
+      <div class="trust-card">
+        <span class="trust-n">01</span>
+        <h3>No servers</h3>
+        <p>Your text, PDFs and images are read, processed and written back out by the browser. Nothing is transmitted.</p>
+      </div>
+      <div class="trust-card">
+        <span class="trust-n">02</span>
+        <h3>No accounts</h3>
+        <p>There is no server-side state to attach an account to, so there is no sign-up, no email wall and no trial.</p>
+      </div>
+      <div class="trust-card">
+        <span class="trust-n">03</span>
+        <h3>No waiting</h3>
+        <p>No round trip means results appear as fast as your own machine can compute them, and file size is capped by your device, not our plan.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── faq ─────────────────────────────────────────────────────────────── -->
+<section class="sec">
+  <div class="shell">
+    <div class="sec-head">
+      <p class="eyebrow">Questions</p>
+      <h2>Before you start.</h2>
+    </div>
+    <div class="faq">
+      <details open>
+        <summary>Are all the tools free?<span class="sign">+</span></summary>
+        <div class="ans">Yes — all 234 tools across all 11 suites, with no premium tier and no per-file limits. The site is supported by advertising, not by charging for the tools.</div>
+      </details>
+      <details>
+        <summary>Is my data uploaded to a server?<span class="sign">+</span></summary>
+        <div class="ans">Never. All tools run in your browser using JavaScript. Your text, files and data do not leave your device, so there is nothing for us to store or log.</div>
+      </details>
+      <details>
+        <summary>Do the tools work on mobile?<span class="sign">+</span></summary>
+        <div class="ans">Yes. Every tool is responsive, and the file-based ones use the standard mobile file picker, so PDFs and photos from your camera roll behave exactly as they do on desktop.</div>
+      </details>
+      <details>
+        <summary>Do I need to install anything?<span class="sign">+</span></summary>
+        <div class="ans">No. There is no app, no browser extension and no dependency to install. Open the page and the tool is ready.</div>
+      </details>
+      <details>
+        <summary>Can I use the tools offline?<span class="sign">+</span></summary>
+        <div class="ans">Most keep working once the page has loaded, because the processing is already on your device. The exceptions are the few that call an external service, such as certain text-to-speech voices.</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ── footer ──────────────────────────────────────────────────────────── -->
+<footer class="foot">
+  <div class="shell">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="/">Text<span>Wonder</span></a>
+        <p>234 free browser-based tools. Nothing you open is uploaded, stored or logged.</p>
+      </div>
+      <div><h4>Popular suites</h4><ul id="footA"></ul></div>
+      <div><h4>More suites</h4><ul id="footB"></ul></div>
+      <div>
+        <h4>Site</h4>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/privacy-policy/">Privacy policy</a></li>
+          <li><a href="/terms/">Terms</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 TextWonder — design preview v3</span>
+      <span>Made in the browser, for the browser</span>
+    </div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

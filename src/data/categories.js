@@ -15,7 +15,7 @@ export const SECTIONS = [
   {
     prefix: 'Text', suffix: 'Wonder',
     path: '/tools/',
-    color: '#7c3aed', accentRgb: '124,58,237',
+    color: '#F04E23', accentRgb: '240,78,35',
     tagline: 'Case converters, word counters, text cleaners, diff checker, encoders, and more.',
     count: TOOLS.length,
     icon: '✍️',

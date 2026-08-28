@@ -356,6 +356,10 @@ grep -rhoE "(bg|text|border|from|to|via|ring|divide|placeholder)-(slate|violet|b
 
 | Date | Stage | What happened |
 |---|---|---|
+| 2026-08-28 | — | Brand recolour: favicon (svg/ico/48/192) and og-default.svg regenerated in orange; TextWonder suite colour `#7c3aed` -> `#F04E23`; ToolSearchBar accent fallback and the BlogLayout tool-CTA gradient moved off hardcoded violet. |
+| 2026-08-28 | — | Footer rebalanced onto a 12-column grid: 635px -> 428px, all 27 links kept. |
+| 2026-08-28 | — | Dark mode fixed: added `--invert-*` tokens for panels that contrast against the page. |
+| 2026-08-28 | 3 | `e92742a` — V2 homepage live. |
 | 2026-08-28 | 1 | `48413b6` — token layer. All 570 pages repainted with zero component edits. Light default + dark toggle both verified. Build clean. |
 | 2026-08-28 | 0 | Branch `redesign-v2` created, `pre-redesign-v2` tag at `7aa29af`, 16 baselines captured. Ad zones stripped from the v2 preview per user request. Fixed 5 links pointing at the non-existent `/categories/` → `/tools/`. Suite grid switched to the v3 card treatment. |
 
@@ -380,3 +384,38 @@ unusual colour usage first:
 ```bash
 grep -rlE "(bg|text|border)-(emerald|red|green|amber|cyan|teal|pink)-[0-9]" src/components/*-tools src/components/tools | head -30
 ```
+
+
+---
+
+## 12. Palette decisions
+
+**TextWonder's suite colour is the brand accent.** It was `#7c3aed`, left over
+from the violet theme, which read as the site's brand colour and clashed with
+the orange chrome. It is now `#F04E23`, matching `--accent`. TextWonder is the
+site's namesake, so its suite colour and the brand colour should be the same.
+
+Contrast of that colour where it is used (30px bold numeral, 19px bold suffix
+— both WCAG "large text", threshold 3:1):
+
+| | on white card | on dark card |
+|---|---|---|
+| `#F04E23` (chosen) | 3.61:1 | 4.84:1 |
+| `#E14320` (alternative) | 4.18:1 | 4.18:1 |
+| `#7c3aed` (old violet) | 5.70:1 | 3.07:1 |
+
+Both usages clear the 3:1 large-text threshold in both themes, and the old
+violet was actually worse in dark mode. If the colour is ever applied to
+body-size text, switch to `#E14320` — it is visually indistinguishable and
+balances at 4.18:1 both ways.
+
+**Known adjacency:** TextWonder `#F04E23` and PDFWonder `#f97316` are the first
+two cards in the catalogue grid and are both warm. They are distinguishable
+(red-orange vs orange) and on-brand for a warm site, but if they ever need
+separating, move PDFWonder rather than TextWonder — TextWonder must keep the
+brand colour.
+
+**Deliberately left violet:** 10 individual tools carry `iconBg: '#7c3aed'` in
+the data files, rendered as icon tiles on section index pages. Those are one
+hue in a 234-tool spectrum, not brand colour, so they were not touched. They
+fall inside Stage 5 if the section indexes get restyled.

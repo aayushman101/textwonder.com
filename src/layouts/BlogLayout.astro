@@ -106,8 +106,8 @@ const displayDate = dateObj.toLocaleDateString('en-US', { year: 'numeric', month
   /* Typography for slotted blog copy lives in src/styles/global.css under
      .blog-article — Astro-scoped rules cannot reach <slot /> content.
      Only the CTA and FAQ blocks are styled here, via :global(). */
-  :global(.tool-cta) { display: block; background: linear-gradient(135deg, #4c1d95, #6d28d9); border: 1px solid #7c3aed40; border-radius: 1rem; padding: 1.5rem; margin: 2.5rem 0; text-decoration: none !important; transition: all 0.2s; }
-  :global(.tool-cta:hover) { border-color: #7c3aed80; box-shadow: 0 0 24px rgba(124,58,237,0.2); }
+  :global(.tool-cta) { display: block; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, var(--bg-surface)), color-mix(in srgb, var(--accent) 30%, var(--bg-surface))); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); border-radius: 1rem; padding: 1.5rem; margin: 2.5rem 0; text-decoration: none !important; transition: all 0.2s; }
+  :global(.tool-cta:hover) { border-color: color-mix(in srgb, var(--accent) 60%, transparent); box-shadow: 0 0 24px color-mix(in srgb, var(--accent) 22%, transparent); }
   :global(.tool-cta .cta-label) { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #c4b5fd; font-weight: 600; margin-bottom: 0.25rem; }
   :global(.tool-cta .cta-title) { font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.25rem; font-family: 'Space Grotesk', sans-serif; }
   :global(.tool-cta .cta-desc) { font-size: 0.875rem; color: #ddd6fe; }
